@@ -1,0 +1,16 @@
+{
+  "author": "Daniel Dickison <ddickison@carnegielearning.com>",
+  "name": "MathFluency",
+  "description": "Math fluency games",
+  "version": "0.0.0",
+  "homepage": "http://fluencychallenge.com",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/CarnegieLearning/MathFluency.git"
+  },
+  "engines": {
+    "node": "~v0.4.8"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
