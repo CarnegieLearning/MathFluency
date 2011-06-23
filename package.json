@@ -9,8 +9,11 @@
     "url": "git://github.com/CarnegieLearning/MathFluency.git"
   },
   "engines": {
-    "node": "~v0.4.8"
+    "node": "0.4.8"
   },
-  "dependencies": {},
+  "dependencies": {
+    "connect": "1.5.1",
+    "yabble": "0.3.0"
+  },
   "devDependencies": {}
 }
