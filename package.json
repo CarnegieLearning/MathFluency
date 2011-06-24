@@ -12,8 +12,9 @@
     "node": "0.4.8"
   },
   "dependencies": {
-    "connect": "1.5.1",
-    "yabble": "0.3.0"
+    "express": ">=2.3",
+    "ejs": ">=0.4",
+    "yabble": ">=0.3"
   },
   "devDependencies": {}
 }
