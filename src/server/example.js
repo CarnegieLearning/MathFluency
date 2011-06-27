@@ -131,8 +131,21 @@ function runServer(port, rootPath)
     });
     
     // Start the server.
-    app.listen(8000);
-    console.log('Server running on port ' + port);
+    app.listen(port);
+    console.log('Server running on port ' + port + ' with URL root ' + rootPath);
 }
 
-if (require.main === module) runServer(8000, '/fluencydemo');
+if (require.main === module)
+{
+    if (process.argv.length != 4)
+    {
+        console.log('Invalid argument(s).');
+        console.log('Usage: node example.js PORT ROOT');
+        console.log('PORT is the server port (e.g. 80)');
+        console.log('ROOT is the server URL root path (e.g. "/fluencydemo")');
+        process.exit(1);
+    }
+    var port = parseInt(process.argv[2]);
+    var root = process.argv[3];
+    runServer(port, root);
+}
