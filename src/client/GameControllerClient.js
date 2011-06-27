@@ -1,6 +1,6 @@
-var GameControllerBase = require('/js/common/GameController').GameController,
-    QuestionHierarchy = require('/js/common/QuestionHierarchy'),
-    util = require('/js/common/Utilities');
+var GameControllerBase = require('../common/GameController').GameController,
+    QuestionHierarchy = require('../common/QuestionHierarchy'),
+    util = require('../common/Utilities');
 
 /*
     Class: GameControllerClient
@@ -12,6 +12,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     GameControllerClient.superConstructor.call(this);
     
     this.baseURL = baseURL || '';
+    var self = this;
     
     this.getAvailableStagesForPlayer = function (playerState, callback)
     {
@@ -33,7 +34,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     {
         $.getJSON(this.baseURL + '/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/engine', function (data)
         {
-            callback(new CLFlashGameEngine(data));
+            callback(new CLFlashGameEngine(self.baseURL, data));
         });
     }
 }
@@ -53,9 +54,9 @@ function Stage(json)
 util.extend(Stage, QuestionHierarchy.Stage);
 
 
-function CLFlashGameEngine(json)
+function CLFlashGameEngine(baseURL, json)
 {
-    this.baseURL = json.baseURL;
+    this.baseURL = baseURL + '/' + json.baseURL;
     this.swfPath = json.swfPath;
     var self = this;
     this.run = function (questionSet, div, callback)
@@ -63,6 +64,7 @@ function CLFlashGameEngine(json)
         var props = questionSet.allGameProperties();
         console.log("baseURL: " + self.baseURL);
         console.log(props);
+        registerDoneCallback(callback);
         $(div).empty().flash({
             src: self.baseURL + '/' + self.swfPath,
             width: props.width || 974,

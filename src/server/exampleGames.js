@@ -29,7 +29,7 @@ function Engine(baseURL)
 
 
 exports.engines = {
-    'snowboard': new Engine('/private/FT1-Snowboarding-Harness'),
+    'snowboard': new Engine('static/private/FT1-Snowboarding'),
     'racer': new Engine()
 }
 

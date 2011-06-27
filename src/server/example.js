@@ -12,7 +12,7 @@ var http = require('http'),
     exampleGames = require('./exampleGames');
 
 
-function runServer(port)
+function runServer(port, rootPath)
 {
     // Create our simple GameController instance that doesn't keep any player state info, and returns our static set of stages.
     var gc = new GameController();
@@ -44,11 +44,22 @@ function runServer(port)
     
     // Create a simple server that presents a single HTML page and responds to AJAX API requests to launch the static games.
     var app = express.createServer();
-    app.use(express.logger());
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-    app.use(express.bodyParser());
-    app.use(app.router);
+    if (rootPath && rootPath != '/')
+    {
+        app.set('home', rootPath);
+    }
+    else
+    {
+        rootPath = '';
+    }
     app.set('view options', {layout: false});
+    
+    app.use(express.bodyParser());
+    app.configure('development', function ()
+    {
+        app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+        app.use(express.logger());
+    });
     
     app.param('playerID', function (req, res, next, playerID)
     {
@@ -75,16 +86,25 @@ function runServer(port)
         });
     });
     
-    app.use(express.directory(__dirname + '/../..'));
-    app.use(express.static(__dirname + '/../static'));
-    app.get('/js/node_modules/*', subdirStaticMiddleware(__dirname + '/../../node_modules'));
-    app.get('/js/common/*', subdirStaticMiddleware(__dirname + '/../common'));
-    app.get('/js/*', subdirStaticMiddleware(__dirname + '/../client'));
-    app.get(/^\/(:?index\.html)?$/, function (req, res)
+    // Static handlers for client-side JS and game assessts, etc.
+    app.use(rootPath + '/js/node_modules', express.static(__dirname + '/../../node_modules'));
+    app.use(rootPath + '/js/common', express.static(__dirname + '/../common'));
+    app.use(rootPath + '/js/client', express.static(__dirname + '/../client'));
+    app.use(rootPath + '/static', express.static(__dirname + '/../static'));
+    app.use(rootPath + '/static', express.directory(__dirname + '/../static'));
+    
+    // Dynamic handlers for index template -- require a trailing slash (redirect otherwise).
+    app.get(new RegExp('^' + rootPath + '$'), function (req, res)
     {
-        res.render(__dirname + '/templates/example.ejs')
+        res.redirect(rootPath + '/');
     });
-    app.get('/stage/:stageID?', function (req, res)
+    app.get(new RegExp('^' + rootPath + '/(:?index\\.html)?$'), function (req, res)
+    {
+        res.render(__dirname + '/templates/example.ejs');
+    });
+    
+    // Dynamic handlers for AJAX API.
+    app.get(rootPath + '/stage/:stageID?', function (req, res)
     {
         if (req.stage)
         {
@@ -101,7 +121,7 @@ function runServer(port)
             });
         }
     });
-    app.get('/stage/:stageID/questionSet/:questionSetID/engine', function (req, res)
+    app.get(rootPath + '/stage/:stageID/questionSet/:questionSetID/engine', function (req, res)
     {
         var questionSet = req.stage;
         gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
@@ -110,22 +130,9 @@ function runServer(port)
         });
     });
     
+    // Start the server.
     app.listen(8000);
-    
     console.log('Server running on port ' + port);
 }
 
-function subdirStaticMiddleware(root)
-{
-    var staticMiddleware = express.static(root);
-    return function (req, res, next)
-    {
-        var url = urllib.parse(req.url);
-        url.pathname = req.params[0];
-        console.log('Serving static path ' + url.pathname + ' for request ' + req.url);
-        req.url = urllib.format(url);
-        staticMiddleware(req, res, next);
-    };
-}
-
-if (require.main === module) runServer(8000);
+if (require.main === module) runServer(8000, '/fluencydemo');

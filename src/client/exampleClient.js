@@ -1,7 +1,7 @@
-var GameControllerClient = require('/js/GameControllerClient').GameControllerClient,
-    PlayerState = require('/js/common/PlayerState').PlayerState;
+var GameControllerClient = require('./GameControllerClient').GameControllerClient,
+    PlayerState = require('../common/PlayerState').PlayerState;
 
-var gameController = new GameControllerClient();
+var gameController = new GameControllerClient('.');
 
 $(document).ready(function ()
 {
