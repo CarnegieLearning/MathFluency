@@ -93,7 +93,7 @@ function runServer(port, rootPath)
     app.use(rootPath + '/static', express.static(__dirname + '/../static'));
     app.use(rootPath + '/static', express.directory(__dirname + '/../static'));
     
-    // Dynamic handlers for index template -- require a trailing slash (redirect otherwise).
+    // Dynamic handlers for index template -- require a trailing slash so client-side relative paths work correctly.
     app.get(new RegExp('^' + rootPath + '$'), function (req, res)
     {
         res.redirect(rootPath + '/');
@@ -123,7 +123,6 @@ function runServer(port, rootPath)
     });
     app.get(rootPath + '/stage/:stageID/questionSet/:questionSetID/engine', function (req, res)
     {
-        var questionSet = req.stage;
         gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
         {
             res.send(engine.toJSON());
