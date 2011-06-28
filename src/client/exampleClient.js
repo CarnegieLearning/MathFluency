@@ -1,30 +1,48 @@
 var GameControllerClient = require('./GameControllerClient').GameControllerClient,
     PlayerState = require('../common/PlayerState').PlayerState;
 
-var gameController = new GameControllerClient('.');
+var gc = new GameControllerClient('.');
+var player = null;
 
 $(document).ready(function ()
 {
-    gameController.getAvailableStagesForPlayer({}, function (stageIDs)
+    unlock();
+    $('#player-form').submit(function ()
     {
-        $.each(stageIDs, function (index, id)
+        lock('Loading player and stages...');
+        var playerID = $('#playerID').val() || 'blank';
+        gc.getPlayerState(playerID, null, function (playerState)
         {
-            var option = '<option value="'+id+'">'+id+'</option>';
-            $('#stageID').append(option);
-        })
+            player = playerState;
+            gc.getAvailableStagesForPlayer(playerState, function (stageIDs)
+            {
+                $('#stageID').empty().append(
+                    $.map(stageIDs, function (id)
+                    {
+                        return '<option value="'+id+'">'+id+'</option>';
+                    }).join());
+                unlock();
+            });
+        });
+        return false;
     });
     
-    $('#input-form').submit(function ()
+    $('#question-form').submit(function ()
     {
-        gameController.getStage($('#stageID').val(), function (stage)
+        gc.getStage($('#stageID').val(), function (stage)
         {
             stage.getNextQuestionSet(new PlayerState($('#playerID').val()), function (questionSet)
             {
-                gameController.getGameEngineForQuestionSet(questionSet, function (engine)
+                gc.getGameEngineForQuestionSet(questionSet, function (engine)
                 {
                     engine.run(questionSet, $('#game-container'), function (xml)
                     {
                         $('#output').val(xml);
+                        lock('Sending data...');
+                        gc.saveQuestionSetResults(player, questionSet, xml, function ()
+                        {
+                            unlock();
+                        });
                     });
                 });
             });
@@ -32,3 +50,18 @@ $(document).ready(function ()
         return false;
     });
 });
+
+function lock(message)
+{
+    $('#status-box').show('fast');
+    $('#status-message').html(message);
+    $('input').attr('disabled', 'disabled');
+    $('select').attr('disabled', 'disabled');
+}
+
+function unlock()
+{
+    $('#status-box').hide('fast');
+    $('input').removeAttr('disabled');
+    $('select').removeAttr('disabled');
+}

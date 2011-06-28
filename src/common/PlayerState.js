@@ -12,11 +12,22 @@ var PlayerState = exports.PlayerState = function PlayerState(id)
 
 var stateKeys = ['id', 'nickname', 'loginDate', 'stageID', 'questionSetID', 'questionSubsetID', 'questionID'];
 
-PlayerState.prototype.updateWithDict = function (dict)
+PlayerState.prototype.updateWithJSON = function (json)
 {
     for (var i in stateKeys)
     {
         var key = stateKeys[i];
-        if (key in dict) this[key] = dict[key];
+        if (key in json) this[key] = json[key];
     }
-}
+};
+
+PlayerState.prototype.toJSON = function ()
+{
+    var json = {};
+    for (var i in stateKeys)
+    {
+        var key = stateKeys[i];
+        json[key] = this[key];
+    }
+    return json;
+};

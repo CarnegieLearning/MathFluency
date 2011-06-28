@@ -69,3 +69,19 @@ GameController.prototype.getGameEngineForQuestionSet = function (questionSet, ca
 {
     setTimeout(callback, 0, []);
 }
+
+/*
+    Method: saveQuestionSetResults
+    
+    Stores the results for the given <PlayerState> and <QuestionSet>. The format of the results is TBD.
+    
+    Parameters:
+        playerState - The <PlayerState> of the player who completed the question set.
+        questionSet - The <QuestionSet> the player completed.
+        results - TBD. Probably a string, dict, or a custom object.
+        callback - The arguments to callback are TBD.
+*/
+GameController.prototype.saveQuestionSetResults = function (playerState, questionSet, results, callback)
+{
+    setTimeout(callback, 0);
+}

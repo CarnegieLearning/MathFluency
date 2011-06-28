@@ -1,5 +1,6 @@
 var GameControllerBase = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
+    PlayerState = require('../common/PlayerState').PlayerState,
     util = require('../common/Utilities');
 
 /*
@@ -14,13 +15,23 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     this.baseURL = baseURL || '';
     var self = this;
     
+    this.getPlayerState = function (playerID, authentication, callback)
+    {
+        var playerState = new PlayerState(playerID);
+        $.getJSON(this.baseURL + '/login/' + playerID, function (data)
+        {
+            playerState.updateWithJSON(data);
+            callback(playerState);
+        });
+    };
+    
     this.getAvailableStagesForPlayer = function (playerState, callback)
     {
         $.getJSON(this.baseURL + '/stage', function (data)
         {
             callback(data.stageIDs);
         });
-    }
+    };
     
     this.getStage = function (stageID, callback)
     {
@@ -28,7 +39,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
         {
             callback(new Stage(data));
         });
-    }
+    };
     
     this.getGameEngineForQuestionSet = function (questionSet, callback)
     {
@@ -36,7 +47,15 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
         {
             callback(new CLFlashGameEngine(self.baseURL, data));
         });
-    }
+    };
+    
+    this.saveQuestionSetResults = function (playerState, questionSet, results, callback)
+    {
+        $.post(this.baseURL + '/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/results', results, function (data)
+        {
+            callback(data);
+        });
+    };
 }
 util.extend(exports.GameControllerClient, GameControllerBase);
 
@@ -91,4 +110,4 @@ function registerDoneCallback(callback)
 window.CLFLashGameEngineDoneCallback = function CLFLashGameEngineDoneCallback(xml)
 {
     currentDoneCallback(xml);
-}
+};
