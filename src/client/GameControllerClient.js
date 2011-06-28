@@ -74,7 +74,7 @@ function CLFlashGameEngine(baseURL, json)
                 input_xml: self.baseURL + '/' + props.input_xml,
                 asset_name: props.asset_name,
                 asset_url: self.baseURL + '/' + props.asset_url,
-                callback: 'callDoneCallback'
+                callback: 'CLFLashGameEngineDoneCallback'
             }
         },
         {version: 9});
@@ -88,8 +88,7 @@ function registerDoneCallback(callback)
     currentDoneCallback = callback;
 }
 
-function callDoneCallback(xml)
+window.CLFLashGameEngineDoneCallback = function CLFLashGameEngineDoneCallback(xml)
 {
-    alert("game finished");
     currentDoneCallback(xml);
 }

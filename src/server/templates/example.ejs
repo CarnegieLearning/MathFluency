@@ -11,9 +11,12 @@
         </script>
     </head>
     <body>
+        <div id="header">
+            <a href="/"><img src="http://fluencychallenge.com/chrome/site/site-logo.png"/></a>
+        </div>
         <div id="form-container">
             <form id="input-form" name="input">
-                Player ID: <input type="text" name="playerID"/>
+                Player ID: <input type="text" name="playerID">anonymous</input>
                 Stage: <select name="stageID" id="stageID"></select>
                 <input type="submit" value="Submit"/>
             </form>
@@ -21,7 +24,7 @@
         <div id="game-container">
         </div>
         <div>
-            <textarea id="output">output goes here</textarea>
+            <textarea id="output" rows="20" cols="100">output goes here</textarea>
         </div>
     </body>
 </html>
