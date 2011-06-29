@@ -117,7 +117,7 @@ function runServer(port, rootPath, outputPath)
     app.get(new RegExp('^' + rootPath + '/(:?index\\.html)?$'), function (req, res)
     {
         res.render(__dirname + '/templates/example.ejs', {
-            playerID: (req.session && req.session.playerID) || 'new player'
+            playerID: (req.session && req.session.playerID) || ''
         });
     });
     

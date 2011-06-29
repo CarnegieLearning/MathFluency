@@ -14,19 +14,17 @@
         <div id="header">
             <a href="/"><img src="http://fluencychallenge.com/chrome/site/site-logo.png"/></a>
         </div>
-        <div id="status-box" style="position: fixed; width:auto; height:100px; left:25%; right:25%; top:25%; padding:10px; text-align:center; border-radius: 8px; background-color: rgba(0, 0, 0, 0.5); color:white; font-family:sans-serif; font-size:18pt;">
-            <p id="status-message">status...</p>
-        </div>
         <div id="form-container">
             <form id="player-form" name="player">
                 Player ID: <input type="text" name="playerID" id="playerID" value="<%= playerID %>"/></input>
-                <input id='loginButton' type='submit' value='Login'/>
+                <input id='loginButton' type='submit' value='Sign in'/>
             </form>
             <form id="question-form" name="input">
                 Stage: <select name="stageID" id="stageID"></select>
                 Question Set: <Select name="questionSetID" id="questionSetID"></select>
                 <input id='playButton' type="submit" value="Play" disabled="disabled"/>
             </form>
+            <p id="status-message" style="height:20px; font-family:sans-serif; font-size:14px;"></p>
         </div>
         <div id="game-container">
         </div>
