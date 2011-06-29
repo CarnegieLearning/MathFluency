@@ -45,7 +45,7 @@ function runServer(port, rootPath, outputPath)
     {
         var date = new Date();
         var playerID = (playerState ? playerState.id : 'unknown');
-        var filename = outputPath + '/' + playerID + '-' + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate() + '-' + date.getUTCHours() + date.getUTCMinutes() + '.xml';
+        var filename = outputPath + '/' + playerID + '-' + date.format('yyyymmdd-HHMMss', true) + '.xml';
         fs.writeFile(filename, results, callback);
     };
     
