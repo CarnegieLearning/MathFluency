@@ -106,8 +106,9 @@ function runServer(port, rootPath, outputPath)
     app.use(rootPath + '/js/common', express.static(__dirname + '/../common'));
     app.use(rootPath + '/js/client', express.static(__dirname + '/../client'));
     app.use(rootPath + '/static', express.static(__dirname + '/../static'));
-    app.use(rootPath + '/static', express.directory(__dirname + '/../static'));
-    app.use(rootPath + '/output', express.directory(outputPath));
+    app.use(rootPath + '/static', express.directory(__dirname + '/../static', {icons:true}));
+    app.use(rootPath + '/output', express.static(__dirname + '/../output'));
+    app.use(rootPath + '/output', express.directory(outputPath, {icons:true}));
     
     // Dynamic handlers for index template -- require a trailing slash so client-side relative paths work correctly.
     app.get(new RegExp('^' + rootPath + '$'), function (req, res)
