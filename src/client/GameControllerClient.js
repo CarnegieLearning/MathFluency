@@ -37,7 +37,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     {
         $.getJSON(this.baseURL + '/stage/' + stageID, function (data)
         {
-            callback(new Stage(data));
+            callback(new Stage(self.baseURL, data));
         });
     };
     
@@ -56,19 +56,30 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
             callback(data);
         });
     };
-}
+};
 util.extend(exports.GameControllerClient, GameControllerBase);
 
 
-function Stage(json)
+function Stage(baseURL, json)
 {
-    Stage.superConstructor.call(this, json.id, json.myGameProperties);
+    Stage.superConstructor.call(this, json);
+    var self = this;
     
-    this.getAllQuestionSets = function (callback)
+    this.getAllQuestionSetIDs = function (callback)
     {
-        // TODO: fetch this from server. For now we're just going to create a single dummy question set.
-        callback([new QuestionHierarchy.QuestionSet(this, 'dummy')]);
-    }
+        $.getJSON(baseURL + '/stage/' + this.id + '/questionSet', function (data)
+        {
+            callback(data.questionSetIDs);
+        });
+    };
+    
+    this.getQuestionSet = function (questionSetID, callback)
+    {
+        $.getJSON(baseURL + '/stage/' + this.id + '/questionSet/' + questionSetID, function (data)
+        {
+            callback(new QuestionHierarchy.QuestionSet(self, data));
+        });
+    };
 }
 util.extend(Stage, QuestionHierarchy.Stage);
 
@@ -81,15 +92,13 @@ function CLFlashGameEngine(baseURL, json)
     this.run = function (questionSet, div, callback)
     {
         var props = questionSet.allGameProperties();
-        console.log("baseURL: " + self.baseURL);
-        console.log(props);
         registerDoneCallback(callback);
         $(div).empty().flash({
             src: self.baseURL + '/' + self.swfPath,
             width: props.width || 974,
             height: props.height || 570,
             flashvars: {
-                game_id: props.game_id || 1,
+                game_id: questionSet.parent.id + '::' + questionSet.id,
                 input_xml: self.baseURL + '/' + props.input_xml,
                 asset_name: props.asset_name,
                 asset_url: self.baseURL + '/' + props.asset_url,
@@ -97,7 +106,7 @@ function CLFlashGameEngine(baseURL, json)
             }
         },
         {version: 9});
-    }
+    };
 }
 
 var currentDoneCallback;

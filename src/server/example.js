@@ -34,7 +34,7 @@ function runServer(port, rootPath, outputPath)
     gc.getAvailableStagesForPlayer = function (playerState, callback)
     {
         // playerState is ignored since everyone sees the same static stages.
-        callback(exampleGames.stages);
+        callback(exampleGames.stages.map(function (x) {return x.id;}));
     };
     gc.getGameEngineForQuestionSet = function (questionSet, callback)
     {
@@ -45,7 +45,7 @@ function runServer(port, rootPath, outputPath)
     {
         var date = new Date();
         var playerID = (playerState ? playerState.id : 'unknown');
-        var filename = outputPath + '/' + playerID + '-' + questionSet.id + '-' + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate() + '-' + date.getUTCHours() + date.getUTCMinutes() + '.xml';
+        var filename = outputPath + '/' + playerID + '-' + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate() + '-' + date.getUTCHours() + date.getUTCMinutes() + '.xml';
         fs.writeFile(filename, results, callback);
     };
     
@@ -138,12 +138,23 @@ function runServer(port, rootPath, outputPath)
         }
         else
         {
-            gc.getAvailableStagesForPlayer(req.playerState, function (stages)
+            gc.getAvailableStagesForPlayer(req.playerState, function (stageIDs)
             {
-                res.send({'stageIDs': stages.map(function (stage)
-                {
-                    return stage.id;
-                })});
+                res.send({'stageIDs': stageIDs});
+            });
+        }
+    });
+    app.get(rootPath + '/stage/:stageID/questionSet/:questionSetID?', function (req, res)
+    {
+        if (req.questionSet)
+        {
+            res.send(req.questionSet.toJSON());
+        }
+        else
+        {
+            req.stage.getAllQuestionSetIDs(function (questionSetIDs)
+            {
+                res.send({'questionSetIDs': questionSetIDs});
             });
         }
     });
@@ -156,7 +167,6 @@ function runServer(port, rootPath, outputPath)
     });
     app.post(rootPath + '/stage/:stageID/questionSet/:questionSetID/results', function (req, res)
     {
-        console.log(req.body);
         gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function ()
         {
             res.send({});

@@ -3,15 +3,15 @@ var GameControllerClient = require('./GameControllerClient').GameControllerClien
 
 var gc = new GameControllerClient('.');
 var player = null;
+var stage = null;
 
 $(document).ready(function ()
 {
-    $('#question-form :input').attr('disabled', 'disabled');
-    $('#loginButton').attr('disabled', $('#playerID').val().trim() ? false : true);
+    unlock('');
     
     $('#playerID').keyup(function ()
     {
-        $('#loginButton').attr('disabled', $(this).val().trim() ? false : true);
+        unlock('');
     });
     
     $('#player-form').submit(function ()
@@ -23,51 +23,25 @@ $(document).ready(function ()
     
     $('#question-form').submit(function ()
     {
-        var stageID = $('#stageID').val();
-        $(':input').attr('disabled', true);
-        statusMessage('Loading stage ' + stageID + '...');
-        gc.getStage(stageID, function (stage)
-        {
-            stage.getNextQuestionSet(player, function (questionSet)
-            {
-                statusMessage('Loading game engine for question set ' + questionSet.id + '...');
-                gc.getGameEngineForQuestionSet(questionSet, function (engine)
-                {
-                    statusMessage('Running game engine for question set ' + questionSet.id + '...');
-                    engine.run(questionSet, $('#game-container'), function (xml)
-                    {
-                        $('#output').val(xml);
-                        statusMessage('Sending data...');
-                        gc.saveQuestionSetResults(player, questionSet, xml, function ()
-                        {
-                            statusMessage('');
-                            $('#question-form :input').add('#loginButton').attr('disabled', false);
-                        });
-                    });
-                });
-            });
-        });
+        runSequence();
         return false;
     });
+    
+    $('#stageID').change(function ()
+    {
+        loadStage();
+    });
 });
-
-function statusMessage(message)
-{
-    $('#status-message').html(message);
-}
 
 function logout()
 {
     player = null;
-    $('#player-form :input').attr('disabled', false);
-    $('#question-form :input').attr('disabled', true);
-    $('#loginButton').val('Sign in');
+    unlock('');
 }
 
 function login()
 {
-    statusMessage('Loading player state...');
-    $('#player-form :input').attr('disabled', true);
+    lock('Loading player state...');
     var playerID = $('#playerID').val().trim();
     gc.getPlayerState(playerID, null, function (playerState)
     {
@@ -75,14 +49,93 @@ function login()
         statusMessage('Loading stages for player...');
         gc.getAvailableStagesForPlayer(playerState, function (stageIDs)
         {
-            $('#stageID').empty().append(
-                $.map(stageIDs, function (id)
-                {
-                    return '<option value="'+id+'">'+id+'</option>';
-                }).join());
-            $('#question-form :input').attr('disabled', false);
-            $('#loginButton').val('Sign out').attr('disabled', false);
-            statusMessage('');
+            $('#stageID').empty().append($.map(stageIDs, makeSelectOption).join());
+            loadStage();
         });
     });
+}
+
+function runSequence()
+{
+    var questionSetID = $('#questionSetID').val();
+    lock('Starting question set ' + questionSetID + '...');
+    stage.getQuestionSet(questionSetID, function (questionSet)
+    {
+        runQuestionSet(questionSet);
+    });
+}
+
+function runQuestionSet(questionSet)
+{
+    player.stageID = questionSet.parent.id;
+    player.questionSetID = questionSet.id;
+    statusMessage('Loading game engine for question set ' + questionSet.id + '...');
+    gc.getGameEngineForQuestionSet(questionSet, function (engine)
+    {
+        statusMessage('Running game engine for question set ' + questionSet.id + '...');
+        engine.run(questionSet, $('#game-container'), function (xml)
+        {
+            $('#output').val(xml);
+            statusMessage('Sending data...');
+            gc.saveQuestionSetResults(player, questionSet, xml, function ()
+            {
+                statusMessage('Getting next question set...');
+                questionSet.parent.getNextQuestionSet(player, function (nextQuestionSet)
+                {
+                    // If there's a next one, recurse.
+                    if (nextQuestionSet)
+                    {
+                        runQuestionSet(nextQuestionSet);
+                    }
+                    else
+                    {
+                        unlock('');
+                        alert('All done!');
+                    }
+                });
+            });
+        });
+    });
+}
+
+function loadStage()
+{
+    var stageID = $('#stageID').val();
+    lock('Loading stage ' + stageID + '...');
+    gc.getStage(stageID, function (loadedStage)
+    {
+        stage = loadedStage;
+        stage.getAllQuestionSetIDs(function (questionSetIDs)
+        {
+            $('#questionSetID').empty().append($.map(questionSetIDs, makeSelectOption).join());
+            unlock('');
+        });
+    });
+}
+
+function makeSelectOption(val)
+{
+    return '<option value="'+val+'">'+val+'</option>';
+}
+
+function lock(message)
+{
+    $(':input').attr('disabled', true);
+    statusMessage(message);
+}
+
+function unlock(message)
+{
+    $(':input').attr('disabled', false);
+    $('#playerID').attr('disabled', !!player);
+    $('#loginButton')
+        .val(player ? 'Sign out' : 'Sign in')
+        .attr('disabled', $('#playerID').val().trim() ? false : true);
+    $('#question-form :input').attr('disabled', !player);
+    statusMessage(message);
+}
+
+function statusMessage(message)
+{
+    $('#status-message').html(message);
 }

@@ -24,9 +24,17 @@ var QuestionEntity = exports.QuestionEntity = function QuestionEntity(type, pare
 {
     this.type = type;
     this.parent = parent;
-    this.id = id;
-    this.myGameProperties = (gameProperties ? gameProperties : {});
-}
+    if (id instanceof Object)
+    {
+        this.id = id.id;
+        this.myGameProperties = id.myGameProperties;
+    }
+    else
+    {
+        this.id = id;
+        this.myGameProperties = (gameProperties ? gameProperties : {});
+    }
+};
 
 /*
     Method: allGameProperties
@@ -34,7 +42,7 @@ var QuestionEntity = exports.QuestionEntity = function QuestionEntity(type, pare
     Returns:
     All game properties defined by ancestors and extended and overidden by this.myGameProperties.
 */
-QuestionEntity.prototype.allGameProperties = function ()
+QuestionEntity.prototype.allGameProperties = function allGameProperties()
 {
     var props = (this.parent ? this.parent.allGameProperties() : {});
     for (var p in this.myGameProperties)
@@ -42,7 +50,17 @@ QuestionEntity.prototype.allGameProperties = function ()
         props[p] = this.myGameProperties[p];
     }
     return props;
-}
+};
+
+/*
+    Method: toJSON
+    
+    Returns a JSON serialization.  The default method returns an object containing an `id' and `myGameProperties' keys.
+*/
+QuestionEntity.prototype.toJSON = function toJSON()
+{
+    return {id: this.id, myGameProperties: this.myGameProperties};
+};
 
 
 
@@ -61,18 +79,18 @@ QuestionEntity.prototype.allGameProperties = function ()
 var Stage = exports.Stage = function Stage(id, gameProperties)
 {
     Stage.superConstructor.call(this, 'Stage', undefined, id, gameProperties);
-}
+};
 util.extend(Stage, QuestionEntity);
 
 /*
-    Method: getAllQuestionSets
+    Method: getAllQuestionSetIDss
     
-    Calls callback passing an array of <QuestionSets> contained in this stage. The order of the array is not necessarily the order presented to the player, and not all items will necessarily be presented to the player.
+    Calls callback passing an array of questionSetIDs contained in this stage. The order of the array is not necessarily the order presented to the player, and not all items will necessarily be presented to the player.
 */
-Stage.prototype.getAllQuestionSets = function (callback)
+Stage.prototype.getAllQuestionSetIDss = function (callback)
 {
     setTimeout(callback, 0, []);
-}
+};
 
 /*
     Method: getQuestionSet
@@ -81,11 +99,8 @@ Stage.prototype.getAllQuestionSets = function (callback)
 */
 Stage.prototype.getQuestionSet = function (questionSetID, callback)
 {
-    this.getAllQuestionSets(function (questionSets)
-    {
-        callback(findItemWithID(questionSets, questionSetID));
-    });
-}
+    setTimeout(callback, 0);
+};
 
 /*
     Method: getNextQuestionSet
@@ -96,11 +111,15 @@ Stage.prototype.getQuestionSet = function (questionSetID, callback)
 */
 Stage.prototype.getNextQuestionSet = function (playerState, callback)
 {
-    this.getAllQuestionSets(function (questionSets)
+    var self = this;
+    this.getAllQuestionSetIDs(function (questionSetIDs)
     {
-        callback(chooseItemAfterID(questionSets, playerState.questionSetID));
+        var i = questionSetIDs.indexOf(playerState.questionSetID);
+        var nextID = questionSetIDs[i + 1];
+        if (nextID) self.getQuestionSet(nextID, callback);
+        else callback(undefined);
     });
-}
+};
 
 
 
@@ -118,18 +137,18 @@ Stage.prototype.getNextQuestionSet = function (playerState, callback)
 var QuestionSet = exports.QuestionSet = function QuestionSet(stage, id, gameProperties)
 {
     QuestionSet.superConstructor.call(this, 'QuestionSet', stage, id, gameProperties);
-}
+};
 util.extend(QuestionSet, QuestionEntity);
 
 /*
-    Method: getAllQuestionSubsets
+    Method: getAllQuestionSubsetIDs
     
-    Calls callback passing an array of <QuestionSubsets> contained in this QuestionSet. The order of the array is not necessarily the order presented to the player, and not all items will necessarily be presented to the player.
+    Calls callback passing an array of questionSubsetIDs contained in this QuestionSet. The order of the array is not necessarily the order presented to the player, and not all items will necessarily be presented to the player.
 */
-QuestionSet.prototype.getAllQuestionSubsets = function (callback)
+QuestionSet.prototype.getAllQuestionSubsetIDs = function (callback)
 {
     setTimeout(callback, 0, []);
-}
+};
 
 /*
     Method: getQuestionSubset
@@ -138,11 +157,8 @@ QuestionSet.prototype.getAllQuestionSubsets = function (callback)
 */
 Stage.prototype.getQuestionSubset = function (questionSubsetID, callback)
 {
-    this.getAllQuestionSubsets(function (questionSubsets)
-    {
-        callback(findItemWithID(questonSubsets, questionSubsetID));
-    });
-}
+    setTimeout(callback, 0);
+};
 
 /*
     Method: getNextQuestionSubset
@@ -153,11 +169,15 @@ Stage.prototype.getQuestionSubset = function (questionSubsetID, callback)
 */
 QuestionSet.prototype.getNextQuestionSubset = function (playerState, callback)
 {
-    this.getAllQuestionSubsets(function (questionSubsets)
+    var self = this;
+    this.getAllQuestionSubsetIDs(function (questionSubsetIDs)
     {
-        callback(chooseItemAfterID(questionSubsets, playerState.questionSubsetID));
+        var i = questionSubsetIDs.indexOf(playerState.questionSubsetID);
+        var nextID = questionSubsetIDs[i + 1];
+        if (nextID) self.getQuestionSubset(nextID, callback);
+        else callback(undefined);
     });
-}
+};
 
 
 
@@ -179,17 +199,17 @@ var QuestionSubset = exports.QuestionSubset = function QuestionSubset(set, id, q
 {
     QuestionSubset.superConstructor.call(this, 'QuestionSubset', set, id, gameProperties);
     this.questions = questions;
-}
+};
 util.extend(QuestionSubset, QuestionEntity);
 
 /*
     Method: nextQuestion
     Returns the next question in the list of questions (synchronously).
 */
-QuestionSet.prototype.nextQuestion = function (playerState)
+QuestionSubset.prototype.nextQuestion = function (playerState)
 {
     return chooseItemAfterID(this.questions, playerState.questionID);
-}
+};
 
 
 
@@ -210,20 +230,12 @@ var Question = exports.Question = function Question(subset, id, questionProperti
 {
     Question.superConstructor.call(this, 'Question', subset, id);
     this.questionProperties = questionProperties;
-}
+};
 util.extend(Question, QuestionEntity);
 
 
 
 ///// Utilities /////
-
-function findItemWithID(array, id)
-{
-    for (var i in array)
-    {
-        if (array[i].id == id) return array[i];
-    }
-}
 
 function chooseItemAfterID(array, id)
 {

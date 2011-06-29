@@ -35,7 +35,7 @@ GameController.prototype.getPlayerState = function (playerID, authentication, ca
     
     Parameters:
         playerState - The current player state.
-        callback - This gets called with an array of available <Stage>s.
+        callback - This gets called with an array of available stageIDs.
 */
 GameController.prototype.getAvailableStagesForPlayer = function (playerState, callback)
 {
@@ -67,7 +67,7 @@ GameController.prototype.getStage = function (stageID, callback)
 */
 GameController.prototype.getGameEngineForQuestionSet = function (questionSet, callback)
 {
-    setTimeout(callback, 0, []);
+    setTimeout(callback, 0);
 }
 
 /*
