@@ -9,14 +9,21 @@
         <script type="text/javascript">
             require.run('./js/client/exampleClient');
         </script>
+        <style type="text/css">
+            body {
+                font-family: sans-serif;
+            }
+        </style>
     </head>
     <body>
         <div id="header">
             <a href="/"><img src="http://fluencychallenge.com/chrome/site/site-logo.png"/></a>
+            <span><a href="output">output files</a></span>
         </div>
         <div id="form-container">
             <form id="player-form" name="player">
-                Player ID: <input type="text" name="playerID" id="playerID" value="<%= playerID %>"/></input>
+                Player ID: <input type="text" name="playerID" id="playerID" value="<%= playerID %>"/>
+                Debug Mode: <input type="checkbox" name="debugMode" id="debugMode" checked="checked"/>
                 <input id='loginButton' type='submit' value='Sign in'/>
             </form>
             <form id="question-form" name="input">
@@ -29,7 +36,7 @@
         <div id="game-container">
         </div>
         <div>
-            <textarea id="output" rows="20" cols="100">output goes here</textarea>
+            <textarea id="output" rows="15" cols="80" readonly="readonly">Output:</textarea>
         </div>
     </body>
 </html>

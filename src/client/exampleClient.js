@@ -31,6 +31,13 @@ $(document).ready(function ()
     {
         loadStage();
     });
+    
+    $('#debugMode').change(function ()
+    {
+        var stuffToHide = $('#header').add('#output');
+        if ($(this).attr('checked')) stuffToHide.show('fast');
+        else stuffToHide.hide('fast');
+    });
 });
 
 function logout()
@@ -75,7 +82,7 @@ function runQuestionSet(questionSet)
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
         engine.run(questionSet, $('#game-container'), function (xml)
         {
-            $('#output').val(xml);
+            $('#output').val($('#output').val() + '\n\n' + xml);
             statusMessage('Sending data...');
             gc.saveQuestionSetResults(player, questionSet, xml, function ()
             {
