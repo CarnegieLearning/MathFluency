@@ -8,46 +8,12 @@ var http = require('http'),
     urllib = require('url'),
     express = require('express'),
     fs = require('fs'),
-    GameController = require('../common/GameController').GameController,
-    PlayerState = require('../common/PlayerState').PlayerState,
     exampleGames = require('./exampleGames');
 
 
 function runServer(port, rootPath, outputPath)
 {
-    // Create our simple GameController instance that doesn't keep any player state info, and returns our static set of stages.
-    var gc = new GameController();
-    gc.getPlayerState = function (playerID, authentication, callback)
-    {
-        callback(new PlayerState(playerID));
-    };
-    gc.getStage = function (stageID, callback)
-    {
-        for (var i = 0; i < exampleGames.stages.length; i++)
-        {
-            if (exampleGames.stages[i].id == stageID)
-            {
-                return callback(exampleGames.stages[i]);
-            }
-        }
-    };
-    gc.getAvailableStagesForPlayer = function (playerState, callback)
-    {
-        // playerState is ignored since everyone sees the same static stages.
-        callback(exampleGames.stages.map(function (x) {return x.id;}));
-    };
-    gc.getGameEngineForQuestionSet = function (questionSet, callback)
-    {
-        var engineID = questionSet.allGameProperties().engineID;
-        callback(exampleGames.engines[engineID]);
-    };
-    gc.saveQuestionSetResults = function (playerState, questionSet, results, callback)
-    {
-        var date = new Date();
-        var playerID = (playerState ? playerState.id : 'unknown');
-        var filename = outputPath + '/' + playerID + '-' + date.format('yyyymmdd-HHMMss', true) + '.xml';
-        fs.writeFile(filename, results, callback);
-    };
+    var gc = exampleGames.gameController(outputPath);
     
     // Create a simple server that presents a single HTML page and responds to AJAX API requests to launch the static games.
     var app = express.createServer();

@@ -1,5 +1,41 @@
-var QuestionHierarchy = require('../common/QuestionHierarchy');
-var util = require('../common/Utilities');
+var GameController = require('../common/GameController').GameController,
+    PlayerState = require('../common/PlayerState').PlayerState,
+    QuestionHierarchy = require('../common/QuestionHierarchy'),
+    util = require('../common/Utilities'),
+    fs = require('fs');
+
+exports.gameController = function (outputPath)
+{
+    // Create a simple GameController instance that doesn't keep any player state info, and returns our static set of stages.
+    var gc = new GameController();
+    gc.getPlayerState = function (playerID, authentication, callback)
+    {
+        callback(new PlayerState(playerID));
+    };
+    gc.getStage = function (stageID, callback)
+    {
+        callback(util.findInArray(stages, stageID, 'id'));
+    };
+    gc.getAvailableStagesForPlayer = function (playerState, callback)
+    {
+        // playerState is ignored since everyone sees the same static stages.
+        callback(stages.map(function (x) {return x.id;}));
+    };
+    gc.getGameEngineForQuestionSet = function (questionSet, callback)
+    {
+        var engineID = questionSet.allGameProperties().engineID;
+        callback(engines[engineID]);
+    };
+    gc.saveQuestionSetResults = function (playerState, questionSet, results, callback)
+    {
+        var date = new Date();
+        var playerID = (playerState ? playerState.id : 'unknown');
+        var filename = outputPath + '/' + playerID + '-' + date.format('yyyymmdd-HHMMss', true) + '.xml';
+        fs.writeFile(filename, results, callback);
+    };
+    
+    return gc;
+};
 
 function Stage(id, myGameProps, questionSetDicts)
 {
@@ -40,14 +76,14 @@ function Engine(baseURL)
 }
 
 
-exports.engines = {
+var engines = {
     'snowboard': new Engine('static/private/FT1-Snowboarding'),
     'racer': new Engine('static/private/FT1-Racer'),
     'pie': new Engine('static/private/FT2-PieTheClown')
 }
 
 
-exports.stages = [
+var stages = [
     new Stage('sequence-1', {
             asset_url: '',
             asset_name: 'ExternalAsset'
