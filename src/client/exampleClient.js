@@ -92,6 +92,7 @@ function runQuestionSet(questionSet)
                     // If there's a next one, recurse.
                     if (nextQuestionSet)
                     {
+                        alert('You just completed question set ' + questionSet.id + '. Press the button to start the next game.');
                         runQuestionSet(nextQuestionSet);
                     }
                     else
