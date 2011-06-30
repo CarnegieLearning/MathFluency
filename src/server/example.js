@@ -4,10 +4,9 @@
     An example implementation of a <Game Controller at http://fluencychallenge.com/wiki/DesignAndImplementation/GameController> which serves a website and allows users to play through several static sequences of problems from a choice of game engines.
 */
 
-var http = require('http'),
-    urllib = require('url'),
+var urllib = require('url'),
     express = require('express'),
-    fs = require('fs'),
+    restapi = require('./restapi'),
     exampleGames = require('./exampleGames');
 
 
@@ -26,45 +25,10 @@ function runServer(port, rootPath, outputPath)
         rootPath = '';
     }
     app.set('view options', {layout: false});
-    
-    app.use(express.bodyParser());
-    app.use(express.cookieParser());
-    app.use(express.session({ secret: "keyboard cat" }));
-    
     app.configure('development', function ()
     {
         app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
         app.use(express.logger());
-    });
-    
-    // Middleware to load the playerState when session.playerID is set.
-    app.use(function (req, res, next)
-    {
-        if (!req.session || !req.session.playerID) return next();
-
-        gc.getPlayerState(req.session.playerID, null, function (playerState)
-        {
-            req.playerState = playerState;
-            next();
-        });
-    });
-    
-    // Parse and load stageID and questionSetID params if they are present in the URL.
-    app.param('stageID', function (req, res, next, stageID)
-    {
-        gc.getStage(stageID, function (stage)
-        {
-            req.stage = stage;
-            next();
-        });
-    });
-    app.param('questionSetID', function (req, res, next, questionSetID)
-    {
-        req.stage.getQuestionSet(questionSetID, function (questionSet)
-        {
-            req.questionSet = questionSet;
-            next();
-        });
     });
     
     // Static handlers for client-side JS and game assessts, etc.
@@ -88,57 +52,8 @@ function runServer(port, rootPath, outputPath)
         });
     });
     
-    // Dynamic handlers for AJAX API.
-    app.get(rootPath + '/login/:playerID', function (req, res)
-    {
-        req.session.playerID = req.params.playerID;
-        gc.getPlayerState(req.params.playerID, null, function (playerState)
-        {
-            res.send(playerState.toJSON());
-        });
-    });
-    app.get(rootPath + '/stage/:stageID?', function (req, res)
-    {
-        if (req.stage)
-        {
-            res.send(req.stage.toJSON());
-        }
-        else
-        {
-            gc.getAvailableStagesForPlayer(req.playerState, function (stageIDs)
-            {
-                res.send({'stageIDs': stageIDs});
-            });
-        }
-    });
-    app.get(rootPath + '/stage/:stageID/questionSet/:questionSetID?', function (req, res)
-    {
-        if (req.questionSet)
-        {
-            res.send(req.questionSet.toJSON());
-        }
-        else
-        {
-            req.stage.getAllQuestionSetIDs(function (questionSetIDs)
-            {
-                res.send({'questionSetIDs': questionSetIDs});
-            });
-        }
-    });
-    app.get(rootPath + '/stage/:stageID/questionSet/:questionSetID/engine', function (req, res)
-    {
-        gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
-        {
-            res.send(engine.toJSON());
-        });
-    });
-    app.post(rootPath + '/stage/:stageID/questionSet/:questionSetID/results', function (req, res)
-    {
-        gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function ()
-        {
-            res.send({});
-        });
-    });
+    // The REST API handler.
+    app.use(rootPath, restapi(gc));
     
     // Start the server.
     app.listen(port);
