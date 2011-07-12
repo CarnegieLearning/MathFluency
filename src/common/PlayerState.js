@@ -3,14 +3,14 @@
     
     Represents the current player's state.
 */
-var PlayerState = exports.PlayerState = function PlayerState(id)
+var PlayerState = exports.PlayerState = function PlayerState(playerID)
 {
-    this.id = id;
-    this.nickname = id;
+    this.playerID = playerID;
+    this.nickname = playerID;
     this.loginDate = new Date();
 }
 
-var stateKeys = ['id', 'nickname', 'loginDate', 'stageID', 'questionSetID', 'questionSubsetID', 'questionID'];
+var stateKeys = ['playerID', 'nickname', 'loginDate', 'stageID', 'questionSetID', 'questionSubsetID', 'questionID'];
 
 PlayerState.prototype.updateWithJSON = function (json)
 {
