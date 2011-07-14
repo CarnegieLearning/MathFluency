@@ -14,7 +14,7 @@ module.exports = function restapi(gameController)
     {
         if (!req.session || !req.session.playerID) return next();
 
-        gc.getPlayerState(req.session.playerID, null, function (playerState)
+        gc.getPlayerState(req.session.playerID, function (playerState)
         {
             req.playerState = playerState;
             next();
@@ -40,12 +40,21 @@ module.exports = function restapi(gameController)
     });
     
     // REST API endpoints that call out to the game controller.
-    app.get('/login/:playerID', function (req, res)
+    app.post('/login', function (req, res)
     {
-        req.session.playerID = req.params.playerID;
-        gc.getPlayerState(req.params.playerID, null, function (playerState)
+        var playerID = req.params.playerID;
+        var password = req.params.password;
+        gc.authenticatePlayer(req.params.playerID, password, function (playerState)
         {
-            res.send(playerState.toJSON());
+            if ('playerID' in playerState)
+            {
+                req.session.playerID = playerState.playerID;
+                res.send(playerState.toJSON());
+            }
+            else
+            {
+                res.send(403);
+            }
         });
     });
     app.get('/stage/:stageID?', function (req, res)

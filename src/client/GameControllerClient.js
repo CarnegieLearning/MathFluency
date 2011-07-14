@@ -15,10 +15,10 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     this.baseURL = baseURL || '';
     var self = this;
     
-    this.getPlayerState = function (playerID, authentication, callback)
+    this.authenticatePlayer = function (playerID, password, callback)
     {
         var playerState = new PlayerState(playerID);
-        $.getJSON(this.baseURL + '/login/' + playerID, function (data)
+        $.post(this.baseURL + '/login', {playerID: playerID, password: password}, function (data)
         {
             playerState.updateWithJSON(data);
             callback(playerState);

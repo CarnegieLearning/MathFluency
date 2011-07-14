@@ -50,8 +50,14 @@ function login()
 {
     lock('Loading player state...');
     var playerID = $('#playerID').val().trim();
-    gc.getPlayerState(playerID, null, function (playerState)
+    gc.authenticatePlayer(playerID, null, function (playerState)
     {
+        if (!'playerID' in playerState)
+        {
+            unlock('Error logging in!');
+            return;
+        }
+        
         player = playerState;
         statusMessage('Loading stages for player...');
         gc.getAvailableStagesForPlayer(playerState, function (stageIDs)

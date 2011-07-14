@@ -8,9 +8,9 @@ exports.gameController = function (outputPath)
 {
     // Create a simple GameController instance that doesn't keep any player state info, and returns our static set of stages.
     var gc = new GameController();
-    gc.getPlayerState = function (playerID, authentication, callback)
+    gc.authenticatePlayer = function (playerID, authentication, callback)
     {
-        callback(new PlayerState(playerID));
+        gc.getPlayerState(playerID, callback);
     };
     gc.getStage = function (stageID, callback)
     {

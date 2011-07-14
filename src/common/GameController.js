@@ -11,22 +11,50 @@ var PlayerState = require('./PlayerState').PlayerState;
 */
 var GameController = exports.GameController = function GameController()
 {
-}
+};
+
+/*
+    Method: authenticatePlayer
+    
+    Authenticates the player by checking the password.
+    
+    Parameters:
+        playerID - The unique ID for this player.
+        password - The password or other authentication token.
+        callback - This gets called with the player's <PlayerState> if authentication was successful.  Othrewise contains an error or something TBD.
+*/
+GameController.prototype.authenticatePlayer = function (playerID, password, callback)
+{
+    setTimeout(callback, 0, true);
+};
 
 /*
     Method: getPlayerState
     
-    Loads the current player state.
+    Loads the current player state.  This method does not do any authorization.  Use <authenticatePlayer> to log a player in, or else do some other authorization to verify that the caller has permission to view the player's state.
     
     Parameters:
         playerID - The unique ID for this player.
-        authentication - Some sort of token (TBD) for authentication.
         callback - This gets called with the <PlayerState>.
 */
-GameController.prototype.getPlayerState = function (playerID, authentication, callback)
+GameController.prototype.getPlayerState = function (playerID, callback)
 {
     setTimeout(callback, 0, new PlayerState(playerID));
-}
+};
+
+/*
+    Method: savePlayerState
+    
+    Saves the player state.
+    
+    Parameters:
+        playerState - The <PlayerState> to save.
+        callback - This gets called with the <PlayerState> which may be updated during the save.
+*/
+GameController.prototype.savePlayerState = function (playerState, callback)
+{
+    setTimeout(callback, 0, playerState);
+};
 
 /*
     Method: getAvailableStagesForPlayer
@@ -40,7 +68,7 @@ GameController.prototype.getPlayerState = function (playerID, authentication, ca
 GameController.prototype.getAvailableStagesForPlayer = function (playerState, callback)
 {
     setTimeout(callback, 0, []);
-}
+};
 
 /*
     Method: getStage
@@ -54,7 +82,7 @@ GameController.prototype.getAvailableStagesForPlayer = function (playerState, ca
 GameController.prototype.getStage = function (stageID, callback)
 {
     setTimeout(callback, 0);
-}
+};
 
 /*
     Method: getGameEngineForQuestionSet
@@ -68,7 +96,7 @@ GameController.prototype.getStage = function (stageID, callback)
 GameController.prototype.getGameEngineForQuestionSet = function (questionSet, callback)
 {
     setTimeout(callback, 0);
-}
+};
 
 /*
     Method: saveQuestionSetResults
@@ -84,4 +112,4 @@ GameController.prototype.getGameEngineForQuestionSet = function (questionSet, ca
 GameController.prototype.saveQuestionSetResults = function (playerState, questionSet, results, callback)
 {
     setTimeout(callback, 0);
-}
+};
