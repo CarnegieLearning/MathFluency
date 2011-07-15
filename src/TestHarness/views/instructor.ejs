@@ -1,0 +1,40 @@
+<p>Welcome <%= instructorID %>!</p>
+
+<table id="student-table">
+    <thead>
+        <tr>
+            <th>Roster ID
+            <th>Last Name
+            <th>First Name
+            <th>Login ID
+            <th>Password
+            <th>Condition
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<button id="new-student-button">Add new student</button>
+
+<div id="new-student-dialog" title="Create new student">
+    <form>
+        <label for="rosterID">Roster ID</label>
+        <input type="text" name="rosterID">
+        
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName">
+        
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName">
+        
+        <label for="loginID">Login ID</label>
+        <input type="text" name="loginID">
+        
+        <label for="password">Password</label>
+        <input type="text" name="password">
+        
+        <label for="condition">Condition</label>
+        <input type="text" name="condition">
+    </form>
+</div>

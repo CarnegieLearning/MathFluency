@@ -12,7 +12,7 @@ module.exports = function restapi(gameController)
     // Middleware to load the playerState when session.playerID is set.
     app.use(function (req, res, next)
     {
-        if (!req.session.playerID) return next();
+        if (!req.session || !req.session.playerID) return next();
 
         gc.getPlayerState(req.session.playerID, function (playerState)
         {

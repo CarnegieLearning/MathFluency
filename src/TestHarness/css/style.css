@@ -1,0 +1,15 @@
+body {
+    font-family: sans-serif;
+}
+
+form label {
+    display: block;
+}
+
+form input {
+    display: block;
+}
+
+#new-student-dialog form {
+    font-size: small;
+}

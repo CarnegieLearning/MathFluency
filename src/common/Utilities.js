@@ -13,6 +13,16 @@ exports.findInArray = function findInArray(array, item, key)
     return undefined;
 };
 
+exports.dictWithKeys = function dictWithKeys(object, keys)
+{
+    var dict = new Object();
+    for (var key in keys)
+    {
+        dict[key] = object[key];
+    }
+    return dict;
+};
+
 
 
 /*
