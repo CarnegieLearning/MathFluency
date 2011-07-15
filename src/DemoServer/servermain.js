@@ -6,13 +6,13 @@
 
 var urllib = require('url'),
     express = require('express'),
-    restapi = require('./restapi'),
-    exampleGames = require('./exampleGames');
+    restapi = require('../server/restapi'),
+    games = require('./games');
 
 
 function runServer(port, rootPath, outputPath)
 {
-    var gc = exampleGames.gameController(outputPath);
+    var gc = games.gameController(outputPath);
     
     // Create a simple server that presents a single HTML page and responds to AJAX API requests to launch the static games.
     var app = express.createServer();
@@ -35,6 +35,7 @@ function runServer(port, rootPath, outputPath)
     app.use(rootPath + '/js/node_modules', express.static(__dirname + '/../../node_modules'));
     app.use(rootPath + '/js/common', express.static(__dirname + '/../common'));
     app.use(rootPath + '/js/client', express.static(__dirname + '/../client'));
+    app.use(rootPath + '/js', express.static(__dirname));
     app.use(rootPath + '/static', express.static(__dirname + '/../static'));
     app.use(rootPath + '/static', express.directory(__dirname + '/../static', {icons:true}));
     app.use(rootPath + '/output', express.static(outputPath));

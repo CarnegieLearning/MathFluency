@@ -1,5 +1,5 @@
-var GameControllerClient = require('./GameControllerClient').GameControllerClient,
-    PlayerState = require('../common/PlayerState').PlayerState;
+var GameControllerClient = require('./client/GameControllerClient').GameControllerClient,
+    PlayerState = require('./common/PlayerState').PlayerState;
 
 var gc = new GameControllerClient('.');
 var player = null;
