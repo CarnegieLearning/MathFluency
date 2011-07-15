@@ -54,7 +54,7 @@ function runServer(port, rootPath, outputPath)
     });
     
     // The REST API handler.
-    app.use(rootPath, restapi(gc));
+    app.use(rootPath + '/api', restapi(gc));
     
     // Start the server.
     app.listen(port);

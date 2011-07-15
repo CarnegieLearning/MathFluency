@@ -25,7 +25,7 @@ var GameController = exports.GameController = function GameController()
 */
 GameController.prototype.authenticatePlayer = function (playerID, password, callback)
 {
-    setTimeout(callback, 0, true);
+    this.getPlayerState(playerID, callback);
 };
 
 /*

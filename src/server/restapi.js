@@ -12,7 +12,7 @@ module.exports = function restapi(gameController)
     // Middleware to load the playerState when session.playerID is set.
     app.use(function (req, res, next)
     {
-        if (!req.session || !req.session.playerID) return next();
+        if (!req.session.playerID) return next();
 
         gc.getPlayerState(req.session.playerID, function (playerState)
         {
@@ -42,9 +42,9 @@ module.exports = function restapi(gameController)
     // REST API endpoints that call out to the game controller.
     app.post('/login', function (req, res)
     {
-        var playerID = req.params.playerID;
-        var password = req.params.password;
-        gc.authenticatePlayer(req.params.playerID, password, function (playerState)
+        var playerID = req.body.playerID;
+        var password = req.body.password;
+        gc.authenticatePlayer(playerID, password, function (playerState)
         {
             if ('playerID' in playerState)
             {

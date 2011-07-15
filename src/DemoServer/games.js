@@ -8,10 +8,6 @@ exports.gameController = function (outputPath)
 {
     // Create a simple GameController instance that doesn't keep any player state info, and returns our static set of stages.
     var gc = new GameController();
-    gc.authenticatePlayer = function (playerID, authentication, callback)
-    {
-        gc.getPlayerState(playerID, callback);
-    };
     gc.getStage = function (stageID, callback)
     {
         callback(util.findInArray(stages, stageID, 'id'));
@@ -29,7 +25,7 @@ exports.gameController = function (outputPath)
     gc.saveQuestionSetResults = function (playerState, questionSet, results, callback)
     {
         var date = new Date();
-        var playerID = (playerState ? playerState.id : 'unknown');
+        var playerID = (playerState ? playerState.playerID : 'unknown');
         var filename = outputPath + '/' + playerID + '-' + date.format('yyyymmdd-HHMMss', true) + '.xml';
         fs.writeFile(filename, results, callback);
     };

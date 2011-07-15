@@ -45,7 +45,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     {
         $.getJSON(this.baseURL + '/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/engine', function (data)
         {
-            callback(new CLFlashGameEngine(self.baseURL, data));
+            callback(new CLFlashGameEngine(data));
         });
     };
     
@@ -84,9 +84,9 @@ function Stage(baseURL, json)
 util.extend(Stage, QuestionHierarchy.Stage);
 
 
-function CLFlashGameEngine(baseURL, json)
+function CLFlashGameEngine(json)
 {
-    this.baseURL = baseURL + '/' + json.baseURL;
+    this.baseURL = json.baseURL;
     this.swfPath = json.swfPath;
     var self = this;
     this.run = function (questionSet, div, callback)
