@@ -9,7 +9,7 @@ var urllib = require('url'),
     restapi = require('../server/restapi'),
     model = require('./model'),
     gameController = require('./gamecontroller').gameController,
-    Sequelize = require('sequelize');
+    MySQLSessionStore = require('connect-mysql-session')(express);
 
 
 function runServer(port, rootPath, outputPath)
@@ -36,7 +36,10 @@ function runServer(port, rootPath, outputPath)
     
     app.use(express.bodyParser());
     app.use(express.cookieParser());
-    app.use(express.session({ secret: "keyboard cat" }));
+    app.use(express.session({
+        store: new MySQLSessionStore('TestHarness', 'TestHarness', 'TestHarness'),
+        secret: "keyboard cat"
+    }));
     
     // Static handlers for client-side JS and game assessts, etc.
     app.use(rootPath + '/js/node_modules', express.static(__dirname + '/../../node_modules'));
