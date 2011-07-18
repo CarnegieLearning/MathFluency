@@ -83,11 +83,11 @@ var Stage = exports.Stage = function Stage(id, gameProperties)
 util.extend(Stage, QuestionEntity);
 
 /*
-    Method: getAllQuestionSetIDss
+    Method: getAllQuestionSetIDs
     
     Calls callback passing an array of questionSetIDs contained in this stage. The order of the array is not necessarily the order presented to the player, and not all items will necessarily be presented to the player.
 */
-Stage.prototype.getAllQuestionSetIDss = function (callback)
+Stage.prototype.getAllQuestionSetIDs = function (callback)
 {
     setTimeout(callback, 0, []);
 };
@@ -155,7 +155,7 @@ QuestionSet.prototype.getAllQuestionSubsetIDs = function (callback)
     
     Calls callback passing the <QuestionSet> with the given ID.
 */
-Stage.prototype.getQuestionSubset = function (questionSubsetID, callback)
+QuestionSet.prototype.getQuestionSubset = function (questionSubsetID, callback)
 {
     setTimeout(callback, 0);
 };
