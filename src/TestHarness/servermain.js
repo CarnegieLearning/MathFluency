@@ -105,7 +105,7 @@ function runServer(port, rootPath, outputPath)
             }
             else
             {
-                res.send(403);
+                res.send('Login ID and/or password is incorrect.', 400);
             }
         });
     });
@@ -126,6 +126,11 @@ function runServer(port, rootPath, outputPath)
     {
         console.log('Creating new student with parameters:');
         console.log(req.body);
+        if (req.body.loginID.length == 0)
+        {
+            res.send("Login ID cannot be empty", 400);
+            return;
+        }
         var student = model.Student.build(req.body);
         student.setInstructor(req.instructor).on('success', function ()
         {

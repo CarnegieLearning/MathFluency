@@ -18,25 +18,25 @@ $(document).ready(function ()
             },
             'Add student': function ()
             {
-                $.post(here + 'student', $('#new-student-dialog form').serialize())
-                    .success(function (data)
-                    {
-                        addStudentToTable(data.student);
-                        $('#new-student-dialog').dialog('close');
-                    })
-                    .error(function (jqXHR, statusText, errorThrown)
-                    {
-                        alert('Error saving student: ' + jqXHR.responseText);
-                    })
-                    .complete(function ()
-                    {
-                        //unlock();
-                    });
+                submitNewStudent();
             }
         },
         close: function ()
         {
             $(this).find('input').val('');
+        },
+        open: function ()
+        {
+            $(this).find('input[name="rosterID"]').focus();
+        }
+    });
+    
+    $('#new-student-dialog').keyup(function (e)
+    {
+        if (e.keyCode == 13)
+        {
+            submitNewStudent();
+            return false;
         }
     });
     
@@ -45,6 +45,24 @@ $(document).ready(function ()
         $('#new-student-dialog').dialog('open');
     });
     
+    function submitNewStudent()
+    {
+        $.post(here + 'student', $('#new-student-dialog form').serialize())
+            .success(function (data)
+            {
+                addStudentToTable(data.student);
+                $('#new-student-dialog').dialog('close');
+            })
+            .error(function (jqXHR, statusText, errorThrown)
+            {
+                alert('Error saving student: ' + jqXHR.responseText);
+            })
+            .complete(function ()
+            {
+                //unlock();
+            });
+    }
+    
     var tableBody = $('#student-table tbody');
     
     function addStudentToTable(json)
@@ -52,8 +70,8 @@ $(document).ready(function ()
         var row = $('<tr>');
         row.append(
             '<td>' + json.rosterID,
-            '<td>' + json.lastName,
             '<td>' + json.firstName,
+            '<td>' + json.lastName,
             '<td>' + json.loginID,
             '<td>' + json.password,
             '<td>' + json.condition

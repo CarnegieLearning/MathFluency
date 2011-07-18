@@ -4,8 +4,8 @@
     <thead>
         <tr>
             <th>Roster ID
-            <th>Last Name
             <th>First Name
+            <th>Last Name
             <th>Login ID
             <th>Password
             <th>Condition
@@ -15,8 +15,8 @@
         <% for (var i in students) { var student = students[i]; %>
         <tr>
             <td><%= student.rosterID %></td>
-            <td><%= student.lastName %></td>
             <td><%= student.firstName %></td>
+            <td><%= student.lastName %></td>
             <td><%= student.loginID %></td>
             <td><%= student.password %></td>
             <td><%= student.condition %></td>
@@ -32,11 +32,11 @@
         <label for="rosterID">Roster ID</label>
         <input type="text" name="rosterID">
         
-        <label for="lastName">Last Name</label>
-        <input type="text" name="lastName">
-        
         <label for="firstName">First Name</label>
         <input type="text" name="firstName">
+        
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName">
         
         <label for="loginID">Login ID</label>
         <input type="text" name="loginID">
