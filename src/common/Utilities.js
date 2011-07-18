@@ -16,11 +16,35 @@ exports.findInArray = function findInArray(array, item, key)
 exports.dictWithKeys = function dictWithKeys(object, keys)
 {
     var dict = new Object();
-    for (var key in keys)
+    for (var i in keys)
     {
+        var key = keys[i];
         dict[key] = object[key];
     }
     return dict;
+};
+
+exports.allDictKeys = function allDictKeys(object)
+{
+    var keys = [];
+    for (var i in object)
+    {
+        if (object.hasOwnProperty(i))
+        {
+            keys.push(i);
+        }
+    }
+    return keys;
+};
+
+exports.randomInt = function randomInt(min_incl, max_excl)
+{
+    return min_incl + Math.floor(Math.random() * (max_excl - min_incl));
+};
+
+exports.randomItem = function randomItem(array)
+{
+    return array[randomInt(0, array.length)];
 };
 
 
