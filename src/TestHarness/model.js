@@ -4,27 +4,6 @@ var Sequelize = require('sequelize'),
 var sequelize = new Sequelize('TestHarness', 'TestHarness', 'TestHarness');
 
 
-
-var Condition = exports.Condition = sequelize.define('Condition', {
-    name: Sequelize.STRING
-});
-
-var Level = exports.Level = sequelize.define('Level', {
-    name: Sequelize.STRING,
-    rank: Sequelize.INTEGER,
-    configFile: Sequelize.STRING
-});
-
-var QuestionSet = exports.QuestionSet = sequelize.define('QuestionSet', {
-    name: Sequelize.STRING,
-    configFile: Sequelize.STRING
-});
-
-Condition.hasManyAndBelongsTo("levels", Level, "condition");
-Level.hasManyAndBelongsTo("questionSets", QuestionSet, "level");
-
-
-
 var Instructor = exports.Instructor = sequelize.define('Instructor', {
     loginID: Sequelize.STRING,
     password: Sequelize.STRING
@@ -45,11 +24,12 @@ var Instructor = exports.Instructor = sequelize.define('Instructor', {
 });
 
 var Student = exports.Student = sequelize.define('Student', {
-    loginID: Sequelize.STRING,
+    loginID: {type: Sequelize.STRING, unique: true},
     rosterID: Sequelize.STRING,
     lastName: Sequelize.STRING,
     firstName: Sequelize.STRING,
-    password: Sequelize.STRING
+    password: Sequelize.STRING,
+    condition: Sequelize.STRING
 },
 {
     classMethods: {
@@ -66,13 +46,13 @@ var Student = exports.Student = sequelize.define('Student', {
     instanceMethods: {
         toJSON: function ()
         {
-            return util.dictWithKeys(this, ['loginID', 'rosterID', 'lastName', 'firstName', 'password']);
+            return util.dictWithKeys(this, ['loginID', 'rosterID', 'lastName', 'firstName', 'password', 'condition']);
         }
     }
 });
 
-Instructor.hasManyAndBelongsTo("students", Student, "instructor");
-Student.hasOne(Condition);
+Instructor.hasMany(Student);
+Student.belongsTo(Instructor);
 
 
 var QuestionSetOutcome = exports.QuestionSetOutput = sequelize.define('QuestionSetOutcome', {
@@ -80,11 +60,12 @@ var QuestionSetOutcome = exports.QuestionSetOutput = sequelize.define('QuestionS
     endTime: Sequelize.DATE,
     dataFile: Sequelize.STRING,
     score: Sequelize.INTEGER,
-    medal: Sequelize.INTEGER
+    medal: Sequelize.INTEGER,
+    questionSetID: Sequelize.STRING
 });
 
-Student.hasManyAndBelongsTo("questionSetOutcomes", QuestionSetOutcome, "student");
-QuestionSet.hasManyAndBelongsTo("studentOutcomes", QuestionSetOutcome, "questionSet");
+Student.hasMany(QuestionSetOutcome);
+QuestionSetOutcome.belongsTo(Student);
 
 
 exports.init = function init(force, callback)

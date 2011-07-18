@@ -8,13 +8,13 @@ var urllib = require('url'),
     express = require('express'),
     restapi = require('../server/restapi'),
     model = require('./model'),
+    gameController = require('./gamecontroller').gameController,
     Sequelize = require('sequelize');
 
 
 function runServer(port, rootPath, outputPath)
 {
-    //var gc = games.gameController(outputPath);
-    var gc = null;
+    var gc = gameController(outputPath);
     
     // Create a simple server that presents a single HTML page and responds to AJAX API requests to launch the static games.
     var app = express.createServer();
@@ -61,7 +61,7 @@ function runServer(port, rootPath, outputPath)
         }
         else if (req.session && req.session.studentID)
         {
-            model.Student.find(req.session.studentID).on('success', function (student)
+            gc.getPlayerState(req.session.studentID, function (student)
             {
                 req.student = student;
                 next();
@@ -127,14 +127,17 @@ function runServer(port, rootPath, outputPath)
         console.log('Creating new student with parameters:');
         console.log(req.body);
         var student = model.Student.build(req.body);
-        var chainer = new Sequelize.Utils.QueryChainer();
-        chainer.add(student.setInstructor(req.instructor));
-        chainer.add(student.save());
-        chainer.run().on('success', function ()
+        student.setInstructor(req.instructor).on('success', function ()
         {
             res.send({
                 student: student.toJSON()
             });
+        })
+        .on('failure', function (error)
+        {
+            console.log('Error adding student:');
+            console.log(error);
+            res.send(error.message, 500);
         });
     });
     
@@ -166,7 +169,7 @@ if (require.main === module)
     var port = parseInt(process.argv[2]);
     var root = process.argv[3];
     var output = process.argv[4];
-    model.init(false, function ()
+    model.init(false, function (error)
     {
         runServer(port, root, output);
     });

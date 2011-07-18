@@ -26,7 +26,7 @@ $(document).ready(function ()
                     })
                     .error(function (jqXHR, statusText, errorThrown)
                     {
-                        alert('Error saving student: ' + statusText);
+                        alert('Error saving student: ' + jqXHR.responseText);
                     })
                     .complete(function ()
                     {
@@ -44,4 +44,20 @@ $(document).ready(function ()
     {
         $('#new-student-dialog').dialog('open');
     });
+    
+    var tableBody = $('#student-table tbody');
+    
+    function addStudentToTable(json)
+    {
+        var row = $('<tr>');
+        row.append(
+            '<td>' + json.rosterID,
+            '<td>' + json.lastName,
+            '<td>' + json.firstName,
+            '<td>' + json.loginID,
+            '<td>' + json.password,
+            '<td>' + json.condition
+        );
+        tableBody.append(row);
+    }
 });

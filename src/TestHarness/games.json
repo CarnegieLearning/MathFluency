@@ -1,0 +1,45 @@
+{
+    "conditions": {
+        "cond1": {
+            "levels": [
+                "snowboard-1",
+                "snowboard-2",
+                "pie-1"
+            ]
+        },
+        "cond2": {
+            "levels": [
+                "pie-1",
+                "snowboard-1",
+                "snowboard-2"
+            ]
+        }
+    },
+    
+    "levels": {
+        "snowboard-1": {
+            "engine": "snowboard",
+            "questionSets": [
+                "sb-1",
+                "sb-2"
+            ]
+        }
+    },
+    
+    "questionSets": {
+        "sb-1": {
+            "input": "FT1_5_020.xml"
+        }
+    },
+    
+    "engines": {
+        "snowboard": {
+            "type": "CLFlashGameEngine",
+            "basePath": "/fluency/FT1-Snowboarding"
+        },
+        "pie": {
+            "type": "CLFlashGameEngine",
+            "basePath": "/fluency/FT2-PieTheClown"
+        }
+    }
+}
