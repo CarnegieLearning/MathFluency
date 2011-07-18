@@ -117,7 +117,8 @@ function runServer(port, rootPath, outputPath)
             res.render('instructor', {
                 mainjs: 'clientinstructor',
                 instructorID: req.instructor.loginID,
-                students: students
+                students: students,
+                conditions: gc.allConditionNames()
             });
         });
     });

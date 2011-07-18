@@ -45,6 +45,10 @@
         <input type="text" name="password">
         
         <label for="condition">Condition</label>
-        <input type="text" name="condition">
+        <select name="condition">
+            <% for (var i in conditions) { var condition = conditions[i]; %>
+            <option value="<%= condition %>"><%= condition %>
+            <% } %>
+        </select>
     </form>
 </div>
