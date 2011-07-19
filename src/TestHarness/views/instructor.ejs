@@ -1,10 +1,15 @@
+<script type="text/javascript" language="javascript" src="js/client/lib/jquery.dataTables/jquery.dataTables.min.js"></script>
+<style type="text/css">
+    @import "js/client/lib/jquery.dataTables/css/demo_table_jui.css";
+</style>
+
 <h2>Instructor Administration</h2>
 
 <p>Welcome <%= loginID %>!</p>
 
 <h3>Students</h3>
 
-<table id="student-table">
+<table id="student-table" class="display">
     <thead>
         <tr>
             <th>Roster ID
@@ -32,7 +37,7 @@
 <button id="new-student-button">Add new student</button>
 
 <div id="new-student-dialog" title="Create new student">
-    <form>
+    <form class="vertical">
         <label>
             Roster ID
             <input type="text" name="rosterID">

@@ -63,19 +63,25 @@ $(document).ready(function ()
             });
     }
     
-    var tableBody = $('#student-table tbody');
+    $('#student-table')
+    .attr({
+        cellpadding: 0,
+        cellspacing: 0,
+        border: 0
+    })
+    .dataTable({
+        "bJQueryUI": true
+    });
     
     function addStudentToTable(json)
     {
-        var row = $('<tr>');
-        row.append(
-            '<td>' + json.rosterID,
-            '<td>' + json.firstName,
-            '<td>' + json.lastName,
-            '<td>' + json.loginID,
-            '<td>' + json.password,
-            '<td>' + json.condition
-        );
-        tableBody.append(row);
+        $('#student-table').dataTable().fnAddData([
+            json.rosterID,
+            json.firstName,
+            json.lastName,
+            json.loginID,
+            json.password,
+            json.condition
+        ]);
     }
 });
