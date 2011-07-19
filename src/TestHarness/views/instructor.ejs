@@ -1,4 +1,8 @@
-<p>Welcome <%= instructorID %>!</p>
+<h2>Instructor Administration</h2>
+
+<p>Welcome <%= loginID %>!</p>
+
+<h3>Students</h3>
 
 <table id="student-table">
     <thead>
@@ -29,26 +33,33 @@
 
 <div id="new-student-dialog" title="Create new student">
     <form>
-        <label for="rosterID">Roster ID</label>
-        <input type="text" name="rosterID">
-        
-        <label for="firstName">First Name</label>
-        <input type="text" name="firstName">
-        
-        <label for="lastName">Last Name</label>
-        <input type="text" name="lastName">
-        
-        <label for="loginID">Login ID</label>
-        <input type="text" name="loginID">
-        
-        <label for="password">Password</label>
-        <input type="text" name="password">
-        
-        <label for="condition">Condition</label>
-        <select name="condition">
-            <% for (var i in conditions) { var condition = conditions[i]; %>
-            <option value="<%= condition %>"><%= condition %>
-            <% } %>
-        </select>
+        <label>
+            Roster ID
+            <input type="text" name="rosterID">
+        </label>
+        <label>
+            First Name
+            <input type="text" name="firstName">
+        </label>
+        <label>
+            Last Name
+            <input type="text" name="lastName">
+        </label>
+        <label>
+            Login ID
+            <input type="text" name="loginID">
+        </label>
+        <label>
+            Password
+            <input type="text" name="password">
+        </label>
+        <label>
+            Condition
+            <select name="condition">
+                <% for (var i in conditions) { var condition = conditions[i]; %>
+                <option value="<%= condition %>"><%= condition %>
+                <% } %>
+            </select>
+        </label>
     </form>
 </div>

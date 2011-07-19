@@ -2,11 +2,18 @@ body {
     font-family: sans-serif;
 }
 
-form label {
-    display: block;
+#header > div.login-info {
+    float: right;
 }
 
-form input {
+label {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
     display: block;
 }
 

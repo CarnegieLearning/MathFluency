@@ -16,6 +16,12 @@
     <body>
         <div id="header">
             <img src="http://fluencychallenge.com/chrome/site/site-logo.png" alt="Math Fluency logo""/>
+            <div class="login-info">
+            <% if (loginID) { %>
+                <%= loginID %> |
+                <a href="<%= logoutURL %>">Sign out</a>
+            <% } %>
+            </div>
         </div>
         <div id="content">
             <%- body %>

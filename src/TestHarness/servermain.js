@@ -5,6 +5,7 @@
 */
 
 var urllib = require('url'),
+    fs = require('fs'),
     express = require('express'),
     restapi = require('../server/restapi'),
     model = require('./model'),
@@ -12,8 +13,13 @@ var urllib = require('url'),
     MySQLSessionStore = require('connect-mysql-session')(express);
 
 
-function runServer(port, rootPath, outputPath)
+function runServer(configPath)
 {
+    var config = require(configPath),
+        port = config.port || 80,
+        rootPath = config.rootPath || '/',
+        outputPath = config.outputPath || __dirname + '/output';
+    
     var gc = gameController(outputPath);
     
     // Create a simple server that presents a single HTML page and responds to AJAX API requests to launch the static games.
@@ -37,8 +43,11 @@ function runServer(port, rootPath, outputPath)
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.session({
-        store: new MySQLSessionStore('TestHarness', 'TestHarness', 'TestHarness'),
-        secret: "keyboard cat"
+        store: new MySQLSessionStore(config.mysql.database, config.mysql.user, config.mysql.password),
+        secret: "keyboard cat",
+        cookie: {
+            maxAge: null
+        }
     }));
     
     // Static handlers for client-side JS and game assessts, etc.
@@ -72,6 +81,19 @@ function runServer(port, rootPath, outputPath)
         }
         else next();
     });
+    
+    app.helpers({
+        logoutURL: rootPath + '/logout'
+    });
+    app.dynamicHelpers({
+        loginID: function (req, res)
+        {
+            if (req.instructor) return req.instructor.loginID;
+            else if (req.student) return req.student.loginID;
+            else return null;
+        }
+    });
+    
     app.use(rootPath + '/instructor', function (req, res, next)
     {
         if (!req.instructor) res.redirect('home');
@@ -97,6 +119,7 @@ function runServer(port, rootPath, outputPath)
     {
         var password = req.body.password;
         var loginID = req.body.loginID;
+        var remember = req.body.remember;
         var isStudent = req.params.studentOrInstructor == 'student';
         var modelClass = model[isStudent ? 'Student' : 'Instructor'];
         modelClass.authenticate(loginID, password, function (entity)
@@ -104,6 +127,10 @@ function runServer(port, rootPath, outputPath)
             if (entity)
             {
                 req.session[isStudent ? 'studentID' : 'instructorID'] = entity.id;
+                if (remember)
+                {
+                    req.session.cookie.maxAge = config.longSessionLength;
+                }
                 res.send("logged in");
             }
             else
@@ -113,13 +140,18 @@ function runServer(port, rootPath, outputPath)
         });
     });
     
+    app.get(rootPath + '/logout', function (req, res)
+    {
+        req.session.destroy();
+        res.redirect('home');
+    });
+    
     app.get(rootPath + '/instructor', function (req, res)
     {
         req.instructor.getStudents().on('success', function (students)
         {
             res.render('instructor', {
                 mainjs: 'clientinstructor',
-                instructorID: req.instructor.loginID,
                 students: students,
                 conditions: gc.allConditionNames()
             });
@@ -150,12 +182,6 @@ function runServer(port, rootPath, outputPath)
         });
     });
     
-    app.get(rootPath + '/logout', function (req, res)
-    {
-        req.session.destroy();
-        res.redirect('home');
-    });
-    
     // The REST API handler.
     app.use(rootPath, restapi(gc));
     
@@ -166,20 +192,16 @@ function runServer(port, rootPath, outputPath)
 
 if (require.main === module)
 {
-    if (process.argv.length != 5)
+    if (process.argv.length > 2)
     {
         console.log('Invalid argument(s).');
-        console.log('Usage: node example.js PORT ROOT OUTPUT');
-        console.log('PORT is the server port (e.g. 80)');
-        console.log('ROOT is the server URL root path (e.g. "/fluencydemo")');
-        console.log('OUTPUT is the file output directory path, which must be writable.');
+        console.log('Usage: node servermain.js [CONFIG]');
+        console.log('CONFIG is a path to a server config JSON file, defaulting to serverconfig.json.');
         process.exit(1);
     }
-    var port = parseInt(process.argv[2]);
-    var root = process.argv[3];
-    var output = process.argv[4];
+    var configFile = process.argv[2] || './serverconfig.js';
     model.init(false, function (error)
     {
-        runServer(port, root, output);
+        runServer(configFile);
     });
 }
