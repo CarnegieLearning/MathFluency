@@ -113,7 +113,15 @@ function runServer(configPath)
     
     app.get(rootPath + '/login', function (req, res)
     {
-        res.render('login', {mainjs: 'clientlogin'});
+        // Redirect if already logged in.
+        if (req.instructor || req.student)
+        {
+            res.redirect(rootPath);
+        }
+        else
+        {
+            res.render('login', {mainjs: 'clientlogin'});
+        }
     });
     app.post(rootPath + '/login/:studentOrInstructor', function (req, res)
     {
