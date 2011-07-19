@@ -1,0 +1,13 @@
+<div id="stage-list">
+    <h3>Available Levels</h3>
+    <ol>
+        <% for (var i in levels) { var level = levels[i]; %>
+        <li>
+            <button class="level" type="button" value="<%= level %>"><%= level %></button>
+        </li>
+        <% } %>
+    </ol>
+</div>
+
+<div id="game-wrapper">
+</div>

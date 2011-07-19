@@ -22,7 +22,6 @@ function runServer(configPath)
     
     var gc = gameController(outputPath);
     
-    // Create a simple server that presents a single HTML page and responds to AJAX API requests to launch the static games.
     var app = express.createServer();
     if (rootPath && rootPath != '/')
     {
@@ -51,15 +50,18 @@ function runServer(configPath)
     }));
     
     // Static handlers for client-side JS and game assessts, etc.
+    
     app.use(rootPath + '/js/node_modules', express.static(__dirname + '/../../node_modules'));
     app.use(rootPath + '/js/common', express.static(__dirname + '/../common'));
     app.use(rootPath + '/js/client', express.static(__dirname + '/../client'));
-    app.use(rootPath + '/js', express.static(__dirname));
+    app.use(rootPath + '/js', express.static(__dirname + '/clientjs'));
     app.use(rootPath + '/static', express.static(__dirname + '/../static'));
     app.use(rootPath + '/static', express.directory(__dirname + '/../static', {icons:true}));
     app.use(rootPath + '/output', express.static(outputPath));
     app.use(rootPath + '/output', express.directory(outputPath, {icons:true}));
     app.use(rootPath + '/css', express.static(__dirname + '/css'));
+    
+    // Middleware to load student or instructor data before processing requests.
     
     app.use(function (req, res, next)
     {
@@ -82,6 +84,8 @@ function runServer(configPath)
         else next();
     });
     
+    // Helpers for commonly used template variables.
+    
     app.helpers({
         logoutURL: rootPath + '/logout'
     });
@@ -94,13 +98,8 @@ function runServer(configPath)
         }
     });
     
-    app.use(rootPath + '/instructor', function (req, res, next)
-    {
-        if (!req.instructor) res.redirect('home');
-        else next();
-    });
+    // Dynamic handlers for index template -- redirect depending on whether user is logged in as student, instructor, or neither.
     
-    // Dynamic handlers for index template -- require a trailing slash so client-side relative paths work correctly.
     app.get(rootPath + '/', function (req, res)
     {
         if (req.session.studentID)
@@ -111,6 +110,8 @@ function runServer(configPath)
             res.redirect(rootPath + '/login')
     });
     
+    // Login and logout
+    
     app.get(rootPath + '/login', function (req, res)
     {
         // Redirect if already logged in.
@@ -120,7 +121,7 @@ function runServer(configPath)
         }
         else
         {
-            res.render('login', {mainjs: 'clientlogin'});
+            res.render('login', {mainjs: 'login'});
         }
     });
     app.post(rootPath + '/login/:studentOrInstructor', function (req, res)
@@ -154,12 +155,19 @@ function runServer(configPath)
         res.redirect('home');
     });
     
+    // Instructor page and endpoints
+    
     app.get(rootPath + '/instructor', function (req, res)
     {
+        if (!req.instructor)
+        {
+            res.redirect('home');
+            return;
+        }
         req.instructor.getStudents().on('success', function (students)
         {
             res.render('instructor', {
-                mainjs: 'clientinstructor',
+                mainjs: 'instructor',
                 students: students,
                 conditions: gc.allConditionNames()
             });
@@ -187,6 +195,24 @@ function runServer(configPath)
             console.log('Error adding student:');
             console.log(error);
             res.send(error.message, 500);
+        });
+    });
+    
+    // Student page and endpoints
+    
+    app.get(rootPath + '/student', function (req, res)
+    {
+        if (!req.student)
+        {
+            res.redirect('home');
+            return;
+        }
+        gc.getAvailableStagesForPlayer(req.student, function (stageIDs)
+        {
+            res.render('student', {
+                mainjs: 'student',
+                levels: stageIDs
+            });
         });
     });
     

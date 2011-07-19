@@ -37,3 +37,9 @@ form.vertical input[type="submit"] {
 #student-table {
     width: 100%;
 }
+
+#stage-list ol > li
+{
+    list-style-type: none;
+    float: left;
+}
