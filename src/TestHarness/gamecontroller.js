@@ -21,7 +21,7 @@ exports.gameController = function (outputPath, configPath)
     
     gc.getAvailableStagesForPlayer = function (playerState, callback)
     {
-        callback(config.conditions[playerState.condition].levels);
+        callback(config.conditions[playerState.condition].stages);
     };
     
     gc.getStage = function (stageID, callback)
@@ -51,6 +51,12 @@ exports.gameController = function (outputPath, configPath)
         {
             callback(null);
         });
+    };
+    
+    gc.getGameEngineForQuestionSet = function (questionSet, callback)
+    {
+        var engineID = config.stages[questionSet.parent.id].engine;
+        callback(makeEngine(config.engines[engineID]));
     };
     
     return gc;
@@ -87,4 +93,14 @@ function makeStage(config, stageID)
     };
     
     return stage;
+}
+
+function makeEngine(engineConfig)
+{
+    return {
+        toJSON: function ()
+        {
+            return engineConfig;
+        }
+    }
 }

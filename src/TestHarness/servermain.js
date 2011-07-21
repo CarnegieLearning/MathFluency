@@ -78,6 +78,10 @@ function runServer(configPath)
             gc.getPlayerState(req.session.studentID, function (student)
             {
                 req.student = student;
+                
+                // The REST API uses req.playerState, so set that too.
+                req.playerState = student;
+                
                 next();
             });
         }
@@ -217,7 +221,7 @@ function runServer(configPath)
     });
     
     // The REST API handler.
-    app.use(rootPath, restapi(gc));
+    app.use(rootPath + '/api', restapi(gc));
     
     // Start the server.
     app.listen(port);

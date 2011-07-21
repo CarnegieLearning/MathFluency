@@ -1,45 +1,50 @@
 {
     "conditions": {
         "cond1": {
-            "levels": [
+            "stages": [
+                "racecar-1",
                 "snowboard-1",
-                "snowboard-2",
                 "pie-1"
             ]
         },
         "cond2": {
-            "levels": [
+            "stages": [
                 "pie-1",
                 "snowboard-1",
-                "snowboard-2"
+                "racecar-1"
             ]
         }
     },
     
-    "levels": {
-        "snowboard-1": {
-            "engine": "snowboard",
+    "stages": {
+        "racecar-1": {
+            "engine": "racecar",
             "questionSets": [
-                "sb-1",
-                "sb-2"
+                "rc-1",
+                "rc-2"
             ]
         }
     },
     
     "questionSets": {
-        "sb-1": {
-            "input": "FT1_5_020.xml"
+        "rc-1": {
+            "input": "carfraction1_unit/ft1_unit_004.xml"
+        },
+        "rc-2": {
+            "input": "carfraction1_unit/ft1_unit_005.xml"
         }
     },
     
     "engines": {
         "snowboard": {
             "type": "CLFlashGameEngine",
-            "basePath": "/fluency/FT1-Snowboarding"
+            "swfPath": "/fluency/games/ft1_snow",
+            "dataPath": "/fluency/data/ft1_snow"
         },
-        "pie": {
+        "racecar": {
             "type": "CLFlashGameEngine",
-            "basePath": "/fluency/FT2-PieTheClown"
+            "swfPath": "/fluency/games/ft1_racecar",
+            "dataPath": "/fluency/data/ft1_racecar"
         }
     }
 }

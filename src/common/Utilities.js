@@ -37,7 +37,7 @@ exports.allDictKeys = function allDictKeys(object)
     return keys;
 };
 
-exports.randomInt = function randomInt(min_incl, max_excl)
+var randomInt = exports.randomInt = function randomInt(min_incl, max_excl)
 {
     return min_incl + Math.floor(Math.random() * (max_excl - min_incl));
 };

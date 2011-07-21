@@ -32,11 +32,22 @@ module.exports = function restapi(gameController)
     });
     app.param('questionSetID', function (req, res, next, questionSetID)
     {
-        req.stage.getQuestionSet(questionSetID, function (questionSet)
+        if (questionSetID == 'next')
         {
-            req.questionSet = questionSet;
-            next();
-        });
+            req.stage.getNextQuestionSet(req.playerState, function (questionSet)
+            {
+                req.questionSet = questionSet;
+                next();
+            });
+        }
+        else
+        {
+            req.stage.getQuestionSet(questionSetID, function (questionSet)
+            {
+                req.questionSet = questionSet;
+                next();
+            });
+        }
     });
     
     // REST API endpoints that call out to the game controller.
