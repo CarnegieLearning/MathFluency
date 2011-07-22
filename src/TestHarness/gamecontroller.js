@@ -2,11 +2,10 @@ var fs = require('fs'),
     xml2js = require('xml2js'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
-    model = require('./model'),
     util = require('../common/Utilities');
 
 
-exports.gameController = function (outputPath, serverConfig)
+exports.gameController = function (outputPath, serverConfig, model)
 {
     var gameConfig = serverConfig.gameConfig,
         debug = serverConfig.debug;

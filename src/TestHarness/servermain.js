@@ -8,19 +8,18 @@ var urllib = require('url'),
     fs = require('fs'),
     express = require('express'),
     restapi = require('../server/restapi'),
-    model = require('./model'),
+    modelInit = require('./model'),
     gameController = require('./gamecontroller').gameController,
     MySQLSessionStore = require('connect-mysql-session')(express);
 
 
-function runServer(configPath)
+function runServer(config, model)
 {
-    var config = require(configPath),
-        port = config.port || 80,
+    var port = config.port || 80,
         rootPath = config.rootPath || '/',
         outputPath = config.outputPath || __dirname + '/output';
     
-    var gc = gameController(outputPath, config);
+    var gc = gameController(outputPath, config, model);
     
     var app = express.createServer();
     if (rootPath && rootPath != '/')
@@ -31,18 +30,18 @@ function runServer(configPath)
     {
         rootPath = '';
     }
-    app.configure('development', function ()
+    if (config.debug)
     {
         app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
         app.use(express.logger());
-    });
+    }
     app.set('view engine', 'ejs');
     app.set('views', __dirname + '/views');
     
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.session({
-        store: new MySQLSessionStore(config.mysql.database, config.mysql.user, config.mysql.password),
+        store: new MySQLSessionStore(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions),
         secret: "keyboard cat",
         cookie: {
             maxAge: null
@@ -237,9 +236,10 @@ if (require.main === module)
         console.log('CONFIG is a path to a server config JSON file, defaulting to serverconfig.json.');
         process.exit(1);
     }
-    var configFile = process.argv[2] || './serverconfig.js';
-    model.init(false, function (error)
+    var configFile = process.argv[2] || './serverconfig.js',
+        config = require(configFile);
+    modelInit(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions, function (model)
     {
-        runServer(configFile);
+        runServer(config, model);
     });
 }

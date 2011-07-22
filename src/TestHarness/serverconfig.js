@@ -8,6 +8,9 @@ module.exports = {
         "user": "TestHarness",
         "password": "TestHarness"
     },
+    "sequelizeOptions": {
+        logging: true
+    },
     "gameConfig": "games.json",
     "cliDataPath": "/var/www/fluencybrowser/fluency/data",
     "debug": true
