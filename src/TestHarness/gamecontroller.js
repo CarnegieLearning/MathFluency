@@ -1,5 +1,6 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
+    uuid = require('node-uuid'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
     util = require('../common/Utilities');
@@ -52,6 +53,7 @@ exports.gameController = function (outputPath, serverConfig, model)
     {
         model.Student.find(playerID).on('success', function (student)
         {
+            student.playerID = student.loginID;
             callback(student);
         })
         .on('failure', function (error)
@@ -75,6 +77,39 @@ exports.gameController = function (outputPath, serverConfig, model)
     gc.getGameEngineForQuestionSet = function (questionSet, callback)
     {
         callback(config().engines[questionSet.parent.engineID]);
+    };
+    
+    gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
+    {
+        var UUID = uuid();
+        var date = new Date();
+        var filename = UUID + '.xml';
+        var filepath = outputPath + '/' + filename;
+        fs.writeFile(filepath, text, function (error)
+        {
+            if (error)
+            {
+                callback(error);
+                return;
+            }
+            
+            // TODO: parse start time, medal, and score from the XML.
+            var qsOutcome = model.QuestionSetOutcome.build({
+                dataFile: filename,
+                questionSetID: questionSet.id,
+                endTime: date
+            });
+            // Setting a relation implicitly does a save().
+            qsOutcome.setStudent(playerState)
+            .on('success', function ()
+            {
+                callback();
+            })
+            .on('failure', function (error)
+            {
+                callback(error);
+            });
+        });
     };
     
     return gc;

@@ -41,8 +41,12 @@ function runQuestionSet(questionSet)
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data...');
-            gc.saveQuestionSetResults(null, questionSet, xml, function ()
+            gc.saveQuestionSetResults(null, questionSet, xml, function (error)
             {
+                if (error)
+                {
+                    alert('Error saving data: ' + error);
+                }
                 unlock();
             });
         });

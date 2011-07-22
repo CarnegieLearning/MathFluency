@@ -105,9 +105,18 @@ module.exports = function restapi(gameController)
     });
     app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res)
     {
-        gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function ()
+        gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function (error)
         {
-            res.send({});
+            if (error)
+            {
+                console.log('Error saving question set results:');
+                console.log(error);
+                res.send(error, 500);
+            }
+            else
+            {
+                res.send({});
+            }
         });
     });
     
