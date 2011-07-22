@@ -62,12 +62,30 @@ module.exports = function model(db, user, password, options, callback)
     
     
     model.QuestionSetOutcome = sequelize.define('QuestionSetOutcome', {
-        startTime: Sequelize.DATE,
-        endTime: Sequelize.DATE,
+        elapsedMS: Sequelize.INTEGER,
+        endTime: Sequelize.INTEGER,
         dataFile: Sequelize.STRING,
         score: Sequelize.INTEGER,
         medal: Sequelize.INTEGER,
+        condition: Sequelize.STRING,
+        stageID: Sequelize.STRING,
         questionSetID: Sequelize.STRING
+    },
+    {
+        instanceMethods: {
+            medalString: function ()
+            {
+                return ['none', 'gold', 'silver', 'bronze'][this.medal || 0];
+            },
+            setMedalString: function (str)
+            {
+                this.medal = {
+                    gold: 1,
+                    silver: 2,
+                    bronze: 3
+                }[str && str.toLowerCase()] || 'none';
+            }
+        }
     });
     
     model.Student.hasMany(model.QuestionSetOutcome);

@@ -82,7 +82,7 @@ exports.gameController = function (outputPath, serverConfig, model)
     gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
     {
         var UUID = uuid();
-        var date = new Date();
+        var timestamp = Date.now();
         var filename = UUID + '.xml';
         var filepath = outputPath + '/' + filename;
         fs.writeFile(filepath, text, function (error)
@@ -93,22 +93,34 @@ exports.gameController = function (outputPath, serverConfig, model)
                 return;
             }
             
-            // TODO: parse start time, medal, and score from the XML.
-            var qsOutcome = model.QuestionSetOutcome.build({
-                dataFile: filename,
-                questionSetID: questionSet.id,
-                endTime: date
-            });
-            // Setting a relation implicitly does a save().
-            qsOutcome.setStudent(playerState)
-            .on('success', function ()
+            // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
+            var parser = new xml2js.Parser()
+            parser.on('end', function (data)
             {
-                callback();
-            })
-            .on('failure', function (error)
-            {
-                callback(error);
+                var scoreNode = data.SCORE_SUMMARY.Score['@'];
+                var qsOutcome = model.QuestionSetOutcome.build({
+                    dataFile: filename,
+                    condition: playerState.condition,
+                    stageID: questionSet.parent.id,
+                    questionSetID: questionSet.id,
+                    endTime: timestamp,
+                    elapsedMS: scoreNode.ElapsedTime || 0,
+                    score: scoreNode.TotalScore
+                });
+                qsOutcome.setMedalString(scoreNode.Medal);
+                
+                // Setting a relation implicitly does a save().
+                qsOutcome.setStudent(playerState)
+                .on('success', function ()
+                {
+                    callback();
+                })
+                .on('failure', function (error)
+                {
+                    callback(error);
+                });
             });
+            parser.parseString(text);
         });
     };
     
