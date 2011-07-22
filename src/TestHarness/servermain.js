@@ -93,11 +93,19 @@ function runServer(config, model)
         logoutURL: rootPath + '/logout'
     });
     app.dynamicHelpers({
-        loginID: function (req, res)
+        loginID: function (req)
         {
             if (req.instructor) return req.instructor.loginID;
             else if (req.student) return req.student.loginID;
             else return null;
+        },
+        instructor: function (req)
+        {
+            return req.instructor;
+        },
+        student: function (req)
+        {
+            return req.student;
         }
     });
     
@@ -167,14 +175,46 @@ function runServer(config, model)
             res.redirect('home');
             return;
         }
-        req.instructor.getStudents().on('success', function (students)
-        {
-            res.render('instructor', {
-                mainjs: 'instructor',
-                students: students,
-                conditions: gc.allConditionNames()
-            });
+        res.render('instructor', {
+            mainjs: 'instructor',
+            conditions: gc.allConditionNames()
         });
+    });
+    
+    app.get(rootPath + '/instructor/students', function (req ,res)
+    {
+        // For admins, show all students along with which instructor they belong to.
+        if (req.instructor.isAdmin)
+        {
+            model.Instructor.findAll().on('success', function (instructors)
+            {
+                var instructorLogins = {};
+                for (var i in instructors)
+                {
+                    var instr = instructors[i];
+                    instructorLogins[instr.id] = instr.loginID;
+                }
+                model.Student.findAll().on('success', function (students)
+                {
+                    var studentJSON = [];
+                    for (var i in students)
+                    {
+                        var student = students[i];
+                        var json = student.toJSON();
+                        json.instructorLoginID = instructorLogins[student.InstructorId];
+                        studentJSON[i] = json;
+                    }
+                    res.send({students: studentJSON});
+                });
+            });
+        }
+        else
+        {
+            req.instructor.getStudents().on('success', function (students)
+            {
+                res.send({students: students});
+            });
+        }
     });
     
     app.post(rootPath + '/instructor/student', function (req, res)

@@ -3,6 +3,10 @@
     @import "js/client/lib/jquery.dataTables/css/demo_table_jui.css";
 </style>
 
+<script type="text/javascript" language="javascript">
+    window.FLUENCY.isAdmin = <%- instructor.isAdmin %>;
+</script>
+
 <h2>Instructor Administration</h2>
 
 <p>Welcome <%= loginID %>!</p>
@@ -12,6 +16,9 @@
 <table id="student-table" class="display">
     <thead>
         <tr>
+            <% if (instructor.isAdmin) { %>
+                <th>Instructor
+            <% } %>
             <th>Roster ID
             <th>First Name
             <th>Last Name
@@ -21,16 +28,6 @@
         </tr>
     </thead>
     <tbody>
-        <% for (var i in students) { var student = students[i]; %>
-        <tr>
-            <td><%= student.rosterID %></td>
-            <td><%= student.firstName %></td>
-            <td><%= student.lastName %></td>
-            <td><%= student.loginID %></td>
-            <td><%= student.password %></td>
-            <td><%= student.condition %></td>
-        </tr>
-        <% } %>
     </tbody>
 </table>
 

@@ -63,6 +63,19 @@ $(document).ready(function ()
             });
     }
     
+    $.getJSON(here + 'students')
+        .success(function (data)
+        {
+            for (var i in data.students)
+            {
+                addStudentToTable(data.students[i]);
+            }
+        })
+        .error(function (jqXHR)
+        {
+            alert('Error fetching students: ' + jqXHR.responseText);
+        });
+    
     $('#student-table')
     .attr({
         cellpadding: 0,
@@ -75,13 +88,18 @@ $(document).ready(function ()
     
     function addStudentToTable(json)
     {
-        $('#student-table').dataTable().fnAddData([
+        var cols = [
             json.rosterID,
             json.firstName,
             json.lastName,
             json.loginID,
             json.password,
             json.condition
-        ]);
+        ];
+        if (window.FLUENCY.isAdmin)
+        {
+            cols.unshift(json.instructorLoginID);
+        }
+        $('#student-table').dataTable().fnAddData(cols);
     }
 });
