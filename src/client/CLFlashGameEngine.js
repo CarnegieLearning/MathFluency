@@ -1,3 +1,5 @@
+var swfobject = require('./lib/swfobject').swfobject;
+
 exports.CLFlashGameEngine = function CLFlashGameEngine(json)
 {
     this.dataPath = json.dataPath;
@@ -7,19 +9,22 @@ exports.CLFlashGameEngine = function CLFlashGameEngine(json)
     {
         var props = questionSet.allGameProperties();
         registerDoneCallback(callback);
-        $(div).empty().flash({
-            src: self.swfPath + '/Shell.swf',
-            width: props.width || 974,
-            height: props.height || 570,
-            flashvars: {
+        var flashID = 'CLFlashGameEngine_flashID';
+        $(div).empty().append($('<div>').attr('id', flashID));
+        swfobject.embedSWF(
+            self.swfPath + '/Shell.swf',
+            flashID,
+            props.width || 974,
+            props.height || 570,
+            props.flashVersion || "10.0.0",
+            false,
+            {
                 game_id: questionSet.parent.id + '::' + questionSet.id,
                 input_xml: self.dataPath + '/' + props.input,
                 asset_name: 'ExternalAsset',
                 asset_url: self.swfPath,
                 callback: 'CLFLashGameEngineDoneCallback'
-            }
-        },
-        {version: 9});
+            });
     };
 };
 
