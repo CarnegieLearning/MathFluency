@@ -97,17 +97,18 @@ exports.gameController = function (outputPath, serverConfig, model)
             var parser = new xml2js.Parser()
             parser.on('end', function (data)
             {
-                var scoreNode = data.SCORE_SUMMARY.Score['@'];
+                var scoreNode = data.SCORE_SUMMARY.Score,
+                    scoreAttr = (scoreNode ? scoreNode['@'] : {});
                 var qsOutcome = model.QuestionSetOutcome.build({
                     dataFile: filename,
                     condition: playerState.condition,
                     stageID: questionSet.parent.id,
                     questionSetID: questionSet.id,
                     endTime: timestamp,
-                    elapsedMS: scoreNode.ElapsedTime || 0,
-                    score: scoreNode.TotalScore
+                    elapsedMS: scoreAttr.ElapsedTime || 0,
+                    score: scoreAttr.TotalScore || 0
                 });
-                qsOutcome.setMedalString(scoreNode.Medal);
+                qsOutcome.setMedalString(scoreAttr.Medal || 'none');
                 
                 // Setting a relation implicitly does a save().
                 qsOutcome.setStudent(playerState)
