@@ -17,7 +17,7 @@ module.exports = function model(db, user, password, options, callback)
             authenticate: function (loginID, password, callback)
             {
                 // TODO: salt & hash passwords. For now we'll just manually enter teacher accounts and passwords, so tell them to not give us the same password as their bank account.
-                Instructor.find({
+                this.find({
                     where: {
                         loginID: loginID,
                         password: password
@@ -39,7 +39,7 @@ module.exports = function model(db, user, password, options, callback)
         classMethods: {
             authenticate: function (loginID, password, callback)
             {
-                Student.find({
+                this.find({
                     where: {
                         loginID: loginID,
                         password: password
