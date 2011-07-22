@@ -7,5 +7,8 @@ module.exports = {
         "database": "TestHarness",
         "user": "TestHarness",
         "password": "TestHarness"
-    }
+    },
+    "gameConfig": "games.json",
+    "cliDataPath": "/var/www/fluencybrowser/fluency/data",
+    "debug": true
 };

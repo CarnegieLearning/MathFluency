@@ -16,7 +16,8 @@
     "ejs": ">=0.4",
     "yabble": ">=0.3",
     "sequelize": ">=1.0.2",
-    "connect-mysql-session": ">=0.1.0"
+    "connect-mysql-session": ">=0.1.0",
+    "xml2js": ">=0.1.9"
   },
   "devDependencies": {}
 }

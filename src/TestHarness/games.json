@@ -4,11 +4,13 @@
             "stages": [
                 "racecar-1",
                 "snowboard-1",
-                "pie-1"
+                "pie-1",
+                "scuba-1"
             ]
         },
         "cond2": {
             "stages": [
+                "scuba-1",
                 "pie-1",
                 "snowboard-1",
                 "racecar-1"
@@ -19,32 +21,46 @@
     "stages": {
         "racecar-1": {
             "engine": "racecar",
-            "questionSets": [
-                "rc-1",
-                "rc-2"
-            ]
-        }
-    },
-    
-    "questionSets": {
-        "rc-1": {
-            "input": "carfraction1_unit/ft1_unit_004.xml"
+            "cli_fluency_task": "carfraction2_complement"
         },
-        "rc-2": {
-            "input": "carfraction1_unit/ft1_unit_005.xml"
+        "snowboard-1": {
+            "engine": "snowboard",
+            "cli_fluency_task": "snowdecimal3_multidigit"
+        },
+        "pie-1": {
+            "engine": "pie",
+            "cli_fluency_task": "piefracdecperc1_percentslessthan1"
+        },
+        "scuba-1": {
+            "engine": "scuba",
+            "cli_fluency_task": "scubabalanceeqn"
         }
     },
     
     "engines": {
         "snowboard": {
             "type": "CLFlashGameEngine",
-            "swfPath": "/fluency/games/ft1_snow",
-            "dataPath": "/fluency/data/ft1_snow"
+            "cli_task_id": "ft1_snow"
         },
         "racecar": {
             "type": "CLFlashGameEngine",
-            "swfPath": "/fluency/games/ft1_racecar",
-            "dataPath": "/fluency/data/ft1_racecar"
+            "cli_task_id": "ft1_racecar"
+        },
+        "fire": {
+            "type": "CLFlashGameEngine",
+            "cli_task_id": "ft2_fire"
+        },
+        "pie": {
+            "type": "CLFlashGameEngine",
+            "cli_task_id": "ft2_pie"
+        },
+        "jungle": {
+            "type": "CLFlashGameEngine",
+            "cli_task_id": "ft3_jungle"
+        },
+        "scuba": {
+            "type": "CLFlashGameEngine",
+            "cli_task_id": "ft3_scuba"
         }
     }
 }

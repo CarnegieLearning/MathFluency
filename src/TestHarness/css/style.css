@@ -23,6 +23,10 @@ body
     margin: 10px auto;
 }
 
+a img {
+    border: none;
+}
+
 form.vertical label
 {
     display: block;
@@ -50,6 +54,15 @@ form.vertical input[type="submit"]
 {
     list-style-type: none;
     float: left;
+}
+
+#game-container
+{
+    margin-left: -87px;
+    width: 974px;
+    height: 570px;
+    background: #dddddd;
+    clear: both;
 }
 
 #status-message

@@ -20,7 +20,7 @@ function runServer(configPath)
         rootPath = config.rootPath || '/',
         outputPath = config.outputPath || __dirname + '/output';
     
-    var gc = gameController(outputPath);
+    var gc = gameController(outputPath, config);
     
     var app = express.createServer();
     if (rootPath && rootPath != '/')

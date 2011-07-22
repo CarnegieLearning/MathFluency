@@ -43,11 +43,7 @@ function runQuestionSet(questionSet)
             statusMessage('Sending game data...');
             gc.saveQuestionSetResults(null, questionSet, xml, function ()
             {
-                statusMessage('Getting next question set...');
-                questionSet.parent.getNextQuestionSet(null, function (nextQuestionSet)
-                {
-                    runQuestionSet(nextQuestionSet);
-                });
+                unlock();
             });
         });
     });

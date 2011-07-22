@@ -21,7 +21,7 @@ exports.CLFlashGameEngine = function CLFlashGameEngine(json)
         },
         {version: 9});
     };
-}
+};
 
 var currentDoneCallback;
 
