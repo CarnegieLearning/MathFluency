@@ -52,7 +52,7 @@ $(document).ready(function ()
         $.post(here + 'student', $('#new-student-dialog form').serialize())
             .success(function (data)
             {
-                addStudentToTable(data.student);
+                addStudentToTable(0, data.student);
                 $('#new-student-dialog').dialog('close');
             })
             .error(function (jqXHR, statusText, errorThrown)

@@ -284,8 +284,11 @@ function runServer(config, model)
         var student = model.Student.build(req.body);
         student.setInstructor(req.instructor).on('success', function ()
         {
+            var json = student.toJSON();
+            json.instructorLoginID = req.instructor.loginID;
+            json.gameCount = null;
             res.send({
-                student: student.toJSON()
+                student: json
             });
         })
         .on('failure', function (error)
