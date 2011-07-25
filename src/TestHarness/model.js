@@ -8,6 +8,7 @@ module.exports = function model(db, user, password, options, callback)
     var sequelize = new Sequelize(db, user, password, options);
     
     var model = {};
+    model.sequelize = sequelize;
     
     model.Instructor = sequelize.define('Instructor', {
         loginID: Sequelize.STRING,

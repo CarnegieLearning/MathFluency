@@ -104,7 +104,7 @@ exports.gameController = function (outputPath, serverConfig, model)
                     condition: playerState.condition,
                     stageID: questionSet.parent.id,
                     questionSetID: questionSet.id,
-                    endTime: timestamp,
+                    endTime: Math.round(timestamp / 1000),
                     elapsedMS: scoreAttr.ElapsedTime || 0,
                     score: scoreAttr.TotalScore || 0
                 });

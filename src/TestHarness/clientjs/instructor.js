@@ -1,3 +1,5 @@
+require('./common/Utilities');
+
 $(document).ready(function ()
 {
     var here = window.location.pathname;
@@ -66,40 +68,91 @@ $(document).ready(function ()
     $.getJSON(here + 'students')
         .success(function (data)
         {
-            for (var i in data.students)
-            {
-                addStudentToTable(data.students[i]);
-            }
+            $.each(data.students, addStudentToTable);
         })
         .error(function (jqXHR)
         {
             alert('Error fetching students: ' + jqXHR.responseText);
         });
     
-    $('#student-table')
+    $.getJSON(here + 'students/results')
+        .success(function (data)
+        {
+            $.each(data.results, addResultsToTable);
+        })
+        .error(function (jqXHR)
+        {
+            alert('Error fetching game results: ' + jqXHR.responseText);
+        });
+    
+    $('#student-table, #games-table')
     .attr({
         cellpadding: 0,
         cellspacing: 0,
         border: 0
     })
+    .css({fontSize: '12px'})
     .dataTable({
-        "bJQueryUI": true
+        "bJQueryUI": true,
+		"sScrollY": "15em",
+		"bPaginate": false
     });
     
-    function addStudentToTable(json)
+    $('#student-table').delegate('tr', 'click', function ()
+    {
+        $(this).toggleClass('row_selected').siblings('tr').removeClass('row_selected');
+        var data = $('#student-table').dataTable().fnGetData(this);
+        var login = data[4];
+        $('#games-table').dataTable().fnFilter($(this).hasClass('row_selected') ? login : '');
+    })
+    .dataTable().fnSetColumnVis(0, window.FLUENCY.isAdmin); // Show instructor column only when admin.
+    
+    $('#games-table').delegate('tr', 'click', function ()
+    {
+        $(this).addClass('row_selected').siblings('tr').removeClass('row_selected');
+        var data = $('#games-table').dataTable().fnGetData(this);
+        var dataFile = data[9];
+        $.get(here + '../output/' + dataFile)
+            .success(function (data, status, jqXHR)
+            {
+                $('#game-output').val(jqXHR.responseText);
+            })
+            .error(function (jqXHR)
+            {
+                alert('Error fetching game output: ' + jqXHR.responseText);
+            });
+    })
+    .dataTable().fnSetColumnVis(9, false); // Hide dataFile column.
+    
+    function addStudentToTable(index, json)
     {
         var cols = [
+            json.instructorLoginID,
             json.rosterID,
             json.firstName,
             json.lastName,
             json.loginID,
             json.password,
-            json.condition
+            json.condition,
+            json.gameCount
         ];
-        if (window.FLUENCY.isAdmin)
-        {
-            cols.unshift(json.instructorLoginID);
-        }
         $('#student-table').dataTable().fnAddData(cols);
+    }
+    
+    function addResultsToTable(index, json)
+    {
+        var cols = [
+            json.rosterID,
+            json.loginID,
+            json.condition,
+            json.stageID,
+            json.questionSetID,
+            json.score,
+            json.medal,
+            Math.round(json.elapsedMS / 1000) + ' s',
+            (new Date(json.endTime * 1000)).format('yy-mm-dd HH:MM'),
+            json.dataFile
+        ];
+        $('#games-table').dataTable().fnAddData(cols);
     }
 });

@@ -184,37 +184,88 @@ function runServer(config, model)
     app.get(rootPath + '/instructor/students', function (req ,res)
     {
         // For admins, show all students along with which instructor they belong to.
-        if (req.instructor.isAdmin)
+        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.  This requires sequelize >1.0.2 (currently not in npm yet) which exposes the MySQL connection pool.
+        var params = [];
+        var query = '\
+            SELECT \
+                Students.rosterID, \
+                Students.loginID, \
+                Students.firstName, \
+                Students.lastName, \
+                Students.password, \
+                Students.condition, \
+                Instructors.loginID AS instructorLoginID, \
+                gameCount \
+            FROM Students \
+                INNER JOIN Instructors ON Instructors.id = Students.InstructorId \
+                LEFT JOIN ( \
+                    SELECT \
+                        StudentId, \
+                        COUNT(*) AS gameCount \
+                    FROM QuestionSetOutcomes \
+                    GROUP BY StudentID \
+                ) GameCounts ON GameCounts.StudentId = Students.id \
+        ';
+        if (!req.instructor.isAdmin)
         {
-            model.Instructor.findAll().on('success', function (instructors)
-            {
-                var instructorLogins = {};
-                for (var i in instructors)
-                {
-                    var instr = instructors[i];
-                    instructorLogins[instr.id] = instr.loginID;
-                }
-                model.Student.findAll().on('success', function (students)
-                {
-                    var studentJSON = [];
-                    for (var i in students)
-                    {
-                        var student = students[i];
-                        var json = student.toJSON();
-                        json.instructorLoginID = instructorLogins[student.InstructorId];
-                        studentJSON[i] = json;
-                    }
-                    res.send({students: studentJSON});
-                });
-            });
+            query += 'WHERE Instructors.id = ?';
+            params += req.instructor.id;
         }
-        else
+        if (config.debug)
         {
-            req.instructor.getStudents().on('success', function (students)
-            {
-                res.send({students: students});
-            });
+            console.log('Custom Query:' + query.replace(/ +/g, ' '));
         }
+        model.sequelize.pool.query(query, params, function (error, results, fields)
+        {
+            if (error)
+            {
+                res.send('Database query error', 500);
+            }
+            else
+            {
+                res.send({students: results});
+            }
+        });
+    });
+    
+    app.get(rootPath + '/instructor/students/results', function (req, res)
+    {
+        var params = [];
+        var query = '\
+            SELECT \
+                Students.rosterID, \
+                Students.loginID, \
+                QuestionSetOutcomes.condition, \
+                QuestionSetOutcomes.stageID, \
+                QuestionSetOutcomes.questionSetID, \
+                QuestionSetOutcomes.score, \
+                QuestionSetOutcomes.medal, \
+                QuestionSetOutcomes.elapsedMS, \
+                QuestionSetOutcomes.endTime, \
+                QuestionSetOutcomes.dataFile \
+            FROM QuestionSetOutcomes \
+            INNER JOIN Students ON Students.id = QuestionSetOutcomes.StudentId \
+        ';
+        if (!req.instructor.isAdmin)
+        {
+            query += 'WHERE Student.InstructorId = ?';
+            params += req.instructor.id;
+        }
+        if (config.debug)
+        {
+            console.log('Custom Query:' + query.replace(/ +/g, ' '));
+        }
+        model.sequelize.pool.query(query, params, function (error, results, fields)
+        {
+            if (error)
+            {
+                res.send('Database query error', 500);
+            }
+            else
+            {
+                res.send({results: results});
+            }
+        });
     });
     
     app.post(rootPath + '/instructor/student', function (req, res)

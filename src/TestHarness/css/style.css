@@ -54,9 +54,17 @@ form.vertical input[type="submit"]
     font-size: small;
 }
 
-#student-table
+table.display
 {
     width: 100%;
+}
+
+#game-output
+{
+    font-family: Menlo, "Bitstream Vera Sans Mono", monospace;
+    font-size: 12px;
+    width: 100%;
+    height: 30em;
 }
 
 #stage-list ol > li

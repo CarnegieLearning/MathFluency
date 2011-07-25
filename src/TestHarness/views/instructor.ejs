@@ -19,12 +19,13 @@
             <% if (instructor.isAdmin) { %>
                 <th>Instructor
             <% } %>
-            <th>Roster ID
+            <th>Roster
             <th>First Name
             <th>Last Name
-            <th>Login ID
+            <th>Login
             <th>Password
             <th>Condition
+            <th>Games
         </tr>
     </thead>
     <tbody>
@@ -32,6 +33,31 @@
 </table>
 
 <button id="new-student-button">Add new student</button>
+
+<h3>Game Results</h3>
+
+<table id="games-table" class="display">
+    <thead>
+        <tr>
+            <th>Roster
+            <th>Login
+            <th>Condition
+            <th>Level
+            <th>Question Set
+            <th>Score
+            <th>Medal
+            <th>Duration
+            <th>End Date
+            <th>Data File
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<h3>Game Output XML</h3>
+<textarea id="game-output" readonly>
+</textarea>
 
 <div id="new-student-dialog" title="Create new student">
     <form class="vertical">
