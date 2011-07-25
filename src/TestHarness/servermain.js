@@ -209,17 +209,19 @@ function runServer(config, model)
         if (!req.instructor.isAdmin)
         {
             query += 'WHERE Instructors.id = ?';
-            params += req.instructor.id;
+            params.push(req.instructor.id);
         }
         if (config.debug)
         {
             console.log('Custom Query:' + query.replace(/ +/g, ' '));
+            console.log('Parameters: ' + params);
         }
         model.sequelize.pool.query(query, params, function (error, results, fields)
         {
             if (error)
             {
-                res.send('Database query error', 500);
+                console.log(error);
+                res.send('Error fetching student data.', 500);
             }
             else
             {
@@ -248,18 +250,20 @@ function runServer(config, model)
         ';
         if (!req.instructor.isAdmin)
         {
-            query += 'WHERE Student.InstructorId = ?';
-            params += req.instructor.id;
+            query += 'WHERE Students.InstructorId = ?';
+            params.push(req.instructor.id);
         }
         if (config.debug)
         {
             console.log('Custom Query:' + query.replace(/ +/g, ' '));
+            console.log('Parameters: ' + params);
         }
         model.sequelize.pool.query(query, params, function (error, results, fields)
         {
             if (error)
             {
-                res.send('Database query error', 500);
+                console.log(error);
+                res.send('Error fetching game results data.', 500);
             }
             else
             {

@@ -9,7 +9,11 @@
 
 <h2>Instructor Administration</h2>
 
-<p>Welcome <%= loginID %>!</p>
+<p>Welcome <%= loginID %>!
+
+<% if (instructor.isAdmin) { %>
+<p>You have admin privileges. You will see all instructor's students below.
+<% } %>
 
 <h3>Students</h3>
 
