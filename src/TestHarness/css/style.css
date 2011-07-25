@@ -8,13 +8,22 @@ body
 #header
 {
     border-bottom: solid 1px #999;
-    padding: 10px 10px 5px 10px;
     background: #eee;
+    height: 64px;
+}
+
+#header > div.logo
+{
+    float: left;
+    background-image: url(http://fluencychallenge.com/chrome/site/site-logo.png);
+    width: 256px;
+    height: 64px;
 }
 
 #header > div.login-info
 {
     float: right;
+    margin: 10px;
 }
 
 #content
@@ -61,7 +70,7 @@ form.vertical input[type="submit"]
     margin-left: -87px;
     width: 974px;
     height: 570px;
-    background: #dddddd;
+    background: #eee;
     clear: both;
 }
 
