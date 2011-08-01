@@ -21,16 +21,6 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
         self.engineConstructors[type] = constructor;
     };
     
-    this.authenticatePlayer = function (playerID, password, callback)
-    {
-        var playerState = new PlayerState(playerID);
-        $.post(this.baseURL + '/login', {playerID: playerID, password: password}, function (data)
-        {
-            playerState.updateWithJSON(data);
-            callback(playerState);
-        });
-    };
-    
     this.getAvailableStagesForPlayer = function (playerState, callback)
     {
         $.getJSON(this.baseURL + '/stage', function (data)

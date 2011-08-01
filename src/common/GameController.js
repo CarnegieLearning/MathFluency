@@ -14,24 +14,9 @@ var GameController = exports.GameController = function GameController()
 };
 
 /*
-    Method: authenticatePlayer
-    
-    Authenticates the player by checking the password.
-    
-    Parameters:
-        playerID - The unique ID for this player.
-        password - The password or other authentication token.
-        callback - This gets called with the player's <PlayerState> if authentication was successful.  Othrewise contains an error or something TBD.
-*/
-GameController.prototype.authenticatePlayer = function (playerID, password, callback)
-{
-    this.getPlayerState(playerID, callback);
-};
-
-/*
     Method: getPlayerState
     
-    Loads the current player state.  This method does not do any authorization.  Use <authenticatePlayer> to log a player in, or else do some other authorization to verify that the caller has permission to view the player's state.
+    Loads the current player state.  This method does not do any authorization; the application should perform authorization to verify that the caller has permission to view the player's state.
     
     Parameters:
         playerID - The unique ID for this player.

@@ -51,23 +51,6 @@ module.exports = function restapi(gameController)
     });
     
     // REST API endpoints that call out to the game controller.
-    app.post('/login', function (req, res)
-    {
-        var playerID = req.body.playerID;
-        var password = req.body.password;
-        gc.authenticatePlayer(playerID, password, function (playerState)
-        {
-            if ('playerID' in playerState)
-            {
-                req.session.playerID = playerState.playerID;
-                res.send(playerState.toJSON());
-            }
-            else
-            {
-                res.send(403);
-            }
-        });
-    });
     app.get('/stage/:stageID?', function (req, res)
     {
         if (req.stage)
