@@ -6,7 +6,6 @@ var PlayerState = require('./PlayerState').PlayerState;
     This is an abstract base class for a <GameController at http://fluencychallenge.com/wiki/DesignAndImplementation/GameController>.  It provides methods for loading and selecting game engines and stages.
     
     See:
-        - <GameControllerServer>
         - <GameControllerClient>
 */
 var GameController = exports.GameController = function GameController()

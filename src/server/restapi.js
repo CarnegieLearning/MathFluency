@@ -1,5 +1,21 @@
 var express = require('express');
 
+/*
+    Title: restapi
+    
+    This module creates an expressjs webapp that calls out to the given <GameController> and sends the results back as JSON.  For example, the REST API can be installed within a parent webapp at the sub-URL '/api' by doing:
+    
+    | var gc = createMyGameController(...);
+    | var app = require('express').createServer();
+    | app.use('/api', require('restapi')(gc));
+    
+    If the current request's session object has a `playerID' key, the <PlayerState> for that player will be loaded and used as the context.  Alternatively, the parent app can populate the `playerState' property of the request object to get the same effect.
+    
+    In general, all data objects are turned into JSON by calling a `toJSON' method.
+    
+    * Specs: <http://fluencychallenge.com/wiki/DesignAndImplementation/GameController#RESTAPI>
+*/
+
 module.exports = function restapi(gameController)
 {
     var app = express.createServer(),
@@ -51,6 +67,12 @@ module.exports = function restapi(gameController)
     });
     
     // REST API endpoints that call out to the game controller.
+    
+    /*
+        Method: GET /stage/:stageID?
+        
+        If stageID is specified, sends the results of <GameController.getStage>.  Otherwise, calls <GameController.getAvailableStagesForPlayer> and returns an object with the key `stageIDs' with an array of stage ID strings.
+    */
     app.get('/stage/:stageID?', function (req, res)
     {
         if (req.stage)
@@ -65,6 +87,12 @@ module.exports = function restapi(gameController)
             });
         }
     });
+    
+    /*
+        Method: GET /stage/:stageID/questionSet/:questionSetID?
+        
+        If questionSetID is specified, sends the results of <Stage.getQuestionSet>.  Otherwise, calls <Stage.getAllQuestionSetIDs> and returns an object with the key `questionSetIDs' with an array of question set ID strings.
+    */
     app.get('/stage/:stageID/questionSet/:questionSetID?', function (req, res)
     {
         if (req.questionSet)
@@ -79,6 +107,12 @@ module.exports = function restapi(gameController)
             });
         }
     });
+    
+    /*
+        Method: GET /stage/:stageID/questionSet/:questionSetID/engine
+        
+        Sends the engine configuration for the given <QuestionSet> by calling <GameController.getGameEngineForQuestionSet>.
+    */
     app.get('/stage/:stageID/questionSet/:questionSetID/engine', function (req, res)
     {
         gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
@@ -86,6 +120,12 @@ module.exports = function restapi(gameController)
             res.send(engine.toJSON());
         });
     });
+    
+    /*
+        Method: POST /stage/:stageID/questionSet/:questionSetID/results
+        
+        Saves the body of the request as the results for the given question set by calling <GameController.saveQuestionSetResults>.  Sends an empty object on success, or an error object with status 500 on failure.
+    */
     app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res)
     {
         gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function (error)

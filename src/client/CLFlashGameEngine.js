@@ -1,5 +1,17 @@
 var swfobject = require('./lib/swfobject').swfobject;
 
+/*
+    Class: CLFlashGameEngine
+    
+    A client game engine that instantiates an Adobe Flash-based Carnegie Learning fluency task game engine.  The config JSON should contain the following keys:
+    
+    * dataPath - The base URL to input data.
+    * swfPath - The base URL to the directory containing the Shell.swf and ExternalAssets.xml files.
+    
+    When the <run> method is called, the questionSet (or its parent stage) should define the following property:
+    
+    * input - The name of the input file XML file relative to dataPath.
+*/
 exports.CLFlashGameEngine = function CLFlashGameEngine(json)
 {
     this.dataPath = json.dataPath;

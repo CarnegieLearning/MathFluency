@@ -16,6 +16,15 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     this.engineConstructors = {};
     var self = this;
     
+    /*
+        Method: registerEngineConstructor
+        
+        Registers a constructor for the given engine type string.  The constructor will get called with the JSON data sent from the server when calling <getGameEngineForQuestionSet>, and should construct an object with a <run> method.
+        
+        Parameters:
+            type - A string that will match the `type' property sent from the server.
+            constructor - A constructor for the game engine.
+    */
     this.registerEngineConstructor = function (type, constructor)
     {
         self.engineConstructors[type] = constructor;
