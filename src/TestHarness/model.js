@@ -11,7 +11,7 @@ module.exports = function model(db, user, password, options, callback)
     model.sequelize = sequelize;
     
     model.Instructor = sequelize.define('Instructor', {
-        loginID: Sequelize.STRING,
+        loginID: {type: Sequelize.STRING, unique: true},
         password: Sequelize.STRING,
         isAdmin: Sequelize.BOOLEAN
     },
