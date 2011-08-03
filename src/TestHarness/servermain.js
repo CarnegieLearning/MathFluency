@@ -91,7 +91,8 @@ function runServer(config, model)
     // Helpers for commonly used template variables.
     
     app.helpers({
-        logoutURL: rootPath + '/logout'
+        logoutURL: rootPath + '/logout',
+        rootPath: rootPath
     });
     app.dynamicHelpers({
         loginID: function (req)
