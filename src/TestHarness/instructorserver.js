@@ -180,6 +180,11 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 file = req.form.files.file,
                 students = [],
                 skippedHeader = false;
+            if (!file)
+            {
+                res.send('No file selected', 400);
+                return;
+            }
             csv()
             .fromPath(file.path)
             .transform(function (data)

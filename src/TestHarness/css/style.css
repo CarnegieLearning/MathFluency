@@ -54,6 +54,11 @@ form.vertical input[type="submit"]
     font-size: small;
 }
 
+#csv-upload-dialog form
+{
+    font-size: small;
+}
+
 table.display
 {
     width: 100%;

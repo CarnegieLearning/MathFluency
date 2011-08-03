@@ -11,8 +11,18 @@ $(document).ready(function ()
     $('#csv-upload-dialog').dialog({
         autoOpen: false,
         width: 400,
-        height: 250,
-        modal: true
+        height: 400,
+        modal: true,
+        buttons: {
+            'Cancel': function ()
+            {
+                $(this).dialog('close');
+            },
+            'Upload': function ()
+            {
+                $(this).find('form').submit();
+            }
+        }
     });
     
     $('#csv-upload-button').button().click(function ()

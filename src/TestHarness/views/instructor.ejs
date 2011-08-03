@@ -99,7 +99,14 @@
 
 <div id="csv-upload-dialog" title="Upload Roster CSV File">
     <form class="vertical" method="post" action="<%= csvUploadURL %>" enctype="multipart/form-data">
-        <p>Upload a CSV file whose first 4 columns are, in order: Roster ID, Login ID, Last name, First name.  The first line should be a header and will be skipped; the column names provide in the header are ignored.</p>
+        <p>The first CSV 4 columns in order:</p>
+        <ol>
+            <li>Roster ID
+            <li>Login ID
+            <li>Last name
+            <li>First name
+        </ol>
+        <p>The first line will be skipped; the column names in the header are ignored.</p>
         <label>
             File
             <input type="file" name="file">
@@ -122,6 +129,5 @@
                 </select>
             </label>
         <% } %>
-        <input type="submit" value="Submit">
     </form>
 </div>
