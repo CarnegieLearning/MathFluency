@@ -1,4 +1,5 @@
-var express = require('express');
+var csv = require('csv'),
+    Sequelize = require('sequelize');
 
 exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
 {
@@ -9,13 +10,28 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             res.redirect('home');
             return;
         }
-        res.render('instructor', {
+        var templateVars = {
             mainjs: 'instructor',
-            conditions: gc.allConditionNames()
-        });
+            conditions: gc.allConditionNames(),
+            csvUploadURL: rootPath + '/instructor/student.csv'
+        };
+        if (req.instructor.isAdmin)
+        {
+            model.Instructor.findAll().on('success', function (instructors)
+            {
+                templateVars['instructors'] = instructors;
+                doRender();
+            });
+        }
+        else doRender();
+        
+        function doRender()
+        {
+            res.render('instructor', templateVars);
+        }
     });
     
-    app.get(rootPath + '/instructor/students', function (req ,res)
+    app.get(rootPath + '/instructor/student.:format?', function (req ,res)
     {
         // For admins, show all students along with which instructor they belong to.
         // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.  This requires sequelize >1.0.2 (currently not in npm yet) which exposes the MySQL connection pool.
@@ -59,12 +75,19 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             }
             else
             {
-                res.send({students: results});
+                if (req.params.format == 'csv')
+                {
+                    // TODO: CSV dump of students.
+                }
+                else
+                {
+                    res.send({students: results});
+                }
             }
         });
     });
     
-    app.get(rootPath + '/instructor/students/results', function (req, res)
+    app.get(rootPath + '/instructor/student/result', function (req, res)
     {
         var params = [];
         var query = '\
@@ -106,8 +129,14 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         });
     });
     
-    app.post(rootPath + '/instructor/student', function (req, res)
+    app.post(rootPath + '/instructor/student.:format?', function (req, res)
     {
+        if (req.params.format == 'csv')
+        {
+            addStudentsFromCSV(req, res);
+            return;
+        }
+        
         console.log('Creating new student with parameters:');
         console.log(req.body);
         if (req.body.loginID.length == 0)
@@ -130,6 +159,106 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             console.log('Error adding student:');
             console.log(error);
             res.send(error.message, 500);
+        });
+    });
+    
+    function addStudentsFromCSV(req, res)
+    {
+        if (req.instructor.isAdmin)
+        {
+            var instructorID = parseInt(req.form.fields.instructorID);
+            model.Instructor.find(instructorID).on('success', addForInstructor);
+        }
+        else
+        {
+            addForInstructor(req.instructor);
+        }
+        
+        function addForInstructor(instructor)
+        {
+            var cond = req.form.fields.condition,
+                file = req.form.files.file,
+                students = [],
+                skippedHeader = false;
+            csv()
+            .fromPath(file.path)
+            .transform(function (data)
+            {
+                // Remove leading #s.
+                for (var col in data)
+                {
+                    data[col] = data[col].replace(/^#/, '');
+                }
+                return data;
+            })
+            .on('data', function (data)
+            {
+                if (!skippedHeader)
+                {
+                    skippedHeader = true;
+                    return;
+                }
+                students.push({
+                    rosterID: data[0],
+                    loginID: data[1],
+                    lastName: data[2],
+                    firstName: data[3],
+                    password: data[0]
+                });
+            })
+            .on('end', function ()
+            {
+                res.render('roster-upload-confirm', {
+                    students: students,
+                    instructor: instructor,
+                    condition: cond,
+                    file: file.filename,
+                    formData: {
+                        instructorID: instructor.id,
+                        students: students,
+                        condition: cond
+                    },
+                    mainjs: 'roster-upload'
+                });
+            })
+            .on('error', function (error)
+            {
+                res.send(error.message, 500);
+            });
+        }
+    }
+    
+    app.post(rootPath + '/instructor/roster-upload-confirm', function (req, res)
+    {
+        model.Instructor.find(parseInt(req.body.instructorID))
+        .on('failure', function (error)
+        {
+            res.send(error.message, 500);
+        })
+        .on('success', function (instructor)
+        {
+            var chainer = new Sequelize.Utils.QueryChainer();
+            for (var i in req.body.students)
+            {
+                var s = req.body.students[i];
+                if (!s.loginID)
+                {
+                    res.send('Login ID cannot be empty', 400);
+                    return;
+                }
+                var student = model.Student.build(s);
+                student.condition = req.body.condition;
+                chainer.add(student.setInstructor(instructor));
+            }
+            chainer.run()
+            .on('failure', function (error)
+            {
+                res.send(error.message, 500);
+            })
+            .on('success', function ()
+            {
+                res.send({});
+            });
         });
     });
 };

@@ -11,7 +11,8 @@ var urllib = require('url'),
     modelInit = require('./model'),
     gameController = require('./gamecontroller').gameController,
     addInstructorEndpoints = require('./instructorserver').addInstructorEndpoints,
-    MySQLSessionStore = require('connect-mysql-session')(express);
+    MySQLSessionStore = require('connect-mysql-session')(express),
+    form = require('connect-form');
 
 
 function runServer(config, model)
@@ -40,6 +41,7 @@ function runServer(config, model)
     app.set('views', __dirname + '/views');
     
     app.use(express.bodyParser());
+    app.use(form());
     app.use(express.cookieParser());
     app.use(express.session({
         store: new MySQLSessionStore(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions),

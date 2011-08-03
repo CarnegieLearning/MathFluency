@@ -37,6 +37,7 @@
 </table>
 
 <button id="new-student-button">Add new student</button>
+<button id="csv-upload-button">Upload roster</button>
 
 <h3>Game Results</h3>
 
@@ -88,10 +89,39 @@
         <label>
             Condition
             <select name="condition">
-                <% for (var i in conditions) { var condition = conditions[i]; %>
+                <% for (var i = 0; i < conditions.length; i++) { var condition = conditions[i]; %>
+                <option value="<%= condition %>"><%= condition %></option>
+                <% } %>
+            </select>
+        </label>
+    </form>
+</div>
+
+<div id="csv-upload-dialog" title="Upload Roster CSV File">
+    <form class="vertical" method="post" action="<%= csvUploadURL %>" enctype="multipart/form-data">
+        <p>Upload a CSV file whose first 4 columns are, in order: Roster ID, Login ID, Last name, First name.  The first line should be a header and will be skipped; the column names provide in the header are ignored.</p>
+        <label>
+            File
+            <input type="file" name="file">
+        </label>
+        <label>
+            Condition
+            <select name="condition">
+                <% for (var i = 0; i < conditions.length; i++) { var condition = conditions[i]; %>
                 <option value="<%= condition %>"><%= condition %>
                 <% } %>
             </select>
         </label>
+        <% if (instructor.isAdmin) { %>
+            <label>
+                Instructor
+                <select name="instructorID">
+                <% for (var i = 0; i < instructors.length; i++) { var inst = instructors[i]; %>
+                    <option value="<%= inst.id %>"><%= inst.loginID %></option>
+                <% } %>
+                </select>
+            </label>
+        <% } %>
+        <input type="submit" value="Submit">
     </form>
 </div>

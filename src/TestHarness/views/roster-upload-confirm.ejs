@@ -1,0 +1,40 @@
+<script type="text/javascript" language="javascript">
+    window.FLUENCY.formData = <%- JSON.stringify(formData) %>;
+</script>
+
+<h2>Roster Upload Confirmation</h2>
+
+<dl>
+    <dt>File
+    <dd><%= file %>
+    <dt>Instructor
+    <dd><%= instructor.loginID %>
+    <dt>Condition
+    <dd><%= condition %>
+</dl>
+
+<table id="roster-upload-table">
+    <thead>
+        <tr>
+            <th>Roster ID
+            <th>First Name
+            <th>Last Name
+            <th>Login
+            <th>Password
+        </tr>
+    </thead>
+    <tbody>
+        <% for (var i = 0; i < students.length; i++) { var student = students[i]; %>
+        <tr>
+            <td><%= student.rosterID %>
+            <td><%= student.firstName %>
+            <td><%= student.lastName %>
+            <td><%= student.loginID %>
+            <td><%= student.password %>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+
+<button id="confirm-button">Confirm new students</button>
+

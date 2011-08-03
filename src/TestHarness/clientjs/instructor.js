@@ -8,6 +8,18 @@ $(document).ready(function ()
         here = here + '/';
     }
     
+    $('#csv-upload-dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        height: 250,
+        modal: true
+    });
+    
+    $('#csv-upload-button').button().click(function ()
+    {
+        $('#csv-upload-dialog').dialog('open');
+    });
+    
     $('#new-student-dialog').dialog({
         autoOpen: false,
         width: 350,
@@ -65,7 +77,7 @@ $(document).ready(function ()
             });
     }
     
-    $.getJSON(here + 'students')
+    $.getJSON(here + 'student')
         .success(function (data)
         {
             $.each(data.students, addStudentToTable);
@@ -75,7 +87,7 @@ $(document).ready(function ()
             alert('Error fetching students: ' + jqXHR.responseText);
         });
     
-    $.getJSON(here + 'students/results')
+    $.getJSON(here + 'student/result')
         .success(function (data)
         {
             $.each(data.results, addResultsToTable);
