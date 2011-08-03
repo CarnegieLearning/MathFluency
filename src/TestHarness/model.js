@@ -11,7 +11,7 @@ module.exports = function model(db, user, password, options, callback)
     model.sequelize = sequelize;
     
     model.Instructor = sequelize.define('Instructor', {
-        loginID: {type: Sequelize.STRING, unique: true},
+        loginID: {type: Sequelize.STRING, unique: true, allowNull: false},
         password: Sequelize.STRING,
         isAdmin: Sequelize.BOOLEAN
     },
@@ -31,7 +31,7 @@ module.exports = function model(db, user, password, options, callback)
     });
     
     model.Student = sequelize.define('Student', {
-        loginID: {type: Sequelize.STRING, unique: true},
+        loginID: {type: Sequelize.STRING, unique: true, allowNull: false},
         rosterID: Sequelize.STRING,
         lastName: Sequelize.STRING,
         firstName: Sequelize.STRING,
