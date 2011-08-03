@@ -15,7 +15,7 @@ body
 #header > div.logo
 {
     float: left;
-    background-image: url(http://fluencychallenge.com/chrome/site/site-logo.png);
+    background-image: url(/static/site-logo.png);
     width: 256px;
     height: 64px;
 }
