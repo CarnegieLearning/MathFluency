@@ -1,0 +1,19 @@
+{
+    "port": 8000,
+    "rootPath": "/",
+    "outputPath": "/var/www/testharness/output",
+    "httpLogPath": "unused; outputs to stdout when debug=true",
+    "longSessionLength": 7776000000,
+    "requireStudentPassword": false,
+    "mysql": {
+        "database": "TestHarness",
+        "user": "TestHarness",
+        "password": "TestHarness"
+    },
+    "sequelizeOptions": {
+        "logging": true
+    },
+    "gameConfig": "config/games.json",
+    "cliDataPath": "/var/www/fluencybrowser/fluency/data",
+    "debug": true
+}

@@ -35,7 +35,15 @@ function runServer(config, model)
     if (config.debug)
     {
         app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-        app.use(express.logger());
+        app.use(express.logger({ format: 'dev' }));
+    }
+    else
+    {
+        var logStream = fs.createWriteStream(config.httpLogPath, {
+            flags: 'a',
+            encoding: 'utf8'
+        });
+        app.use(express.logger({ buffer: true, stream: logStream }));
     }
     app.set('view engine', 'ejs');
     app.set('views', __dirname + '/views');
@@ -93,6 +101,7 @@ function runServer(config, model)
     // Helpers for commonly used template variables.
     
     app.helpers({
+        config: config,
         logoutURL: rootPath + '/logout',
         rootPath: rootPath
     });
@@ -145,8 +154,18 @@ function runServer(config, model)
         var loginID = req.body.loginID;
         var remember = req.body.remember;
         var isStudent = req.params.studentOrInstructor == 'student';
-        var modelClass = model[isStudent ? 'Student' : 'Instructor'];
-        modelClass.authenticate(loginID, password, function (entity)
+        
+        if (isStudent && !config.requireStudentPassword)
+        {
+            model.Student.find({where: {loginID: loginID}}).on('success', callback);
+        }
+        else
+        {
+            var modelClass = model[isStudent ? 'Student' : 'Instructor'];
+            modelClass.authenticate(loginID, password, callback);
+        }
+        
+        function callback(entity)
         {
             if (entity)
             {
@@ -161,13 +180,14 @@ function runServer(config, model)
             {
                 res.send('Login ID and/or password is incorrect.', 400);
             }
-        });
+        }
     });
     
     app.get(rootPath + '/logout', function (req, res)
     {
-        req.session.destroy();
-        res.redirect('home');
+        req.session.destroy(function () {
+            res.redirect('home');
+        });
     });
     
     // Instructor page and endpoints
@@ -202,15 +222,16 @@ function runServer(config, model)
 
 if (require.main === module)
 {
-    if (process.argv.length > 2)
+    if (process.argv.length > 3)
     {
         console.log('Invalid argument(s).');
         console.log('Usage: node servermain.js [CONFIG]');
         console.log('CONFIG is a path to a server config JSON file, defaulting to serverconfig.json.');
         process.exit(1);
     }
-    var configFile = process.argv[2] || './serverconfig.js',
-        config = require(configFile);
+    var configFile = process.argv[2] || __dirname + '/config/debug.json',
+        configStr = fs.readFileSync(configFile, 'utf8'),
+        config = JSON.parse(configStr);
     modelInit(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions, function (model)
     {
         runServer(config, model);
