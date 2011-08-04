@@ -99,7 +99,7 @@
 
 <div id="csv-upload-dialog" title="Upload Roster CSV File">
     <form class="vertical" method="post" action="<%= csvUploadURL %>" enctype="multipart/form-data">
-        <p>The first CSV 4 columns in order:</p>
+        <p>The first 4 columns should be:</p>
         <ol>
             <li>Roster ID
             <li>Login ID
@@ -115,7 +115,7 @@
             Condition
             <select name="condition">
                 <% for (var i = 0; i < conditions.length; i++) { var condition = conditions[i]; %>
-                <option value="<%= condition %>"><%= condition %>
+                <option value="<%= condition %>"><%= condition %></option>
                 <% } %>
             </select>
         </label>

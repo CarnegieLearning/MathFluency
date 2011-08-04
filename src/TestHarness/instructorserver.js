@@ -1,5 +1,6 @@
 var csv = require('csv'),
-    Sequelize = require('sequelize');
+    Sequelize = require('sequelize'),
+    util = require('../common/Utilities');
 
 exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
 {
@@ -12,7 +13,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         }
         var templateVars = {
             mainjs: 'instructor',
-            conditions: gc.allConditionNames(),
+            conditions: ['[random]'].concat(gc.allConditionNames()),
             csvUploadURL: rootPath + '/instructor/student.csv'
         };
         if (req.instructor.isAdmin)
@@ -144,6 +145,11 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             res.send("Login ID cannot be empty", 400);
             return;
         }
+        var condition = req.body.condition;
+        if (condition == '[random]')
+        {
+            condition = util.randomItem(gc.allConditionNames());
+        }
         var student = model.Student.build(req.body);
         student.setInstructor(req.instructor).on('success', function ()
         {
@@ -176,7 +182,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function addForInstructor(instructor)
         {
-            var cond = req.form.fields.condition,
+            var allConditions = gc.allConditionNames(),
+                cond = req.form.fields.condition,
                 file = req.form.files.file,
                 students = [],
                 skippedHeader = false;
@@ -203,12 +210,16 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                     skippedHeader = true;
                     return;
                 }
+                var condition = (cond == '[random]' ?
+                                 util.randomItem(allConditions) :
+                                 cond);
                 students.push({
                     rosterID: data[0],
                     loginID: data[1],
                     lastName: data[2],
                     firstName: data[3],
-                    password: data[0]
+                    password: data[0].substr(-4),
+                    condition: condition
                 });
             })
             .on('end', function ()

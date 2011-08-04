@@ -2,9 +2,21 @@
     window.FLUENCY.formData = <%- JSON.stringify(formData) %>;
 </script>
 
+<style type="text/css">
+    dl.meta {
+        background: #eee;
+        border: #666;
+    }
+    dl.meta dt {
+        float: left;
+        width: 100px;
+        font-weight: bold;
+    }
+</style>
+
 <h2>Roster Upload Confirmation</h2>
 
-<dl>
+<dl class="meta">
     <dt>File
     <dd><%= file %>
     <dt>Instructor
@@ -21,6 +33,7 @@
             <th>Last Name
             <th>Login
             <th>Password
+            <th>Condition
         </tr>
     </thead>
     <tbody>
@@ -31,6 +44,7 @@
             <td><%= student.lastName %>
             <td><%= student.loginID %>
             <td><%= student.password %>
+            <td><%= student.condition %>
         </tr>
         <% } %>
     </tbody>
