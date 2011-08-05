@@ -230,8 +230,10 @@ if (require.main === module)
     var configFile = process.argv[2] || __dirname + '/config/debug.json',
         configStr = fs.readFileSync(configFile, 'utf8'),
         config = JSON.parse(configStr);
-    modelInit(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions, function (model)
+    modelInit(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions, function (error, model)
     {
+        if (error) throw error;
+        
         runServer(config, model);
     });
 }

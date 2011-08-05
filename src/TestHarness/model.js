@@ -94,6 +94,10 @@ module.exports = function model(db, user, password, options, callback)
     
     sequelize.sync({force:options.forceSync}).on('success', function ()
     {
-        callback(model);
+        callback(null, model);
+    })
+    .on('failure', function (error)
+    {
+        callback(error);
     });
-}
+};
