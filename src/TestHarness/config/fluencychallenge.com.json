@@ -2,7 +2,6 @@
     "port": 8000,
     "rootPath": "/",
     "outputPath": "/var/www/testharness/output",
-    "httpLogPath": "/var/www/testharness/testharness.log",
     "longSessionLength": 7776000000,
     "requireStudentPassword": false,
     "mysql": {

@@ -39,11 +39,9 @@ function runServer(config, model)
     }
     else
     {
-        var logStream = fs.createWriteStream(config.httpLogPath, {
-            flags: 'a',
-            encoding: 'utf8'
-        });
-        app.use(express.logger({ buffer: true, stream: logStream }));
+        app.use(express.logger({
+            format: ':req[x-forwarded-for] [:date] :method :url :status :res[content-length] - :response-time ms'
+        }));
     }
     app.set('view engine', 'ejs');
     app.set('views', __dirname + '/views');
