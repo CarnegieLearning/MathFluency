@@ -20,18 +20,22 @@
     
     "stages": {
         "racecar-1": {
+            "displayName": "Race Car",
             "engine": "racecar",
             "cli_fluency_task": "carfraction2_complement"
         },
         "snowboard-1": {
+            "displayName": "Snowboard",
             "engine": "snowboard",
             "cli_fluency_task": "snowdecimal3_multidigit"
         },
         "pie-1": {
+            "displayName": "Pie the Clown",
             "engine": "pie",
             "cli_fluency_task": "piefracdecperc1_percentslessthan1"
         },
         "scuba-1": {
+            "displayName": "Scuba",
             "engine": "scuba",
             "cli_fluency_task": "scubabalanceeqn"
         }

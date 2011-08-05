@@ -72,6 +72,13 @@ table.display
     height: 30em;
 }
 
+#stage-list h3
+{
+    color: #666;
+    float: left;
+    margin: 10px;
+}
+
 #stage-list ol > li
 {
     list-style-type: none;

@@ -20,18 +20,20 @@ var util = require("./Utilities");
         id - A unique identifier for this entity within the parent.
         myGameProperties - The game properties defined at this level.
 */
-var QuestionEntity = exports.QuestionEntity = function QuestionEntity(type, parent, id, gameProperties)
+var QuestionEntity = exports.QuestionEntity = function QuestionEntity(type, parent, id, displayName, gameProperties)
 {
     this.type = type;
     this.parent = parent;
     if (id instanceof Object)
     {
         this.id = id.id;
+        this.displayName = id.displayName;
         this.myGameProperties = id.myGameProperties;
     }
     else
     {
         this.id = id;
+        this.displayName = displayName;
         this.myGameProperties = (gameProperties ? gameProperties : {});
     }
 };
@@ -59,7 +61,7 @@ QuestionEntity.prototype.allGameProperties = function allGameProperties()
 */
 QuestionEntity.prototype.toJSON = function toJSON()
 {
-    return {id: this.id, myGameProperties: this.myGameProperties};
+    return {id: this.id, displayName: this.displayName, myGameProperties: this.myGameProperties};
 };
 
 
@@ -76,9 +78,9 @@ QuestionEntity.prototype.toJSON = function toJSON()
         id - The unique ID for this stage.
         myGameProperties - An optional dictionary of game properties.
 */
-var Stage = exports.Stage = function Stage(id, gameProperties)
+var Stage = exports.Stage = function Stage(id, displayName, gameProperties)
 {
-    Stage.superConstructor.call(this, 'Stage', undefined, id, gameProperties);
+    Stage.superConstructor.call(this, 'Stage', undefined, id, displayName, gameProperties);
 };
 util.extend(Stage, QuestionEntity);
 
@@ -134,9 +136,9 @@ Stage.prototype.getNextQuestionSet = function (playerState, callback)
         id - The unique ID for this question set.
         myGameProperties - An optional dictionary of game properties.
 */
-var QuestionSet = exports.QuestionSet = function QuestionSet(stage, id, gameProperties)
+var QuestionSet = exports.QuestionSet = function QuestionSet(stage, id, displayName, gameProperties)
 {
-    QuestionSet.superConstructor.call(this, 'QuestionSet', stage, id, gameProperties);
+    QuestionSet.superConstructor.call(this, 'QuestionSet', stage, id, displayName, gameProperties);
 };
 util.extend(QuestionSet, QuestionEntity);
 
@@ -197,7 +199,7 @@ QuestionSet.prototype.getNextQuestionSubset = function (playerState, callback)
 */
 var QuestionSubset = exports.QuestionSubset = function QuestionSubset(set, id, questions, gameProperties)
 {
-    QuestionSubset.superConstructor.call(this, 'QuestionSubset', set, id, gameProperties);
+    QuestionSubset.superConstructor.call(this, 'QuestionSubset', set, id, id, gameProperties);
     this.questions = questions;
 };
 util.extend(QuestionSubset, QuestionEntity);
@@ -228,7 +230,7 @@ QuestionSubset.prototype.nextQuestion = function (playerState)
 */
 var Question = exports.Question = function Question(subset, id, questionProperties)
 {
-    Question.superConstructor.call(this, 'Question', subset, id);
+    Question.superConstructor.call(this, 'Question', subset, id, id);
     this.questionProperties = questionProperties;
 };
 util.extend(Question, QuestionEntity);

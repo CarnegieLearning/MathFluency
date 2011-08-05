@@ -34,7 +34,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     {
         $.getJSON(this.baseURL + '/stage', function (data)
         {
-            callback(data.stageIDs);
+            callback(data.stages);
         });
     };
     

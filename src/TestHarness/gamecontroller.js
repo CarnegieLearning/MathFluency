@@ -24,6 +24,7 @@ exports.gameController = function (outputPath, serverConfig, model)
         }
         else
         {
+            console.log('Reading game config: ' + gameConfig);
             cachedConfig = JSON.parse(fs.readFileSync(gameConfig));
             populateConfig(cachedConfig, serverConfig);
             return cachedConfig;
@@ -41,7 +42,16 @@ exports.gameController = function (outputPath, serverConfig, model)
     
     gc.getAvailableStagesForPlayer = function (playerState, callback)
     {
-        callback(config().conditions[playerState.condition].stages);
+        var stageIDs = config().conditions[playerState.condition].stages;
+        var allStages = config().stages;
+        var stages = stageIDs.map(function (id)
+        {
+            return {
+                id: id,
+                displayName: allStages[id].displayName
+            };
+        });
+        callback(stages);
     };
     
     gc.getStage = function (stageID, callback)
@@ -166,7 +176,7 @@ function makeStage(stageID, config, serverConfig)
     var stageConfig = config.stages[stageID];
     var engineConfig = config.engines[stageConfig.engine];
     
-    var stage = new QuestionHierarchy.Stage(stageID, stageConfig.gameProperties);
+    var stage = new QuestionHierarchy.Stage(stageID, stageConfig.displayName, stageConfig.gameProperties);
     stage.engineID = stageConfig.engine;
 
     if (stageConfig.cli_fluency_task)
@@ -181,7 +191,9 @@ function makeStage(stageID, config, serverConfig)
             }
             else
             {
-                fs.readFile(serverConfig.cliDataPath + '/' + engineConfig.cli_task_id + '/' + stageConfig.cli_fluency_task + '/dataset.xml', function (err, str)
+                var filepath = serverConfig.cliDataPath + '/' + engineConfig.cli_task_id + '/' + stageConfig.cli_fluency_task + '/dataset.xml';
+                console.log('Reading CLI Flash task configuration: ' + filepath);
+                fs.readFile(filepath, function (err, str)
                 {
                     if (err) throw err;
                     
@@ -193,7 +205,7 @@ function makeStage(stageID, config, serverConfig)
                         {
                             var xml = data.datafile[i]['@']['name'];
                             var id = data.datafile[i]['@']['id'];
-                            var qs = new QuestionHierarchy.QuestionSet(stage, id, {
+                            var qs = new QuestionHierarchy.QuestionSet(stage, id, id, {
                                 input: stageConfig.cli_fluency_task + '/' + xml
                             });
                             taskConfig[id] = qs;

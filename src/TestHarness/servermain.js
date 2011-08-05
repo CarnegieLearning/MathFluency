@@ -201,11 +201,11 @@ function runServer(config, model)
             res.redirect('home');
             return;
         }
-        gc.getAvailableStagesForPlayer(req.student, function (stageIDs)
+        gc.getAvailableStagesForPlayer(req.student, function (stages)
         {
             res.render('student', {
                 mainjs: 'student',
-                levels: stageIDs
+                levels: stages
             });
         });
     });

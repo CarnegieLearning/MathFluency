@@ -1,11 +1,11 @@
 <div id="status-message"></div>
 
 <div id="stage-list">
-    <h3>Available Levels</h3>
+    <h3>Levels</h3>
     <ol>
         <% for (var i in levels) { var level = levels[i]; %>
         <li>
-            <button class="level" type="button" value="<%= level %>"><%= level %></button>
+            <button class="level" type="button" value="<%= level.id %>"><%= level.displayName %></button>
         </li>
         <% } %>
     </ol>

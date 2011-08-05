@@ -81,9 +81,9 @@ module.exports = function restapi(gameController)
         }
         else
         {
-            gc.getAvailableStagesForPlayer(req.playerState, function (stageIDs)
+            gc.getAvailableStagesForPlayer(req.playerState, function (stages)
             {
-                res.send({'stageIDs': stageIDs});
+                res.send({'stages': stages});
             });
         }
     });

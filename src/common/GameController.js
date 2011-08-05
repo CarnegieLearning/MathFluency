@@ -47,7 +47,7 @@ GameController.prototype.savePlayerState = function (playerState, callback)
     
     Parameters:
         playerState - The current player state.
-        callback - This gets called with an array of available stageIDs.
+        callback - This gets called with an array of objects with keys 'id' and 'displayName'.
 */
 GameController.prototype.getAvailableStagesForPlayer = function (playerState, callback)
 {
