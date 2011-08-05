@@ -17,11 +17,20 @@ $(document).ready(function ()
             })
             .error(function (jqXHR, statusText, errorThrown)
             {
-                alert('Error adding students: ' + jqXHR.responseText);
+                showErrors($.parseJSON(jqXHR.responseText).errors);
             })
             .complete(function ()
             {
                 //unlock();
             });
+    }
+    
+    function showErrors(errors)
+    {
+        $.each(errors, function (i, err)
+        {
+            return $('<li>').text(err).appendTo('#error-messages ol');
+        });
+        $('#error-messages').show('fast');
     }
 });

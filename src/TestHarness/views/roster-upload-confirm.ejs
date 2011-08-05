@@ -5,16 +5,29 @@
 <style type="text/css">
     dl.meta {
         background: #eee;
-        border: #666;
+        border: solid 1px #666;
+        padding: 10px;
     }
     dl.meta dt {
         float: left;
         width: 100px;
         font-weight: bold;
     }
+    #error-messages {
+        background: #fee;
+        border: solid 3px #f00;
+        display: none;
+        padding: 10px;
+    }
 </style>
 
 <h2>Roster Upload Confirmation</h2>
+
+<div id="error-messages">
+    <h3>Errors</h3>
+    <ol>
+    </ol>
+</div>
 
 <dl class="meta">
     <dt>File

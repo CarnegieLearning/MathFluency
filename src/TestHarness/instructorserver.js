@@ -162,8 +162,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         })
         .on('failure', function (error)
         {
-            console.log('Error adding student:');
-            console.log(error);
+            console.log('Error adding student: ' + error.message);
+            console.log('  SQL: ' + error.sql);
             res.send(error.message, 500);
         });
     });
@@ -267,9 +267,16 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 chainer.add(student.setInstructor(instructor));
             }
             chainer.run()
-            .on('failure', function (error)
+            .on('failure', function (errors)
             {
-                res.send(error.message, 500);
+                var messages = [];
+                console.log(errors.length + ' errors adding ' + req.body.students.length + ' students:');
+                for (var i = 0; i < errors.length; i++)
+                {
+                    console.log('  ' + errors[i].message);
+                    messages.push(errors[i].message);
+                }
+                res.send({errors: messages}, 500);
             })
             .on('success', function ()
             {
