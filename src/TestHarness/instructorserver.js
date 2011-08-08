@@ -150,7 +150,14 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         {
             condition = util.randomItem(gc.allConditionNames());
         }
-        var student = model.Student.build(req.body);
+        var student = model.Student.build();
+		student.loginID = req.body.loginID
+        student.rosterID = req.body.rosterID
+        student.lastName = req.body.lastName
+        student.firstName = req.body.firstName
+        student.password = req.body.password
+        student.condition = condition
+
         student.setInstructor(req.instructor).on('success', function ()
         {
             var json = student.toJSON();
