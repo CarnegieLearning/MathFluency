@@ -12,16 +12,20 @@ var urllib = require('url'),
     gameController = require('./gamecontroller').gameController,
     addInstructorEndpoints = require('./instructorserver').addInstructorEndpoints,
     MySQLSessionStore = require('connect-mysql-session')(express),
-    form = require('connect-form');
+    form = require('connect-form'),
+    resolveRelativePath = require('../common/Utilities').resolveRelativePath;
 
 
 function runServer(config, model)
 {
-    var port = config.port || 80,
-        rootPath = config.rootPath || '/',
-        outputPath = config.outputPath || __dirname + '/output';
+    config.outputPath = resolveRelativePath(config.outputPath, __dirname);
+    config.cliDataPath = resolveRelativePath(config.cliDataPath, __dirname);
+    config.gameConfig = resolveRelativePath(config.gameConfig, __dirname);
     
-    var gc = gameController(outputPath, config, model);
+    var port = config.port || 80,
+        rootPath = config.rootPath || '/';
+    
+    var gc = gameController(config, model);
     
     var app = express.createServer();
     if (rootPath && rootPath != '/')
@@ -65,13 +69,13 @@ function runServer(config, model)
     app.use(rootPath + '/js', express.static(__dirname + '/clientjs'));
     app.use(rootPath + '/static', express.static(__dirname + '/../static'));
     app.use(rootPath + '/static', express.directory(__dirname + '/../static', {icons:true}));
-    app.use(rootPath + '/output', express.static(outputPath));
-    app.use(rootPath + '/output', express.directory(outputPath, {icons:true}));
+    app.use(rootPath + '/output', express.static(config.outputPath));
+    app.use(rootPath + '/output', express.directory(config.outputPath, {icons:true}));
     app.use(rootPath + '/css', express.static(__dirname + '/css'));
     app.use(rootPath + '/fluency/data', express.static(config.cliDataPath + '/data'));
-	app.use(rootPath + '/fluency/data', express.directory(config.cliDataPath + '/data', {icons:true}));
-	app.use(rootPath + '/fluency/games', express.static(config.cliDataPath + '/games'));
-	app.use(rootPath + '/fluency/games', express.directory(config.cliDataPath + '/games', {icons:true}));
+    app.use(rootPath + '/fluency/data', express.directory(config.cliDataPath + '/data', {icons:true}));
+    app.use(rootPath + '/fluency/games', express.static(config.cliDataPath + '/games'));
+    app.use(rootPath + '/fluency/games', express.directory(config.cliDataPath + '/games', {icons:true}));
 
     // Middleware to load student or instructor data before processing requests.
     

@@ -6,14 +6,11 @@ var fs = require('fs'),
     util = require('../common/Utilities');
 
 
-exports.gameController = function (outputPath, serverConfig, model)
+exports.gameController = function (serverConfig, model)
 {
     var gameConfig = serverConfig.gameConfig,
+        outputPath = serverConfig.outputPath,
         debug = serverConfig.debug;
-    if (gameConfig[0] != '/')
-    {
-        gameConfig = __dirname + '/' + gameConfig;
-    }
     
     var cachedConfig = null;
     function config()
