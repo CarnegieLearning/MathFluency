@@ -116,8 +116,8 @@ $(document).ready(function ()
     .css({fontSize: '12px'})
     .dataTable({
         "bJQueryUI": true,
-		"sScrollY": "15em",
-		"bPaginate": false
+        "sScrollY": "15em",
+        "bPaginate": false
     });
     
     $('#student-table').delegate('tr', 'click', function ()
