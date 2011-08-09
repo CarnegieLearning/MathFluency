@@ -68,7 +68,11 @@ function runServer(config, model)
     app.use(rootPath + '/output', express.static(outputPath));
     app.use(rootPath + '/output', express.directory(outputPath, {icons:true}));
     app.use(rootPath + '/css', express.static(__dirname + '/css'));
-    
+    app.use(rootPath + '/fluency/data', express.static(config.cliDataPath + '/data'));
+	app.use(rootPath + '/fluency/data', express.directory(config.cliDataPath + '/data', {icons:true}));
+	app.use(rootPath + '/fluency/games', express.static(config.cliDataPath + '/games'));
+	app.use(rootPath + '/fluency/games', express.directory(config.cliDataPath + '/games', {icons:true}));
+
     // Middleware to load student or instructor data before processing requests.
     
     app.use(function (req, res, next)
