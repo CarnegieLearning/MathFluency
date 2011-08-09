@@ -1,7 +1,7 @@
 {
     "port": 8000,
     "rootPath": "/",
-    "outputPath": "/var/www/testharness/output",
+    "outputPath": "../static/private/fluency/output",
     "longSessionLength": 7776000000,
     "requireStudentPassword": false,
     "mysql": {
@@ -13,6 +13,6 @@
         "logging": true
     },
     "gameConfig": "config/games.json",
-    "cliDataPath": "/var/www/fluencybrowser/fluency",
+    "cliDataPath": "../static/private/fluency",
     "debug": true
 }

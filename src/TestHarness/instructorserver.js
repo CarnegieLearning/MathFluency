@@ -151,7 +151,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             condition = util.randomItem(gc.allConditionNames());
         }
         var student = model.Student.build();
-		student.loginID = req.body.loginID
+        student.loginID = req.body.loginID
         student.rosterID = req.body.rosterID
         student.lastName = req.body.lastName
         student.firstName = req.body.firstName
