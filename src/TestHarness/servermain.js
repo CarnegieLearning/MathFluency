@@ -63,7 +63,7 @@ function runServer(config, model)
         }
     }));
     
-    // Static handlers for client-side JS and game assessts, etc.
+    // Static handlers for client-side JS and game assets, etc.
     
     app.use(rootPath + '/js/node_modules', express.static(__dirname + '/../../node_modules'));
     app.use(rootPath + '/js/common', express.static(__dirname + '/../common'));
