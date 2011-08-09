@@ -84,7 +84,7 @@ module.exports = function model(db, user, password, options, callback)
                     gold: 1,
                     silver: 2,
                     bronze: 3
-                }[str && str.toLowerCase()] || 'none';
+                }[str && str.toLowerCase()] || 0;
             }
         }
     });
