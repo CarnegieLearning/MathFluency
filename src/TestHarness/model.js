@@ -1,3 +1,5 @@
+"use strict";
+
 var Sequelize = require('sequelize'),
     util = require('../common/Utilities');
 

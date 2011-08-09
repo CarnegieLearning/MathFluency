@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require('fs'),
     xml2js = require('xml2js'),
     uuid = require('node-uuid'),
