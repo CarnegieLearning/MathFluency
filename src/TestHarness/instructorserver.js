@@ -1,3 +1,5 @@
+"use strict";
+
 var csv = require('csv'),
     Sequelize = require('sequelize'),
     util = require('../common/Utilities');

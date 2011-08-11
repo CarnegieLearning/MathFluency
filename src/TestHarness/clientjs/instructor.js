@@ -1,3 +1,5 @@
+"use strict";
+
 require('./common/Utilities');
 
 $(document).ready(function ()
