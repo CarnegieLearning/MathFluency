@@ -38,6 +38,12 @@ function runServer(config, model)
     {
         rootPath = '';
     }
+    express.logger.token('user', function (req, res)
+    {
+        return (req.instructor ? req.instructor.loginID + '(i)' :
+                req.student ? req.student.loginID + '(s)' :
+                '-');
+    });
     if (config.debug)
     {
         app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
@@ -46,7 +52,7 @@ function runServer(config, model)
     else
     {
         app.use(express.logger({
-            format: ':req[x-forwarded-for] [:date] :method :url :status :res[content-length] - :response-time ms'
+            format: ':req[x-forwarded-for] :user [:date] :method :url :status :res[content-length] - :response-time ms'
         }));
     }
     app.set('view engine', 'ejs');
