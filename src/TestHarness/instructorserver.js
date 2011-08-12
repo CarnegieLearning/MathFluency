@@ -42,7 +42,6 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
     {
         getStudents(req.instructor, function (error, results, fields)
         {
-            console.log(fields);
             if (error)
             {
                 console.log(error);

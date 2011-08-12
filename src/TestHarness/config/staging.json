@@ -1,7 +1,7 @@
 {
     "port": 8002,
     "rootPath": "/",
-    "outputPath": "../static/private/fluency/output",
+    "outputPath": "/var/www/testharness/output",
     "longSessionLength": 7776000000,
     "requireStudentPassword": false,
     "mysql": {
