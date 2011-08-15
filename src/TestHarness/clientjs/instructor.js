@@ -10,6 +10,11 @@ $(document).ready(function ()
         here = here + '/';
     }
     
+    $('#export-button').button().click(function ()
+    {
+        window.location.href = here + 'export';
+    });
+    
     $('#csv-upload-dialog').dialog({
         autoOpen: false,
         width: 400,

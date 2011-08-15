@@ -15,6 +15,11 @@
 <p>You have admin privileges. You will see all instructor's students below.
 <% } %>
 
+<h3>Actions</h3>
+<button id="new-student-button">Add new student</button>
+<button id="csv-upload-button">Upload roster</button>
+<button id="export-button">Download data</button>
+
 <h3>Students</h3>
 
 <table id="student-table" class="display">
@@ -36,9 +41,6 @@
     </tbody>
 </table>
 
-<button id="new-student-button">Add new student</button>
-<button id="csv-upload-button">Upload roster</button>
-
 <h3>Game Results</h3>
 
 <table id="games-table" class="display">
@@ -59,6 +61,7 @@
     <tbody>
     </tbody>
 </table>
+
 
 <h3>Game Output XML</h3>
 <textarea id="game-output" readonly>

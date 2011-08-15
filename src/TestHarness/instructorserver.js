@@ -2,6 +2,10 @@
 
 var csv = require('csv'),
     Sequelize = require('sequelize'),
+    uuid = require('node-uuid'),
+    async = require('async'),
+    fs = require('fs'),
+    spawn = require('child_process').spawn,
     util = require('../common/Utilities');
 
 exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
@@ -36,40 +40,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
     
     app.get(rootPath + '/instructor/student.:format?', function (req ,res)
     {
-        // For admins, show all students along with which instructor they belong to.
-        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.  This requires sequelize >1.0.2 (currently not in npm yet) which exposes the MySQL connection pool.
-        var params = [];
-        var query = '\
-            SELECT \
-                Students.rosterID, \
-                Students.loginID, \
-                Students.firstName, \
-                Students.lastName, \
-                Students.password, \
-                Students.condition, \
-                Instructors.loginID AS instructorLoginID, \
-                gameCount \
-            FROM Students \
-                INNER JOIN Instructors ON Instructors.id = Students.InstructorId \
-                LEFT JOIN ( \
-                    SELECT \
-                        StudentId, \
-                        COUNT(*) AS gameCount \
-                    FROM QuestionSetOutcomes \
-                    GROUP BY StudentID \
-                ) GameCounts ON GameCounts.StudentId = Students.id \
-        ';
-        if (!req.instructor.isAdmin)
-        {
-            query += 'WHERE Instructors.id = ?';
-            params.push(req.instructor.id);
-        }
-        if (config.debug)
-        {
-            console.log('Custom Query:' + query.replace(/ +/g, ' '));
-            console.log('Parameters: ' + params);
-        }
-        model.sequelize.pool.query(query, params, function (error, results, fields)
+        getStudents(req.instructor, function (error, results, fields)
         {
             if (error)
             {
@@ -80,7 +51,9 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             {
                 if (req.params.format == 'csv')
                 {
-                    // TODO: CSV dump of students.
+                    res.header('Content-Type', 'text/csv');
+                    res.header('Content-Disposition', 'attachment; filename="students.csv"');
+                    outputCSV(res, results, fields);
                 }
                 else
                 {
@@ -90,35 +63,9 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         });
     });
     
-    app.get(rootPath + '/instructor/student/result', function (req, res)
+    app.get(rootPath + '/instructor/student/result.:format?', function (req, res)
     {
-        var params = [];
-        var query = '\
-            SELECT \
-                Students.rosterID, \
-                Students.loginID, \
-                QuestionSetOutcomes.condition, \
-                QuestionSetOutcomes.stageID, \
-                QuestionSetOutcomes.questionSetID, \
-                QuestionSetOutcomes.score, \
-                QuestionSetOutcomes.medal, \
-                QuestionSetOutcomes.elapsedMS, \
-                QuestionSetOutcomes.endTime, \
-                QuestionSetOutcomes.dataFile \
-            FROM QuestionSetOutcomes \
-            INNER JOIN Students ON Students.id = QuestionSetOutcomes.StudentId \
-        ';
-        if (!req.instructor.isAdmin)
-        {
-            query += 'WHERE Students.InstructorId = ?';
-            params.push(req.instructor.id);
-        }
-        if (config.debug)
-        {
-            console.log('Custom Query:' + query.replace(/ +/g, ' '));
-            console.log('Parameters: ' + params);
-        }
-        model.sequelize.pool.query(query, params, function (error, results, fields)
+        getResults(req.instructor, function (error, results, fields)
         {
             if (error)
             {
@@ -127,7 +74,16 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             }
             else
             {
-                res.send({results: results});
+                if (req.params.format == 'csv')
+                {
+                    res.header('Content-Type', 'text/csv');
+                    res.header('Content-Disposition', 'attachment; filename="game-results.csv"');
+                    outputCSV(res, results, fields);
+                }
+                else
+                {
+                    res.send({results: results});
+                }
             }
         });
     });
@@ -293,4 +249,183 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             });
         });
     });
+    
+    app.get(rootPath + '/instructor/export', function (req, res)
+    {
+        var dir = '/tmp/testharness-export-' + uuid(),
+            archiveDir = 'testharness-export',
+            outputDir = dir + '/' + archiveDir + '/output';
+        
+        console.log('Creating export directory: ' + dir);
+        // Octal literals are disallowed in strict mode, so 7<<6 is just another way of saying 0700, i.e. owner can read, write, and enter.
+        fs.mkdirSync(dir, 7 << 6);
+        fs.mkdirSync(dir + '/' + archiveDir, 7 << 6);
+        fs.mkdirSync(outputDir, 7 << 6);
+        
+        async.parallel([
+            function (callback)
+            {
+                getStudents(req.instructor, function (err, results, fields)
+                {
+                    if (err) return callback(err);
+                    
+                    outputCSV(dir + '/' + archiveDir + '/students.csv', results, fields, callback);
+                });
+            },
+            function (callback)
+            {
+                getResults(req.instructor, function (err, results, fields)
+                {
+                    if (err) return callback(err);
+                    
+                    async.parallel([
+                        function (callback)
+                        {
+                            outputCSV(dir + '/' + archiveDir + '/game-results.csv', results, fields, callback);
+                        },
+                        function (callback)
+                        {
+                            copyGames(results, callback);
+                        }
+                    ],
+                    callback);
+                });
+            }
+        ],
+        function (err)
+        {
+            if (err)
+            {
+                console.log(err);
+                res.send(err.message, 500);
+            }
+            else
+            {
+                zipAndSend();
+            }
+        });
+        
+        function copyGames(questionResults, callback)
+        {
+            async.forEach(questionResults,
+            function (item, callback)
+            {
+                var inputPath = config.outputPath + '/' + item.dataFile;
+                var outputPath = outputDir + '/' + item.dataFile;
+                copyFile(inputPath, outputPath, callback);
+            },
+            callback);
+        }
+        
+        function zipAndSend()
+        {
+            spawn('tar', ['cvzf', 'archive.tar.gz', archiveDir], {
+                cwd: dir
+            })
+            .on('exit', function (code)
+            {
+                if (code != 0) return res.send('tar failed with code ' + code, 500);
+                
+                res.download(dir + '/archive.tar.gz', 'testharness-export.tar.gz');
+            });
+        }
+    });
+    
+    function copyFile(inPath, outPath, callback)
+    {
+        var inStream = fs.createReadStream(inPath);
+        var outStream = fs.createWriteStream(outPath);
+        require('util').pump(inStream, outStream, callback);
+    }
+    
+    function getStudents(instructor, callback)
+    {
+        // For admins, show all students along with which instructor they belong to.
+        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.  This requires sequelize >1.0.2 (currently not in npm yet) which exposes the MySQL connection pool.
+        var params = [];
+        var query = '\
+            SELECT \
+                Students.rosterID, \
+                Students.loginID, \
+                Students.firstName, \
+                Students.lastName, \
+                Students.password, \
+                Students.condition, \
+                Instructors.loginID AS instructorLoginID, \
+                gameCount \
+            FROM Students \
+                INNER JOIN Instructors ON Instructors.id = Students.InstructorId \
+                LEFT JOIN ( \
+                    SELECT \
+                        StudentId, \
+                        COUNT(*) AS gameCount \
+                    FROM QuestionSetOutcomes \
+                    GROUP BY StudentID \
+                ) GameCounts ON GameCounts.StudentId = Students.id \
+        ';
+        if (!instructor.isAdmin)
+        {
+            query += 'WHERE Instructors.id = ?';
+            params.push(instructor.id);
+        }
+        if (config.debug)
+        {
+            console.log('Custom Query:' + query.replace(/ +/g, ' '));
+            console.log('Parameters: ' + params);
+        }
+        model.sequelize.pool.query(query, params, callback);
+    }
+    
+    function getResults(instructor, callback)
+    {
+        var params = [];
+        var query = '\
+            SELECT \
+                Students.rosterID, \
+                Students.loginID, \
+                QuestionSetOutcomes.condition, \
+                QuestionSetOutcomes.stageID, \
+                QuestionSetOutcomes.questionSetID, \
+                QuestionSetOutcomes.score, \
+                QuestionSetOutcomes.medal, \
+                QuestionSetOutcomes.elapsedMS, \
+                QuestionSetOutcomes.endTime, \
+                QuestionSetOutcomes.dataFile \
+            FROM QuestionSetOutcomes \
+            INNER JOIN Students ON Students.id = QuestionSetOutcomes.StudentId \
+        ';
+        if (!instructor.isAdmin)
+        {
+            query += 'WHERE Students.InstructorId = ?';
+            params.push(instructor.id);
+        }
+        if (config.debug)
+        {
+            console.log('Custom Query:' + query.replace(/ +/g, ' '));
+            console.log('Parameters: ' + params);
+        }
+        model.sequelize.pool.query(query, params, callback);
+    }
+    
+    function outputCSV(pathOrStream, results, fields, callback)
+    {
+        var fieldNames = [];
+        for (var field in fields) fieldNames.push(field);
+        fieldNames.sort(function (a, b)
+        {
+            return fields[a].number - fields[b].number;
+        });
+        var csvWriter = csv();
+        csvWriter.on('end', callback);
+        
+        if (typeof pathOrStream === 'string') csvWriter.toPath(pathOrStream);
+        else csvWriter.toStream(pathOrStream);
+        
+        csvWriter.write(fieldNames);
+        for (var i = 0; i < results.length; i++)
+        {
+            csvWriter.write(results[i]);
+        }
+        csvWriter.end();
+    }
 };
