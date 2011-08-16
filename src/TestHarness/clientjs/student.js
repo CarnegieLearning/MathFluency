@@ -69,7 +69,7 @@ function lock(message)
 function unlock(message)
 {
     $(':input').attr('disabled', false);
-    $('#instructions-link').show('fast');
+    $('#instructions-link').hide('fast');
     statusMessage(message);
 }
 
