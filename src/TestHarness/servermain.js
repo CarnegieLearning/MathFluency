@@ -46,12 +46,10 @@ function runServer(config, model)
     });
     if (config.debug)
     {
-        app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
         app.use(express.logger({ format: 'dev' }));
     }
     else
     {
-        app.use(express.errorHandler({ dumpExceptions: true, showMessage: true }));
         app.use(express.logger({
             format: ':req[x-forwarded-for] :user [:date] :method :url :status :res[content-length] - :response-time ms'
         }));
@@ -59,6 +57,7 @@ function runServer(config, model)
     app.set('view engine', 'ejs');
     app.set('views', __dirname + '/views');
     
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     app.use(express.bodyParser());
     app.use(form());
     app.use(express.cookieParser());
