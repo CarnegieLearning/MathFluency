@@ -55,7 +55,7 @@ function runServer(config, model)
         }));
     }
     app.set('view engine', 'ejs');
-    app.set('views', __dirname + '/views');
+    app.set('views', resolveRelativePath('views', __dirname));
     
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     app.use(express.bodyParser());
@@ -71,21 +71,21 @@ function runServer(config, model)
     
     // Static handlers for client-side JS and game assets, etc.
     
-    app.use(rootPath + '/js/node_modules', express.static(__dirname + '/../../node_modules'));
-    app.use(rootPath + '/js/common', express.static(__dirname + '/../common'));
-    app.use(rootPath + '/js/client', express.static(__dirname + '/../client'));
-    app.use(rootPath + '/js', express.static(__dirname + '/clientjs'));
-    app.use(rootPath + '/static', express.static(__dirname + '/../static'));
-    app.use(rootPath + '/static', express.directory(__dirname + '/../static', {icons:true}));
+    app.use(rootPath + '/js/node_modules', express.static(resolveRelativePath('../../node_modules', __dirname)));
+    app.use(rootPath + '/js/common', express.static(resolveRelativePath('../common', __dirname)));
+    app.use(rootPath + '/js/client', express.static(resolveRelativePath('../client', __dirname)));
+    app.use(rootPath + '/js', express.static(resolveRelativePath('clientjs', __dirname)));
+    app.use(rootPath + '/static', express.static(resolveRelativePath('../static', __dirname)));
+    app.use(rootPath + '/static', express.directory(resolveRelativePath('../static', __dirname), {icons:true}));
     app.use(rootPath + '/output', express.static(config.outputPath));
     app.use(rootPath + '/output', express.directory(config.outputPath, {icons:true}));
-    app.use(rootPath + '/css', express.static(__dirname + '/css'));
+    app.use(rootPath + '/css', express.static(resolveRelativePath('css', __dirname)));
     
     // These are the MATHia fluency tasks. On the production server, these are served directly by nginx instead of going through the node webapp. We have these static handlers so dev environment can run without the nginx reverse proxy.
-    app.use(rootPath + '/fluency/data', express.static(config.cliDataPath + '/data'));
-    app.use(rootPath + '/fluency/data', express.directory(config.cliDataPath + '/data', {icons:true}));
-    app.use(rootPath + '/fluency/games', express.static(config.cliDataPath + '/games'));
-    app.use(rootPath + '/fluency/games', express.directory(config.cliDataPath + '/games', {icons:true}));
+    app.use(rootPath + '/fluency/data', express.static(resolveRelativePath('data', config.cliDataPath)));
+    app.use(rootPath + '/fluency/data', express.directory(resolveRelativePath('data', config.cliDataPath), {icons:true}));
+    app.use(rootPath + '/fluency/games', express.static(resolveRelativePath('games', config.cliDataPath)));
+    app.use(rootPath + '/fluency/games', express.directory(resolveRelativePath('games', config.cliDataPath), {icons:true}));
 
     // Middleware to load student or instructor data before processing requests.
     
@@ -263,7 +263,7 @@ if (require.main === module)
         console.log('CONFIG is a path to a server config JSON file, defaulting to serverconfig.json.');
         process.exit(1);
     }
-    var configFile = process.argv[2] || __dirname + '/config/debug.json',
+    var configFile = process.argv[2] || resolveRelativePath('config/debug.json', __dirname),
         configStr = fs.readFileSync(configFile, 'utf8'),
         config = JSON.parse(configStr);
     modelInit(config.mysql.database, config.mysql.user, config.mysql.password, config.sequelizeOptions, function (error, model)

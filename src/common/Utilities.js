@@ -53,7 +53,7 @@ exports.resolveRelativePath = function resolveRelativePath(path, basePath)
 {
     if (path[0] == '/') return path;
     
-    return basePath + '/' + path;
+    return require('path').join(basePath, path);
 };
 
 

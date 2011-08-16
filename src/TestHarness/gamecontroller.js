@@ -4,6 +4,7 @@ var fs = require('fs'),
     xml2js = require('xml2js'),
     uuid = require('node-uuid'),
     async = require('async'),
+    path = require('path'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
     util = require('../common/Utilities');
@@ -191,7 +192,7 @@ function makeStage(stageID, config, serverConfig)
             }
             else
             {
-                var filepath = serverConfig.cliDataPath + '/data/' + engineConfig.cli_task_id + '/' + stageConfig.cli_fluency_task + '/dataset.xml';
+                var filepath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id, stageConfig.cli_fluency_task, 'dataset.xml');
                 console.log('Reading CLI Flash task configuration: ' + filepath);
                 fs.readFile(filepath, function (err, str)
                 {
@@ -242,9 +243,9 @@ function makeStage(stageID, config, serverConfig)
         
         stage.getInstructionsHTML = function (baseURL, callback)
         {
-            var enginePath = serverConfig.cliDataPath + '/data/' + engineConfig.cli_task_id,
-                instructionsPath = enginePath + '/ft_instructions.html',
-                tipsPath = enginePath + '/' + stageConfig.cli_fluency_task + '/ft_tips.html';
+            var enginePath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id),
+                instructionsPath = path.join(enginePath, 'ft_instructions.html'),
+                tipsPath = path.join(enginePath, stageConfig.cli_fluency_task, 'ft_tips.html');
             async.map([instructionsPath, tipsPath],
                 function (path, callback)
                 {
