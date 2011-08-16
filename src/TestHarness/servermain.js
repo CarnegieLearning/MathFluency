@@ -272,4 +272,10 @@ if (require.main === module)
         
         runServer(config, model);
     });
+    
+    process.on('uncaughtException', function (err)
+    {
+        console.log('Uncaught exception!');
+        console.log(err.stack);
+    });
 }

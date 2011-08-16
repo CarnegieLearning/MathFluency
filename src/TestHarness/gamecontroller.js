@@ -187,7 +187,7 @@ function makeStage(stageID, config, serverConfig)
         {
             if (stage._cachedCLITaskConfig)
             {
-                callback(stage._cachedCLITaskConfig);
+                callback(null, stage._cachedCLITaskConfig);
             }
             else
             {
@@ -195,7 +195,11 @@ function makeStage(stageID, config, serverConfig)
                 console.log('Reading CLI Flash task configuration: ' + filepath);
                 fs.readFile(filepath, function (err, str)
                 {
-                    if (err) throw err;
+                    if (err)
+                    {
+                        console.log('Error reading CLI Flash task config: ' + err.message);
+                        return callback(err);
+                    }
                     
                     var parser = new xml2js.Parser();
                     parser.on('end', function (data)
@@ -211,7 +215,7 @@ function makeStage(stageID, config, serverConfig)
                             taskConfig[id] = qs;
                         }
                         stage._cachedCLITaskConfig = taskConfig;
-                        callback(taskConfig);
+                        callback(null, taskConfig);
                     });
                     parser.parseString(str);
                 });
@@ -220,16 +224,18 @@ function makeStage(stageID, config, serverConfig)
         
         stage.getAllQuestionSetIDs = function (callback)
         {
-            stage.getCLITaskConfig(function (taskConfig)
+            stage.getCLITaskConfig(function (err, taskConfig)
             {
+                if (err) return callback(null);
                 callback(util.allDictKeys(taskConfig));
             });
         }
         
         stage.getQuestionSet = function (questionSetID, callback)
         {
-            stage.getCLITaskConfig(function (taskConfig)
+            stage.getCLITaskConfig(function (err, taskConfig)
             {
+                if (err) return callback(null);
                 callback(taskConfig[questionSetID]);
             });
         }
@@ -269,7 +275,7 @@ function makeStage(stageID, config, serverConfig)
     {
         stage.getAllQuestionSetIDs(function (ids)
         {
-            stage.getQuestionSet(util.randomItem(ids), callback);
+            stage.getQuestionSet(ids && util.randomItem(ids), callback);
         });
     };
     
