@@ -51,6 +51,7 @@ function runServer(config, model)
     }
     else
     {
+        app.use(express.errorHandler({ dumpExceptions: true, showMessage: true }));
         app.use(express.logger({
             format: ':req[x-forwarded-for] :user [:date] :method :url :status :res[content-length] - :response-time ms'
         }));
