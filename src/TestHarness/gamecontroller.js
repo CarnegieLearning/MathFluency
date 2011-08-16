@@ -3,6 +3,7 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
     uuid = require('node-uuid'),
+    async = require('async'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
     util = require('../common/Utilities');
@@ -232,6 +233,31 @@ function makeStage(stageID, config, serverConfig)
                 callback(taskConfig[questionSetID]);
             });
         }
+        
+        stage.getInstructionsHTML = function (baseURL, callback)
+        {
+            var enginePath = serverConfig.cliDataPath + '/data/' + engineConfig.cli_task_id,
+                instructionsPath = enginePath + '/ft_instructions.html',
+                tipsPath = enginePath + '/' + stageConfig.cli_fluency_task + '/ft_tips.html';
+            async.map([instructionsPath, tipsPath],
+                function (path, callback)
+                {
+                    fs.readFile(path, 'utf8', function (err, str)
+                    {
+                        // Remove the <?xml...?> declaration and resolve relative image paths.
+                        str = str.replace(/<\?xml [^>]*\?>/, '')
+                                 .replace(/(<img src=['"])\.\//g, '$1' + baseURL + '/data/' + engineConfig.cli_task_id + '/');
+                        callback(err, str);
+                    });
+                },
+                function (error, results)
+                {
+                    if (error) return callback(error);
+                    
+                    var html = '<h2>Instructions</h2>' + results[0] + '<h2>Tips</h2>' + results[1];
+                    callback(null, html);
+                });
+        };
     }
     else
     {
