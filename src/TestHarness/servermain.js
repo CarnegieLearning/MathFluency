@@ -80,6 +80,8 @@ function runServer(config, model)
     app.use(rootPath + '/output', express.static(config.outputPath));
     app.use(rootPath + '/output', express.directory(config.outputPath, {icons:true}));
     app.use(rootPath + '/css', express.static(__dirname + '/css'));
+    
+    // These are the MATHia fluency tasks. On the production server, these are served directly by nginx instead of going through the node webapp. We have these static handlers so dev environment can run without the nginx reverse proxy.
     app.use(rootPath + '/fluency/data', express.static(config.cliDataPath + '/data'));
     app.use(rootPath + '/fluency/data', express.directory(config.cliDataPath + '/data', {icons:true}));
     app.use(rootPath + '/fluency/games', express.static(config.cliDataPath + '/games'));
@@ -222,6 +224,24 @@ function runServer(config, model)
             res.render('student', {
                 mainjs: 'student',
                 levels: stages
+            });
+        });
+    });
+    
+    // Game instructions renderer.
+    
+    app.get(rootPath + '/instructions/:stage', function (req, res)
+    {
+        gc.getStage(req.params.stage, function (stage)
+        {
+            stage.getInstructionsHTML(rootPath + '/fluency', function (error, html)
+            {
+                if (error) return res.send(error.message, 500);
+                
+                res.render('instructions', {
+                    instructionsHTML: html,
+                    layout: null
+                });
             });
         });
     });
