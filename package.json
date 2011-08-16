@@ -21,7 +21,8 @@
     "node-uuid": ">=1.2.0",
     "csv": ">=0.0.9",
     "connect-form": ">=0.3.0",
-    "async": "~0.1"
+    "async": "~0.1",
+    "rimraf": "~1.0"
   },
   "devDependencies": {}
 }

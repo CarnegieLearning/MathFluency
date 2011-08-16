@@ -5,6 +5,7 @@ var csv = require('csv'),
     uuid = require('node-uuid'),
     async = require('async'),
     fs = require('fs'),
+    rimraf = require('rimraf'),
     path = require('path'),
     spawn = require('child_process').spawn,
     util = require('../common/Utilities');
@@ -251,7 +252,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         });
     });
     
-    app.get(rootPath + '/instructor/export', function (req, res)
+    app.get(rootPath + '/instructor/export', function (req, res, next)
     {
         var dir = path.join('/tmp', 'testharness-export-' + uuid()),
             archiveDir = 'testharness-export',
@@ -295,15 +296,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         ],
         function (err)
         {
-            if (err)
-            {
-                console.log(err);
-                res.send(err.message, 500);
-            }
-            else
-            {
-                zipAndSend();
-            }
+            if (err) cleanup(err);
+            else zipAndSend();
         });
         
         function copyGames(questionResults, callback)
@@ -320,14 +314,34 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function zipAndSend()
         {
-            spawn('tar', ['cvzf', 'archive.tar.gz', archiveDir], {
+            var tar = spawn('tar', ['czf', 'archive.tar.gz', archiveDir], {
                 cwd: dir
-            })
-            .on('exit', function (code)
+            });
+            tar.stdout.on('data', function (data) {
+                console.log(data);
+            }).setEncoding('ascii');
+            tar.stderr.on('data', function (data) {
+                console.log(data);
+            }).setEncoding('ascii');
+            tar.on('exit', function (code)
             {
-                if (code != 0) return res.send('tar failed with code ' + code, 500);
+                if (code != 0) return cleanup(new Error('tar failed with code ' + code));
                 
-                res.download(path.join(dir, 'archive.tar.gz'), 'testharness-export.tar.gz');
+                res.download(path.join(dir, 'archive.tar.gz'), 'testharness-export.tar.gz', cleanup);
+            });
+        }
+        
+        function cleanup(err)
+        {
+            if (err) next(err);
+            
+            console.log('Deleting export directory: ' + dir);
+            rimraf(dir, function (err)
+            {
+                if (err)
+                {
+                    console.log(err.stack);
+                }
             });
         }
     });
