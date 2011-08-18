@@ -5,6 +5,8 @@ var csv = require('csv'),
     uuid = require('node-uuid'),
     async = require('async'),
     fs = require('fs'),
+    rimraf = require('rimraf'),
+    path = require('path'),
     spawn = require('child_process').spawn,
     util = require('../common/Utilities');
 
@@ -228,7 +230,6 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                     return;
                 }
                 var student = model.Student.build(s);
-                student.condition = req.body.condition;
                 chainer.add(student.setInstructor(instructor));
             }
             chainer.run()
@@ -250,11 +251,11 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         });
     });
     
-    app.get(rootPath + '/instructor/export', function (req, res)
+    app.get(rootPath + '/instructor/export', function (req, res, next)
     {
-        var dir = '/tmp/testharness-export-' + uuid(),
+        var dir = path.join('/tmp', 'testharness-export-' + uuid()),
             archiveDir = 'testharness-export',
-            outputDir = dir + '/' + archiveDir + '/output';
+            outputDir = path.join(dir, archiveDir, 'output');
         
         console.log('Creating export directory: ' + dir);
         // Octal literals are disallowed in strict mode, so 7<<6 is just another way of saying 0700, i.e. owner can read, write, and enter.
@@ -269,7 +270,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 {
                     if (err) return callback(err);
                     
-                    outputCSV(dir + '/' + archiveDir + '/students.csv', results, fields, callback);
+                    outputCSV(path.join(dir, archiveDir, 'students.csv'), results, fields, callback);
                 });
             },
             function (callback)
@@ -281,7 +282,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                     async.parallel([
                         function (callback)
                         {
-                            outputCSV(dir + '/' + archiveDir + '/game-results.csv', results, fields, callback);
+                            outputCSV(path.join(dir, archiveDir, 'game-results.csv'), results, fields, callback);
                         },
                         function (callback)
                         {
@@ -294,15 +295,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         ],
         function (err)
         {
-            if (err)
-            {
-                console.log(err);
-                res.send(err.message, 500);
-            }
-            else
-            {
-                zipAndSend();
-            }
+            if (err) cleanup(err);
+            else zipAndSend();
         });
         
         function copyGames(questionResults, callback)
@@ -310,8 +304,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             async.forEach(questionResults,
             function (item, callback)
             {
-                var inputPath = config.outputPath + '/' + item.dataFile;
-                var outputPath = outputDir + '/' + item.dataFile;
+                var inputPath = path.join(config.outputPath, item.dataFile);
+                var outputPath = path.join(outputDir, item.dataFile);
                 copyFile(inputPath, outputPath, callback);
             },
             callback);
@@ -319,14 +313,34 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function zipAndSend()
         {
-            spawn('tar', ['cvzf', 'archive.tar.gz', archiveDir], {
+            var tar = spawn('tar', ['czf', 'archive.tar.gz', archiveDir], {
                 cwd: dir
-            })
-            .on('exit', function (code)
+            });
+            tar.stdout.on('data', function (data) {
+                console.log(data);
+            }).setEncoding('ascii');
+            tar.stderr.on('data', function (data) {
+                console.log(data);
+            }).setEncoding('ascii');
+            tar.on('exit', function (code)
             {
-                if (code != 0) return res.send('tar failed with code ' + code, 500);
+                if (code != 0) return cleanup(new Error('tar failed with code ' + code));
                 
-                res.download(dir + '/archive.tar.gz', 'testharness-export.tar.gz');
+                res.download(path.join(dir, 'archive.tar.gz'), 'testharness-export.tar.gz', cleanup);
+            });
+        }
+        
+        function cleanup(err)
+        {
+            if (err) next(err);
+            
+            console.log('Deleting export directory: ' + dir);
+            rimraf(dir, function (err)
+            {
+                if (err)
+                {
+                    console.log(err.stack);
+                }
             });
         }
     });

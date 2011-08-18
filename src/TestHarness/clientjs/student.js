@@ -11,6 +11,8 @@ $(document).ready(function ()
         var stageID = $(this).val();
         runStage(stageID);
     });
+    
+    $('#instructions-link').button();
 });
 
 function runStage(stageID)
@@ -38,6 +40,10 @@ function runQuestionSet(questionSet)
     gc.getGameEngineForQuestionSet(questionSet, function (engine)
     {
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
+        $('#instructions-link').unbind('click').click(function ()
+        {
+            window.open('instructions/' + questionSet.parent.id, 'Instructions', 'status=0,location=0,toolbar=0,width=600,height=500');
+        });
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data...');
@@ -56,12 +62,14 @@ function runQuestionSet(questionSet)
 function lock(message)
 {
     $(':input').attr('disabled', true);
+    $('#instructions-link').attr('disabled', false).show('fast');
     statusMessage(message);
 }
 
 function unlock(message)
 {
     $(':input').attr('disabled', false);
+    $('#instructions-link').hide('fast');
     statusMessage(message);
 }
 

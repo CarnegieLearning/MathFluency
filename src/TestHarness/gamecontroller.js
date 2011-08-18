@@ -3,6 +3,8 @@
 var fs = require('fs'),
     xml2js = require('xml2js'),
     uuid = require('node-uuid'),
+    async = require('async'),
+    path = require('path'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
     util = require('../common/Utilities');
@@ -186,15 +188,19 @@ function makeStage(stageID, config, serverConfig)
         {
             if (stage._cachedCLITaskConfig)
             {
-                callback(stage._cachedCLITaskConfig);
+                callback(null, stage._cachedCLITaskConfig);
             }
             else
             {
-                var filepath = serverConfig.cliDataPath + '/data/' + engineConfig.cli_task_id + '/' + stageConfig.cli_fluency_task + '/dataset.xml';
+                var filepath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id, stageConfig.cli_fluency_task, 'dataset.xml');
                 console.log('Reading CLI Flash task configuration: ' + filepath);
                 fs.readFile(filepath, function (err, str)
                 {
-                    if (err) throw err;
+                    if (err)
+                    {
+                        console.log('Error reading CLI Flash task config: ' + err.message);
+                        return callback(err);
+                    }
                     
                     var parser = new xml2js.Parser();
                     parser.on('end', function (data)
@@ -210,7 +216,7 @@ function makeStage(stageID, config, serverConfig)
                             taskConfig[id] = qs;
                         }
                         stage._cachedCLITaskConfig = taskConfig;
-                        callback(taskConfig);
+                        callback(null, taskConfig);
                     });
                     parser.parseString(str);
                 });
@@ -219,19 +225,46 @@ function makeStage(stageID, config, serverConfig)
         
         stage.getAllQuestionSetIDs = function (callback)
         {
-            stage.getCLITaskConfig(function (taskConfig)
+            stage.getCLITaskConfig(function (err, taskConfig)
             {
+                if (err) return callback(null);
                 callback(util.allDictKeys(taskConfig));
             });
         }
         
         stage.getQuestionSet = function (questionSetID, callback)
         {
-            stage.getCLITaskConfig(function (taskConfig)
+            stage.getCLITaskConfig(function (err, taskConfig)
             {
+                if (err) return callback(null);
                 callback(taskConfig[questionSetID]);
             });
         }
+        
+        stage.getInstructionsHTML = function (baseURL, callback)
+        {
+            var enginePath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id),
+                instructionsPath = path.join(enginePath, 'ft_instructions.html'),
+                tipsPath = path.join(enginePath, stageConfig.cli_fluency_task, 'ft_tips.html');
+            async.map([instructionsPath, tipsPath],
+                function (path, callback)
+                {
+                    fs.readFile(path, 'utf8', function (err, str)
+                    {
+                        // Remove the <?xml...?> declaration and resolve relative image paths.
+                        str = str.replace(/<\?xml [^>]*\?>/, '')
+                                 .replace(/(<img src=['"])\.\//g, '$1' + baseURL + '/data/' + engineConfig.cli_task_id + '/');
+                        callback(err, str);
+                    });
+                },
+                function (error, results)
+                {
+                    if (error) return callback(error);
+                    
+                    var html = '<h2>Instructions</h2>' + results[0] + '<h2>Tips</h2>' + results[1];
+                    callback(null, html);
+                });
+        };
     }
     else
     {
@@ -243,7 +276,7 @@ function makeStage(stageID, config, serverConfig)
     {
         stage.getAllQuestionSetIDs(function (ids)
         {
-            stage.getQuestionSet(util.randomItem(ids), callback);
+            stage.getQuestionSet(ids && util.randomItem(ids), callback);
         });
     };
     
