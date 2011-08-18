@@ -230,7 +230,6 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                     return;
                 }
                 var student = model.Student.build(s);
-                student.condition = req.body.condition;
                 chainer.add(student.setInstructor(instructor));
             }
             chainer.run()
