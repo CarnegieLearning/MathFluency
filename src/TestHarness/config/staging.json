@@ -5,9 +5,9 @@
     "longSessionLength": 7776000000,
     "requireStudentPassword": false,
     "mysql": {
-        "database": "TestHarness",
-        "user": "TestHarness",
-        "password": "TestHarness"
+        "database": "TestHarness_staging",
+        "user": "staging",
+        "password": "staging"
     },
     "sequelizeOptions": {
         "logging": true
