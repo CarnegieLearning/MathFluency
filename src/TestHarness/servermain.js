@@ -15,7 +15,7 @@ var urllib = require('url'),
     addInstructorEndpoints = require('./instructorserver').addInstructorEndpoints,
     MySQLSessionStore = require('connect-mysql-session')(express),
     form = require('connect-form'),
-    resolveRelativePath = require('../common/Utilities').resolveRelativePath;
+    resolveRelativePath = require('../server/serverutils').resolveRelativePath;
 
 
 function runServer(config, model)
