@@ -251,6 +251,18 @@ function makeStage(stageID, config, serverConfig)
                 {
                     fs.readFile(path, 'utf8', function (err, str)
                     {
+                        if (err)
+                        {
+                            if (err.code == 'ENOENT')
+                            {
+                                return callback(null, '<p>Not available.</p>');
+                            }
+                            else
+                            {
+                                return callback(err);
+                            }
+                        }
+                        
                         // Remove the <?xml...?> declaration and resolve relative image paths.
                         str = str.replace(/<\?xml [^>]*\?>/, '')
                                  .replace(/(<img src=['"])\.\//g, '$1' + baseURL + '/data/' + engineConfig.cli_task_id + '/');
