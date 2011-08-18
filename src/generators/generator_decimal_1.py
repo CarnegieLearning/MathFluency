@@ -10,8 +10,9 @@ D = decimal.Decimal
 
 #Globals
 LOAD_PREVIOUS_CONFIG = 0
-SAVE_CURRENT_CONFIG = 1
-GENERATE = 1
+SAVE_CURRENT_CONFIG = 0
+GENERATE = 0
+BATCHRUN = 1
 
 #generator specific configuration settings
 #EXPECTS: engine string, header file location, output directory, output filename
@@ -21,9 +22,9 @@ class decimalConfig1(core.config):
     def __init__(self, eng, header, dir, name):
         core.config.__init__(self, eng, header, dir, name)
     
-        self.whole_min = 0      #smallest value right of the decimal
-        self.whole_max = 0     #largest value right of the decimal
-        self.part_min = 11      #smallest value left of the decimal
+        self.whole_min = 1      #smallest value right of the decimal
+        self.whole_max = 10     #largest value right of the decimal
+        self.part_min = 2      #smallest value left of the decimal
         self.part_max = 999     #largest value left of the decimal
         self.part_mag = 3       #divides [part_min, part_max] by power(10, part_mag)
     
@@ -35,11 +36,11 @@ class decimalConfig1(core.config):
         self.selector_prepend = ""
         self.selector_append = ""
         
-        self.r_min = 5          #min distance between selector and gate
-        self.r_max = 30         #max distance between selector and gate
+        self.r_min = 30         #min distance between selector and gate
+        self.r_max = 300        #max distance between selector and gate
         self.r_mult = 0.01      #multiply distance by this amount before applying
         
-        self.min_dist = 0.125   #Minimum distance apart two adjecent selectors need to be
+        self.min_dist = D(1.33)#Minimum distance apart two adjecent selectors need to be
         self.last_val = None
         
     #Formats delimiters into strings
@@ -64,17 +65,24 @@ class decimalConfig1(core.config):
         whole = RI(self.whole_min, self.whole_max)
         
         part = 0
-        #build the decimal, with a 20% chance of ignoring in favor of a whole number
-        if(self.part_max > 0 and not (self.whole_max > 0 and RI(0, 4) == 4)):
+        part_string = ""
+        #build the decimal, with a 5% chance of ignoring in favor of a whole number
+        if(self.part_max > 0 and not (whole == 0 and self.whole_max > 0 and RI(0, 19) == 19)):
             part = D(RI(self.part_min, self.part_max))
             part = part / D(math.pow(10, self.part_mag))
             part_string = str(part)
                 
-            if(len(part_string) == 5 and part_string[3] != 0 and RI(0, 3) != 3):
+            if(part > 100 and RI(0,4) == 4):
+                part = part % 100
+                if(part < 10):
+                    part
+                part_string = str(part)
+                
+            if(len(part_string) == 5 and part_string[3] != 0 and RI(0, 2) == 2):
                 part = part.quantize(D("1.00"))
                 part_string = str(part)
                 
-            if(len(part_string) == 4 and part_string[3] != 0 and RI(0, 1) != 1):
+            if(len(part_string) == 4 and part_string[3] != 0 and RI(0, 1) == 1):
                 part = part.quantize(D("1.0"))
                 part_string = str(part)
             
@@ -149,36 +157,40 @@ class decimalConfig1(core.config):
             gates.append( (str(pattern[len(gates)]), self.strDelim(l), self.strDelim(r)) )
         
         #randomize the order of the gates (so edge cases do not always come first
-        random.shuffle(gates) 
+        random.shuffle(gates)
         self.last_val = selector
         
         return (self.strSelector(selector), gates)
-    
-###############################################################################
 
-batchLoad = ['private\\test1\\', 'private\\test2\\', 'private\\test3\\']
+def loadBatch(loadWith, batchLoad):
+    for configLocs in batchLoad:
+        c = []
+        for path in configLocs:
+            c.append(loadWith.loadConfig(path))
+        core.runBatch(c)
+###############################################################################
 
 #generate/build/load needed configs here
 #IMPORTANT: Only the FIRST config is used by core.runBatch to set filenames, paths, engine, number of subsets and runs
 #IMPORTANT: All configs are selected at random to run their own specified generate function for data generation
-configs = [decimalConfig1('ft1_racecar', 'f1header.xml', 'private\\test1\\', 'set')]
+configs = [decimalConfig1('ft1_racecar', 'f1header.xml', 'private/test3/', 'set')]
 configs[0].datasets_per_run = 40
-configs[0].outputCSV = 1
-
-#for path in batchLoad:
-#    c = core.config.loadConfig(path + "generator_config")
-#    core.runBatch([c])
     
 #Load config(s)
 if(LOAD_PREVIOUS_CONFIG):
     temp = configs[0].loadConfig(configs[0].directory + "generator_config")
     if(temp != None):
         configs[0] = temp
-
+        
 #Generate questions
 if(GENERATE):
     core.runBatch(configs)
-
+elif(BATCHRUN):
+    batch = [['private/test1/generator_config'], ['private/test2/generator_config'],
+             ['private/test3/generator_config1', 'private/test3/generator_config2']]
+             
+    loadBatch(decimalConfig1, batch)
+                
 #Save config(s)
 if(SAVE_CURRENT_CONFIG):
-    configs[0].saveConfig(configs[0].directory + "generator_config")
+    configs[0].saveConfig(configs[0].directory + "generator_config2")

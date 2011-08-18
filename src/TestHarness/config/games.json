@@ -2,42 +2,63 @@
     "conditions": {
         "cond1": {
             "stages": [
-                "racecar-1",
-                "snowboard-1",
-                "pie-1",
-                "scuba-1"
+                "test-1",
+                "test-2",
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         },
         "cond2": {
             "stages": [
-                "scuba-1",
-                "pie-1",
-                "snowboard-1",
-                "racecar-1"
+                "test-7",
+                "test-6",
+                "test-5",
+                "test-4",
+                "test-3",
+                "test-2",
+                "test-1"
             ]
         }
     },
     
     "stages": {
-        "racecar-1": {
-            "displayName": "Race Car",
+        "test-1": {
+            "displayName": "Test 1",
             "engine": "racecar",
-            "cli_fluency_task": "carfraction2_complement"
+            "cli_fluency_task": "test1"
         },
-        "snowboard-1": {
-            "displayName": "Snowboard",
-            "engine": "snowboard",
-            "cli_fluency_task": "snowdecimal3_multidigit"
+        "test-2": {
+            "displayName": "Test 2",
+            "engine": "racecar",
+            "cli_fluency_task": "test2"
         },
-        "pie-1": {
-            "displayName": "Pie the Clown",
-            "engine": "pie",
-            "cli_fluency_task": "piefracdecperc1_percentslessthan1"
+        "test-3": {
+            "displayName": "Test 3",
+            "engine": "racecar",
+            "cli_fluency_task": "test3"
         },
-        "scuba-1": {
-            "displayName": "Scuba",
-            "engine": "scuba",
-            "cli_fluency_task": "scubabalanceeqn"
+        "test-4": {
+            "displayName": "Test 4",
+            "engine": "racecar",
+            "cli_fluency_task": "test4"
+        },
+        "test-5": {
+            "displayName": "Test 5",
+            "engine": "racecar",
+            "cli_fluency_task": "test5"
+        },
+        "test-6": {
+            "displayName": "Test 6",
+            "engine": "racecar",
+            "cli_fluency_task": "test6"
+        },
+        "test-7": {
+            "displayName": "Test 7",
+            "engine": "racecar",
+            "cli_fluency_task": "test7"
         }
     },
     

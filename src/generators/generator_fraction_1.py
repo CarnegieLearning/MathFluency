@@ -9,8 +9,9 @@ F = fractions.Fraction
 
 #Globals
 LOAD_PREVIOUS_CONFIG = 0
-SAVE_CURRENT_CONFIG = 1
-GENERATE = 1
+SAVE_CURRENT_CONFIG = 0
+GENERATE = 0
+BATCHRUN = 1
 
 #generator specific configuration settings
 #EXPECTS: engine string, header file location, output directory, output filename
@@ -35,7 +36,11 @@ class fractionConfig1(core.config):
             return "0"
         
         if(self.mixed):
-            if(F(n, d) > 1):
+            mixer = 0
+            if(self.unreduced):
+                mixer = RI(0, 1)
+            
+            if(F(n, d) > 1 and mixer == 0):
                 s = str(n / d)
                 n = n % d
                 if(n == 0):
@@ -98,12 +103,12 @@ class fractionConfig1(core.config):
             elif(pattern[len(gates)] == 2):
                 n2 = RI(self.num_min, d2 - 1)
                 
-                temp = i_hate_fractions(F(n2, d2), d1)
+                temp = i_hate_fractions2(F(n2, d2), d1) - 1
                 
-                if(temp - 1 < self.num_min + 1):
-                    n1 = temp - 1
+                if(temp < self.num_min + 1):
+                    n1 = temp
                 else:
-                    n1 = RI(self.num_min, temp - 1)
+                    n1 = RI(self.num_min, temp)
             
             if(not (n1 == n2 and d1 == d2)):
                 gates.append( (str(pattern[len(gates)]), self.buildStr(n1, d1), self.buildStr(n2, d2)) )
@@ -118,22 +123,23 @@ def i_hate_fractions(f, d2):
     while(f >= F(i, d2)):
         i += 1
     return i
+
+def i_hate_fractions2(f, d2):
+    i = 1
+    while(f > F(i, d2)):
+        i += 1
+    return i
+        
     
 ###############################################################################
-
-batchLoad = ['private\\test4\\', 'private\\test5\\', 'private\\test6\\']
 
 #generate/build/load needed configs here
 #IMPORTANT: Only the FIRST config is used by core.runBatch to set filenames, paths, engine, number of subsets and runs
 #IMPORTANT: All configs are selected at random to run their own specified generate function for data generation
-configs = [fractionConfig1('ft1_racecar', 'f1header.xml', 'private\\test6\\', 'set')]
+configs = [fractionConfig1('ft1_racecar', 'f1header.xml', 'private/test6/', 'set')]
 configs[0].subsets_per_set = 1
 configs[0].datasets_per_run = 40
 
-#for path in batchLoad:
-#    c = core.config.loadConfig(path + "generator_config")
-#    core.runBatch([c])
-    
 #Load config(s)
 if(LOAD_PREVIOUS_CONFIG):
     temp = configs[0].loadConfig(configs[0].directory + "generator_config")
@@ -143,6 +149,11 @@ if(LOAD_PREVIOUS_CONFIG):
 #Generate questions
 if(GENERATE):
     core.runBatch(configs)
+elif(BATCHRUN):
+    batch = [['private/test4/generator_config'], ['private/test5/generator_config'],
+             ['private/test6/generator_config'], ['private/test7/generator_config']]
+             
+    core.loadBatch(fractionConfig1, batch)
 
 #Save config(s)
 if(SAVE_CURRENT_CONFIG):
