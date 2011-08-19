@@ -12,7 +12,7 @@ server {
 		proxy_redirect off;
 	}
 
-	location /fluency {
+	location /fluency/games {
 		root /var/www/fluencybrowser;
 	}
 }
