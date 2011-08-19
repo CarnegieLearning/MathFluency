@@ -182,6 +182,7 @@ function makeStage(stageID, config, serverConfig)
 
     if (stageConfig.cli_fluency_task)
     {
+        var engineDataPath = path.join(serverConfig.dataPath, engineConfig.cli_task_id);
         stage._cachedCLITaskConfig = null;
         
         stage.getCLITaskConfig = function (callback)
@@ -192,7 +193,7 @@ function makeStage(stageID, config, serverConfig)
             }
             else
             {
-                var filepath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id, stageConfig.cli_fluency_task, 'dataset.xml');
+                var filepath = path.join(engineDataPath, stageConfig.cli_fluency_task, 'dataset.xml');
                 console.log('Reading CLI Flash task configuration: ' + filepath);
                 fs.readFile(filepath, function (err, str)
                 {
@@ -243,9 +244,8 @@ function makeStage(stageID, config, serverConfig)
         
         stage.getInstructionsHTML = function (baseURL, callback)
         {
-            var enginePath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id),
-                instructionsPath = path.join(enginePath, 'ft_instructions.html'),
-                tipsPath = path.join(enginePath, stageConfig.cli_fluency_task, 'ft_tips.html');
+            var instructionsPath = path.join(engineDataPath, 'ft_instructions.html'),
+                tipsPath = path.join(engineDataPath, stageConfig.cli_fluency_task, 'ft_tips.html');
             async.map([instructionsPath, tipsPath],
                 function (path, callback)
                 {
