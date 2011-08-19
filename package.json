@@ -12,7 +12,7 @@
     "node": ">=0.4.8"
   },
   "dependencies": {
-    "express": ">=2.3",
+    "express": "~2.4",
     "ejs": ">=0.4",
     "yabble": ">=0.3",
     "sequelize": ">=1.0.2",
