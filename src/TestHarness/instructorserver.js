@@ -193,7 +193,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             {
                 res.render('roster-upload-confirm', {
                     students: students,
-                    instructor: instructor,
+                    assignInstructor: instructor,
                     condition: cond,
                     file: file.filename,
                     formData: {
