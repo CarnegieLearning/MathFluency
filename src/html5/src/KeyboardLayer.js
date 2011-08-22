@@ -12,7 +12,7 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
         
         var keys = new Array(256);
         for(key in keys) {
-            key = false;
+            key = 0;
         }
         
         this.set('keys', keys);
@@ -21,18 +21,25 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
     //Sets key to true when pressed
     keyDown: function(evt) {
         keys = this.get('keys');
-        keys[evt.keyCode] = true;
+        keys[evt.keyCode] = 1;
     },
     //Sets key to false when no longer pressed
     keyUp: function(evt) {
         keys = this.get('keys');
-        keys[evt.keyCode] = false;
+        keys[evt.keyCode] = 0;
     },
     //Check to see if a valid key is pressed
     checkKey: function(keyCode) {
         keys = this.get('keys');
         if(keyCode > -1 && keyCode < 256) {
-            return keys[keyCode];
+            var ret = keys[keyCode];
+            
+            // Lets us know if we have polled this key before and the user has not let it back up
+            // Can make this += 1 instead and it would give us total number of frames held
+            if(ret == 1) {
+                keys[keyCode] = 2;
+            }
+            return ret;
         }
         
         return false;

@@ -1,6 +1,7 @@
 var cocos = require('cocos2d');
 var geom = require('geometry');
 
+//TODO: Subclass this off a Value/Expression class or have it pulled in when needed by such a class
 var FractionRenderer = cocos.nodes.Node.extend({
     numerator: null,
     denominator: null,
@@ -9,6 +10,7 @@ var FractionRenderer = cocos.nodes.Node.extend({
         this.set('numerator', n);
         this.set('denominator', d);
         
+        //Create the numerical labels for the numerator and denominator
         var opts = Object()
         opts["string"] = n
         var label = cocos.nodes.Label.create(opts)
@@ -20,6 +22,8 @@ var FractionRenderer = cocos.nodes.Node.extend({
         label.set('position', new geom.Point(0, 15))
         this.addChild({child: label});
     },
+    
+    //Draw the background and the horizontal fraction bar
     draw: function(context) {
         context.fillStyle = "#000000";
         context.beginPath();

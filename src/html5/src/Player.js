@@ -10,14 +10,14 @@ var Player = cocos.nodes.Node.extend({
     init: function() {
         Player.superclass.init.call(this);
        
-        var sprite = cocos.nodes.Sprite.create({
-        file: '/resources/car1.png',
-        });
+        // Load the car sprite for the player
+        var sprite = cocos.nodes.Sprite.create({file: '/resources/car1.png',});
         sprite.set('scaleX', 0.5);
         sprite.set('scaleY', 0.5);
         
         this.addChild({child: sprite});
         
+        // Create the selector value for the car
         var selector = FractionRenderer.create('1', '2');
         selector.set('position', new geom.Point(0, 80));
         this.addChild({child: selector});

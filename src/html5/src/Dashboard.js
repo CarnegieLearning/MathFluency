@@ -17,12 +17,15 @@ var Dashboard = cocos.nodes.Node.extend({
         this.scheduleUpdate();
     },
     
+    // Updates the time
     update: function(dt) {
         var t = this.get('elapsedTime') + dt;
         this.set('elapsedTime', t);
         
         var d = this.get('displayTime');
+        // Track to the nearest tenth of a second
         t = Math.round(t*10)
+        // Hack to get X.0 to display properly
         if(t % 10 == 0) {
             t = t / 10.0 + ".0";
         }
@@ -32,6 +35,7 @@ var Dashboard = cocos.nodes.Node.extend({
         d.set('string', t);
     },
     
+    // Draws the dash
     draw: function(context) {
         context.fillStyle = "#8B7765";
         context.beginPath();

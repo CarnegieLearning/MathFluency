@@ -8,6 +8,7 @@ var Background = cocos.nodes.Node.extend({
     init: function(lanes) {
         Background.superclass.init.call(this);
         
+        // Create the right hand side dash
         var dash = Dashboard.create();
         dash.set('position', new geom.Point(750, 0));
         this.set('dash', dash);
@@ -15,7 +16,7 @@ var Background = cocos.nodes.Node.extend({
     },
     
     draw: function(context) {
-        //Ground
+        // Ground
         context.fillStyle = "#44AA22";
         context.beginPath();
         context.moveTo(-10,50);
@@ -25,7 +26,7 @@ var Background = cocos.nodes.Node.extend({
         context.closePath();
         context.fill();
         
-        //Sky
+        // Sky
         context.fillStyle = "#1122BB";
         context.beginPath();
         context.moveTo(-10,-10);
@@ -35,7 +36,7 @@ var Background = cocos.nodes.Node.extend({
         context.closePath();
         context.fill();
         
-        //Road
+        // Road
         context.fillStyle = "#808080";
         context.beginPath();
         context.moveTo(375,50);
@@ -45,7 +46,7 @@ var Background = cocos.nodes.Node.extend({
         context.closePath();
         context.fill();
         
-        //Lanes
+        // Lanes
         context.strokeStyle = "#FFFF00";
         context.lineWidth = 4
         context.beginPath();
