@@ -104,7 +104,7 @@ class fractionConfig1(core.config):
                 mix1 = RI(0, 1)
                 mix2 = RI(0, 1)
             
-            if(not (n1 / d1 > 3 or n2 / d2 > 3 or n1 == 0 or n2 == 0 or (n1 == n2 and d1 == d2))):
+            if(not (n1 > 39 or n2 > 39 or n1 / d1 > 3 or n2 / d2 > 3 or n1 == 0 or n2 == 0 or (n1 == n2 and d1 == d2))):
                 gates.append( (str(pattern[len(gates)]),
                     self.buildStr(n1, d1, 140, 140, mix1), self.buildStr(n2, d2, 140, 140, mix2),
                     self.buildStr(n1, d1, 42, 42, mix1), self.buildStr(n2, d2, 42, 42, mix2)) )
@@ -132,7 +132,7 @@ def i_hate_fractions2(f, d2):
 #generate/build/load needed configs here
 #IMPORTANT: Only the FIRST config is used by core.runBatch to set filenames, paths, engine, number of subsets and runs
 #IMPORTANT: All configs are selected at random to run their own specified generate function for data generation
-configs = [fractionConfig1('ft1_racecar', 'f1header.xml', 'private/test6/', 'set')]
+configs = [fractionConfig1('ft1_racecar', 'f1header.xml', 'private/test5/', 'set')]
 configs[0].subsets_per_set = 1
 configs[0].datasets_per_run = 40
 configs[0].outputCSV = 0
