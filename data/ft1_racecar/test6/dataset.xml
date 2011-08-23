@@ -1,4 +1,4 @@
-<dataset gameid="ft1_racecar" id="private\test6">
+<dataset gameid="ft1_racecar" id="private/test6">
 	<datafile id="set001" name="set001.xml"/>
 	<datafile id="set002" name="set002.xml"/>
 	<datafile id="set003" name="set003.xml"/>

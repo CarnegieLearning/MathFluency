@@ -189,7 +189,7 @@ elif(BATCHRUN):
     batch = [['private/test1/generator_config'], ['private/test2/generator_config'],
              ['private/test3/generator_config1', 'private/test3/generator_config2']]
              
-    loadBatch(decimalConfig1, batch)
+    runMultiBatch(decimalConfig1, batch)
                 
 #Save config(s)
 if(SAVE_CURRENT_CONFIG):
