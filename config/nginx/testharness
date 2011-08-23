@@ -12,8 +12,12 @@ server {
 		proxy_redirect off;
 	}
 
-	location /fluency/games {
-		root /var/www/fluencybrowser;
+	location /fluency/games/ {
+		alias /var/www/fluencybrowser/fluency/games/;
+	}
+	
+	location /fluency/data/ {
+	   alias /var/www/testharness/data/;
 	}
 }
 

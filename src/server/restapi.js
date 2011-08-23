@@ -69,11 +69,6 @@ module.exports = function restapi(gameController)
             });
         }
     });
-    app.use(function (req, res, next)
-    {
-        console.log('doing foo');
-        next();
-    });
     
     // REST API endpoints that call out to the game controller.
     

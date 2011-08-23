@@ -13,57 +13,57 @@
         },
         "cond2": {
             "stages": [
+                "test-1",
                 "test-2",
                 "test-3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7",
-                "test-1"
+                "test-7"
             ]
         },
         "cond3": {
             "stages": [
+                "test-1",
+                "test-2",
                 "test-3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7",
-                "test-1",
-                "test-2"
+                "test-7"
             ]
         },
         "cond4": {
             "stages": [
+                "test-1",
+                "test-2",
+                "test-3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7",
-                "test-1",
-                "test-2",
-                "test-3"
+                "test-7"
             ]
         },
         "cond5": {
             "stages": [
-                "test-5",
-                "test-6",
-                "test-7",
-                "test-1",
-                "test-2",
-                "test-3",
-                "test-4"
-            ]
-        },
-        "cond6": {
-            "stages": [
-                "test-6",
-                "test-7",
                 "test-1",
                 "test-2",
                 "test-3",
                 "test-4",
-                "test-5"
+                "test-5",
+                "test-6",
+                "test-7"
+            ]
+        },
+        "cond6": {
+            "stages": [
+                "test-1",
+                "test-2",
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         }
     },
