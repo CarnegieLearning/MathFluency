@@ -92,182 +92,182 @@
 		<QUESTION INDEX="1">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/6over10-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/13over8-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/6over10-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/13over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over8-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/10over3-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/10over3-42x42.png"/>
 			</DELIMETERS_IMAGE>
 			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="2">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/3over12-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over3-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/3over12-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/12over10-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/36over10-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/12over10-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/36over10-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="3">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
 				<DELIMETER VALUE="fluency/data/images/1over2-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/2over3-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/13over10-140x140.png"/>
 				<DELIMETER VALUE="fluency/data/images/1over2-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/2over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/13over10-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="4">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/16over4-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/35over8-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/16over4-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/35over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/12over4-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/11over3-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/12over4-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/11over3-42x42.png"/>
 			</DELIMETERS_IMAGE>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="5">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/6over12-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/2over3-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/6over12-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/2over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over2-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/3over2-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over2-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/3over2-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="6">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/20over10-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/29over10-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/20over10-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/29over10-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/5over2-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/13over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/5over2-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/13over5-42x42.png"/>
 			</DELIMETERS_IMAGE>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="7">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over4-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over2-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over4-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over2-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/8over3-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/14over4-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/8over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/14over4-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="8">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over2-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/20over12-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over2-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/20over12-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/19over10-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over5-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/19over10-42x42.png"/>
 			</DELIMETERS_IMAGE>
 			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="9">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/4over5-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/21over10-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/4over5-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/21over10-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over12-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over10-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over12-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over10-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="1"/>
+			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="10">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over4-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over3-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over4-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/16over8-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/18over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/16over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/18over5-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="11">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over5-140x140.png"/>
 				<DELIMETER VALUE="fluency/data/images/3over4-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over5-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/6over3-140x140.png"/>
 				<DELIMETER VALUE="fluency/data/images/3over4-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/6over3-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="12">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/2over4-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/5over8-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/2over4-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/5over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/20over8-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/35over10-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/20over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/35over10-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="13">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/19over5-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/10over2-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/19over5-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/10over2-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/3over2-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/26over12-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/3over2-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/26over12-42x42.png"/>
 			</DELIMETERS_IMAGE>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="14">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/16over10-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/6over3-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/16over10-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/6over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over4-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over4-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/1over4-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over4-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="0"/>
+			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="15">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/9over3-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/28over8-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/9over3-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/28over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over3-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/10over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/10over5-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="0"/>
+			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="16">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over2-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/19over8-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over2-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/19over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/6over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/3over2-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/6over5-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/3over2-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="1"/>
+			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="17">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over10-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over2-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over10-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over2-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/6over12-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/2over5-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/6over12-42x42.png"/>
 			</DELIMETERS_IMAGE>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="18">
 			<DELIMETERS_TEXT/>
 			<DELIMETERS_IMAGE>
-				<DELIMETER VALUE="fluency/data/images/1over3-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/3over8-140x140.png"/>
-				<DELIMETER VALUE="fluency/data/images/1over3-42x42.png"/>
-				<DELIMETER VALUE="fluency/data/images/3over8-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/7over3-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/14over5-140x140.png"/>
+				<DELIMETER VALUE="fluency/data/images/7over3-42x42.png"/>
+				<DELIMETER VALUE="fluency/data/images/14over5-42x42.png"/>
 			</DELIMETERS_IMAGE>
-			<ANSWER VALUE="2"/>
+			<ANSWER VALUE="0"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 </PROBLEM_SET>
