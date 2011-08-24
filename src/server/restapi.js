@@ -133,7 +133,7 @@ module.exports = function restapi(gameController)
         
         Saves the body of the request as the results for the given question set by calling <GameController.saveQuestionSetResults>.  Sends an empty object on success, or an error object with status 500 on failure.
     */
-    app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res)
+    app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res, next)
     {
         gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function (error)
         {
@@ -141,7 +141,7 @@ module.exports = function restapi(gameController)
             {
                 console.log('Error saving question set results:');
                 console.log(error);
-                res.send(error, 500);
+                next(error);
             }
             else
             {
