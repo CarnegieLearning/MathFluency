@@ -67,6 +67,7 @@ module.exports = function model(db, user, password, options, callback)
     model.QuestionSetOutcome = sequelize.define('QuestionSetOutcome', {
         elapsedMS: Sequelize.INTEGER,
         endTime: Sequelize.INTEGER,
+        endState: Sequelize.INTEGER,
         dataFile: Sequelize.STRING,
         score: Sequelize.INTEGER,
         medal: Sequelize.INTEGER,
@@ -75,18 +76,32 @@ module.exports = function model(db, user, password, options, callback)
         questionSetID: Sequelize.STRING
     },
     {
-        instanceMethods: {
-            medalString: function ()
+        classMethods: {
+            medalString: function (medal)
             {
-                return ['none', 'gold', 'silver', 'bronze'][this.medal || 0];
+                return ['none', 'bronze', 'silver', 'gold'][medal || 0];
             },
+            endStateString: function (endState)
+            {
+                return ['completed', 'aborted'][endState] || 'unknown';
+            }
+        },
+        instanceMethods: {
             setMedalString: function (str)
             {
                 this.medal = {
-                    gold: 1,
-                    silver: 2,
-                    bronze: 3
-                }[str && str.toLowerCase()] || 0;
+                    g: 3,
+                    s: 2,
+                    b: 1
+                }[str && str.length > 0 && str.charAt(0).toLowerCase()] || 0;
+            },
+            setEndStateString: function (str)
+            {
+                console.log(str);
+                this.endState = {
+                    FINISH: 0,
+                    ABORT: 1
+                }[str];
             }
         }
     });

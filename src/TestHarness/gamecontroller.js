@@ -109,17 +109,22 @@ exports.gameController = function (serverConfig, model)
             parser.on('end', function (data)
             {
                 var scoreNode = data.SCORE_SUMMARY.Score,
-                    scoreAttr = (scoreNode ? scoreNode['@'] : {});
-                var qsOutcome = model.QuestionSetOutcome.build({
-                    dataFile: filename,
-                    condition: playerState.condition,
-                    stageID: questionSet.parent.id,
-                    questionSetID: questionSet.id,
-                    endTime: Math.round(timestamp / 1000),
-                    elapsedMS: scoreAttr.ElapsedTime || 0,
-                    score: scoreAttr.TotalScore || 0
-                });
-                qsOutcome.setMedalString(scoreAttr.Medal || 'none');
+                    scoreAttr = (scoreNode ? scoreNode['@'] : {}),
+                    endNode = data.END_STATE,
+                    endAttr = (endNode ? endNode['@'] : {}),
+                    qsOutcome = model.QuestionSetOutcome.build({
+                        dataFile: filename,
+                        condition: playerState.condition,
+                        stageID: questionSet.parent.id,
+                        questionSetID: questionSet.id,
+                        endTime: Math.round(timestamp / 1000),
+                        elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
+                        score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0
+                    });
+                qsOutcome.setMedalString(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none');
+                qsOutcome.setEndStateString(endAttr.STATE);
+                console.log(endNode);
+                console.log(endAttr);
                 
                 // Setting a relation implicitly does a save().
                 qsOutcome.setStudent(playerState)

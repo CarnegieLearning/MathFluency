@@ -76,6 +76,12 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             }
             else
             {
+                for (var i = 0; i < results.length; i++)
+                {
+                    var r = results[i];
+                    r.medal = model.QuestionSetOutcome.medalString(r.medal);
+                    r.endState = model.QuestionSetOutcome.endStateString(r.endState);
+                }
                 if (req.params.format == 'csv')
                 {
                     res.header('Content-Type', 'text/csv');
@@ -404,6 +410,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 QuestionSetOutcomes.medal, \
                 QuestionSetOutcomes.elapsedMS, \
                 QuestionSetOutcomes.endTime, \
+                QuestionSetOutcomes.endState, \
                 QuestionSetOutcomes.dataFile \
             FROM QuestionSetOutcomes \
             INNER JOIN Students ON Students.id = QuestionSetOutcomes.StudentId \

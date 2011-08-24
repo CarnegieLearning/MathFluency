@@ -120,14 +120,15 @@ $(document).ready(function ()
         cellspacing: 0,
         border: 0
     })
-    .css({fontSize: '12px'})
+    .css({fontSize: '12px'});
+    
+    $('#student-table')
     .dataTable({
         "bJQueryUI": true,
         "sScrollY": "15em",
         "bPaginate": false
-    });
-    
-    $('#student-table').delegate('tr', 'click', function ()
+    })
+    .delegate('tr', 'click', function ()
     {
         $(this).toggleClass('row_selected').siblings('tr').removeClass('row_selected');
         var data = $('#student-table').dataTable().fnGetData(this);
@@ -136,11 +137,12 @@ $(document).ready(function ()
     })
     .dataTable().fnSetColumnVis(0, window.FLUENCY.isAdmin); // Show instructor column only when admin.
     
-    $('#games-table').delegate('tr', 'click', function ()
+    $('#games-table')
+    .delegate('tr', 'click', function ()
     {
         $(this).addClass('row_selected').siblings('tr').removeClass('row_selected');
         var data = $('#games-table').dataTable().fnGetData(this);
-        var dataFile = data[9];
+        var dataFile = data[10];
         $.get(here + '../output/' + dataFile)
             .success(function (data, status, jqXHR)
             {
@@ -151,7 +153,33 @@ $(document).ready(function ()
                 alert('Error fetching game output: ' + jqXHR.responseText);
             });
     })
-    .dataTable().fnSetColumnVis(9, false); // Hide dataFile column.
+    .dataTable({
+        bJQueryUI: true,
+        sScrollY: "15em",
+        bPaginate: false,
+        aoColumnDefs: [
+            {
+                aTargets: ['roster', 'data-file'],
+                bVisible: false
+            },
+            {
+                aTargets: ['end-date'],
+                fnRender: function (obj)
+                {
+                    return (new Date(obj.aData[obj.iDataColumn] * 1000)).format('yy-mm-dd HH:MM');
+                },
+                bUseRendered: false
+            },
+            {
+                aTargets: ['duration'],
+                fnRender: function (obj)
+                {
+                    return Math.round(obj.aData[obj.iDataColumn] / 1000) + ' s';
+                },
+                bUseRendered: false
+            }
+        ]
+    });
     
     function addStudentToTable(index, json)
     {
@@ -178,8 +206,9 @@ $(document).ready(function ()
             json.questionSetID,
             json.score,
             json.medal,
-            Math.round(json.elapsedMS / 1000) + ' s',
-            (new Date(json.endTime * 1000)).format('yy-mm-dd HH:MM'),
+            json.elapsedMS,
+            json.endTime,
+            json.endState,
             json.dataFile
         ];
         $('#games-table').dataTable().fnAddData(cols);
