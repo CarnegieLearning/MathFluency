@@ -92,53 +92,66 @@ exports.gameController = function (serverConfig, model)
     
     gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
     {
-        var UUID = uuid();
         var timestamp = Date.now();
-        var filename = UUID + '.xml';
-        var filepath = outputPath + '/' + filename;
-        fs.writeFile(filepath, text, function (error)
+        
+        // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
+        var parser = new xml2js.Parser()
+        parser.on('end', function (data)
         {
-            if (error)
-            {
-                callback(error);
-                return;
-            }
+            var refNode = data.GAME_REFERENCE_NUMBER,
+                refID = refNode ? refNode['@'].ID.split('::') : [uuid()],
+                UUID = refID.length == 0 ? uuid() : refID[0],
+                filename = UUID + '.xml',
+                filepath = outputPath + '/' + filename,
+                scoreNode = data.SCORE_SUMMARY.Score,
+                scoreAttr = (scoreNode ? scoreNode['@'] : {}),
+                endNode = data.END_STATE,
+                endAttr = (endNode ? endNode['@'] : {}),
+                qsOutcomeAttributes = {
+                    dataFile: filename,
+                    condition: playerState.condition,
+                    stageID: questionSet.parent.id,
+                    questionSetID: questionSet.id,
+                    endTime: Math.round(timestamp / 1000),
+                    elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
+                    score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0,
+                    endState: model.QuestionSetOutcome.endStateCode(endAttr.STATE),
+                    medal: model.QuestionSetOutcome.medalCode(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none')
+                };
             
-            // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
-            var parser = new xml2js.Parser()
-            parser.on('end', function (data)
-            {
-                var scoreNode = data.SCORE_SUMMARY.Score,
-                    scoreAttr = (scoreNode ? scoreNode['@'] : {}),
-                    endNode = data.END_STATE,
-                    endAttr = (endNode ? endNode['@'] : {}),
-                    qsOutcome = model.QuestionSetOutcome.build({
-                        dataFile: filename,
-                        condition: playerState.condition,
-                        stageID: questionSet.parent.id,
-                        questionSetID: questionSet.id,
-                        endTime: Math.round(timestamp / 1000),
-                        elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
-                        score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0
-                    });
-                qsOutcome.setMedalString(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none');
-                qsOutcome.setEndStateString(endAttr.STATE);
-                console.log(endNode);
-                console.log(endAttr);
-                
-                // Setting a relation implicitly does a save().
-                qsOutcome.setStudent(playerState)
-                .on('success', function ()
+            async.parallel([
+                function (callback)
                 {
-                    callback();
-                })
-                .on('failure', function (error)
+                    console.log('Writing data file for ' + playerState.loginID + ' to ' + filepath);
+                    fs.writeFile(filepath, text, callback);
+                },
+                function (callback)
                 {
-                    callback(error);
-                });
-            });
-            parser.parseString(text);
-        });
+                    model.QuestionSetOutcome.find({where: {dataFile: filename}})
+                    .on('success', function (existingRecord)
+                    {
+                        if (existingRecord)
+                        {
+                            console.log('Updating existing QuestionSetOutcome record for ' + filename);
+                            existingRecord.updateAttributes(qsOutcomeAttributes)
+                            .on('success', function () {callback();})
+                            .on('failure', callback);
+                        }
+                        else
+                        {
+                            console.log('Creating QuestionSetOutcome for ' + filename);
+                            var qsOutcome = model.QuestionSetOutcome.build(qsOutcomeAttributes);                            
+                            // Setting a relation implicitly does a save().
+                            qsOutcome.setStudent(playerState)
+                            .on('success', function () {callback();})
+                            .on('failure', callback);
+                        }
+                    })
+                    .on('error', callback);
+                }
+            ], callback);
+        })
+        .parseString(text);
     };
     
     return gc;

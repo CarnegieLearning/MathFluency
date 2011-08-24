@@ -68,7 +68,7 @@ module.exports = function model(db, user, password, options, callback)
         elapsedMS: Sequelize.INTEGER,
         endTime: Sequelize.INTEGER,
         endState: Sequelize.INTEGER,
-        dataFile: Sequelize.STRING,
+        dataFile: {type: Sequelize.STRING, unique: true},
         score: Sequelize.INTEGER,
         medal: Sequelize.INTEGER,
         condition: Sequelize.STRING,
@@ -81,24 +81,21 @@ module.exports = function model(db, user, password, options, callback)
             {
                 return ['none', 'bronze', 'silver', 'gold'][medal || 0];
             },
-            endStateString: function (endState)
+            medalCode: function (str)
             {
-                return ['completed', 'aborted'][endState] || 'unknown';
-            }
-        },
-        instanceMethods: {
-            setMedalString: function (str)
-            {
-                this.medal = {
+                return {
                     g: 3,
                     s: 2,
                     b: 1
                 }[str && str.length > 0 && str.charAt(0).toLowerCase()] || 0;
             },
-            setEndStateString: function (str)
+            endStateString: function (endState)
             {
-                console.log(str);
-                this.endState = {
+                return ['completed', 'aborted'][endState] || 'unknown';
+            },
+            endStateCode: function (str)
+            {
+                return {
                     FINISH: 0,
                     ABORT: 1
                 }[str];
