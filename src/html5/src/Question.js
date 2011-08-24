@@ -4,7 +4,7 @@ var geom = require('geometry');
 
 var FractionRenderer = require('FractionRenderer').FractionRenderer
     
-var QuestionPoint = cocos.nodes.Node.extend({
+var Question = cocos.nodes.Node.extend({
     correctAnswer: null,        //The correct response
     answeredCorrectly: null,    //Stores if question has been correctly/incorrectly (null=not answered)
     coneL:null,                 //Holds the left delimiter
@@ -90,4 +90,4 @@ var QuestionPoint = cocos.nodes.Node.extend({
     }
 });
 
-exports.QuestionPoint = QuestionPoint
+exports.Question = Question

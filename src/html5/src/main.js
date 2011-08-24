@@ -11,6 +11,7 @@ var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var FractionRenderer = require('FractionRenderer').FractionRenderer
 var Background = require('Background').Background;
 var QuestionPoint = require('QuestionPoint').QuestionPoint;
+var Preloader = require('Preloader').Preloader;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
@@ -22,9 +23,18 @@ var FluencyApp = KeyboardLayer.extend({
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
+        //Basic preloading
+        var pre = Preloader.create();
+        pre.queueLoad("resources/tree.png", "resources/tree.png");
+        events.addListener(pre, "complete", this.init_preloaded.bind(this));
+        pre.startLoad();
+    },
+    
+    init_preloaded: function (evt) {
         // Binding context onto event handlers
         this.timeExpiredHandler = this.timeExpiredHandler.bind(this);
         this.nextQuestion = this.nextQuestion.bind(this);
+        var self = this;
         
         // Initializing variables
         this.addChild({child: Background.create()});
@@ -37,6 +47,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('elapsedTime', 0.0);
         this.set('speed', 1000);
         
+        //Build question list
         var ql = [], qp, i = 0;
         while(i < 3) {
             qp = QuestionPoint.create(1);
@@ -49,6 +60,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('currentQuestion', 0);
             
         this.addChild({child: ql[0]});
+        
+        //var sprite = cocos.nodes.Sprite.create({file: 'resources/tree.png',});
+        //sprite.set('position', new geo.Point(400, 450));
+        //self.addChild({child: sprite});
         
         // Schedule per frame update function
         this.scheduleUpdate();
