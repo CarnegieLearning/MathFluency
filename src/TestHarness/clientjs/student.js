@@ -13,6 +13,7 @@ $(document).ready(function ()
     });
     
     $('#instructions-link').button();
+    $('#instructor-dashboard-link').button();
 });
 
 function runStage(stageID)

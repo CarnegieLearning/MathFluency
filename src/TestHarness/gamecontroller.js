@@ -43,8 +43,11 @@ exports.gameController = function (serverConfig, model)
     
     gc.getAvailableStagesForPlayer = function (playerState, callback)
     {
-        var stageIDs = config().conditions[playerState.condition].stages;
-        var allStages = config().stages;
+        var conf = config();
+        var allStages = conf.stages;
+        var stageIDs = (playerState ?
+                        conf.conditions[playerState.condition].stages :
+                        util.allDictKeys(allStages).sort());
         var stages = stageIDs.map(function (id)
         {
             return {
@@ -92,6 +95,12 @@ exports.gameController = function (serverConfig, model)
     
     gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
     {
+        if (!playerState)
+        {
+            console.log('Not saving question set results because playerState is null (this is probably instructor preview).');
+            return callback();
+        }
+        
         var timestamp = Date.now();
         
         // TODO: need to handle different game engines differently. This currently only works with the CL flash games.

@@ -215,7 +215,7 @@ function runServer(config, model)
     
     app.get(rootPath + '/student', function (req, res)
     {
-        if (!req.student)
+        if (!req.student && !req.instructor)
         {
             res.redirect('home');
             return;

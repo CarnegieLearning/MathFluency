@@ -10,10 +10,7 @@ $(document).ready(function ()
         here = here + '/';
     }
     
-    $('#export-button').button().click(function ()
-    {
-        window.location.href = here + 'export';
-    });
+    $('a.button').button();
     
     $('#csv-upload-dialog').dialog({
         autoOpen: false,
