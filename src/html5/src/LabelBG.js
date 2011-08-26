@@ -7,14 +7,16 @@ var LabelBG = cocos.nodes.Node.extend({
     init: function(opts, bgColor) {
         // You must always call the super class version of init
         LabelBG.superclass.init.call(this);
+        
         this.set('label', cocos.nodes.Label.create(opts));
         this.addChild({child: this.get('label')});
+        
         this.set('bgColor', bgColor);
         this.set('contentSize', this.get('label').get('contentSize'));
     },
     // Draws the background for the label
     draw: function(context) {
-        var size = this.get('label').get('contentSize');
+        var size = this.get('contentSize');
         
         context.fillStyle = this.get('bgColor');
         context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
