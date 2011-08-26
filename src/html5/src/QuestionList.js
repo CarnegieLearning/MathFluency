@@ -1,9 +1,7 @@
-var cocos = require('cocos2d');
 var events = require('events');
 
 // Contains the list of questions to be presented
-// TODO: This really does not have to extend Node anymore, as it only holds data and provides flow control now
-var QuestionList = cocos.nodes.Node.extend({
+var QuestionList = BObject.extend({
     questions:null,             //List of questions
     current:null,               //Curent question index
     intermissions:null,         //List of intermissions

@@ -27,7 +27,7 @@ var Dashboard = cocos.nodes.Node.extend({
         
         var d = this.get('displayTime');
         // Track to the nearest tenth of a second
-        t = Math.round(t*100)
+        t = Math.round(t*10)
         // Hack to get X.0 to display properly
         if(t % 10 == 0) {
             t = t / 10.0 + ".0";
