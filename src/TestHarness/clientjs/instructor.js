@@ -91,40 +91,19 @@ $(document).ready(function ()
             });
     }
     
-    $.getJSON(here + 'student')
-        .success(function (data)
-        {
-            $.each(data.students, addStudentToTable);
-        })
-        .error(function (jqXHR)
-        {
-            alert('Error fetching students: ' + jqXHR.responseText);
-        });
-    
-    $.getJSON(here + 'student/result')
-        .success(function (data)
-        {
-            $.each(data.results, addResultsToTable);
-        })
-        .error(function (jqXHR)
-        {
-            alert('Error fetching game results: ' + jqXHR.responseText);
-        });
-    
-    $('#student-table, #games-table')
-    .attr({
-        cellpadding: 0,
-        cellspacing: 0,
-        border: 0
-    })
-    .css({fontSize: '12px'});
-    
-    $('#student-table')
-    .dataTable({
-        "bJQueryUI": true,
-        "sScrollY": "15em",
-        "bPaginate": false
-    })
+    var studentGrid = new Slick.Grid($('#student-table'), [],
+        [
+            {id:'instructorLoginID', field:'instructorLoginID', name:'Instructor'},
+            {id:'rosterID', field:'rosterID', name:'Roster ID'},
+            {id:'firstName', field:'firstName', name:'First Name'},
+            {id:'lastName', field:'lastName', name:'Last Name'},
+            {id:'loginID', field:'loginID', name:'Login ID'},
+            {id:'password', field:'password', name:'Password'},
+            {id:'condition', field:'condition', name:'Condition'},
+            {id:'gameCount', field:'gameCount', name:'Games Played'}
+        ],
+        {});
+    /*
     .delegate('tr', 'click', function ()
     {
         $(this).toggleClass('row_selected').siblings('tr').removeClass('row_selected');
@@ -176,7 +155,69 @@ $(document).ready(function ()
                 bUseRendered: false
             }
         ]
-    });
+    });*/
+    
+    if (FLUENCY.isAdmin)
+    {
+        //fetchInstructors();
+        fetchStudents();
+    }
+    else
+    {
+        fetchStudents(FLUENCY.loginID);
+    }
+    
+    function makeXHRErrorHandler(message)
+    {
+        return function (jqXHR)
+        {
+            alert(message + jqXHR.responseText);
+        };
+    }
+    
+    function fetchInstructors()
+    {
+        $.getJSON(here + 'instructors')
+        .success(function (data)
+        {
+            $.each(data.instructors, addInstructorToTable);
+        })
+        .error(makeXHRErrorHandler('Error fetching instructors: '));
+    }
+    
+    function fetchStudents(instructorID)
+    {
+        //$.getJSON(here + instructorID + '/student')
+        $.getJSON(here + 'student')
+        .success(function (data)
+        {
+            console.log('setting data to:');
+            console.log(data.students);
+            studentGrid.setData(data.students);
+            studentGrid.updateRowCount();
+            studentGrid.render();
+        })
+        .error(makeXHRErrorHandler('Error fetching students: '));
+    }
+    
+    function fetchResults(studentID)
+    {
+        //$.getJSON(here + instructorID + '/student/' + studentID + '/result')
+        $.getJSON(here + '/student/result')
+        .success(function (data)
+        {
+            $.each(data.results, addResultsToTable);
+        })
+        .error(makeXHRErrorHandler('Error fetching game results: '));
+    }
+    
+    function addInstructorToTable(index, json)
+    {
+        var cols = [
+            
+        ];
+        $('#instructor-table').dataTable().fnAddData(cols);
+    }
     
     function addStudentToTable(index, json)
     {

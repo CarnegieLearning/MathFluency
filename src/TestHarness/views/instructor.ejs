@@ -1,19 +1,20 @@
-<script type="text/javascript" language="javascript" src="js/client/lib/jquery.dataTables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/lib/jquery.event.drag-2.0.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/slick.grid.js"></script>
 <style type="text/css">
-    @import "js/client/lib/jquery.dataTables/css/demo_table_jui.css";
+    @import "js/client/lib/SlickGrid/slick.grid.css";
 </style>
 
 <script type="text/javascript" language="javascript">
     window.FLUENCY.isAdmin = <%- instructor.isAdmin %>;
 </script>
 
-<h2>Instructor Administration</h2>
+<h2>
+    <% if (instructor.isAdmin) { %> Admin
+    <% } else { %> Instructor <% } %>
+    Dashboard
+</h2>
 
 <p>Welcome <%= loginID %>!
-
-<% if (instructor.isAdmin) { %>
-<p>You have admin privileges. You will see all instructor's students below.
-<% } %>
 
 <h3>Actions</h3>
 <button id="new-student-button">Add new student</button>
@@ -21,24 +22,27 @@
 <a class="button" href="<%= rootPath %>/instructor/export">Download data</a>
 <a class="button" href="<%= rootPath %>/student">Play games</a>
 
-<h3>Students</h3>
 
-<table id="student-table" class="display">
+<% if (instructor.isAdmin) { %>
+<h3>Instructors</h3>
+
+<table id="instructor-table" class="display">
     <thead>
         <tr>
-            <th>Instructor
-            <th>Roster
-            <th>First Name
-            <th>Last Name
             <th>Login
             <th>Password
-            <th>Condition
-            <th>Games
+            <th>Admin?
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
+<% } %>
+
+
+<h3>Students</h3>
+
+<div id="student-table" style="height:20em;"></div>
 
 <h3>Game Results</h3>
 
