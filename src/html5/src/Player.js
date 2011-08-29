@@ -75,10 +75,11 @@ var Player = cocos.nodes.Node.extend({
         var rot = this.get('rotation');
         this.get('selector').set('rotation', rot * -1);
         
+        //Cocos works in degrees, Math works in radians, so convert
         rot = rot * Math.PI / 180.0
         
         // Keep the label in a fixed position beneath the car, regardless of car rotation
-        var x = this.get('selectorX') * Math.cos(rot) + this.get('selectorY') * Math.sin(rot)
+        var x =      this.get('selectorX') * Math.cos(rot) + this.get('selectorY') * Math.sin(rot)
         var y = -1 * this.get('selectorX') * Math.sin(rot) + this.get('selectorY') * Math.cos(rot)
         
         this.get('selector').set('position', new geom.Point(x, y));

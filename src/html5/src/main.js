@@ -11,6 +11,7 @@ var Background = require('Background').Background;
 var Question = require('Question').Question;
 var QuestionList = require('QuestionList').QuestionList;
 var Preloader = require('Preloader').Preloader;
+var LabelBG = require('LabelBG').LabelBG;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
@@ -18,17 +19,24 @@ var FluencyApp = KeyboardLayer.extend({
     currentQuestion:null,   // The current question displayed
     questionList:null,      // List of all questions in the input
     speed:null,             // Current speed in units/second
+    speedMin:null,          // Minimum speed in units/second
+    speedMax:null,          // Maximum speed in units/second
+    nextQuestionDelay:null, // Delay between finishing a question and starting the next one (milliseconds)
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
-        // Basic preloading
-        var pre = Preloader.create();
-        pre.queueLoad("RemoteResource", "resources/testset.xml", "set001.xml");
-        events.addListener(pre, "complete", this.runRemotely.bind(this));
-        events.addListener(pre, "runLocal", this.runLocally.bind(this));
-        pre.startLoad();
+        // Uncomment to run locally
+        //this.runLocally()
+        
+        // Remote resources
+        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "text/xml"}, data: "set001.xml"};
+        
+        // Preloading
+        var p = cocos.Preloader.create();
+        events.addListener(p, 'complete', this.runRemotely.bind(this));
+        p.load();
     },
     // Remote resources failed to load, generate dummy data then proceed
     // TODO: Determine what to do if we get 404s in production
@@ -56,7 +64,6 @@ var FluencyApp = KeyboardLayer.extend({
     // Parses (part of) the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
     parseXML: function(xmlDoc) {
-        console.log(xmlDoc);
         var problemRoot = xmlDoc.getElementsByTagName('PROBLEM_SET')[0];
         
         var qlist = QuestionList.create();
@@ -107,18 +114,25 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.set('elapsedTime', 0.0);
         this.set('speed', 1000);
+        this.set('speedMin', 250);
+        this.set('speedMax', 8000);
+        this.set('nextQuestionDelay', 1000);
         
         // Setup event handling on the QuestionList
         var qlist = this.get('questionList');
         events.addListener(qlist, 'noQuestionsRemaining', this.endOfGame.bind(this));
         events.addListener(qlist, 'intermission', this.intermissionHandler.bind(this));
         events.addListener(qlist, 'QuestionReady', this.nextQuestion.bind(this));
-        // Start the game
-        // TODO: Add a button->countdown timer before starting the race
-        qlist.nextQuestion();
         
+        // Start the game
+        qlist.nextQuestion();
+
         // Schedule per frame update function
         this.scheduleUpdate();
+    },
+    
+    startGame: function () {
+        
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
@@ -151,11 +165,13 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Handles when an intermission occurs
+    // TODO: Add more visuals on intermission (eg. overhead signs in ft1)
     intermissionHandler: function(evt) {
         if(arguments.length > 0) {
             this.get('player').changeSelector(arguments[0].selector);
             console.log("New subset starting");
-            setTimeout(this.get('questionList').nextQuestion, 1000);
+            // TODO: Parameterize the delay
+            setTimeout(this.get('questionList').nextQuestion, this.get('nextQuestionDelay'));
         }
         else {
             console.log("****ERROR: no new selector given for new subset");
@@ -206,7 +222,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // Delays the next question from appearing
-        setTimeout(this.get('questionList').nextQuestion, 1000);
+        setTimeout(this.get('questionList').nextQuestion, this.get('nextQuestionDelay'));
     },
     
     // Called every frame, manages keyboard input
@@ -233,8 +249,10 @@ var FluencyApp = KeyboardLayer.extend({
             player.set('position', playerPos);
         }
         // 'S' Slow down, press
+        // TODO: Discreet or continuous for speed changes?
+        // TODO: Parameterize acceleration/braking?
         if(this.checkKey(83) == 1) {
-            if(s > 250) {
+            if(s > this.get('speedMin')) {
                 s /= 2;
                 this.set('speed', s);
                 
@@ -247,7 +265,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
         // 'W' Speed up, press
         else if(this.checkKey(87) == 1) {
-            if(s < 4000) {
+            if(s < this.get('speedMax')) {
                 s *= 2;
                 this.set('speed', s);
                 
@@ -260,6 +278,30 @@ var FluencyApp = KeyboardLayer.extend({
         }
     },
 });
+/*
+var MenuLayer = cocos.nodes.Menu.extend({
+    startButton:null,   //Holds the button to start the game
+    startGame:null,     //Holds the function in the app that starts the game
+    init: function(hook) {
+        MenuLayer.superclass.init.call(this, opts);
+        
+        var opts = Object();
+        opts['normalImage'] = resources('start-button.jpg');
+        opts['selectedImage'] = resources('start-button.jpg');
+        opts['disabledImage'] = resources('start-button.jpg');
+        opts['callback'] = this.startButtonCallback.bind(this);
+        var sb = cocos.nodes.MenuItemImage(opts);
+        sb.set('position', new geo.Point(150, 200));
+        this.set('startButton', sb);
+        this.addChild({child: sb});
+        
+        this.set('startGame', hook);
+    },
+    startButtonCallback: function() {
+        this.removeChild(this.get('startButton'));
+        this.get('startGame').call();
+    }
+});*/
 
 exports.main = function() {
     // Initialise application
@@ -274,7 +316,10 @@ exports.main = function() {
     var scene = cocos.nodes.Scene.create();
 
     // Add our layer to the scene
-    scene.addChild({child: FluencyApp.create()});
+    var app = FluencyApp.create();
+    //var menu = MenuLayer.create(app.startGame.bind(app))
+    scene.addChild({child: app});
+    //scene.addChild({child: menu});
 
     // Run the scene
     director.runWithScene(scene);

@@ -14,7 +14,7 @@ var QuestionList = BObject.extend({
         this.set('questions', []);
         this.set('current', -1);
         this.set('intermissions', []);
-        this.set('nextIntermission', 0);
+        this.set('nextIntermission', -1);
         this.set('speed', 1000);
         this.set('currentAnswer', 1);
         
@@ -27,6 +27,7 @@ var QuestionList = BObject.extend({
         this.set('questions', list);
     },
     // Adds an intermission set at the current end of the question list
+    // TODO: Special case first intermission so we skip it and value starts directly on car
     addIntermission: function(s) {
         var list = this.get('intermissions');
         list[list.length] = {selector: s, onQuestion: this.get('questions').length};
@@ -55,7 +56,7 @@ var QuestionList = BObject.extend({
                 this.set('nextIntermission', inter[0].onQuestion);
             }
             else {
-                this.set('nextIntermission', -1);
+                this.set('nextIntermission', -2);
             }
             this.set('intermissions', inter);
         }

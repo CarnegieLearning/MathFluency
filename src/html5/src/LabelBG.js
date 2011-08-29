@@ -11,7 +11,12 @@ var LabelBG = cocos.nodes.Node.extend({
         this.set('label', cocos.nodes.Label.create(opts));
         this.addChild({child: this.get('label')});
         
-        this.set('bgColor', bgColor);
+        if(opts.hasOwnProperty('bgColor')) {
+            this.set('bgColor', opts['bgColor']);
+        }
+        else {
+            this.set('bgColor', '#FFFFFF');
+        }
         this.set('contentSize', this.get('label').get('contentSize'));
     },
     // Draws the background for the label
@@ -22,5 +27,17 @@ var LabelBG = cocos.nodes.Node.extend({
         context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
     }
 });
+
+// Static helper function to build the creation options object
+LabelBG.helper = function(string, fontColor, bgColor, fontSize, fontName) {
+    var opts = Object();
+    opts['string'] = string;
+    opts['fontColor'] = fontColor;
+    opts['bgColor'] = bgColor;
+    opts['fontSize'] = fontSize;
+    opts['fontName'] = fontName;
+    
+    return opts;
+}
 
 exports.LabelBG = LabelBG
