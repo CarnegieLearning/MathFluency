@@ -85,7 +85,8 @@ function runServer(config, model)
     // These are the MATHia fluency tasks. On the production server, these are served directly by nginx instead of going through the node webapp. We have these static handlers so dev environment can run without the nginx reverse proxy.
     app.use(rootPath + '/fluency/data', express.static(config.dataPath));
     app.use(rootPath + '/fluency/data', express.directory(config.dataPath, {icons:true}));
-    app.use(rootPath + '/fluency/games', express.static(config.cliFlashPath));
+    // Cache Flash resources for 10 seconds.
+    app.use(rootPath + '/fluency/games', express.static(config.cliFlashPath, {maxAge: 10000}));
     app.use(rootPath + '/fluency/games', express.directory(config.cliFlashPath, {icons:true}));
 
     // Middleware to load student or instructor data before processing requests.
