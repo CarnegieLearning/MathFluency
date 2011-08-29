@@ -1,0 +1,3 @@
+[submodule "src/client/lib/SlickGrid"]
+	path = src/client/lib/SlickGrid
+	url = https://github.com/mleibman/SlickGrid.git
