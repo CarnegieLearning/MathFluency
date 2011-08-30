@@ -184,13 +184,13 @@ $(document).ready(function ()
             $.get(here + '../output/' + item.dataFile)
             .success(function (data, status, jqXHR)
             {
-                $('#games-output').val(jqXHR.responseText);
+                $('#game-output').val(jqXHR.responseText);
             })
             .error(makeXHRErrorHandler('Error fetching game output: '));
         }
         else
         {
-            $('#games-output').val('');
+            $('#game-output').val('');
         }
     });
     connectGridToDataView(gamesGrid, gamesDataView);
