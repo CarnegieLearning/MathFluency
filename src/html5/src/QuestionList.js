@@ -6,17 +6,13 @@ var QuestionList = BObject.extend({
     current:null,               //Curent question index
     intermissions:null,         //List of intermissions
     nextIntermission:null,      //Question index of next intermission
-    speed:null,                 //Current player speed
-    currentAnswer:null,         //Current player answer (lane)
     init: function() {
         QuestionList.superclass.init.call(this);
         
         this.set('questions', []);
         this.set('current', -1);
         this.set('intermissions', []);
-        this.set('nextIntermission', -1);
-        this.set('speed', 1000);
-        this.set('currentAnswer', 1);
+        this.set('nextIntermission', -2);
         
         this.nextQuestion = this.nextQuestion.bind(this)
     },
@@ -27,11 +23,21 @@ var QuestionList = BObject.extend({
         this.set('questions', list);
     },
     // Adds an intermission set at the current end of the question list
-    // TODO: Special case first intermission so we skip it and value starts directly on car
+    // Returns true on first intermission, signaling that the value passed it should be applyed to the Player
     addIntermission: function(s) {
+        if(this.get('nextIntermission') == -2) {
+            this.set('nextIntermission', -1);
+            return true;
+        }
+        else if(this.get('nextIntermission') == -1) {
+            this.set('nextIntermission', this.get('questions').length);
+        }
+
         var list = this.get('intermissions');
         list[list.length] = {selector: s, onQuestion: this.get('questions').length};
         this.set('intermissions', list);
+        
+        return false;
     },
     //Stores the currently displayed question
     storeQuestion: function(question) {
@@ -48,7 +54,7 @@ var QuestionList = BObject.extend({
         if(c + 1 == this.get('nextIntermission')) {
             console.log("    New subset detected, triggering intermission");
             var inter = this.get('intermissions')
-            events.trigger(this, 'intermission', (inter[0].selector));
+            events.trigger(this, 'intermission', inter[0].selector);
             
             // Remove the intermission that was just triggered and set up the next one, if there is one
             inter.shift();
@@ -56,7 +62,7 @@ var QuestionList = BObject.extend({
                 this.set('nextIntermission', inter[0].onQuestion);
             }
             else {
-                this.set('nextIntermission', -2);
+                this.set('nextIntermission', -3);
             }
             this.set('intermissions', inter);
         }

@@ -5,8 +5,6 @@ var geom = require('geometry');
 var LabelBG = require('LabelBG').LabelBG;
 
 // Represents a single question to be answered by the player
-// TODO: Fix timing issue, question is answered at 92% distance,
-//       so actual time/distance is 8% shorter/smaller than listed (just like hard drives)
 // TODO: Build with an options object to allow easier initialization when customizing away from default values
 var Question = cocos.nodes.Node.extend({
     correctAnswer: null,        //The correct response

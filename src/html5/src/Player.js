@@ -16,11 +16,8 @@ var Player = cocos.nodes.Node.extend({
         var sprite = cocos.nodes.Sprite.create({file: '/resources/car1.png',});
         sprite.set('scaleX', 0.5);
         sprite.set('scaleY', 0.5);
-        
         this.addChild({child: sprite});
         
-        // Create the selector value for the car
-        this.changeSelector("0.5");
         this.set('wipeoutDuration', 0);
         
         this.scheduleUpdate();
@@ -47,7 +44,7 @@ var Player = cocos.nodes.Node.extend({
     },
     
     // Sets the wipeout status of the car, causing it to spin
-    // Use multiples of 0.5 seconds, otherwise the car will stop spinning at a off angle and then snap to driving forward
+    // Use multiples of 0.5 seconds, otherwise the car will stop spinning at an off angle and then snap to driving forward
     wipeout: function(duration) {
         this.set('wipeoutDuration', duration);
     },

@@ -6,18 +6,35 @@ var geom = require('geometry');
 var Dashboard = cocos.nodes.Node.extend({
     elapsedTime: null,  // Time in race elapsed so far
     displayTime: null,  // Timer displayed to player
+    penaltyTime: null,  // Displayed penalty time
+    pTime:null,         // Stores numerical penalty time
     init: function() {
         Dashboard.superclass.init.call(this);
         
         // Create the visible timer
         var opts = Object();
-        opts["string"] = '0.0';
+        opts['string'] = '-3.0';
         var disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(50, 50));
         this.set('displayTime', disp)
         this.addChild({child: disp});
+        this.set('elapsedTime', -3);
         
+        opts['string'] = '0.0';
+        disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(50, 100));
+        this.addChild({child: disp});
+        this.set('penaltyTime', disp);
+        this.set('pTime', 0);
+    },
+    
+    start: function () {
         this.scheduleUpdate();
+    },
+    
+    modifyPenaltyTime: function(dt) {
+        this.set('pTime', this.get('pTime') + dt);
+        this.get('penaltyTime').set('string', this.get('pTime') + '.0');
     },
     
     // Updates the time
