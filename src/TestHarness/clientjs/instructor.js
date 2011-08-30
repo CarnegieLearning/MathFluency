@@ -79,9 +79,12 @@ $(document).ready(function ()
     
     function connectGridToDataView(grid, dataView)
     {
-        grid.onSort = function (sortCol, sortAsc)
+        grid.onSort.subscribe(function (e, args)
         {
-            var field = sortCol.field;
+            var sortAsc = args.sortAsc,
+                sortCol = args.sortCol,
+                field = sortCol.field;
+            
             var sortFun = function (item1, item2)
             {
                 var a = item1[field],
@@ -89,15 +92,15 @@ $(document).ready(function ()
                 return util.compare(a, b);
             };
             dataView.sort(sortFun, sortAsc);
-        };
-        dataView.onRowCountChanged.subscribe(function ()
+        });
+        dataView.onRowCountChanged.subscribe(function (e, args)
         {
             grid.updateRowCount();
             grid.render();
         });
-        dataView.onRowsChanged.subscribe(function (rows)
+        dataView.onRowsChanged.subscribe(function (e, args)
         {
-            grid.removeRows(rows);
+            grid.invalidateRows(args.rows);
             grid.render();
         });
     }
@@ -123,7 +126,7 @@ $(document).ready(function ()
     
     var selectedStudentLoginIDs = [];
     var studentDataView = new Slick.Data.DataView();
-    var studentGrid = new Slick.Grid($('#student-table'), studentDataView.rows,
+    var studentGrid = new Slick.Grid($('#student-table'), studentDataView,
         [
             {id:'instructorLoginID', field:'instructorLoginID', name:'Instructor', sortable:true},
             {id:'rosterID', field:'rosterID', name:'Roster ID', sortable:true},
@@ -137,20 +140,21 @@ $(document).ready(function ()
         {
             forceFitColumns: true
         });
-    studentGrid.onSelectedRowsChanged = function ()
+    studentGrid.setSelectionModel(new Slick.RowSelectionModel());
+    studentGrid.onSelectedRowsChanged.subscribe(function ()
     {
         selectedStudentLoginIDs = [];
         var rows = studentGrid.getSelectedRows();
         for (var i = 0; i < rows.length; i++)
         {
-            selectedStudentLoginIDs.push(studentDataView.rows[rows[i]].loginID);
+            selectedStudentLoginIDs.push(studentDataView.getItem(rows[i]).loginID);
         }
         gamesDataView.refresh();
-    };
+    });
     connectGridToDataView(studentGrid, studentDataView);
     
     var gamesDataView = new Slick.Data.DataView();
-    var gamesGrid = new Slick.Grid($('#games-table'), gamesDataView.rows,
+    var gamesGrid = new Slick.Grid($('#games-table'), gamesDataView,
         [
             {id:'loginID', field:'loginID', name:'Login ID', sortable:true},
             {id:'condition', field:'condition', name:'Condition', sortable:true},
@@ -171,9 +175,10 @@ $(document).ready(function ()
         return (selectedStudentLoginIDs.length == 0 ||
                 ~selectedStudentLoginIDs.indexOf(item.loginID));
     });
-    gamesGrid.onSelectedRowsChanged = function ()
+    gamesGrid.setSelectionModel(new Slick.RowSelectionModel());
+    gamesGrid.onSelectedRowsChanged.subscribe(function ()
     {
-        var item = gamesDataView.rows[gamesGrid.getSelectedRows()[0]];
+        var item = gamesDataView.getItem(gamesGrid.getSelectedRows()[0]);
         if (item)
         {
             $.get(here + '../output/' + item.dataFile)
@@ -187,7 +192,7 @@ $(document).ready(function ()
         {
             $('#games-output').val('');
         }
-    };
+    });
     connectGridToDataView(gamesGrid, gamesDataView);
     
     // Fetch the table data.
