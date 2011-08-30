@@ -8,6 +8,7 @@ var csv = require('csv'),
     rimraf = require('rimraf'),
     path = require('path'),
     spawn = require('child_process').spawn,
+    constants = require('../common/Constants'),
     util = require('../common/Utilities');
 
 exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
@@ -65,7 +66,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         });
     });
     
-    app.get(rootPath + '/instructor/student/result.:format?', function (req, res)
+    app.get(rootPath + '/instructor/student/result', function (req, res)
     {
         getResults(req.instructor, function (error, results, fields)
         {
@@ -76,22 +77,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             }
             else
             {
-                for (var i = 0; i < results.length; i++)
-                {
-                    var r = results[i];
-                    r.medal = model.QuestionSetOutcome.medalString(r.medal);
-                    r.endState = model.QuestionSetOutcome.endStateString(r.endState);
-                }
-                if (req.params.format == 'csv')
-                {
-                    res.header('Content-Type', 'text/csv');
-                    res.header('Content-Disposition', 'attachment; filename="game-results.csv"');
-                    outputCSV(res, results, fields);
-                }
-                else
-                {
-                    res.send({results: results});
-                }
+                res.send({results: results});
             }
         });
     });
@@ -124,9 +110,10 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         student.password = req.body.password
         student.condition = condition
 
-        student.setInstructor(req.instructor).on('success', function ()
+        student.setInstructor(req.instructor).on('success', function (student)
         {
             var json = student.toJSON();
+            json.id = student.id;
             json.instructorLoginID = req.instructor.loginID;
             json.gameCount = null;
             res.send({
@@ -285,6 +272,15 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 {
                     if (err) return callback(err);
                     
+                    // Replace coded fields with strings.
+                    for (var i = 0; i < results.length; i++)
+                    {
+                        var r = results[i];
+                        r.medal = constants.medal.codeToString(r.medal);
+                        r.endState = constants.endState.codeToString(r.endState);
+                        r.endTime = util.dateFormat(r.endTime * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
+                    }
+                    
                     async.parallel([
                         function (callback)
                         {
@@ -365,6 +361,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         var params = [];
         var query = '\
             SELECT \
+                Students.id, \
                 Students.rosterID, \
                 Students.loginID, \
                 Students.firstName, \
@@ -401,6 +398,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         var params = [];
         var query = '\
             SELECT \
+                QuestionSetOutcomes.id,\
                 Students.rosterID, \
                 Students.loginID, \
                 QuestionSetOutcomes.condition, \

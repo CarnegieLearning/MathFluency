@@ -7,6 +7,7 @@ var fs = require('fs'),
     path = require('path'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
+    constants = require('../common/Constants'),
     util = require('../common/Utilities');
 
 
@@ -124,8 +125,8 @@ exports.gameController = function (serverConfig, model)
                     endTime: Math.round(timestamp / 1000),
                     elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
                     score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0,
-                    endState: model.QuestionSetOutcome.endStateCode(endAttr.STATE),
-                    medal: model.QuestionSetOutcome.medalCode(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none')
+                    endState: constants.endState.stringToCode(endAttr.STATE),
+                    medal: constants.medal.stringToCode(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none')
                 };
             
             async.parallel([

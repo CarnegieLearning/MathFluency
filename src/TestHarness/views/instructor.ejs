@@ -1,7 +1,34 @@
 <script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/lib/jquery.event.drag-2.0.min.js"></script>
 <script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/slick.grid.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/slick.model.js"></script>
 <style type="text/css">
     @import "js/client/lib/SlickGrid/slick.grid.css";
+    
+    div.slick-grid {
+        font-size: 13px;
+        height: 20em;
+        border: solid 1px #bbb;
+    }
+    
+    div.medal.gold {
+        background-color: #ffff99;
+    }
+    div.medal.silver {
+        background-color: #eee;
+    }
+    div.medal.bronze {
+        background-color: #fbf0d2;
+    }
+    
+    div.end-state.completed {
+        color: #00bb00;
+    }
+    div.end-state.aborted {
+        color: #ee0000;
+    }
+    div.end-state.unknown {
+        color: gray;
+    }
 </style>
 
 <script type="text/javascript" language="javascript">
@@ -22,50 +49,11 @@
 <a class="button" href="<%= rootPath %>/instructor/export">Download data</a>
 <a class="button" href="<%= rootPath %>/student">Play games</a>
 
-
-<% if (instructor.isAdmin) { %>
-<h3>Instructors</h3>
-
-<table id="instructor-table" class="display">
-    <thead>
-        <tr>
-            <th>Login
-            <th>Password
-            <th>Admin?
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-<% } %>
-
-
 <h3>Students</h3>
-
-<div id="student-table" style="height:20em;"></div>
+<div id="student-table" class="slick-grid"></div>
 
 <h3>Game Results</h3>
-
-<table id="games-table" class="display">
-    <thead>
-        <tr>
-            <th class="roster">Roster
-            <th class="login">Login
-            <th class="condition">Condition
-            <th class="level">Level
-            <th class="question-set">Question Set
-            <th class="score">Score
-            <th class="medal">Medal
-            <th class="duration">Duration
-            <th class="end-date">End Date
-            <th class="end-state">End State
-            <th class="data-file">Data File
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
+<div id="games-table" class="slick-grid"></div>
 
 <h3>Game Output XML</h3>
 <textarea id="game-output" readonly>

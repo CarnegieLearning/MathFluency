@@ -74,33 +74,6 @@ module.exports = function model(db, user, password, options, callback)
         condition: Sequelize.STRING,
         stageID: Sequelize.STRING,
         questionSetID: Sequelize.STRING
-    },
-    {
-        classMethods: {
-            medalString: function (medal)
-            {
-                return ['none', 'bronze', 'silver', 'gold'][medal || 0];
-            },
-            medalCode: function (str)
-            {
-                return {
-                    g: 3,
-                    s: 2,
-                    b: 1
-                }[str && str.length > 0 && str.charAt(0).toLowerCase()] || 0;
-            },
-            endStateString: function (endState)
-            {
-                return ['completed', 'aborted'][endState] || 'unknown';
-            },
-            endStateCode: function (str)
-            {
-                return {
-                    FINISH: 0,
-                    ABORT: 1
-                }[str];
-            }
-        }
     });
     
     model.Student.hasMany(model.QuestionSetOutcome);
