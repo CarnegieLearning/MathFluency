@@ -9,6 +9,9 @@
         height: 20em;
         border: solid 1px #bbb;
     }
+    div.slick-grid .slick-row.selected {
+        background: #dfe8f6;
+    }
     
     div.medal.gold {
         background-color: #ffff99;
@@ -36,12 +39,9 @@
 </script>
 
 <h2>
-    <% if (instructor.isAdmin) { %> Admin
-    <% } else { %> Instructor <% } %>
+    <% if (instructor.isAdmin) { %> Admin <% } else { %> Instructor <% } %>
     Dashboard
 </h2>
-
-<p>Welcome <%= loginID %>!
 
 <h3>Actions</h3>
 <button id="new-student-button">Add new student</button>

@@ -121,6 +121,7 @@ $(document).ready(function ()
         return '<div class="end-state ' + endState + '">' + endState + '</div>';
     }
     
+    var selectedStudentLoginIDs = [];
     var studentDataView = new Slick.Data.DataView();
     var studentGrid = new Slick.Grid($('#student-table'), studentDataView.rows,
         [
@@ -136,6 +137,16 @@ $(document).ready(function ()
         {
             forceFitColumns: true
         });
+    studentGrid.onSelectedRowsChanged = function ()
+    {
+        selectedStudentLoginIDs = [];
+        var rows = studentGrid.getSelectedRows();
+        for (var i = 0; i < rows.length; i++)
+        {
+            selectedStudentLoginIDs.push(studentDataView.rows[rows[i]].loginID);
+        }
+        gamesDataView.refresh();
+    };
     connectGridToDataView(studentGrid, studentDataView);
     
     var gamesDataView = new Slick.Data.DataView();
@@ -145,74 +156,41 @@ $(document).ready(function ()
             {id:'condition', field:'condition', name:'Condition', sortable:true},
             {id:'stageID', field:'stageID', name:'Level', sortable:true},
             {id:'questionSetID', field:'questionSetID', name:'Set', sortable:true},
-            {id:'score', field:'score', name:'Score', sortable:true},
-            {id:'medal', field:'medal', name:'Medal', sortable:true, formatter:formatMedal},
-            {id:'elapsedMS', field:'elapsedMS', name:'Duration', sortable:true, formatter:formatDuration},
+            {id:'score', field:'score', name:'Score', sortable:true, width: 65},
+            {id:'medal', field:'medal', name:'Medal', sortable:true, formatter:formatMedal, width:55},
+            {id:'elapsedMS', field:'elapsedMS', name:'Duration', sortable:true, formatter:formatDuration, width: 60},
             {id:'endTime', field:'endTime', name:'Date', sortable:true, formatter:formatTimestamp},
             {id:'endState', field:'endState', name:'End', sortable:true, formatter:formatEndState}
         ],
         {
-            forceFitColumns: true
+            forceFitColumns: true,
+            multiSelect: false
         });
-    connectGridToDataView(gamesGrid, gamesDataView);
-    /*
-    .delegate('tr', 'click', function ()
+    gamesDataView.setFilter(function (item)
     {
-        $(this).toggleClass('row_selected').siblings('tr').removeClass('row_selected');
-        var data = $('#student-table').dataTable().fnGetData(this);
-        var login = data[4];
-        $('#games-table').dataTable().fnFilter($(this).hasClass('row_selected') ? login : '');
-    })
-    .dataTable().fnSetColumnVis(0, window.FLUENCY.isAdmin); // Show instructor column only when admin.
-    
-    $('#games-table')
-    .delegate('tr', 'click', function ()
+        return (selectedStudentLoginIDs.length == 0 ||
+                ~selectedStudentLoginIDs.indexOf(item.loginID));
+    });
+    gamesGrid.onSelectedRowsChanged = function ()
     {
-        $(this).addClass('row_selected').siblings('tr').removeClass('row_selected');
-        var data = $('#games-table').dataTable().fnGetData(this);
-        var dataFile = data[10];
-        $.get(here + '../output/' + dataFile)
+        var item = gamesDataView.rows[gamesGrid.getSelectedRows()[0]];
+        if (item)
+        {
+            $.get(here + '../output/' + item.dataFile)
             .success(function (data, status, jqXHR)
             {
-                $('#game-output').val(jqXHR.responseText);
+                $('#games-output').val(jqXHR.responseText);
             })
-            .error(function (jqXHR)
-            {
-                alert('Error fetching game output: ' + jqXHR.responseText);
-            });
-    })
-    .dataTable({
-        bJQueryUI: true,
-        sScrollY: "15em",
-        bPaginate: false,
-        aoColumnDefs: [
-            {
-                aTargets: ['roster', 'data-file'],
-                bVisible: false
-            },
-            {
-                aTargets: ['end-date'],
-                fnRender: function (obj)
-                {
-                    return (new Date(obj.aData[obj.iDataColumn] * 1000)).format('yy-mm-dd HH:MM');
-                },
-                bUseRendered: false
-            },
-            {
-                aTargets: ['duration'],
-                fnRender: function (obj)
-                {
-                    return Math.round(obj.aData[obj.iDataColumn] / 1000) + ' s';
-                },
-                bUseRendered: false
-            }
-        ]
-    });*/
+            .error(makeXHRErrorHandler('Error fetching game output: '));
+        }
+        else
+        {
+            $('#games-output').val('');
+        }
+    };
+    connectGridToDataView(gamesGrid, gamesDataView);
     
-    if (FLUENCY.isAdmin)
-    {
-        //fetchInstructors();
-    }
+    // Fetch the table data.
     fetchStudents();
     fetchResults();
     
@@ -222,16 +200,6 @@ $(document).ready(function ()
         {
             alert(message + jqXHR.responseText);
         };
-    }
-    
-    function fetchInstructors()
-    {
-        $.getJSON(here + 'instructors')
-        .success(function (data)
-        {
-            $.each(data.instructors, addInstructorToTable);
-        })
-        .error(makeXHRErrorHandler('Error fetching instructors: '));
     }
     
     function fetchStudents(instructorID)
