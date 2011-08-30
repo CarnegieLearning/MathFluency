@@ -10,7 +10,7 @@
         "password": "TestHarness"
     },
     "sequelizeOptions": {
-        "port": 3307,
+        "port": 3306,
         "logging": false
     },
     "gameConfig": "config/games.json",
