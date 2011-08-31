@@ -1,13 +1,18 @@
 var cocos = require('cocos2d');
 var geom = require('geometry');
 
+var PNode = require('PerspectiveNode').PerspectiveNode;
+var RC = require('RaceControl').RaceControl;
+
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
 var Dashboard = cocos.nodes.Node.extend({
-    elapsedTime: null,  // Time in race elapsed so far
-    displayTime: null,  // Timer displayed to player
-    penaltyTime: null,  // Displayed penalty time
-    pTime:null,         // Stores numerical penalty time
+    elapsedTime : -3,   // Time in race elapsed so far
+    displayTime : null, // Timer displayed to player
+    penaltyTime : null, // Displayed penalty time
+    pTime       : 0.0,  // Stores numerical penalty time
+    pTimeTo     : 0.0,  // Value that pTime moves towards
+    speed       : 20,   // Speed for speedometer
     init: function() {
         Dashboard.superclass.init.call(this);
         
@@ -18,41 +23,72 @@ var Dashboard = cocos.nodes.Node.extend({
         disp.set('position', new geom.Point(50, 50));
         this.set('displayTime', disp)
         this.addChild({child: disp});
-        this.set('elapsedTime', -3);
         
+        // Create visible penalty timer
         opts['string'] = '0.0';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(50, 100));
         this.addChild({child: disp});
         this.set('penaltyTime', disp);
-        this.set('pTime', 0);
     },
     
+    // Starts tracking time and updating the dashboard timer
     start: function () {
         this.scheduleUpdate();
     },
     
+    // Changes the current amount of penalty time accured
     modifyPenaltyTime: function(dt) {
-        this.set('pTime', this.get('pTime') + dt);
-        this.get('penaltyTime').set('string', this.get('pTime') + '.0');
+        this.set('pTimeTo', this.get('pTimeTo') + dt);
     },
     
-    // Updates the time
-    update: function(dt) {
-        var t = this.get('elapsedTime') + dt;
-        this.set('elapsedTime', t);
-        
-        var d = this.get('displayTime');
-        // Track to the nearest tenth of a second
+    // Converts numerical seconds to string, accurate to tenths of a second
+    timerToString: function(t) {
         t = Math.round(t*10)
-        // Hack to get X.0 to display properly
         if(t % 10 == 0) {
             t = t / 10.0 + ".0";
         }
         else {
             t /= 10;
         }
-        d.set('string', t);
+        
+        return t;
+    },
+    
+    // Updates the time
+    update: function(dt) {
+        // Update elapsed timer
+        var t = this.get('elapsedTime') + dt;
+        this.set('elapsedTime', t);
+        
+        var d = this.get('displayTime');
+        d.set('string', this.timerToString(t));
+        
+        // Update penalty timer
+        var pt = this.get('pTime');
+        var ptt = this.get('pTimeTo');
+        
+        if(ptt > pt) {
+            pt += 10 * dt;
+            pt = Math.min(pt, ptt);
+            this.set('pTime', pt);
+            this.get('penaltyTime').set('string', this.timerToString(pt));
+        }
+        else if(ptt < pt) {
+            pt += 10 * dt;
+            pt = Math.max(pt, ptt);
+            this.set('pTime', pt);
+            this.get('penaltyTime').set('string', this.timerToString(pt));
+        }
+    },
+    
+    fillArc: function (c, x, y, r, s, e) {
+        c.beginPath();
+        s += Math.PI;
+        c.arc(x, y, r, s, s + e, false);
+        c.lineTo(x, y);
+        c.closePath();
+        c.fill();
     },
     
     // Draws the dash
@@ -65,6 +101,76 @@ var Dashboard = cocos.nodes.Node.extend({
         context.lineTo(150,-10);
         context.closePath();
         context.fill();
+        
+        // Speedometer
+        context.strokeStyle = "#000000";
+        context.beginPath();
+        context.arc(60, 200, 50, 0, Math.PI, true);
+        context.lineTo(10, 200);
+        context.closePath();
+        context.stroke();
+        
+        context.fillStyle = '#11CC33';
+        this.fillArc(context, 60, 200, 50, 0,               Math.PI / 3);
+        context.fillStyle = '#BBBB22';
+        this.fillArc(context, 60, 200, 50, Math.PI / 3,     Math.PI / 3);
+        context.fillStyle = '#CC2222';
+        this.fillArc(context, 60, 200, 50, Math.PI / 3 * 2, Math.PI / 3);
+        
+        var s = this.get('speed');
+        
+        context.beginPath();
+        context.moveTo(60, 200);
+        context.lineTo(Math.sin(s*Math.PI/110 - Math.PI/2)*50 + 60, Math.cos(s*Math.PI/110 - Math.PI/2)*-50 + 200)
+        context.closePath();
+        context.stroke();
+        
+        // Medalmeter
+        
+        context.strokeStyle = "#000000";
+        context.beginPath();
+        context.arc(60, 300, 50, 0, Math.PI, true);
+        context.lineTo(10, 300);
+        context.closePath();
+        context.stroke();
+        
+        context.fillStyle = '#236B8E';
+        this.fillArc(context, 60, 300, 50, 0,               Math.PI / 4);
+        context.fillStyle = '#A67D3D';
+        this.fillArc(context, 60, 300, 50, Math.PI / 4,     Math.PI / 4);
+        context.fillStyle = '#C0C0C0';
+        this.fillArc(context, 60, 300, 50, Math.PI / 2,     Math.PI / 4);
+        context.fillStyle = '#CC9900';
+        this.fillArc(context, 60, 300, 50, Math.PI / 4 * 3, Math.PI / 4);
+        
+        if(this.get('elapsedTime') > 0) {
+            var dc = PNode.cameraZ + PNode.carDist;
+            var tc = this.get('elapsedTime') + this.get('pTime');
+            
+            var dr = RC.finishLine - dc;
+            var tr = dr / s;
+            var te = tr + tc;
+            
+            var p;
+            
+            for(var i=1; i<5; i+=1) {
+            
+                if(te < RC.times[i] || i==4) {
+                    p = 1 - (te - RC.times[i-1]) / (RC.times[i] - RC.times[i-1]);
+                    p = Math.min(Math.max(p, 0), 1);
+                    
+                    p = p / 4 + (1 - 0.25 * i);
+                    
+                    break;
+                }
+            }
+            
+            context.beginPath();
+            context.moveTo(60, 300);
+            context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*50 + 60, Math.cos(Math.PI*p - Math.PI/2)*-50 + 300)
+            context.closePath();
+            context.stroke();
+        }
     },
 });
 
