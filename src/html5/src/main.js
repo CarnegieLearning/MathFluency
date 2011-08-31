@@ -12,24 +12,26 @@ var Question = require('Question').Question;
 var QuestionList = require('QuestionList').QuestionList;
 var Preloader = require('Preloader').Preloader;
 var LabelBG = require('LabelBG').LabelBG;
+var PNode = require('PerspectiveNode').PerspectiveNode;
+var Intermission = require('Intermission').Intermission;
+var RC = require('RaceControl').RaceControl;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
-    player: null,           // Holds the instance of the player
-    background:null,        // Holds the instance of the background object
-    currentQuestion:null,   // The current question displayed
-    questionList:null,      // List of all questions in the input
-    speed:null,             // Current speed in units/second
-    speedMin:null,          // Minimum speed in units/second
-    speedMax:null,          // Maximum speed in units/second
-    nextQuestionDelay:null, // Delay between finishing a question and starting the next one (milliseconds)
+    player      : null, // Holds the instance of the player
+    background  : null, // Holds the instance of the background object
+    questionList: [],   // List of all questions in the input
+    speed       : 20,   // Current speed in meters/second
+    speedMin    : 10,   // Minimum speed in meters/second
+    speedMax    : 100,  // Maximum speed in meters/second
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
         // Uncomment to run locally
-        //this.runLocally()
+        this.runLocally();
+        return;
         
         // Set up remote resources
         __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "text/xml"}, data: "set001.xml"};
@@ -39,27 +41,39 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(p, 'complete', this.runRemotely.bind(this));
         p.load();
     },
+    
     // Remote resources failed to load, generate dummy data then proceed
     // TODO: Determine what to do if we get 404s in production
     runLocally: function() {
         console.log("Now running locally from this point forward");
         
-        var qlist = QuestionList.create();
+        var list = [];
         for(var i=0; i<6; i+=1) {
-            qlist.addIntermission({selector: 20+i});
-            for(var j=0; j<3; j+=1) {
-                qlist.addQuestion(Question.create(1, 10+i, 30+i));
+            var inter = Intermission.create(20+i, i*500+10);
+            events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
+            inter.kickstart();
+            for(var j=1; j<4; j+=1) {
+                list[list.length] = Question.create(1, 10+i, 30+i, i*500 + j*150 + 10);
+                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
+                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
+                list[list.length - 1].kickstart();
             }
         }
         
-        this.set('questionList', qlist);
+        this.set('questionList', list);
+        
+        var player = Player.create();
+        player.set('position', new geo.Point(400, 450));
+        this.set('player', player);
         
         this.preprocessingComplete();
     },
+    
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
         this.parseXML(resource("resources/testset.xml"));
     },
+    
     // Parses (part of) the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
     parseXML: function(xmlDoc) {
@@ -106,6 +120,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.preprocessingComplete();
     },
+    
     // The 'real init()' called after all the preloading/parsing is completed
     preprocessingComplete: function () {
         // Initializing variables
@@ -114,32 +129,30 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: bg});
         
         this.addChild({child: this.get('player')});
-        
-        this.set('elapsedTime', 0.0);
-        this.set('speed', 1000);
-        this.set('speedMin', 250);
-        this.set('speedMax', 8000);
-        this.set('nextQuestionDelay', 1000);
-        
-        // Setup event handling on the QuestionList
-        var qlist = this.get('questionList');
-        events.addListener(qlist, 'noQuestionsRemaining', this.endOfGame.bind(this));
-        events.addListener(qlist, 'intermission', this.intermissionHandler.bind(this));
-        events.addListener(qlist, 'QuestionReady', this.nextQuestion.bind(this));
     },
     
-    // Three second countdown before the game begins
+    // Three second countdown before the game begins (after pressing the start button on the menu layer)
     countdown: function () {
         this.get('background').get('dash').start();
+        this.get('background').get('dash').bindTo('speed', this, 'speed');
         setTimeout(this.startGame.bind(this), 3000);
     },
     
+    // Starts the game
     startGame: function () {
-        // Start the game
-        this.get('questionList').nextQuestion();
-
         // Schedule per frame update function
         this.scheduleUpdate();
+    },
+    
+    // Handles add requests from PerspectiveNodes
+    addMeHandler: function (toAdd) {
+        this.addChild({child: toAdd});
+        events.addListener(toAdd, 'removeMe', this.removeMeHandler.bind(this));
+    },
+    
+    // Handles removal requests from PerspectiveNodes
+    removeMeHandler: function (toRemove) {
+        this.removeChild(toRemove);
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
@@ -148,14 +161,9 @@ var FluencyApp = KeyboardLayer.extend({
     endOfGame: function(evt) {
         // Stop the dash from updating and increasing the overall elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('background').get('dash'));
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
     
-        // Make sure we remove the final question
-        var cq = this.get('currentQuestion');
-        if(cq != null) {
-            this.removeChild(cq);
-        }
-    
-        var ql = this.get('questionList').get('questions');
+        var ql = this.get('questionList')
         var i = 0, correct = 0, incorrect = 0, unanswered = 0;
         
         // Tally question results
@@ -180,106 +188,85 @@ var FluencyApp = KeyboardLayer.extend({
         if(selector) {
             this.get('player').changeSelector(selector);
             console.log("New subset starting");
-            setTimeout(this.get('questionList').nextQuestion, this.get('nextQuestionDelay'));
         }
         else {
             console.log("****ERROR: no new selector given for new subset");
         }
     },
     
-    // Handles switching in the next question
-    nextQuestion: function(question) {
-        var cq = this.get('currentQuestion');
-        if(cq != null) {
-            cq.unbind('speed');
-            this.removeChild(cq);
-        }
-        
-        question.set('speed', this.get('speed'));
-        question.bindTo('speed', this, 'speed', true);
-        events.addListener(question, 'QuestionTimeExpired', this.answerQuestion.bind(this));
-        
-        this.addChild(question);
-        this.set('currentQuestion', question);
-    },
-    
     //Handles answering the current question when time expires
-    answerQuestion: function() {
-        var cq = this.get('currentQuestion');
+    answerQuestion: function(question) {
         var result;
         
         var player = this.get('player');
-        var playerPos = player.get('position');
+        var playerX = player.get('xCoordinate');
         
         // Determine answer based on the lane
-        if(playerPos.x < 325) {
-            result = cq.answerQuestion(0);
+        if(playerX < PNode.roadWidth / -6) {
+            result = question.answerQuestion(0);
         }
-        else if(playerPos.x < 475) {
-            result = cq.answerQuestion(1);
+        else if(playerX < PNode.roadWidth / 6) {
+            result = question.answerQuestion(1);
         }
         else {
-            result = cq.answerQuestion(2);
+            result = question.answerQuestion(2);
         }
-        
-        // Store the question back in the list
-        this.get('questionList').storeQuestion(cq);
         
         // Handle correct / incorrect feedback
         if(result) {
         }
         else {
-            player.wipeout(1);
+            player.wipeout(1, 2);
             this.get('background').get('dash').modifyPenaltyTime(8);
         }
-        
-        // Delays the next question from appearing
-        setTimeout(this.get('questionList').nextQuestion, this.get('nextQuestionDelay'));
     },
     
     // Called every frame, manages keyboard input
     update: function(dt) {
+        if(PNode.cameraZ + PNode.carDist > RC.finishLine) {
+            this.endOfGame();
+            return;
+        }
+    
         var player = this.get('player');
-        var playerPos = player.get('position');
+        var playerX = player.get('xCoordinate');
         var s = this.get('speed');
         
     // Move the player according to keyboard
         // 'A' Move left, continuous
         if(this.checkKey(65) > 0) {
-            playerPos.x -= 250 * dt
-            if(playerPos.x < 225) {
-                playerPos.x = 225
+            playerX -= 3 * dt
+            if(playerX < -4) {
+                playerX = -4
             }
-            player.set('position', playerPos);
+            player.set('xCoordinate', playerX);
         }
         // 'D' Move right, continuous
         else if(this.checkKey(68) > 0) {
-            playerPos.x += 250 * dt
-            if(playerPos.x > 575) {
-                playerPos.x = 575
+            playerX += 3 * dt
+            if(playerX > 4) {
+                playerX = 4
             }
-            player.set('position', playerPos);
+            player.set('xCoordinate', playerX);
         }
         // 'S' Slow down, press
-        // TODO: Discreet or continuous for speed changes?
-        // TODO: Parameterize acceleration/braking?
-        if(this.checkKey(83) == 1) {
+        if(this.checkKey(83) > 0) {
             if(s > this.get('speedMin')) {
-                s /= 2;
+                s -= 40 * dt;
+                PNode.carDist -= 0.25 * dt;
                 this.set('speed', s);
-                
-                console.log("Slowing down, current speed: " + s);
             }
         }
         // 'W' Speed up, press
-        else if(this.checkKey(87) == 1) {
+        else if(this.checkKey(87) > 0) {
             if(s < this.get('speedMax')) {
-                s *= 2;
+                s += 40 * dt;
+                PNode.carDist += 0.25 * dt;
                 this.set('speed', s);
-                
-                console.log("Speeding up, current speed: " + s);
             }
         }
+        
+        PNode.cameraZ += s * dt;
     },
 });
 
