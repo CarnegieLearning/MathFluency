@@ -65,12 +65,12 @@ var PieChart = cocos.nodes.Node.extend({
 // Static helper function to build the creation options object
 PieChart.helper = function(Sections, Filled, BgColor, LineColor, FillColor, Radius) {
     return {
-        numSections = Sections;
-        numFilled   = Filled;
-        bgColor     = BgColor;
-        lineColor   = LineColor;
-        fillColor   = FillColor;
-        radius      = Radius;
+        numSections : Sections,
+        numFilled   : Filled,
+        bgColor     : BgColor,
+        lineColor   : LineColor,
+        fillColor   : FillColor,
+        radius      : Radius
     };
 }
 
