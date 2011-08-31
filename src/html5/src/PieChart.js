@@ -4,22 +4,14 @@ var util = require('util');
 
 // Draws a pie chart
 var PieChart = cocos.nodes.Node.extend({
-    numSections:null,   // Total number of pie slices
-    numFilled:null,     // Number of filled pie slices
-    bgColor:null,       // Color of the background
-    lineColor:null,     // Color of the lines used to outlijne and mark each section
-    fillColor:null,     // Color of the filled in sections
-    radius:null,        // Size of the chart
+    numSections :2,         // Total number of pie slices
+    numFilled   :1,         // Number of filled pie slices
+    bgColor     :'#FFFFFF', // Color of the background
+    lineColor   :'#000000', // Color of the lines used to outlijne and mark each section
+    fillColor   :'#A0A0A0', // Color of the filled in sections
+    radius      :10,        // Size of the chart
     init: function(opts) {
         PieChart.superclass.init.call(this);
-        
-        // Default values
-        this.set('numSections', 2);
-        this.set('numFilled', 1);
-        this.set('bgColor', "#FFFFFF");
-        this.set('lineColor', "#000000");
-        this.set('fillColor', "#A0A0A0");
-        this.set('radius', 10);
         
         //Set properties from the option object
         util.each('numSections numFilled bgColor lineColor fillColor radius'.w(), util.callback(this, function (name) {
@@ -71,16 +63,15 @@ var PieChart = cocos.nodes.Node.extend({
 });
 
 // Static helper function to build the creation options object
-PieChart.helper = function(sections, filled, bgColor, lineColor, fillColor, radius) {
-    opts = Object();
-    opts['numSections'] = sections;
-    opts['numFilled'] = filled;
-    opts['bgColor'] = bgColor;
-    opts['lineColor'] = lineColor;
-    opts['fillColor'] = fillColor;
-    opts['radius'] = radius;
-    
-    return opts
+PieChart.helper = function(Sections, Filled, BgColor, LineColor, FillColor, Radius) {
+    return {
+        numSections = Sections;
+        numFilled   = Filled;
+        bgColor     = BgColor;
+        lineColor   = LineColor;
+        fillColor   = FillColor;
+        radius      = Radius;
+    };
 }
 
 exports.PieChart = PieChart
