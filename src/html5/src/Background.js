@@ -39,26 +39,30 @@ var Background = cocos.nodes.Node.extend({
         // Road
         context.fillStyle = "#808080";
         context.beginPath();
-        context.moveTo(375,50);
+        context.moveTo(385,50);
         context.lineTo(100,610);
         context.lineTo(700,610);
-        context.lineTo(425,50);
+        context.lineTo(415,50);
         context.closePath();
         context.fill();
         
         // Lanes
-        context.strokeStyle = "#FFFF00";
+        context.fillStyle = "#FFFF00";
         context.lineWidth = 4
         context.beginPath();
-        context.moveTo(390,50);
-        context.lineTo(300,610);
-        context.stroke();
+        context.moveTo(395,50);
+        context.lineTo(296,610);
+        context.lineTo(304,610);
+        context.lineTo(395,50);
+        context.fill();
         context.closePath();
         
         context.beginPath();
-        context.moveTo(410,50);
-        context.lineTo(500,610);
-        context.stroke();
+        context.moveTo(405,50);
+        context.lineTo(496,610);
+        context.lineTo(504,610);
+        context.lineTo(405,50);
+        context.fill();
         context.closePath();
     },
 });
