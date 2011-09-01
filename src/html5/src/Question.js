@@ -6,7 +6,6 @@ var LabelBG = require('LabelBG').LabelBG;
 var PNode = require('PerspectiveNode').PerspectiveNode;
 
 // Represents a single question to be answered by the player
-// TODO: Build with an options object to allow easier initialization when customizing away from default values
 var Question = PNode.extend({
     correctAnswer    : null,    // The correct response
     answeredCorrectly: null,    // Stores if question has been correctly/incorrectly (null=not answered)
