@@ -81,42 +81,28 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             var screenX, screenY;
             var lockX = this.get('lockX'), lockY = this.get('lockY');
             
+            // Apply scaling
+            var displayScale = this.scale(scale);
+            
             // Check to see if X axis is locked
             if(!lockX) {
                 screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.get('xCoordinate') / PerspectiveNode.roadWidth));
+                screenX += this.get('alignH') * this.get('contentSize').width * displayScale;
             }
             else {
-                screenX = this.get('position').x;
+                screenX = this.get('alignH') * this.get('contentSize').width * displayScale;
             }
             
             // Check to see if Y axis is locked
             if(!lockY) {
                 var yScale = (1.0 / (1.0 - PerspectiveNode.horizonScale)) * (scale - PerspectiveNode.horizonScale);
                 screenY = PerspectiveNode.horizonStart + PerspectiveNode.horizonHeight * (yScale);
+                screenY -= this.get('alignV') * this.get('contentSize').height * displayScale;
             }
             else {
-                screenY = this.get('position').y;
+                screenY = -1 * this.get('alignV') * this.get('contentSize').width * displayScale;
             }
 
-            // Apply scaling
-            scale = this.scale(scale);
-            
-            // Account for horizontal alignment
-            if(!lockX) {
-                screenX += this.get('alignH') * this.get('contentSize').width * scale;
-            }
-            else {
-                screenX = this.get('alignH') * this.get('contentSize').width * scale;
-            }
-            
-            //Account for vertical alignment
-            if(!lockY) {
-                screenY -= this.get('alignV') * this.get('contentSize').height * scale;
-            }
-            else {
-                screenY = -1 * this.get('alignV') * this.get('contentSize').width * scale;
-            }
-            
             // Set position
             this.set('position', new geom.Point(screenX, screenY));
         }
@@ -128,13 +114,13 @@ var PerspectiveNode = cocos.nodes.Node.extend({
 });
 
 // Static constants
-PerspectiveNode.horizonStart = 50;          // From top of screen to start of horizon in pixels
-PerspectiveNode.horizonHeight = 550;        // From horizonStart to the bottom of the screen in pixels
+PerspectiveNode.horizonStart    = 50;       // From top of screen to start of horizon in pixels
+PerspectiveNode.horizonHeight   = 550;      // From horizonStart to the bottom of the screen in pixels
 PerspectiveNode.horizonDistance = 100;      // In meters from the camera
-PerspectiveNode.horizonScale = 0.05;        // Scale of objects on the horizon
-PerspectiveNode.roadWidth = 9.0;            // Width of road at bottom of the screen in meters
-PerspectiveNode.roadWidthPix = 600;         // Width of road at bottom of the screen in pixels
-PerspectiveNode.roadOffset = 100;           // Number of pixels from the left hand side that the road starts at
+PerspectiveNode.horizonScale    = 0.05;     // Scale of objects on the horizon
+PerspectiveNode.roadWidth       = 9.0;      // Width of road at bottom of the screen in meters
+PerspectiveNode.roadWidthPix    = 600;      // Width of road at bottom of the screen in pixels
+PerspectiveNode.roadOffset      = 100;      // Number of pixels from the left hand side that the road starts at
 
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera

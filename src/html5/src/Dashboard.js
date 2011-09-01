@@ -82,10 +82,10 @@ var Dashboard = cocos.nodes.Node.extend({
         }
     },
     
-    fillArc: function (c, x, y, r, s, e) {
+    fillArc: function (c, x, y, r, s, e, b) {
         c.beginPath();
         s += Math.PI;
-        c.arc(x, y, r, s, s + e, false);
+        c.arc(x, y, r, s, s + e, b);
         c.lineTo(x, y);
         c.closePath();
         c.fill();
@@ -111,11 +111,11 @@ var Dashboard = cocos.nodes.Node.extend({
         context.stroke();
         
         context.fillStyle = '#11CC33';
-        this.fillArc(context, 60, 200, 50, 0,               Math.PI / 3);
+        this.fillArc(context, 60, 200, 50, 0,               Math.PI / 3, false);
         context.fillStyle = '#BBBB22';
-        this.fillArc(context, 60, 200, 50, Math.PI / 3,     Math.PI / 3);
+        this.fillArc(context, 60, 200, 50, Math.PI / 3,     Math.PI / 3, false);
         context.fillStyle = '#CC2222';
-        this.fillArc(context, 60, 200, 50, Math.PI / 3 * 2, Math.PI / 3);
+        this.fillArc(context, 60, 200, 50, Math.PI / 3 * 2, Math.PI / 3, false);
         
         var s = this.get('speed');
         
@@ -135,41 +135,48 @@ var Dashboard = cocos.nodes.Node.extend({
         context.stroke();
         
         context.fillStyle = '#236B8E';
-        this.fillArc(context, 60, 300, 50, 0,               Math.PI / 4);
+        this.fillArc(context, 60, 300, 50, 0,               Math.PI / 4, false);
         context.fillStyle = '#A67D3D';
-        this.fillArc(context, 60, 300, 50, Math.PI / 4,     Math.PI / 4);
+        this.fillArc(context, 60, 300, 50, Math.PI / 4,     Math.PI / 4, false);
         context.fillStyle = '#C0C0C0';
-        this.fillArc(context, 60, 300, 50, Math.PI / 2,     Math.PI / 4);
+        this.fillArc(context, 60, 300, 50, Math.PI / 2,     Math.PI / 4, false);
         context.fillStyle = '#CC9900';
-        this.fillArc(context, 60, 300, 50, Math.PI / 4 * 3, Math.PI / 4);
+        this.fillArc(context, 60, 300, 50, Math.PI / 4 * 3, Math.PI / 4, false);
         
         if(this.get('elapsedTime') > 0) {
-            var dc = PNode.cameraZ + PNode.carDist;
-            var tc = this.get('elapsedTime') + this.get('pTime');
-            
-            var dr = RC.finishLine - dc;
-            var tr = dr / s;
-            var te = tr + tc;
-            
-            var p;
-            
-            for(var i=1; i<5; i+=1) {
-            
-                if(te < RC.times[i] || i==4) {
-                    p = 1 - (te - RC.times[i-1]) / (RC.times[i] - RC.times[i-1]);
-                    p = Math.min(Math.max(p, 0), 1);
-                    
-                    p = p / 4 + (1 - 0.25 * i);
-                    
-                    break;
-                }
-            }
+            var p = this.pHelper(s);
             
             context.beginPath();
             context.moveTo(60, 300);
             context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*50 + 60, Math.cos(Math.PI*p - Math.PI/2)*-50 + 300)
             context.closePath();
             context.stroke();
+            
+            var m = this.pHelper(100);
+            
+            context.fillStyle = 'rgba(0,0,0,0.4)';
+            this.fillArc(context, 60, 300, 50, Math.PI, -1 * Math.PI * (1 - m), true);
+        }
+    },
+    
+    pHelper: function (s) {
+        var dc = PNode.cameraZ + PNode.carDist;
+        var tc = this.get('elapsedTime') + this.get('pTime');
+        
+        var dr = RC.finishLine - dc;
+        var tr = dr / s;
+        var te = tr + tc;
+        
+        var p;
+        
+        for(var i=1; i<5; i+=1) {
+        
+            if(te < RC.times[i] || i==4) {
+                p = 1 - (te - RC.times[i-1]) / (RC.times[i] - RC.times[i-1]);
+                p = Math.min(Math.max(p, 0), 1);
+                
+                return p / 4 + (1 - 0.25 * i);
+            }
         }
     },
 });

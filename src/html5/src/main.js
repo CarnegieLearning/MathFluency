@@ -22,6 +22,8 @@ var FluencyApp = KeyboardLayer.extend({
     speed       : 20,   // Current speed in meters/second
     speedMin    : 10,   // Minimum speed in meters/second
     speedMax    : 100,  // Maximum speed in meters/second
+    speedDeltaR : 0,    // Rate at which speed changes in meters/second^2
+    speedDeltaT : 0,    // Remaining duration of game enforced speed change
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
@@ -216,7 +218,19 @@ var FluencyApp = KeyboardLayer.extend({
         else {
             player.wipeout(1, 2);
             this.get('background').get('dash').modifyPenaltyTime(8);
+            this.speedChange(this.get('speed') / -2, 1);
         }
+    },
+    
+    speedChange: function (amt, dur) {
+        // Only apply if we are finished with a previous change
+        if(this.get('speedDeltaT') == 0) {
+            this.set('speedDeltaT', dur);
+            this.set('speedDeltaR', amt / dur);
+            
+            return true;
+        }
+        return false;
     },
     
     // Called every frame, manages keyboard input
@@ -247,8 +261,17 @@ var FluencyApp = KeyboardLayer.extend({
             }
             player.set('xCoordinate', playerX);
         }
+        
+        // Game enforced speed changes take priority
+        var sdt = this.get('speedDeltaT');
+        if(sdt > 0) {
+            this.set('speedDeltaT', Math.max(sdt - dt, 0));
+            var amt = Math.min(Math.max(s + this.get('speedDeltaR') * dt, this.get('speedMin')), this.get('speedMax')) - s
+            this.set('speed', s + amt);
+            PNode.carDist += amt / 40 * 0.25;
+        }
         // 'S' Slow down, press
-        if(this.checkKey(83) > 0) {
+        else if(this.checkKey(83) > 0) {
             if(s > this.get('speedMin')) {
                 s -= 40 * dt;
                 PNode.carDist -= 0.25 * dt;
