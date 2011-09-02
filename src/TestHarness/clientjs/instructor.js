@@ -175,6 +175,7 @@ $(document).ready(function ()
         return (selectedStudentLoginIDs.length == 0 ||
                 ~selectedStudentLoginIDs.indexOf(item.loginID));
     });
+    gamesGrid.setSortColumn('endTime', false);
     gamesGrid.setSelectionModel(new Slick.RowSelectionModel());
     gamesGrid.onSelectedRowsChanged.subscribe(function ()
     {
@@ -209,7 +210,6 @@ $(document).ready(function ()
     
     function fetchStudents(instructorID)
     {
-        //$.getJSON(here + instructorID + '/student')
         $.getJSON(here + 'student')
         .success(function (data)
         {
@@ -227,6 +227,7 @@ $(document).ready(function ()
         {
             gamesDataView.beginUpdate();
             gamesDataView.setItems(data.results);
+            gamesDataView.reSort();
             gamesDataView.endUpdate();
         })
         .error(makeXHRErrorHandler('Error fetching game results: '));
@@ -235,18 +236,18 @@ $(document).ready(function ()
     function submitNewStudent()
     {
         $.post(here + 'student', $('#new-student-dialog form').serialize())
-            .success(function (data)
-            {
-                studentDataView.addItem(data.student);
-                $('#new-student-dialog').dialog('close');
-            })
-            .error(function (jqXHR, statusText, errorThrown)
-            {
-                alert('Error saving student: ' + jqXHR.responseText);
-            })
-            .complete(function ()
-            {
-                //unlock();
-            });
+        .success(function (data)
+        {
+            studentDataView.addItem(data.student);
+            $('#new-student-dialog').dialog('close');
+        })
+        .error(function (jqXHR, statusText, errorThrown)
+        {
+            alert('Error saving student: ' + jqXHR.responseText);
+        })
+        .complete(function ()
+        {
+            //unlock();
+        });
     }
 });
