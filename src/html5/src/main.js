@@ -4,20 +4,21 @@ var geo = require('geometry');
 var events = require('events');
 
 // Project Imports
-var Player = require('Player').Player;
-var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
-var FractionRenderer = require('FractionRenderer').FractionRenderer
 var Background = require('Background').Background;
-var Question = require('Question').Question;
-var LabelBG = require('LabelBG').LabelBG;
-var PNode = require('PerspectiveNode').PerspectiveNode;
+var Dashboard = require('Dashboard').Dashboard
 var Intermission = require('Intermission').Intermission;
+var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
+var Player = require('Player').Player;
+var PNode = require('PerspectiveNode').PerspectiveNode;
+var PSprite = require('PerspectiveSprite').PerspectiveSprite;
+var Question = require('Question').Question;
 var RC = require('RaceControl').RaceControl;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
-    player      : null, // Holds the instance of the player
-    background  : null, // Holds the instance of the background object
+    player      : null, // Holds the player
+    background  : null, // Holds the the background object
+    dash        : null, // Holds the right hand side dashboard
     questionList: [],   // List of all questions in the input
     speed       : 20,   // Current speed in meters/second
     speedMin    : 10,   // Minimum speed in meters/second
@@ -65,6 +66,17 @@ var FluencyApp = KeyboardLayer.extend({
         var player = Player.create();
         player.set('position', new geo.Point(400, 450));
         this.set('player', player);
+        
+        for(var t=0; t<3300; t += Math.ceil(Math.random()*6+4)) {
+            if(Math.random() < 0.25) {
+                var p = PSprite.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, sprite: '/resources/tree_1.png', silent: true})
+                this.addChild({child: p})
+            }
+            if(Math.random() < 0.25) {
+                var p = PSprite.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, sprite: '/resources/tree_1.png', silent: true})
+                this.addChild({child: p})
+            }
+        }
         
         this.preprocessingComplete();
     },
@@ -123,18 +135,25 @@ var FluencyApp = KeyboardLayer.extend({
     
     // The 'real init()' called after all the preloading/parsing is completed
     preprocessingComplete: function () {
-        // Initializing variables
+        // Draw background
         var bg = Background.create();
+        bg.set('zOrder', -1);
         this.set('background', bg);
         this.addChild({child: bg});
+        
+        // Create the right hand side dash
+        var dash = Dashboard.create();
+        dash.set('position', new geo.Point(800, 0));
+        this.set('dash', dash);
+        this.addChild({child: dash});
         
         this.addChild({child: this.get('player')});
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     countdown: function () {
-        this.get('background').get('dash').start();
-        this.get('background').get('dash').bindTo('speed', this, 'speed');
+        this.get('dash').start();
+        this.get('dash').bindTo('speed', this, 'speed');
         setTimeout(this.startGame.bind(this), 3000);
     },
     
@@ -160,7 +179,7 @@ var FluencyApp = KeyboardLayer.extend({
     // TODO: Format into XML and send to server
     endOfGame: function(evt) {
         // Stop the dash from updating and increasing the overall elapsed time
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('background').get('dash'));
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
     
         var ql = this.get('questionList')
@@ -217,7 +236,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
         else {
             player.wipeout(1, 2);
-            this.get('background').get('dash').modifyPenaltyTime(8);
+            this.get('dash').modifyPenaltyTime(8);
             this.speedChange(this.get('speed') / -2, 1);
         }
     },
@@ -262,7 +281,7 @@ var FluencyApp = KeyboardLayer.extend({
             player.set('xCoordinate', playerX);
         }
         
-        // Game enforced speed changes take priority
+        // Game enforced speed changes take priority over player requested acceleration
         var sdt = this.get('speedDeltaT');
         if(sdt > 0) {
             this.set('speedDeltaT', Math.max(sdt - dt, 0));

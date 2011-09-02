@@ -9,6 +9,7 @@ var RC = require('RaceControl').RaceControl;
 var Dashboard = cocos.nodes.Node.extend({
     elapsedTime : -3,   // Time in race elapsed so far
     displayTime : null, // Timer displayed to player
+    gaugeRadius : 40,   // Radius of the gauges
     penaltyTime : null, // Displayed penalty time
     pTime       : 0.0,  // Stores numerical penalty time
     pTimeTo     : 0.0,  // Value that pTime moves towards
@@ -93,35 +94,38 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Draws the dash
     draw: function(context) {
+        context.lineWidth = "4";
         context.fillStyle = "#8B7765";
         context.beginPath();
         context.moveTo(0,-10);
         context.lineTo(0,610);
-        context.lineTo(150,610);
-        context.lineTo(150,-10);
+        context.lineTo(110,610);
+        context.lineTo(110,-10);
         context.closePath();
         context.fill();
         
         // Speedometer
+        var r = this.get('gaugeRadius');
+        
         context.strokeStyle = "#000000";
         context.beginPath();
-        context.arc(60, 200, 50, 0, Math.PI, true);
+        context.arc(50, 200, r, 0, Math.PI, true);
         context.lineTo(10, 200);
         context.closePath();
         context.stroke();
         
         context.fillStyle = '#11CC33';
-        this.fillArc(context, 60, 200, 50, 0,               Math.PI / 3, false);
+        this.fillArc(context, 50, 200, r, 0,               Math.PI / 3, false);
         context.fillStyle = '#BBBB22';
-        this.fillArc(context, 60, 200, 50, Math.PI / 3,     Math.PI / 3, false);
+        this.fillArc(context, 50, 200, r, Math.PI / 3,     Math.PI / 3, false);
         context.fillStyle = '#CC2222';
-        this.fillArc(context, 60, 200, 50, Math.PI / 3 * 2, Math.PI / 3, false);
+        this.fillArc(context, 50, 200, r, Math.PI / 3 * 2, Math.PI / 3, false);
         
         var s = this.get('speed');
         
         context.beginPath();
-        context.moveTo(60, 200);
-        context.lineTo(Math.sin(s*Math.PI/110 - Math.PI/2)*50 + 60, Math.cos(s*Math.PI/110 - Math.PI/2)*-50 + 200)
+        context.moveTo(50, 200);
+        context.lineTo(Math.sin(s*Math.PI/110 - Math.PI/2)*r + 50, Math.cos(s*Math.PI/110 - Math.PI/2)*-r + 200)
         context.closePath();
         context.stroke();
         
@@ -129,33 +133,33 @@ var Dashboard = cocos.nodes.Node.extend({
         
         context.strokeStyle = "#000000";
         context.beginPath();
-        context.arc(60, 300, 50, 0, Math.PI, true);
+        context.arc(50, 300, r, 0, Math.PI, true);
         context.lineTo(10, 300);
         context.closePath();
         context.stroke();
         
         context.fillStyle = '#236B8E';
-        this.fillArc(context, 60, 300, 50, 0,               Math.PI / 4, false);
+        this.fillArc(context, 50, 300, r, 0,               Math.PI / 4, false);
         context.fillStyle = '#A67D3D';
-        this.fillArc(context, 60, 300, 50, Math.PI / 4,     Math.PI / 4, false);
+        this.fillArc(context, 50, 300, r, Math.PI / 4,     Math.PI / 4, false);
         context.fillStyle = '#C0C0C0';
-        this.fillArc(context, 60, 300, 50, Math.PI / 2,     Math.PI / 4, false);
+        this.fillArc(context, 50, 300, r, Math.PI / 2,     Math.PI / 4, false);
         context.fillStyle = '#CC9900';
-        this.fillArc(context, 60, 300, 50, Math.PI / 4 * 3, Math.PI / 4, false);
+        this.fillArc(context, 50, 300, r, Math.PI / 4 * 3, Math.PI / 4, false);
         
         if(this.get('elapsedTime') > 0) {
             var p = this.pHelper(s);
             
             context.beginPath();
-            context.moveTo(60, 300);
-            context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*50 + 60, Math.cos(Math.PI*p - Math.PI/2)*-50 + 300)
+            context.moveTo(50, 300);
+            context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*r + 50, Math.cos(Math.PI*p - Math.PI/2)*-r + 300)
             context.closePath();
             context.stroke();
             
             var m = this.pHelper(100);
             
             context.fillStyle = 'rgba(0,0,0,0.4)';
-            this.fillArc(context, 60, 300, 50, Math.PI, -1 * Math.PI * (1 - m), true);
+            this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
         }
     },
     

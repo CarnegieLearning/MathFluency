@@ -1,18 +1,8 @@
 var cocos = require('cocos2d');
-var geom = require('geometry');
-
-var Dashboard = require('Dashboard').Dashboard
 
 var Background = cocos.nodes.Node.extend({
-    dash: null,
     init: function(lanes) {
         Background.superclass.init.call(this);
-        
-        // Create the right hand side dash
-        var dash = Dashboard.create();
-        dash.set('position', new geom.Point(750, 0));
-        this.set('dash', dash);
-        this.addChild({child: dash});
     },
     
     draw: function(context) {
