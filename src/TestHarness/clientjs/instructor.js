@@ -109,9 +109,30 @@ $(document).ready(function ()
     {
         return util.dateFormat(value * 1000, 'm/d HH:MM');
     }
+    function formatUTC(row, cell, value, columnDef, dataContext) {
+        if(value === null) {
+            return "No Games";
+        }
+        return util.dateFormat(value, 'UTC:m/d HH:MM');
+    }
     function formatDuration(row, cell, value, columnDef, dataContext)
     {
         return Math.round(value / 1000) + ' s'
+    }
+    function formatDurationLong(row, cell, value, columnDef, dataContext)
+    {
+        if(value === null) {
+            return "0 m";
+        }
+        
+        var val = Math.round(value / 60000);
+        var str = "";
+        if(val > 59) {
+            str += val / 60 + " h ";
+            val = val % 60;
+        }
+    
+        return  str + val + ' m'
     }
     function formatMedal(row, cell, value, columnDef, dataContext)
     {
@@ -122,6 +143,18 @@ $(document).ready(function ()
     {
         var endState = constants.endState.codeToString(value);
         return '<div class="end-state ' + endState + '">' + endState + '</div>';
+    }
+    function formatMedalCount(row, cell, value, columnDef, dataContext) {
+        if(value === null) {
+            return "No Games";
+        }
+
+        var vArray = value.split(' ');
+        var ret = '';
+        ret += '<div class="medal gold">' + vArray[0] + '</div> ';
+        ret += '<div class="medal silver">' + vArray[1] + '</div> ';
+        ret += '<div class="medal bronze">' + vArray[2] + '</div> ';
+        return ret;
     }
     
     var selectedStudentLoginIDs = [];
@@ -135,10 +168,13 @@ $(document).ready(function ()
             {id:'loginID', field:'loginID', name:'Login ID', sortable:true},
             {id:'password', field:'password', name:'Password'},
             {id:'condition', field:'condition', name:'Condition', sortable:true},
-            {id:'gameCount', field:'gameCount', name:'Games', sortable:true}
+            {id:'gameCount', field:'gameCount', name:'Games', sortable:true},
+            {id:'TotalTime', field:'TotalTime', name:'Total Time', sortable:true, formatter:formatDurationLong},
+            {id:'Medals', field:'Medals', name:'Medals', sortable:true, formatter:formatMedalCount},
+            {id:'FirstDate', field:'FirstDate', name:'First Date', sortable:true, formatter:formatUTC},
+            {id:'LastDate', field:'LastDate', name:'Last Date', sortable:true, formatter:formatUTC}
         ],
         {
-            forceFitColumns: true
         });
     studentGrid.setSelectionModel(new Slick.RowSelectionModel());
     studentGrid.onSelectedRowsChanged.subscribe(function ()

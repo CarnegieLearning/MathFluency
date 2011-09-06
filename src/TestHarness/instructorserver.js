@@ -369,22 +369,49 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 Students.password, \
                 Students.condition, \
                 Instructors.loginID AS instructorLoginID, \
-                gameCount \
+                CASE WHEN SUM(QuestionSetOutcomes.elapsedMS) IS NULL THEN 0 ELSE COUNT(*) END AS gameCount, \
+                medalTable.Medals, \
+                SUM(QuestionSetOutcomes.elapsedMS) AS TotalTime, \
+                MIN(QuestionSetOutcomes.createdAt) AS FirstDate, \
+                MAX(QuestionSetOutcomes.createdAt) AS LastDate \
             FROM Students \
-                INNER JOIN Instructors ON Instructors.id = Students.InstructorId \
+                LEFT JOIN QuestionSetOutcomes ON QuestionSetOutcomes.studentId = Students.id \
+                LEFT JOIN Instructors ON Instructors.id = Students.InstructorId \
                 LEFT JOIN ( \
                     SELECT \
-                        StudentId, \
-                        COUNT(*) AS gameCount \
-                    FROM QuestionSetOutcomes \
-                    GROUP BY StudentID \
-                ) GameCounts ON GameCounts.StudentId = Students.id \
+                        studentId, \
+                        CONCAT( \
+                            CAST(COUNT(CASE WHEN medal = 3 THEN 1 ELSE NULL END) AS CHAR(4)), "g ", \
+                            CAST(COUNT(CASE WHEN medal = 2 THEN 1 ELSE NULL END) AS CHAR(4)), "s ", \
+                            CAST(COUNT(CASE WHEN medal = 1 THEN 1 ELSE NULL END) AS CHAR(4)), "b" \
+                        ) AS Medals \
+                    FROM ( \
+                        SELECT \
+                            DISTINCT \
+                                studentId, \
+                                MAX(medal) AS medal, \
+                                stageID \
+                        FROM \
+                            QuestionSetOutcomes \
+                        WHERE \
+                            medal > 0 \
+                            AND endState = 0 \
+                        GROUP BY \
+                            studentId, stageID \
+                    ) AS T \
+                    GROUP BY \
+                        studentId \
+                ) AS medalTable ON medalTable.studentId = Students.id \
         ';
+        
         if (!instructor.isAdmin)
         {
-            query += 'WHERE Instructors.id = ?';
+            query += ' WHERE Instructors.id = ? ';
             params.push(instructor.id);
         }
+        
+        query += ' GROUP BY Students.id '
+        
         if (config.debug)
         {
             console.log('Custom Query:' + query.replace(/ +/g, ' '));
