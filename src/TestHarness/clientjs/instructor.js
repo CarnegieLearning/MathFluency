@@ -77,21 +77,21 @@ $(document).ready(function ()
     
     // Table data
     
+    function fieldComparator(field)
+    {
+        return function (item1, item2)
+        {
+            return util.compare(item1[field], item2[field]);
+        };
+    }
+    
     function connectGridToDataView(grid, dataView)
     {
         grid.onSort.subscribe(function (e, args)
         {
             var sortAsc = args.sortAsc,
-                sortCol = args.sortCol,
-                field = sortCol.field;
-            
-            var sortFun = function (item1, item2)
-            {
-                var a = item1[field],
-                    b = item2[field];
-                return util.compare(a, b);
-            };
-            dataView.sort(sortFun, sortAsc);
+                field = args.sortCol.field;
+            dataView.sort(fieldComparator(field), sortAsc);
         });
         dataView.onRowCountChanged.subscribe(function (e, args)
         {
@@ -175,6 +175,7 @@ $(document).ready(function ()
         return (selectedStudentLoginIDs.length == 0 ||
                 ~selectedStudentLoginIDs.indexOf(item.loginID));
     });
+    gamesDataView.sort(fieldComparator('endTime'), false);
     gamesGrid.setSortColumn('endTime', false);
     gamesGrid.setSelectionModel(new Slick.RowSelectionModel());
     gamesGrid.onSelectedRowsChanged.subscribe(function ()
