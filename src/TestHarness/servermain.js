@@ -173,6 +173,7 @@ function runServer(config, model)
         var remember = req.body.remember;
         var isStudent = req.params.studentOrInstructor == 'student';
         
+        console.log('Login attemp: ' + loginID + ' (' + req.params.studentOrInstructor + ')');
         if (isStudent && !config.requireStudentPassword)
         {
             model.Student.find({where: {loginID: loginID}}).on('success', callback);
