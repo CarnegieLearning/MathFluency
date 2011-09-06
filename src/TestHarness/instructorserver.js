@@ -369,8 +369,10 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 Students.password, \
                 Students.condition, \
                 Instructors.loginID AS instructorLoginID, \
-                CASE WHEN SUM(QuestionSetOutcomes.elapsedMS) IS NULL THEN 0 ELSE COUNT(*) END AS gameCount, \
-                medalTable.Medals, \
+                CASE WHEN medalTable.GoldMedals IS NULL THEN 0 ELSE COUNT(*) END AS gameCount, \
+                medalTable.GoldMedals, \
+                medalTable.SilverMedals, \
+                medalTable.BronzeMedals, \
                 SUM(QuestionSetOutcomes.elapsedMS) AS TotalTime, \
                 MIN(QuestionSetOutcomes.createdAt) AS FirstDate, \
                 MAX(QuestionSetOutcomes.createdAt) AS LastDate \
@@ -380,11 +382,9 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 LEFT JOIN ( \
                     SELECT \
                         studentId, \
-                        CONCAT( \
-                            CAST(COUNT(CASE WHEN medal = 3 THEN 1 ELSE NULL END) AS CHAR(4)), "g ", \
-                            CAST(COUNT(CASE WHEN medal = 2 THEN 1 ELSE NULL END) AS CHAR(4)), "s ", \
-                            CAST(COUNT(CASE WHEN medal = 1 THEN 1 ELSE NULL END) AS CHAR(4)), "b" \
-                        ) AS Medals \
+                        COUNT(CASE WHEN medal = 3 THEN 1 ELSE NULL END) AS GoldMedals, \
+                        COUNT(CASE WHEN medal = 2 THEN 1 ELSE NULL END) AS SilverMedals, \
+                        COUNT(CASE WHEN medal = 1 THEN 1 ELSE NULL END) AS BronzeMedals \
                     FROM ( \
                         SELECT \
                             DISTINCT \

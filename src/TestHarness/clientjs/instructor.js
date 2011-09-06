@@ -149,11 +149,10 @@ $(document).ready(function ()
             return "No Games";
         }
 
-        var vArray = value.split(' ');
         var ret = '';
-        ret += '<div class="medal gold">' + vArray[0] + '</div> ';
-        ret += '<div class="medal silver">' + vArray[1] + '</div> ';
-        ret += '<div class="medal bronze">' + vArray[2] + '</div> ';
+        ret += '<div class="medal gold">' + dataContext.GoldMedals + 'g</div> ';
+        ret += '<div class="medal silver">' + dataContext.SilverMedals + 's</div> ';
+        ret += '<div class="medal bronze">' + dataContext.BronzeMedals + 'b</div> ';
         return ret;
     }
     
@@ -170,7 +169,7 @@ $(document).ready(function ()
             {id:'condition', field:'condition', name:'Condition', sortable:true},
             {id:'gameCount', field:'gameCount', name:'Games', sortable:true},
             {id:'TotalTime', field:'TotalTime', name:'Total Time', sortable:true, formatter:formatDurationLong},
-            {id:'Medals', field:'Medals', name:'Medals', sortable:true, formatter:formatMedalCount},
+            {id:'Medals', field:'GoldMedals', name:'Medals', sortable:true, formatter:formatMedalCount},
             {id:'FirstDate', field:'FirstDate', name:'First Date', sortable:true, formatter:formatUTC},
             {id:'LastDate', field:'LastDate', name:'Last Date', sortable:true, formatter:formatUTC}
         ],
