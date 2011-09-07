@@ -269,8 +269,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                     for (var i = 0; i < results.length; i++)
                     {
                         var r = results[i];
-                        r.FirstDate = util.dateFormat(r.FirstDate, 'yyyy-mm-dd HH:MM:ss Z', true);
-                        r.LastDate = util.dateFormat(r.LastDate, 'yyyy-mm-dd HH:MM:ss Z', true);
+                        r.FirstDate = util.dateFormat(r.FirstDate * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
+                        r.LastDate = util.dateFormat(r.LastDate * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
                     }
                     outputCSV(path.join(dir, archiveDir, 'students.csv'), results, fields, callback);
                 });
@@ -392,8 +392,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 medalTable.SilverMedals, \
                 medalTable.BronzeMedals, \
                 SUM(QuestionSetOutcomes.elapsedMS) AS TotalTime, \
-                MIN(QuestionSetOutcomes.createdAt) AS FirstDate, \
-                MAX(QuestionSetOutcomes.createdAt) AS LastDate \
+                MIN(QuestionSetOutcomes.endTime) AS FirstDate, \
+                MAX(QuestionSetOutcomes.endTime) AS LastDate \
             FROM Students \
                 LEFT JOIN QuestionSetOutcomes ON QuestionSetOutcomes.studentId = Students.id \
                 LEFT JOIN Instructors ON Instructors.id = Students.InstructorId \

@@ -107,13 +107,7 @@ $(document).ready(function ()
     
     function formatTimestamp(row, cell, value, columnDef, dataContext)
     {
-        return util.dateFormat(value * 1000, 'm/d HH:MM');
-    }
-    function formatUTC(row, cell, value, columnDef, dataContext) {
-        if(value === null) {
-            return "No Games";
-        }
-        return util.dateFormat(value, 'UTC:m/d HH:MM');
+        return value && util.dateFormat(value * 1000, 'm/d HH:MM');
     }
     function formatDuration(row, cell, value, columnDef, dataContext)
     {
@@ -145,9 +139,7 @@ $(document).ready(function ()
         return '<div class="end-state ' + endState + '">' + endState + '</div>';
     }
     function formatMedalCount(row, cell, value, columnDef, dataContext) {
-        if(value === null) {
-            return "No Games";
-        }
+        if (!value) return null;
 
         var ret = '';
         ret += '<div class="medal gold">' + dataContext.GoldMedals + 'g</div> ';
@@ -170,8 +162,8 @@ $(document).ready(function ()
             {id:'gameCount', field:'gameCount', name:'Games', sortable:true},
             {id:'TotalTime', field:'TotalTime', name:'Total Time', sortable:true, formatter:formatDurationLong},
             {id:'Medals', field:'GoldMedals', name:'Medals', sortable:true, formatter:formatMedalCount},
-            {id:'FirstDate', field:'FirstDate', name:'First Date', sortable:true, formatter:formatUTC},
-            {id:'LastDate', field:'LastDate', name:'Last Date', sortable:true, formatter:formatUTC}
+            {id:'FirstDate', field:'FirstDate', name:'First Date', sortable:true, formatter:formatTimestamp},
+            {id:'LastDate', field:'LastDate', name:'Last Date', sortable:true, formatter:formatTimestamp}
         ],
         {
         });
