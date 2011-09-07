@@ -256,13 +256,22 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         fs.mkdirSync(dir + '/' + archiveDir, 7 << 6);
         fs.mkdirSync(outputDir, 7 << 6);
         
-        async.parallel([
+        // Note: I switched these async calls from parallel to serial execution because, in the case of an error, we don't want to run cleanup until all concurrently running tasks complete.  See https://github.com/caolan/async/issues/51
+        
+        async.series([
             function (callback)
             {
                 getStudents(req.instructor, function (err, results, fields)
                 {
                     if (err) return callback(err);
                     
+                    // Replace coded fields with strings.
+                    for (var i = 0; i < results.length; i++)
+                    {
+                        var r = results[i];
+                        r.FirstDate = util.dateFormat(r.FirstDate, 'yyyy-mm-dd HH:MM:ss Z', true);
+                        r.LastDate = util.dateFormat(r.LastDate, 'yyyy-mm-dd HH:MM:ss Z', true);
+                    }
                     outputCSV(path.join(dir, archiveDir, 'students.csv'), results, fields, callback);
                 });
             },
@@ -281,7 +290,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                         r.endTime = util.dateFormat(r.endTime * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
                     }
                     
-                    async.parallel([
+                    async.series([
                         function (callback)
                         {
                             outputCSV(path.join(dir, archiveDir, 'game-results.csv'), results, fields, callback);
@@ -303,6 +312,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function copyGames(questionResults, callback)
         {
+            console.log('Copying ' + questionResults.length + ' game output files');
+            
             async.forEach(questionResults,
             function (item, callback)
             {
@@ -315,6 +326,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function zipAndSend()
         {
+            console.log('Creating tarball at: ' + dir + '/archive.tar.gz');
+            
             var tar = spawn('tar', ['czf', 'archive.tar.gz', archiveDir], {
                 cwd: dir
             });
@@ -334,7 +347,12 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function cleanup(err)
         {
-            if (err) next(err);
+            if (err)
+            {
+                console.log('Got an error:');
+                console.log(err);
+                next(err);
+            }
             
             console.log('Deleting export directory: ' + dir);
             rimraf(dir, function (err)
@@ -443,14 +461,16 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
     
     function outputCSV(pathOrStream, results, fields, callback)
     {
+        console.log('Writing CSV file to: ' + pathOrStream);
+        
         var fieldNames = [];
         for (var field in fields) fieldNames.push(field);
         fieldNames.sort(function (a, b)
         {
             return fields[a].number - fields[b].number;
         });
-        var csvWriter = csv();
-        csvWriter.on('end', callback);
+        var csvWriter = csv({columns: fieldNames});
+        csvWriter.on('end', function () {callback();});
         
         if (typeof pathOrStream === 'string') csvWriter.toPath(pathOrStream);
         else csvWriter.toStream(pathOrStream);

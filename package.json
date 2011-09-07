@@ -19,7 +19,7 @@
     "connect-mysql-session": ">=0.1.0",
     "xml2js": ">=0.1.9",
     "node-uuid": ">=1.2.0",
-    "csv": ">=0.0.9",
+    "csv": "~0.1",
     "connect-form": ">=0.3.0",
     "async": "~0.1",
     "rimraf": "~1.0"
