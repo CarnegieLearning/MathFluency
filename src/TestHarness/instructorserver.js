@@ -357,7 +357,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
     function getStudents(instructor, callback)
     {
         // For admins, show all students along with which instructor they belong to.
-        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.  This requires sequelize >1.0.2 (currently not in npm yet) which exposes the MySQL connection pool.
+        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.
         var params = [];
         var query = '\
             SELECT \
@@ -409,15 +409,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             query += ' WHERE Instructors.id = ? ';
             params.push(instructor.id);
         }
-        
         query += ' GROUP BY Students.id '
-        
-        if (config.debug)
-        {
-            console.log('Custom Query:' + query.replace(/ +/g, ' '));
-            console.log('Parameters: ' + params);
-        }
-        model.sequelize.pool.query(query, params, callback);
+        model.customQuery(query, params, callback);
     }
     
     function getResults(instructor, callback)
@@ -445,12 +438,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             query += 'WHERE Students.InstructorId = ?';
             params.push(instructor.id);
         }
-        if (config.debug)
-        {
-            console.log('Custom Query:' + query.replace(/ +/g, ' '));
-            console.log('Parameters: ' + params);
-        }
-        model.sequelize.pool.query(query, params, callback);
+        model.customQuery(query, params, callback);
     }
     
     function outputCSV(pathOrStream, results, fields, callback)

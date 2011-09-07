@@ -12,6 +12,21 @@ module.exports = function model(db, user, password, options, callback)
     var model = {};
     model.sequelize = sequelize;
     
+    // Function to run custom query on the database, bypassing the ORM.  The current implementation is strictly depedent on Sequelize 1.1.0 and likely to break in future versions when Sequelize changes to use a connection pool.
+    model.customQuery = function (query, params, callback)
+    {
+        if (options.logging)
+        {
+            console.log('Custom Query:' + query.replace(/ +/g, ' '));
+            console.log('  - with parameters: ' + params);
+        }
+        if (!sequelize.connectorManager.isConnected)
+        {
+            sequelize.connectorManager.connect();
+        }
+        sequelize.connectorManager.client.query(query, params, callback);
+    };
+    
     model.Instructor = sequelize.define('Instructor', {
         loginID: {type: Sequelize.STRING, unique: true, allowNull: false},
         password: Sequelize.STRING,
