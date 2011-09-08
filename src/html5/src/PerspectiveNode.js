@@ -114,16 +114,17 @@ var PerspectiveNode = cocos.nodes.Node.extend({
 });
 
 // Static constants
-PerspectiveNode.horizonStart    = 50;       // From top of screen to start of horizon in pixels
-PerspectiveNode.horizonHeight   = 550;      // From horizonStart to the bottom of the screen in pixels
+PerspectiveNode.horizonStart    = 150;      // From top of screen to start of horizon in pixels
+PerspectiveNode.horizonHeight   = 450;      // From horizonStart to the bottom of the screen in pixels
 PerspectiveNode.horizonDistance = 100;      // In meters from the camera
 PerspectiveNode.horizonScale    = 0.05;     // Scale of objects on the horizon
 PerspectiveNode.roadWidth       = 9.0;      // Width of road at bottom of the screen in meters
-PerspectiveNode.roadWidthPix    = 600;      // Width of road at bottom of the screen in pixels
-PerspectiveNode.roadOffset      = 100;      // Number of pixels from the left hand side that the road starts at
+PerspectiveNode.roadWidthPix    = 800;      // Width of road at bottom of the screen in pixels
+PerspectiveNode.roadOffset      = 000;      // Number of pixels from the left hand side that the road starts at
 
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera
+// TODO: Move carDist into an implementation specific file instead of here
 PerspectiveNode.carDist = 6;                // Distance of the car from the camera in meters
 
 exports.PerspectiveNode = PerspectiveNode
