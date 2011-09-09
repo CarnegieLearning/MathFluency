@@ -3,6 +3,7 @@ var geom = require('geometry');
 var events = require('events');
 var util = require('util');
 
+// Base class for rending objects in perspective view
 var PerspectiveNode = cocos.nodes.Node.extend({
     visibility  : 1,        // Content scale multiplier, used BEFORE clamping
     minScale    : null,     // Minimum scale for this node due to perspective distance (null disables minimum)
@@ -34,6 +35,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
          cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
     },
     
+    // Callen when place into the scene
     onEnter: function() {
         this.set('added', true);
         PerspectiveNode.superclass.onEnter.call(this);
@@ -46,6 +48,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         PerspectiveNode.superclass.onExit.call(this);
     },
     
+    // Applies visibility modifier and clamps to scale, then returns the augmented value
     scale: function (s) {
         s *= this.get('visibility');
     
@@ -64,6 +67,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         return s;
     },
     
+    // Called every frame for distance checking and rendering
     update: function (dt) {
         var distance = this.get('zCoordinate') - PerspectiveNode.cameraZ;
     
