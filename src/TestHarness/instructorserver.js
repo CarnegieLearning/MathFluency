@@ -388,7 +388,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 Students.condition, \
                 Instructors.loginID AS instructorLoginID, \
                 SUM(endState <=> 0) AS completedGames, \
-                COUNT(questionSetOutcomes.id) AS totalGames, \
+                COUNT(QuestionSetOutcomes.id) AS totalGames, \
                 medalTable.GoldMedals, \
                 medalTable.SilverMedals, \
                 medalTable.BronzeMedals, \
