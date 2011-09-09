@@ -4,6 +4,7 @@ var geo = require('geometry');
 var events = require('events');
 
 // Project Imports
+var AudioMixer = require('AudioMixer').AudioMixer;
 var Background = require('Background').Background;
 var Dashboard = require('Dashboard').Dashboard
 var Intermission = require('Intermission').Intermission;
@@ -25,10 +26,16 @@ var FluencyApp = KeyboardLayer.extend({
     speedMax    : 100,  // Maximum speed in meters/second
     speedDeltaR : 0,    // Rate at which speed changes in meters/second^2
     speedDeltaT : 0,    // Remaining duration of game enforced speed change
+    audioMixer  : null, // AudioMixer
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
+        
+        var AM = AudioMixer.create();
+        AM.loadSound('bg', "sound/01 Yellow Line");
+        AM.loadSound('wipeout', "sound/Carscreech");
+        this.set('audioMixer', AM);
         
         // Uncomment to run locally
         this.runLocally();
@@ -155,6 +162,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.get('dash').start();
         this.get('dash').bindTo('speed', this, 'speed');
         setTimeout(this.startGame.bind(this), 3000);
+        this.get('audioMixer').playSound('bg');
     },
     
     // Starts the game
@@ -236,6 +244,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
         else {
             player.wipeout(1, 2);
+            this.get('audioMixer').playSound('wipeout', true);
             this.get('dash').modifyPenaltyTime(8);
             this.speedChange(this.get('speed') / -2, 1);
         }
@@ -250,6 +259,11 @@ var FluencyApp = KeyboardLayer.extend({
             return true;
         }
         return false;
+    },
+    
+    muteHandler: function() {
+        var AM = this.get('audioMixer');
+        AM.setMute(!AM.get('muted'));
     },
     
     // Called every frame, manages keyboard input
@@ -311,9 +325,11 @@ var FluencyApp = KeyboardLayer.extend({
 });
 
 // For button-like interactions (e.g. starting the game)
+// TODO: Extend Menu with functions making it easier to tie the Menu into an app
 var MenuLayer = cocos.nodes.Menu.extend({
-    startButton:null,   //Holds the button to start the game
-    startGame:null,     //Holds the function in the app that starts the game
+    startButton : null,     // Holds the button to start the game
+    startGame   : null,     // Holds the function in the app that starts the game
+    muted       : false,    // State of the volume mute button
     init: function(hook) {
         MenuLayer.superclass.init.call(this, {});
         
@@ -332,6 +348,27 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('startButton', sb);
         this.addChild({child: sb});
         
+        // Create the volume control
+        // TODO: Make a better basic (toggle)button (extend MenuItemImage?)
+        opts['normalImage'] = '/resources/volume-control.png';
+        opts['selectedImage'] = '/resources/volume-control.png';
+        opts['disabledImage'] = '/resources/volume-control.png';
+        opts['callback'] = this.volumeCallback.bind(this);
+        
+        var vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(400, 250));
+        this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['normalImage'] = '/resources/volume-control-off.png';
+        opts['selectedImage'] = '/resources/volume-control-off.png';
+        opts['disabledImage'] = '/resources/volume-control-off.png';
+        opts['callback'] = this.volumeCallback.bind(this);
+        
+        var vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(400, 250));
+        this.set('volumeButtonOff', vc);
+        
         // Store the function to call when pressing the button
         this.set('startGame', hook);
     },
@@ -339,13 +376,30 @@ var MenuLayer = cocos.nodes.Menu.extend({
     // Called when the button is pressed, clears the button, then hands control over to the main game
     startButtonCallback: function() {
         this.removeChild(this.get('startButton'));
-        this.get('startGame').call();
+        events.trigger(this, "startGameEvent");
+    },
+    
+    // Called when the volume button is pressed
+    // TODO: Seperate this into two functions?
+    // TODO: Implement a slider/levels to set master volume
+    volumeCallback: function() {
+        events.trigger(this, "muteEvent");
+        
+        var m = this.get('muted')
+        if(!m) {
+            this.removeChild(this.get('volumeButtonOn'));
+            this.addChild({child: this.get('volumeButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('volumeButtonOff'));
+            this.addChild({child: this.get('volumeButtonOn')});
+        }
+        this.set('muted', !m);
     }
 });
 
+// Initialise application
 exports.main = function() {
-    // Initialise application
-    
     // Get director
     var director = cocos.Director.get('sharedDirector');
 
@@ -355,10 +409,16 @@ exports.main = function() {
     // Create a scene
     var scene = cocos.nodes.Scene.create();
 
-    // Add our layers to the scene
+    // Create our layers
     var app = FluencyApp.create();
+    var menu = MenuLayer.create();
+    
+    // Set up inter-layer events
+    events.addListener(menu, "startGameEvent", app.countdown.bind(app));
+    events.addListener(menu, "muteEvent", app.muteHandler.bind(app));
+    
+    // Add our layers to the scene
     scene.addChild({child: app});
-    var menu = MenuLayer.create(app.countdown.bind(app));
     scene.addChild({child: menu});
 
     // Run the scene
