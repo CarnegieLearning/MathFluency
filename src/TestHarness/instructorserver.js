@@ -387,7 +387,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 Students.password, \
                 Students.condition, \
                 Instructors.loginID AS instructorLoginID, \
-                CASE WHEN medalTable.GoldMedals IS NULL THEN 0 ELSE COUNT(*) END AS gameCount, \
+                SUM(endState <=> 0) AS completedGames, \
+                COUNT(questionSetOutcomes.id) AS totalGames, \
                 medalTable.GoldMedals, \
                 medalTable.SilverMedals, \
                 medalTable.BronzeMedals, \
@@ -395,14 +396,14 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 MIN(QuestionSetOutcomes.endTime) AS FirstDate, \
                 MAX(QuestionSetOutcomes.endTime) AS LastDate \
             FROM Students \
+                INNER JOIN Instructors ON Instructors.id = Students.InstructorId \
                 LEFT JOIN QuestionSetOutcomes ON QuestionSetOutcomes.studentId = Students.id \
-                LEFT JOIN Instructors ON Instructors.id = Students.InstructorId \
                 LEFT JOIN ( \
                     SELECT \
                         studentId, \
-                        COUNT(CASE WHEN medal = 3 THEN 1 ELSE NULL END) AS GoldMedals, \
-                        COUNT(CASE WHEN medal = 2 THEN 1 ELSE NULL END) AS SilverMedals, \
-                        COUNT(CASE WHEN medal = 1 THEN 1 ELSE NULL END) AS BronzeMedals \
+                        SUM(medal <=> 3) AS GoldMedals, \
+                        SUM(medal <=> 2) AS SilverMedals, \
+                        SUM(medal <=> 1) AS BronzeMedals \
                     FROM ( \
                         SELECT \
                             DISTINCT \
