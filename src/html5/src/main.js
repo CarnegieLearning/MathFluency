@@ -32,6 +32,7 @@ var FluencyApp = KeyboardLayer.extend({
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
+        // Set up basic audio
         var AM = AudioMixer.create();
         AM.loadSound('bg', "sound/01 Yellow Line");
         AM.loadSound('wipeout', "sound/Carscreech");
@@ -142,6 +143,12 @@ var FluencyApp = KeyboardLayer.extend({
     
     // The 'real init()' called after all the preloading/parsing is completed
     preprocessingComplete: function () {
+        // Create key bindings
+        this.setBinding('MOVE_LEFT',    [65, 37]);  // [A, ARROW_LEFT]
+        this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
+        this.setBinding('SPEED_UP',     [87, 38]);  // [W, ARROW_UP]
+        this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
+        
         // Draw background
         var bg = Background.create();
         bg.set('zOrder', -1);
@@ -241,6 +248,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Handle correct / incorrect feedback
         if(result) {
+            // TODO: correct sounds effects
         }
         else {
             player.wipeout(1, 2);
@@ -250,8 +258,10 @@ var FluencyApp = KeyboardLayer.extend({
         }
     },
     
+    // Enforce a speed change on the player
     speedChange: function (amt, dur) {
         // Only apply if we are finished with a previous change
+        // TODO: Queue multiple changes? (or replace current change with he new change)
         if(this.get('speedDeltaT') == 0) {
             this.set('speedDeltaT', dur);
             this.set('speedDeltaR', amt / dur);
@@ -261,6 +271,7 @@ var FluencyApp = KeyboardLayer.extend({
         return false;
     },
     
+    // Toggles the AudioMixer's mute
     muteHandler: function() {
         var AM = this.get('audioMixer');
         AM.setMute(!AM.get('muted'));
@@ -278,19 +289,19 @@ var FluencyApp = KeyboardLayer.extend({
         var s = this.get('speed');
         
     // Move the player according to keyboard
-        // 'A' Move left, continuous
-        if(this.checkKey(65) > 0) {
-            playerX -= 3 * dt
-            if(playerX < -4) {
-                playerX = -4
+        // 'A' / 'LEFT' Move left, discreet
+        if(this.checkBinding('MOVE_LEFT') == KeyboardLayer.PRESS) {
+            playerX -= 3
+            if(playerX < -3) {
+                playerX = -3
             }
             player.set('xCoordinate', playerX);
         }
-        // 'D' Move right, continuous
-        else if(this.checkKey(68) > 0) {
-            playerX += 3 * dt
-            if(playerX > 4) {
-                playerX = 4
+        // 'D' / 'RIGHT' Move right, discreet
+        else if(this.checkBinding('MOVE_RIGHT') == KeyboardLayer.PRESS) {
+            playerX += 3
+            if(playerX > 3) {
+                playerX = 3
             }
             player.set('xCoordinate', playerX);
         }
@@ -303,16 +314,17 @@ var FluencyApp = KeyboardLayer.extend({
             this.set('speed', s + amt);
             PNode.carDist += amt / 40 * 0.25;
         }
-        // 'S' Slow down, press
-        else if(this.checkKey(83) > 0) {
+        // 'S' / 'DOWN' Slow down, press
+        // TODO: Paramatertize acceleration, modify carDist to move along a range instead of absolutely
+        else if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
             if(s > this.get('speedMin')) {
                 s -= 40 * dt;
                 PNode.carDist -= 0.25 * dt;
                 this.set('speed', s);
             }
         }
-        // 'W' Speed up, press
-        else if(this.checkKey(87) > 0) {
+        // 'W' / 'UP' Speed up, press
+        else if(this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
             if(s < this.get('speedMax')) {
                 s += 40 * dt;
                 PNode.carDist += 0.25 * dt;
@@ -380,7 +392,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     },
     
     // Called when the volume button is pressed
-    // TODO: Seperate this into two functions?
+    // TODO: Seperate this into two functions (mute/unmute)?
     // TODO: Implement a slider/levels to set master volume
     volumeCallback: function() {
         events.trigger(this, "muteEvent");
