@@ -14,19 +14,21 @@ var PNode = require('PerspectiveNode').PerspectiveNode;
 var PSprite = require('PerspectiveSprite').PerspectiveSprite;
 var Question = require('Question').Question;
 var RC = require('RaceControl').RaceControl;
+var MOT = require('ModifyOverTime').ModifyOverTime;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
-    player      : null, // Holds the player
-    background  : null, // Holds the the background object
-    dash        : null, // Holds the right hand side dashboard
-    questionList: [],   // List of all questions in the input
-    speed       : 20,   // Current speed in meters/second
-    speedMin    : 10,   // Minimum speed in meters/second
-    speedMax    : 100,  // Maximum speed in meters/second
-    speedDeltaR : 0,    // Rate at which speed changes in meters/second^2
-    speedDeltaT : 0,    // Remaining duration of game enforced speed change
-    audioMixer  : null, // AudioMixer
+    player      : null,     // Holds the player
+    background  : null,     // Holds the the background object
+    dash        : null,     // Holds the right hand side dashboard
+    questionList: [],       // List of all questions in the input
+    speed       : 20,       // Current speed in meters/second
+    speedMin    : 10,       // Minimum speed in meters/second
+    speedMax    : 100,      // Maximum speed in meters/second
+    audioMixer  : null,     // AudioMixer
+    turbo       : false,    // True if turbo boost is currently active
+    preTurbo    : 0,        // Holds what the player's speed was before turbo boosting
+    turboSpeed  : 200,      // Turbo boost speed in m/s
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
@@ -148,6 +150,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
         this.setBinding('SPEED_UP',     [87, 38]);  // [W, ARROW_UP]
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
+        this.setBinding('TURBO',        [32]);      // [SPACE]
         
         // Draw background
         var bg = Background.create();
@@ -235,6 +238,11 @@ var FluencyApp = KeyboardLayer.extend({
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
         
+        if(this.get('turbo')) {
+            this.set('turbo', false);
+            this.speedChange(this.get('preTurbo') - this.get('turboSpeed'), 0.1);
+        }
+        
         // Determine answer based on the lane
         if(playerX < PNode.roadWidth / -6) {
             result = question.answerQuestion(0);
@@ -260,15 +268,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Enforce a speed change on the player
     speedChange: function (amt, dur) {
-        // Only apply if we are finished with a previous change
-        // TODO: Queue multiple changes? (or replace current change with he new change)
-        if(this.get('speedDeltaT') == 0) {
-            this.set('speedDeltaT', dur);
-            this.set('speedDeltaR', amt / dur);
-            
-            return true;
-        }
-        return false;
+        MOT.create(this.get('speed'), amt, dur).bindTo('value', this, 'speed');
     },
     
     // Toggles the AudioMixer's mute
@@ -306,30 +306,31 @@ var FluencyApp = KeyboardLayer.extend({
             player.set('xCoordinate', playerX);
         }
         
-        // Game enforced speed changes take priority over player requested acceleration
-        var sdt = this.get('speedDeltaT');
-        if(sdt > 0) {
-            this.set('speedDeltaT', Math.max(sdt - dt, 0));
-            var amt = Math.min(Math.max(s + this.get('speedDeltaR') * dt, this.get('speedMin')), this.get('speedMax')) - s
-            this.set('speed', s + amt);
-            PNode.carDist += amt / 40 * 0.25;
-        }
         // 'S' / 'DOWN' Slow down, press
-        // TODO: Paramatertize acceleration, modify carDist to move along a range instead of absolutely
-        else if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
-            if(s > this.get('speedMin')) {
-                s -= 40 * dt;
-                PNode.carDist -= 0.25 * dt;
-                this.set('speed', s);
-            }
+        // TODO: Paramatertize acceleration
+        if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
+            s -= 40 * dt;
         }
         // 'W' / 'UP' Speed up, press
         else if(this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
             if(s < this.get('speedMax')) {
                 s += 40 * dt;
-                PNode.carDist += 0.25 * dt;
-                this.set('speed', s);
             }
+        }
+        
+        // Prevent negative speed
+        this.set('speed', Math.max(s, this.get('speedMin')));
+        
+        // Update car distance from the camera
+        var p = this.get('speed') * 1.0 / this.get('speedMax');
+        PNode.carDist = PNode.carMinDist + PNode.carMaxDelta * p;
+        
+        // 'SPACE' turbo boost, press
+        if(this.checkBinding('TURBO') > KeyboardLayer.UP && !this.get('turbo')
+        && this.get('player').get('wipeoutDuration') < 0.1) {
+            this.set('turbo', true);
+            this.set('preTurbo', this.get('speed'))
+            this.speedChange(this.get('turboSpeed') - this.get('speed'), 0.1);
         }
         
         PNode.cameraZ += s * dt;

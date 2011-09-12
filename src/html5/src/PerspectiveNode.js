@@ -129,6 +129,8 @@ PerspectiveNode.roadOffset      = 000;      // Number of pixels from the left ha
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera
 // TODO: Move carDist into an implementation specific file instead of here
-PerspectiveNode.carDist = 6;                // Distance of the car from the camera in meters
+PerspectiveNode.carDist = 6;                // Current distance of the car from the camera in meters
+PerspectiveNode.carMinDist = 6;             // Minimum distance of the car from the camera in meters
+PerspectiveNode.carMaxDelta = 1;            // How many meters the car will pull away from the camera at amximum speed
 
 exports.PerspectiveNode = PerspectiveNode

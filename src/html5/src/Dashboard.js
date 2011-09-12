@@ -3,6 +3,7 @@ var geom = require('geometry');
 
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var RC = require('RaceControl').RaceControl;
+var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
@@ -12,7 +13,6 @@ var Dashboard = cocos.nodes.Node.extend({
     gaugeRadius : 40,   // Radius of the gauges
     penaltyTime : null, // Displayed penalty time
     pTime       : 0.0,  // Stores numerical penalty time
-    pTimeTo     : 0.0,  // Value that pTime moves towards
     speed       : 20,   // Speed for speedometer
     init: function() {
         Dashboard.superclass.init.call(this);
@@ -40,7 +40,7 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Changes the current amount of penalty time accured
     modifyPenaltyTime: function(dt) {
-        this.set('pTimeTo', this.get('pTimeTo') + dt);
+        MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
     },
     
     // Converts numerical seconds to string, accurate to tenths of a second
@@ -66,21 +66,7 @@ var Dashboard = cocos.nodes.Node.extend({
         d.set('string', this.timerToString(t));
         
         // Update penalty timer
-        var pt = this.get('pTime');
-        var ptt = this.get('pTimeTo');
-        
-        if(ptt > pt) {
-            pt += 10 * dt;
-            pt = Math.min(pt, ptt);
-            this.set('pTime', pt);
-            this.get('penaltyTime').set('string', this.timerToString(pt));
-        }
-        else if(ptt < pt) {
-            pt += 10 * dt;
-            pt = Math.max(pt, ptt);
-            this.set('pTime', pt);
-            this.get('penaltyTime').set('string', this.timerToString(pt));
-        }
+        this.get('penaltyTime').set('string', this.timerToString(this.get('pTime');));
     },
     
     fillArc: function (c, x, y, r, s, e, b) {
@@ -125,7 +111,7 @@ var Dashboard = cocos.nodes.Node.extend({
         
         context.beginPath();
         context.moveTo(50, 200);
-        context.lineTo(Math.sin(s*Math.PI/110 - Math.PI/2)*r + 50, Math.cos(s*Math.PI/110 - Math.PI/2)*-r + 200)
+        context.lineTo(Math.sin(s*Math.PI/210 - Math.PI/2)*r + 50, Math.cos(s*Math.PI/210 - Math.PI/2)*-r + 200)
         context.closePath();
         context.stroke();
         
