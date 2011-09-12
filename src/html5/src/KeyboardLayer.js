@@ -77,7 +77,7 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
                 i+=1;
             }
             
-            if(i<b[bind].length && b[bind][i] == rm) [
+            if(i<b[bind].length && b[bind][i] == rm) {
                 b[bind].splice(i, 1);
                 this.set('bindings', b);
                 return true;
@@ -124,6 +124,7 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
     }
 });
 
+// Static constants
 KeyboardLayer.UP        = 0;    // Key is up and was not recently released
 KeyboardLayer.PRESS     = 1;    // Key has just been pressed (KeyDown)
 KeyboardLayer.HOLD      = 2;    // Key is down and not been released
