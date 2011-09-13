@@ -19,16 +19,26 @@ var geom = require('geometry');
 
 var LabelBG = require('LabelBG').LabelBG;
 var PNode = require('PerspectiveNode').PerspectiveNode;
+var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Represents the player in the game
 var Player = PNode.extend({
-    selector        : null, // Label that represents the value the player has control over
-    wipeoutDuration : 0,    // Duration remaining on a wipeout
-    wipeoutRotSpeed : 0,    // Rotational velocity in degrees per second for the current wipeout
-    selectorX       : null, // The X coordinate that the label should be at, ignoring rotational transforms
-    selectorY       : null, // The Y coordinate that the label should be at, ignoring rotational transforms
+    selector        : null,     // Label that represents the value the player has control over
+    wipeoutDuration : 0,        // Duration remaining on a wipeout
+    wipeoutRotSpeed : 0,        // Rotational velocity in degrees per second for the current wipeout
+    selectorX       : null,     // The X coordinate that the label should be at, ignoring rotational transforms
+    selectorY       : null,     // The Y coordinate that the label should be at, ignoring rotational transforms
+    chaseDist       : 6,        // The distance in meters the player is ahead of the camera by
+    chaseMin        : 6,        // The closest the camera can get behind the car in meters
+    chaseDelta      : 1,        // How many meters the player will pull away from the camera by moving at maximum speed
+    minSpeed        : 0,        // Minimum player speed in m/s (Zero is okay, negatives are BAD)
+    maxSpeed        : 200,      // Maximum player speed in m/s
+    acceleration    : 40,       // Player de/acceleration in m/s^2
+    turbo           : false,    // True if turbo boost is currently active
+    preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
+    turboSpeed      : 200,      // Turbo boost speed in m/s
     init: function() {
-        Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: PNode.carDist});
+        Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
        
         // Load the car sprite for the player
         var sprite = cocos.nodes.Sprite.create({file: '/resources/car1.png',});
@@ -70,10 +80,56 @@ var Player = PNode.extend({
         this.set('wipeoutRotSpeed', spins * 360.0 / duration);
     },
     
-    // Keep the selector from rotating with the car
+    // Accelerates the player
+    accelerate: function (dt) {
+        var s = this.get('zVelocity') + this.get('acceleration') * dt
+        s = Math.min(this.get('maxSpeed'), s);
+        this.set('zVelocity', s);
+    },
+    
+    // Decelerates the player
+    decelerate: function (dt) {
+        var s = this.get('zVelocity') - this.get('acceleration') * dt
+        s = Math.max(this.get('minSpeed'), s);
+        this.set('zVelocity', s);
+    },
+
+    // Starts a turbo boost if not already boosting
+    startTurboBoost: function() {
+        if(!this.get('turbo') && !this.get('wipeoutDuration') > 0) {
+            this.set('turbo', true);
+            this.set('preTurbo', this.get('zVelocity'))
+            this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
+        }
+    },
+    
+    // Ends a turbo boost if it is active (usually called when answering a question, but could be used to cut the boost early)
+    endTurboBoost: function() {
+        if(this.get('turbo')) {
+            this.set('turbo', false);
+            this.speedChange(this.get('preTurbo') - this.get('zVelocity'), 0.1);
+        }
+    },
+    
+    // Shortcut function for applying a speed change over time
+    speedChange: function (amt, dur) {
+        MOT.create(this.get('zVelocity'), amt, dur).bindTo('value', this, 'zVelocity');
+    },
+    
+    
     update: function(dt) {
-        this.set('zCoordinate', PNode.cameraZ + PNode.carDist);
+        // Always maintain at least the minimum speed
+        if(this.get('zVelocity') < this.get('minSpeed')) {
+            this.set('zVelocity', this.get('minSpeed'));
+        }
+    
+        // Set the chase distance based on current speed
+        this.set('chaseDist', this.get('chaseMin') + this.get('chaseDelta') * (this.get('zVelocity') / this.get('maxSpeed')));
         
+        // Update the camera and include the current frame's velocity which has yet to be applied to the player (eliminates jitter)
+        PNode.cameraZ = this.get('zCoordinate') - this.get('chaseDist') + (this.get('zVelocity') * dt);
+
+        // Let PNode handle perspective rendering
         Player.superclass.update.call(this, dt);
         
         var pos = this.get('position');
@@ -85,7 +141,7 @@ var Player = PNode.extend({
         }
         // Otherwise just rotate the player as they move to keep the visual angles realistic
         else {
-            if(400.0 - pos.x > 0) {
+            if(pos.x > 400.0) {
                 this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (400.0 - pos.x))) / 1.5)
             }
             else {
@@ -93,8 +149,9 @@ var Player = PNode.extend({
             }
         }
     
+        // Keep the selector from rotating with the car
         if(this.get('selector') != null) {
-            // Do not rotate the label, keep its facing constant
+            // Do not rotate the label, keep its facing constant in respect to its own origin
             var rot = this.get('rotation');
             this.get('selector').set('rotation', rot * -1);
             

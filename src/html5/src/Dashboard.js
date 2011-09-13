@@ -29,7 +29,7 @@ var Dashboard = cocos.nodes.Node.extend({
     gaugeRadius : 40,   // Radius of the gauges
     penaltyTime : null, // Displayed penalty time
     pTime       : 0.0,  // Stores numerical penalty time
-    speed       : 20,   // Speed for speedometer
+    speed       : 10,   // Speed for speedometer
     init: function() {
         Dashboard.superclass.init.call(this);
         
@@ -82,7 +82,7 @@ var Dashboard = cocos.nodes.Node.extend({
         d.set('string', this.timerToString(t));
         
         // Update penalty timer
-        this.get('penaltyTime').set('string', this.timerToString(this.get('pTime');));
+        this.get('penaltyTime').set('string', this.timerToString(this.get('pTime')));
     },
     
     fillArc: function (c, x, y, r, s, e, b) {
@@ -166,7 +166,9 @@ var Dashboard = cocos.nodes.Node.extend({
     },
     
     pHelper: function (s) {
-        var dc = PNode.cameraZ + PNode.carDist;
+        // TODO: Add chaseDist back into this, otherwise calculation will be off by part of a meter
+        var dc = PNode.cameraZ + 6;
+        var dc = 0;
         var tc = this.get('elapsedTime') + this.get('pTime');
         
         var dr = RC.finishLine - dc;

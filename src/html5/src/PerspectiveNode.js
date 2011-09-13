@@ -33,13 +33,15 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     alignV      : 0,        // Vertical alignment of the node (0 left - 0.5 center - 1 right)
     alignH      : 0,        // Horizontal alignment of the node (0 top - 0.5 center - 1 bottom)
     dropoffDist : -10,      // Distance behind the camera that node requests removal from scene
+    zVelocity   : 0,        // Meters per second speed along the Z axis
+    xVelocity   : 0,        // Meters per second speed along the X axis
     init: function(opts) {
         PerspectiveNode.superclass.init.call(this);
         
         this.set('position', new geom.Point(0, 0));
         
         //Set properties from the option object
-        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist'.w(), util.callback(this, function (name) {
+        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity'.w(), util.callback(this, function (name) {
             if (opts[name]) {
                 this.set(name, opts[name]);
             }
@@ -85,6 +87,10 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     
     // Called every frame for distance checking and rendering
     update: function (dt) {
+        // Update current position based on velocity
+        this.set('zCoordinate', this.get('zCoordinate') + this.get('zVelocity') * dt);
+        this.set('xCoordinate', this.get('xCoordinate') + this.get('xVelocity') * dt);
+        
         var distance = this.get('zCoordinate') - PerspectiveNode.cameraZ;
     
         // Only worry about drawing once node is on our side of the horizon
@@ -120,7 +126,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
                 screenY -= this.get('alignV') * this.get('contentSize').height * displayScale;
             }
             else {
-                screenY = -1 * this.get('alignV') * this.get('contentSize').width * displayScale;
+                screenY = -1 * this.get('alignV') * this.get('contentSize').height * displayScale;
             }
 
             // Set position
@@ -144,9 +150,5 @@ PerspectiveNode.roadOffset      = 000;      // Number of pixels from the left ha
 
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera
-// TODO: Move carDist into an implementation specific file instead of here
-PerspectiveNode.carDist = 6;                // Current distance of the car from the camera in meters
-PerspectiveNode.carMinDist = 6;             // Minimum distance of the car from the camera in meters
-PerspectiveNode.carMaxDelta = 1;            // How many meters the car will pull away from the camera at amximum speed
 
 exports.PerspectiveNode = PerspectiveNode

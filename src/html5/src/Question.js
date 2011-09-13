@@ -92,7 +92,8 @@ var Question = PNode.extend({
             var te = this.get('timeElapsed') + dt;
             this.set('timeElapsed', te);
             
-            if(PNode.cameraZ + PNode.carDist >= this.get('zCoordinate')) {
+            // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
+            if(PNode.cameraZ + 6 >= this.get('zCoordinate')) {
                 events.trigger(this, "questionTimeExpired", this);
             }
         }

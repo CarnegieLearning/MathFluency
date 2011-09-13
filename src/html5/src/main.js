@@ -38,13 +38,7 @@ var FluencyApp = KeyboardLayer.extend({
     background  : null,     // Holds the the background object
     dash        : null,     // Holds the right hand side dashboard
     questionList: [],       // List of all questions in the input
-    speed       : 20,       // Current speed in meters/second
-    speedMin    : 10,       // Minimum speed in meters/second
-    speedMax    : 100,      // Maximum speed in meters/second
     audioMixer  : null,     // AudioMixer
-    turbo       : false,    // True if turbo boost is currently active
-    preTurbo    : 0,        // Holds what the player's speed was before turbo boosting
-    turboSpeed  : 200,      // Turbo boost speed in m/s
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
@@ -186,7 +180,7 @@ var FluencyApp = KeyboardLayer.extend({
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     countdown: function () {
         this.get('dash').start();
-        this.get('dash').bindTo('speed', this, 'speed');
+        this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         setTimeout(this.startGame.bind(this), 3000);
         this.get('audioMixer').playSound('bg');
     },
@@ -254,10 +248,7 @@ var FluencyApp = KeyboardLayer.extend({
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
         
-        if(this.get('turbo')) {
-            this.set('turbo', false);
-            this.speedChange(this.get('preTurbo') - this.get('turboSpeed'), 0.1);
-        }
+        player.endTurboBoost();
         
         // Determine answer based on the lane
         if(playerX < PNode.roadWidth / -6) {
@@ -278,13 +269,8 @@ var FluencyApp = KeyboardLayer.extend({
             player.wipeout(1, 2);
             this.get('audioMixer').playSound('wipeout', true);
             this.get('dash').modifyPenaltyTime(8);
-            this.speedChange(this.get('speed') / -2, 1);
+            player.speedChange(player.get('zVelocity') / -2, 1);
         }
-    },
-    
-    // Enforce a speed change on the player
-    speedChange: function (amt, dur) {
-        MOT.create(this.get('speed'), amt, dur).bindTo('value', this, 'speed');
     },
     
     // Toggles the AudioMixer's mute
@@ -295,14 +281,13 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called every frame, manages keyboard input
     update: function(dt) {
-        if(PNode.cameraZ + PNode.carDist > RC.finishLine) {
+        if(this.get('player').get('zCoordinate') > RC.finishLine) {
             this.endOfGame();
             return;
         }
     
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
-        var s = this.get('speed');
         
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
@@ -325,31 +310,17 @@ var FluencyApp = KeyboardLayer.extend({
         // 'S' / 'DOWN' Slow down, press
         // TODO: Paramatertize acceleration
         if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
-            s -= 40 * dt;
+            this.get('player').decelerate(dt);
         }
         // 'W' / 'UP' Speed up, press
         else if(this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
-            if(s < this.get('speedMax')) {
-                s += 40 * dt;
-            }
+            this.get('player').accelerate(dt);
         }
-        
-        // Prevent negative speed
-        this.set('speed', Math.max(s, this.get('speedMin')));
-        
-        // Update car distance from the camera
-        var p = this.get('speed') * 1.0 / this.get('speedMax');
-        PNode.carDist = PNode.carMinDist + PNode.carMaxDelta * p;
         
         // 'SPACE' turbo boost, press
-        if(this.checkBinding('TURBO') > KeyboardLayer.UP && !this.get('turbo')
-        && this.get('player').get('wipeoutDuration') < 0.1) {
-            this.set('turbo', true);
-            this.set('preTurbo', this.get('speed'))
-            this.speedChange(this.get('turboSpeed') - this.get('speed'), 0.1);
+        if(this.checkBinding('TURBO') > KeyboardLayer.UP) {
+            this.get('player').startTurboBoost();
         }
-        
-        PNode.cameraZ += s * dt;
     },
 });
 
