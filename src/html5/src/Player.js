@@ -96,7 +96,7 @@ var Player = PNode.extend({
 
     // Starts a turbo boost if not already boosting
     startTurboBoost: function() {
-        if(!this.get('turbo') && !this.get('wipeoutDuration') > 0) {
+        if(!this.get('turbo') && !(this.get('wipeoutDuration') > 0)) {
             this.set('turbo', true);
             this.set('preTurbo', this.get('zVelocity'))
             this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);

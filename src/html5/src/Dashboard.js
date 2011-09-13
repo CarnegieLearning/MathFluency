@@ -158,7 +158,7 @@ var Dashboard = cocos.nodes.Node.extend({
             context.closePath();
             context.stroke();
             
-            var m = this.pHelper(100);
+            var m = this.pHelper(200);
             
             context.fillStyle = 'rgba(0,0,0,0.4)';
             this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
