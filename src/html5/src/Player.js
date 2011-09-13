@@ -141,7 +141,7 @@ var Player = PNode.extend({
         }
         // Otherwise just rotate the player as they move to keep the visual angles realistic
         else {
-            if(pos.x > 400.0) {
+            if(pos.x < 400.0) {
                 this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (400.0 - pos.x))) / 1.5)
             }
             else {
