@@ -30,22 +30,30 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     added       : false,    // True once added to the scene
     lockX       : false,    // Set to true to lock X value
     lockY       : false,    // Set to true to lock Y value
-    alignV      : 0,        // Vertical alignment of the node (0 left - 0.5 center - 1 right)
-    alignH      : 0,        // Horizontal alignment of the node (0 top - 0.5 center - 1 bottom)
+    alignV      : 0,        // Vertical alignment of the node (0 top - 0.5 center - 1 bottom)
+    alignH      : 0,        // Horizontal alignment of the node (0 right - 0.5 center - 1 left)
     dropoffDist : -10,      // Distance behind the camera that node requests removal from scene
     zVelocity   : 0,        // Meters per second speed along the Z axis
     xVelocity   : 0,        // Meters per second speed along the X axis
+    content     : null,     // Content to be displayed in the node
     init: function(opts) {
-        PerspectiveNode.superclass.init.call(this);
+        PerspectiveNode.superclass.init.call(this, opts);
         
         this.set('position', new geom.Point(0, 0));
+        this.set('anchorPoint', new geom.Point(0, 0));
         
         //Set properties from the option object
-        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity'.w(), util.callback(this, function (name) {
+        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity content'.w(), util.callback(this, function (name) {
             if (opts[name]) {
                 this.set(name, opts[name]);
             }
         }));
+        
+        if(this.get('content') != null) {
+            this.get('content').set('anchorPoint', new geom.Point(0, 0));
+            this.addChild({child: this.get('content')});
+            this.set('contentSize', this.get('content').get('contentSize'));
+        }
     },
     
     // Explicitly start update, even if not in scene
@@ -113,7 +121,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             // Check to see if X axis is locked
             if(!lockX) {
                 screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.get('xCoordinate') / PerspectiveNode.roadWidth));
-                screenX += this.get('alignH') * this.get('contentSize').width * displayScale;
+                screenX -= this.get('alignH') * this.get('contentSize').width * displayScale;
             }
             else {
                 screenX = this.get('alignH') * this.get('contentSize').width * displayScale;

@@ -70,11 +70,11 @@ var FluencyApp = KeyboardLayer.extend({
         
         var list = [];
         for(var i=0; i<6; i+=1) {
-            var inter = Intermission.create(20+i, i*500+10);
+            var inter = Intermission.create(20000+i, i*500+10);
             events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
             inter.kickstart();
             for(var j=1; j<4; j+=1) {
-                list[list.length] = Question.create(1, 10+i, 30+i, i*500 + j*150 + 10);
+                list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
                 events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
                 events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
                 list[list.length - 1].kickstart();
@@ -87,14 +87,18 @@ var FluencyApp = KeyboardLayer.extend({
         player.set('position', new geo.Point(400, 450));
         this.set('player', player);
         
-        for(var t=0; t<3300; t += Math.ceil(Math.random()*6+4)) {
+        var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
+        
+        for(var t=10; t<3300; t += Math.ceil(Math.random()*6+4)) {
             if(Math.random() < 0.25) {
-                var p = PSprite.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, sprite: '/resources/tree_1.png', silent: true})
-                this.addChild({child: p})
+                var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                p.kickstart();
             }
             if(Math.random() < 0.25) {
-                var p = PSprite.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, sprite: '/resources/tree_1.png', silent: true})
-                this.addChild({child: p})
+                var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                p.kickstart();
             }
         }
         

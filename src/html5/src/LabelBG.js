@@ -17,9 +17,7 @@ Copyright 2011, Carnegie Learning
 // Import the cocos2d module
 var cocos = require('cocos2d');
 
-var PNode = require('PerspectiveNode').PerspectiveNode;
-
-var LabelBG = PNode.extend({
+var LabelBG = cocos.nodes.Node.extend({
     label  : null,      //The label that the class wraps
     bgColor: '#FFFFFF', //The color of the background that will be behind the label
     init: function(opts) {

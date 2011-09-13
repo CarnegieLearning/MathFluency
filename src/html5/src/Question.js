@@ -43,28 +43,38 @@ var Question = PNode.extend({
         this.set('correctAnswer', ans);
         
         // Create and display the question content
-        var opts = {
+        // TODO: Clean up this mess
+        // TODO: Get this working with arbitrary content for delimeters (just pass in PNodes?)
+        var lOpt = {
             string      : d1,
             fontColor   : '#000000',
             bgColor     : '#FFFFFF',
             zOrder      : 100,
+        }
+        
+        var opts = {
             lockY       : true,
             silent      : true,
             minScale    : 0.75,
-            alignH      : 0.5,
+            alignH      : 1,
             alignV      : 1,
             visibility  : 3,
             xCoordinate : -1.5,
-            zCoordinate : z
+            zCoordinate : z,
         }
-        var delim = LabelBG.create(opts);
+        opts['content'] = LabelBG.create(lOpt);
+        opts['content'].set('position', new geom.Point(opts['content'].get('contentSize').width / 2, 0))
+        var delim = PNode.create(opts);
         delim.scheduleUpdate();
         this.addChild({child: delim});
         this.set('coneL', delim);
         
-        opts['string'] = d2;
+        lOpt['string'] = d2;
         opts['xCoordinate'] = 1.5;
-        delim = LabelBG.create(opts);
+        opts['alignH'] = 0;
+        opts['content'] = LabelBG.create(lOpt);
+        opts['content'].set('position', new geom.Point(opts['content'].get('contentSize').width / 2, 0))
+        delim = PNode.create(opts);
         delim.scheduleUpdate();
         this.addChild({child: delim});
         this.set('coneR', delim);
@@ -88,14 +98,22 @@ var Question = PNode.extend({
     update: function(dt) {
         Question.superclass.update.call(this, dt);
         
-        if(this.get('added') && this.get('answeredCorrectly') == null) {
-            var te = this.get('timeElapsed') + dt;
-            this.set('timeElapsed', te);
-            
-            // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
-            if(PNode.cameraZ + 6 >= this.get('zCoordinate')) {
-                events.trigger(this, "questionTimeExpired", this);
+        if(this.get('added')) {
+            if(this.get('answeredCorrectly') == null) {
+                var te = this.get('timeElapsed') + dt;
+                this.set('timeElapsed', te);
+                
+                // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
+                if(PNode.cameraZ + 6 >= this.get('zCoordinate')) {
+                    events.trigger(this, "questionTimeExpired", this);
+                }
             }
+            
+            // Pulls the delimiters more onto the lane lines as they progress down the screen
+            var shift = (this.get('position').y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
+            
+            this.get('coneL').set('alignH', 1 - shift);
+            this.get('coneR').set('alignH', 0 + shift);
         }
     },
 });
