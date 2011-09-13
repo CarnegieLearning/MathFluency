@@ -17,29 +17,33 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var events = require('events');
 
-// 
+// Automatically handles changing a value over time (just bindTo "value" to the value you want to change)
 var ModifyOverTime = BObject.extend({
-    duration: 0,    // 
-    rate    : 0,    // 
-    value   : null, // 
+    duration: 0,    // Remaining duration of the change
+    rate    : 0,    // Rate at which the value changes per second
+    value   : null, // The value that is being changed
     init: function (x, amount, time) {
         ModifyOverTime.superclass.init.call();
         
-        // 
+        // Initialize
         this.set('value', x);
         this.set('rate', amount / time);
         this.set('duration', time);
         
+        // Force calling updates since this will not be added to the scene
         cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
         
+        // Keep track of this instance so we can remove it automatically later
         ModifyOverTime.list.push(this);
     },
 
-    // 
+    // Changes value over time
     update: function (dt) {
         var dur = this.get('duration');
         
+        // Keep changing as long as there is duration remaining
         if(dur > 0) {
+            // Check the case that the tick is longer than our remaining time
             var edt = Math.min(dt, dur);
             this.set('duration', dur - edt);
             
@@ -47,24 +51,24 @@ var ModifyOverTime = BObject.extend({
             this.set('value', this.get('value') + rate * edt);
         }
         
-        // 
+        // Otherwise change is complete
         else {
-            // 
+            // Let anyone who wants to know that this change has finished
             events.trigger(this, 'Completed', this);
         
-            // 
+            // Clean up
             cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
             events.clearInstanceListeners(this);
             this.unbind(this.get('value'));
             
-            // 
+            // and remove
             var index = ModifyOverTime.list.indexOf(this);
             ModifyOverTime.list.splice(index, 1);
         }
     }
 });
 
-// 
+// Static variables
 ModifyOverTime.list = [];
 
 exports.ModifyOverTime = ModifyOverTime;
