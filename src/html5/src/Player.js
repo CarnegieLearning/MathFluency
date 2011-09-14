@@ -58,14 +58,9 @@ var Player = PNode.extend({
     
         // Create the new selector if one is provided
         if(newVal != null) {
-            var opts = Object()
-            opts["string"] = newVal;
-            opts["fontColor"] = '#000000';
-            var selector = LabelBG.create(opts, '#FFFFFF');
-            selector.set('scaleX', 2);
-            selector.set('scaleY', 2);
-            selector.set('position', new geom.Point(selector.get('contentSize').width / 2, 80));
-            this.set('selectorX', selector.get('contentSize').width / 2);
+            var selector = newVal
+            selector.set('position', new geom.Point(selector.get('contentSize').width / 2 * selector.get('scaleX'), 80));
+            this.set('selectorX', selector.get('contentSize').width / 2 * selector.get('scaleX'));
             this.set('selectorY', 80);
             this.addChild({child: selector});
             this.set('selector', selector);

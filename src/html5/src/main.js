@@ -184,7 +184,8 @@ var FluencyApp = KeyboardLayer.extend({
         z += RC.intermissionSpacing;
         // Gets the intermission value
         var node = subset.firstElementChild;
-        var inter = Intermission.create(node.getAttribute("VALUE"), z);
+        //var inter = Intermission.create(node.getAttribute("VALUE"), z);
+        var inter = Intermission.create(LabelBG.create(LabelBG.helper(node.getAttribute("VALUE"),'#000','#fff')), z);
         events.addListener(inter, 'changeSelector', this.get('player').changeSelector.bind(this.get('player')));
         inter.kickstart();
         
@@ -320,18 +321,6 @@ var FluencyApp = KeyboardLayer.extend({
             i += 1;
         }
         alert("Correct: " + correct);
-    },
-    
-    // Handles when an intermission occurs
-    // TODO: Add more visuals on intermission (eg. overhead signs in ft1)
-    intermissionHandler: function(selector) {
-        if(selector) {
-            this.get('player').changeSelector(selector);
-            console.log("New subset starting");
-        }
-        else {
-            console.log("****ERROR: no new selector given for new subset");
-        }
     },
     
     //Handles answering the current question when time expires
