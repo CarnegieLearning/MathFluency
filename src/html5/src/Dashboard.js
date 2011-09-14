@@ -160,7 +160,6 @@ var Dashboard = cocos.nodes.Node.extend({
     pHelper: function (s) {
         // TODO: Add chaseDist back into this, otherwise calculation will be off by part of a meter
         var dc = PNode.cameraZ + 6;
-        var dc = 0;
         var tc = this.get('elapsedTime') + this.get('pTime');
         
         var dr = RC.finishLine - dc;
