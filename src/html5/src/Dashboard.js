@@ -31,6 +31,7 @@ var Dashboard = cocos.nodes.Node.extend({
     pTime       : 0.0,  // Stores numerical penalty time
     speed       : 10,   // Speed for speedometer
     maxSpeed    : 200,  // Maximum possible speed to display/calculate
+    timerAcc    : 3,    // Number of digits to the right of the decimal place for timer accuracy
     init: function(maxSpeed) {
         Dashboard.superclass.init.call(this);
         
@@ -40,14 +41,14 @@ var Dashboard = cocos.nodes.Node.extend({
         var opts = Object();
         opts['string'] = '-3.0';
         var disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(50, 50));
+        disp.set('position', new geom.Point(40, 50));
         this.set('displayTime', disp)
         this.addChild({child: disp});
         
         // Create visible penalty timer
         opts['string'] = '0.0';
         disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(50, 100));
+        disp.set('position', new geom.Point(40, 100));
         this.addChild({child: disp});
         this.set('penaltyTime', disp);
     },
@@ -62,19 +63,6 @@ var Dashboard = cocos.nodes.Node.extend({
         MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
     },
     
-    // Converts numerical seconds to string, accurate to tenths of a second
-    timerToString: function(t) {
-        t = Math.round(t*10)
-        if(t % 10 == 0) {
-            t = t / 10.0 + ".0";
-        }
-        else {
-            t /= 10;
-        }
-        
-        return t;
-    },
-    
     // Updates the time
     update: function(dt) {
         // Update elapsed timer
@@ -82,10 +70,10 @@ var Dashboard = cocos.nodes.Node.extend({
         this.set('elapsedTime', t);
         
         var d = this.get('displayTime');
-        d.set('string', this.timerToString(t));
+        d.set('string', t.toFixed(this.get('timerAcc')));
         
         // Update penalty timer
-        this.get('penaltyTime').set('string', this.timerToString(this.get('pTime')));
+        this.get('penaltyTime').set('string', this.get('pTime').toFixed(this.get('timerAcc')));
     },
     
     fillArc: function (c, x, y, r, s, e, b) {
