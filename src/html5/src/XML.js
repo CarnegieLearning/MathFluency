@@ -5,7 +5,7 @@ var XML = BObject.extend({
 });
 
 XML.safeComboGet = function(root, tag, attr) {
-    var result = getFirstByTag(root, tag);
+    var result = XML.getFirstByTag(root, tag);
     
     if(result != null) {
         return XML.safeGetAttr(result, attr);
@@ -14,7 +14,7 @@ XML.safeComboGet = function(root, tag, attr) {
     return null;
 }
 
-XML.getFirstByTag = function(node, tag) {
+XML.getFirstByTag = function(root, tag) {
     var results = root.getElementsByTagName(tag);
     
     if(results.length > 0) {
