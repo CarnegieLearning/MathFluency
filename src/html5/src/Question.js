@@ -42,16 +42,12 @@ var Question = PNode.extend({
         // Initialize all variables
         this.set('correctAnswer', ans);
         
+        d1.set('position', new geom.Point(d1.get('contentSize').width / 2, 0))
+        d2.set('position', new geom.Point(d2.get('contentSize').width / 2, 0))
+        
         // Create and display the question content
         // TODO: Clean up this mess
         // TODO: Get this working with arbitrary content for delimeters (just pass in PNodes?)
-        var lOpt = {
-            string      : d1,
-            fontColor   : '#000000',
-            bgColor     : '#FFFFFF',
-            zOrder      : 100,
-        }
-        
         var opts = {
             lockY       : true,
             silent      : true,
@@ -61,19 +57,18 @@ var Question = PNode.extend({
             visibility  : 3,
             xCoordinate : -1.5,
             zCoordinate : z,
+            content     : d1
         }
-        opts['content'] = LabelBG.create(lOpt);
-        opts['content'].set('position', new geom.Point(opts['content'].get('contentSize').width / 2, 0))
+        
         var delim = PNode.create(opts);
         delim.scheduleUpdate();
         this.addChild({child: delim});
         this.set('coneL', delim);
         
-        lOpt['string'] = d2;
         opts['xCoordinate'] = 1.5;
         opts['alignH'] = 0;
-        opts['content'] = LabelBG.create(lOpt);
-        opts['content'].set('position', new geom.Point(opts['content'].get('contentSize').width / 2, 0))
+        opts['content'] = d2;
+        
         delim = PNode.create(opts);
         delim.scheduleUpdate();
         this.addChild({child: delim});

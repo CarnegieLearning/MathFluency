@@ -31,6 +31,7 @@ var Question = require('Question').Question;
 var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
+var LabelBG = require('LabelBG').LabelBG;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
@@ -216,9 +217,10 @@ var FluencyApp = KeyboardLayer.extend({
         var hurix = node.getElementsByTagName('DELIMETERS_TEXT');
         if(hurix.length > 0) {
             var child = hurix[0].firstElementChild;
-            d1 = child.getAttribute("VALUE");
+            d1 = LabelBG.create(LabelBG.helper(child.getAttribute('VALUE'),'#000','#fff'));
+            
             if(child.nextElementSibling != null) {
-                d2 = child.nextElementSibling.getAttribute("VALUE");
+                d2 = LabelBG.create(LabelBG.helper(child.nextElementSibling.getAttribute('VALUE'),'#000','#fff'));
             }
         }
         
