@@ -4,6 +4,26 @@ var XML = BObject.extend({
     }
 });
 
+XML.safeComboGet = function(root, tag, attr) {
+    var result = getFirstByTag(root, tag);
+    
+    if(result != null) {
+        return XML.safeGetAttr(result, attr);
+    }
+    
+    return null;
+}
+
+XML.getFirstByTag = function(node, tag) {
+    var results = root.getElementsByTagName(tag);
+    
+    if(results.length > 0) {
+        return results[0];
+    }
+    
+    return null;
+}
+
 XML.safeGetAttr = function(node, name) {
     if(node.hasAttribute(name)) {
         return node.getAttribute(name);

@@ -108,7 +108,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.parseSpeed(xmlDoc);
         
         // Get the penalty time for incorrect answers
-        RC.penaltyTime = xmlDoc.getElementsByTagName('DEFAULT_PENALTY')[0].getAttribute('VALUE') / 1000;
+        RC.penaltyTime = XML.safeComboGet(xmlDoc, 'DEFAULT_PENALTY', 'VALUE') / 1000;
     
         // Parse and process questions
         RC.finishLine = this.parseProblemSet(xmlDoc) + RC.finishSpacing;
@@ -133,11 +133,11 @@ var FluencyApp = KeyboardLayer.extend({
         var hurix = root.getElementsByTagName('MinTPQ')[0]
         if(hurix != null) {
             // Get raw value and transform to seconds
-            max = root.getElementsByTagName('MinTPQ')[0].getAttribute('VALUE') / 1000;
-            min = root.getElementsByTagName('MaxTPQ')[0].getAttribute('VALUE') / 1000;
-            speed = root.getElementsByTagName('DTPQ')[0].getAttribute('VALUE') / 1000;
-            accel = root.getElementsByTagName('SpeedImpact_Up')[0].getAttribute('VALUE') / 1000;
-            decel = root.getElementsByTagName('SpeedImpact_Down')[0].getAttribute('VALUE') / 1000;
+            max = XML.safeComboGet(root, 'MinTPQ', 'VALUE') / 1000;
+            min = XML.safeComboGet(root, 'MaxTPQ', 'VALUE') / 1000;
+            speed = XML.safeComboGet(root, 'DTPQ', 'VALUE') / 1000;
+            accel = XML.safeComboGet(root, 'SpeedImpact_Up', 'VALUE') / 1000;
+            decel = XML.safeComboGet(root, 'SpeedImpact_Down', 'VALUE') / 1000;
             
             max = RC.questionSpacing / max
             if(min != 0) {
@@ -166,7 +166,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Parses the PROBLEM_SET
     parseProblemSet: function (root) {
-        var problemRoot = root.getElementsByTagName('PROBLEM_SET')[0]
+        var problemRoot = XML.getFirstByTag(root, 'PROBLEM_SET');
         var subset = problemRoot.firstElementChild;
         var z = 0;
         
@@ -185,7 +185,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Gets the intermission value
         var node = subset.firstElementChild;
         var inter = Intermission.create(node.getAttribute("VALUE"), z);
-        events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
+        events.addListener(inter, 'changeSelector', this.get('player').changeSelector.bind(this.get('player')));
         inter.kickstart();
         
         // Interate over questions in subset
@@ -224,7 +224,7 @@ var FluencyApp = KeyboardLayer.extend({
             }
         }
         
-        ans = node.getElementsByTagName('ANSWER')[0].getAttribute('VALUE');
+        ans = XML.safeComboGet(node, 'ANSWER', 'VALUE');
         
         return [ans, d1, d2];
     },
