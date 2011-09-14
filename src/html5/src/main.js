@@ -71,7 +71,6 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Remote resources failed to load, generate dummy data then proceed
     // TODO: Determine what to do if we get 404s in production
-    // TODO: Make the parser not expload on bad XML files
     runLocally: function() {
         console.log("Now running locally from this point forward");
         
@@ -100,6 +99,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Parses the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
+    // TODO: Make the parser not expload on bad XML files
     parseXML: function(xmlDoc) {
         // Parse medal information
         var medals = XML.parseMedals(xmlDoc);
@@ -185,7 +185,10 @@ var FluencyApp = KeyboardLayer.extend({
         // Gets the intermission value
         var node = subset.firstElementChild;
         //var inter = Intermission.create(node.getAttribute("VALUE"), z);
-        var inter = Intermission.create(LabelBG.create(LabelBG.helper(node.getAttribute("VALUE"),'#000','#fff')), z);
+        var interContent = LabelBG.create(LabelBG.helper(node.getAttribute("VALUE"),'#000','#fff'));
+        interContent.set('scaleX', 2);
+        interContent.set('scaleY', 2);
+        var inter = Intermission.create(interContent, z);
         events.addListener(inter, 'changeSelector', this.get('player').changeSelector.bind(this.get('player')));
         inter.kickstart();
         

@@ -51,10 +51,11 @@ var Question = PNode.extend({
         var opts = {
             lockY       : true,
             silent      : true,
-            minScale    : 0.75,
+            minScale    : 1.00,
+            maxScale    : 4.00,
             alignH      : 1,
             alignV      : 1,
-            visibility  : 3,
+            visibility  : 5,
             xCoordinate : -1.5,
             zCoordinate : z,
             content     : d1
