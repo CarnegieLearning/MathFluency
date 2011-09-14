@@ -27,10 +27,10 @@ var Intermission = require('Intermission').Intermission;
 var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
-var PSprite = require('PerspectiveSprite').PerspectiveSprite;
 var Question = require('Question').Question;
 var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
+var XML = require('XML').XML;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
@@ -50,9 +50,14 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('wipeout', "sound/Carscreech");
         this.set('audioMixer', AM);
         
+        // Create player
+        var player = Player.create();
+        player.set('position', new geo.Point(400, 450));
+        this.set('player', player);
+        
         // Uncomment to run locally
-        this.runLocally();
-        return;
+        //this.runLocally();
+        //return;
         
         // Set up remote resources
         __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "text/xml"}, data: "set001.xml"};
@@ -65,6 +70,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Remote resources failed to load, generate dummy data then proceed
     // TODO: Determine what to do if we get 404s in production
+    // TODO: Make the parser not expload on bad XML files
     runLocally: function() {
         console.log("Now running locally from this point forward");
         
@@ -83,25 +89,6 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.set('questionList', list);
         
-        var player = Player.create();
-        player.set('position', new geo.Point(400, 450));
-        this.set('player', player);
-        
-        var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
-        
-        for(var t=10; t<3300; t += Math.ceil(Math.random()*6+4)) {
-            if(Math.random() < 0.25) {
-                var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
-            }
-            if(Math.random() < 0.25) {
-                var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
-            }
-        }
-        
         this.preprocessingComplete();
     },
     
@@ -110,51 +97,134 @@ var FluencyApp = KeyboardLayer.extend({
         this.parseXML(resource("resources/testset.xml"));
     },
     
-    // Parses (part of) the level xml file
+    // Parses the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
     parseXML: function(xmlDoc) {
-        var problemRoot = xmlDoc.getElementsByTagName('PROBLEM_SET')[0];
+        // Parse medal information
+        var medals = XML.parseMedals(xmlDoc);
         
-        var qlist = QuestionList.create();
+        // Parse and set player speed values
+        this.parseSpeed(xmlDoc);
+        
+        // Get the penalty time for incorrect answers
+        RC.penaltyTime = xmlDoc.getElementsByTagName('DEFAULT_PENALTY')[0].getAttribute('VALUE') / 1000;
+    
+        // Parse and process questions
+        RC.finishLine = this.parseProblemSet(xmlDoc) + RC.finishSpacing;
+        
+        // Process medal information
+        medals[0] = RC.finishLine / this.get('player').get('maxSpeed');
+        medals[medals.length] = medals[medals.length - 1] * 1.5;
+        RC.times = medals;
 
+        // Sanity check
+        if(medals[0] > medals[1]) {
+            console.log("WARNING: Calculated minimum time (" + medal[0] +") is longer than the maximum allowed time for a gold medal (" + medal[1] +").");
+        }
+        
+        this.preprocessingComplete();
+    },
+    
+    // Parse and set player speed values
+    parseSpeed: function (root) {
+        var min, max, speed, accel, decel;
+        // Legacy support
+        var hurix = root.getElementsByTagName('MinTPQ')[0]
+        if(hurix != null) {
+            // Get raw value and transform to seconds
+            max = root.getElementsByTagName('MinTPQ')[0].getAttribute('VALUE') / 1000;
+            min = root.getElementsByTagName('MaxTPQ')[0].getAttribute('VALUE') / 1000;
+            speed = root.getElementsByTagName('DTPQ')[0].getAttribute('VALUE') / 1000;
+            accel = root.getElementsByTagName('SpeedImpact_Up')[0].getAttribute('VALUE') / 1000;
+            decel = root.getElementsByTagName('SpeedImpact_Down')[0].getAttribute('VALUE') / 1000;
+            
+            max = RC.questionSpacing / max
+            if(min != 0) {
+                min = RC.questionSpacing / min
+            }
+            else {
+                min = 0
+            }
+            speed = RC.questionSpacing / speed
+            accel *= 4;
+            decel *= 4;
+        }
+        else {
+            
+        }
+        
+        // Set the values on the player
+        var p = this.get('player')
+        p.set('maxSpeed', max);
+        p.set('turboSpeed', max);
+        p.set('minSpeed', min);
+        p.set('zVelocity', speed);
+        p.set('acceleration', accel);
+        p.set('deceleration', decel);
+    },
+    
+    // Parses the PROBLEM_SET
+    parseProblemSet: function (root) {
+        var problemRoot = root.getElementsByTagName('PROBLEM_SET')[0]
         var subset = problemRoot.firstElementChild;
+        var z = 0;
         
         while(subset != null) {
-            var node = subset.firstElementChild;
-            if(qlist.addIntermission(node.getAttribute("VALUE"))) {
-                var player = Player.create();
-                player.set('position', new geo.Point(400, 450));
-                player.changeSelector(node.getAttribute("VALUE"));
-                this.set('player', player);
-            }
-            
-            var d1, d2, ans;
-            node = node.nextElementSibling;
-            
-            while(node != null) {
-                var vals = node.firstElementChild;
-                var delims = vals.firstElementChild;
-                d1 = delims.getAttribute("VALUE");
-                d2 = delims.nextElementSibling.getAttribute("VALUE");
-                while(vals != null) {
-                    if(vals.tagName == "ANSWER") {
-                        ans = vals.getAttribute("VALUE");
-                    }
-                    
-                    vals = vals.nextElementSibling;
-                }
-                
-                qlist.addQuestion(Question.create(ans, d1, d2));
-                
-                node = node.nextElementSibling;
-            }
+            z = this.parseProblemSubset(subset, z);
             
             subset = subset.nextElementSibling;
         }
         
-        this.set('questionList', qlist);
+        return z
+    },
+    
+    // Parses a subset within the PROBLEM_SET
+    parseProblemSubset: function (subset, z) {
+        z += RC.intermissionSpacing;
+        // Gets the intermission value
+        var node = subset.firstElementChild;
+        var inter = Intermission.create(node.getAttribute("VALUE"), z);
+        events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
+        inter.kickstart();
         
-        this.preprocessingComplete();
+        // Interate over questions in subset
+        var list = this.get('questionList');
+        node = node.nextElementSibling;
+        while(node != null) {
+            z += RC.questionSpacing
+            var q = this.parseProblem(node)
+            
+            
+            list[list.length] = Question.create(q[0], q[1], q[2], z);
+            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
+            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
+            list[list.length - 1].kickstart();
+            
+            node = node.nextElementSibling;
+        }
+        
+        this.set('questionList', list);
+        
+        return z;
+    },
+    
+    // Parses a question within the subset
+    parseProblem: function (node) {
+        var d1, d2, ans;
+        
+        // Legacy check
+        var hurix = node.getElementsByTagName('DELIMETERS_TEXT');
+        if(hurix.length > 0) {
+            var child = hurix[0].firstElementChild;
+            d1 = child.getAttribute("VALUE");
+            if(child.nextElementSibling != null) {
+                d2 = child.nextElementSibling.getAttribute("VALUE");
+            }
+        }
+        
+        ans = node.getElementsByTagName('ANSWER')[0].getAttribute('VALUE');
+        
+        return [ans, d1, d2];
     },
     
     // The 'real init()' called after all the preloading/parsing is completed
@@ -173,12 +243,28 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: bg});
         
         // Create the right hand side dash
-        var dash = Dashboard.create();
+        var dash = Dashboard.create(this.get('player').get('maxSpeed'));
         dash.set('position', new geo.Point(800, 0));
         this.set('dash', dash);
         this.addChild({child: dash});
         
         this.addChild({child: this.get('player')});
+        
+        // Generate things to the side of the road
+        var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
+        
+        for(var t=10; t<3300; t += Math.ceil(Math.random()*6+4)) {
+            if(Math.random() < 0.25) {
+                var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                p.kickstart();
+            }
+            if(Math.random() < 0.25) {
+                var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                p.kickstart();
+            }
+        }
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
@@ -193,6 +279,7 @@ var FluencyApp = KeyboardLayer.extend({
     startGame: function () {
         // Schedule per frame update function
         this.scheduleUpdate();
+        this.get('player').scheduleUpdate();
     },
     
     // Handles add requests from PerspectiveNodes
@@ -272,7 +359,7 @@ var FluencyApp = KeyboardLayer.extend({
         else {
             player.wipeout(1, 2);
             this.get('audioMixer').playSound('wipeout', true);
-            this.get('dash').modifyPenaltyTime(8);
+            this.get('dash').modifyPenaltyTime(RC.penaltyTime);
             player.speedChange(player.get('zVelocity') / -2, 1);
         }
     },

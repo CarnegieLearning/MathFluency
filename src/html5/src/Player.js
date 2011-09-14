@@ -33,7 +33,8 @@ var Player = PNode.extend({
     chaseDelta      : 1,        // How many meters the player will pull away from the camera by moving at maximum speed
     minSpeed        : 0,        // Minimum player speed in m/s (Zero is okay, negatives are BAD)
     maxSpeed        : 200,      // Maximum player speed in m/s
-    acceleration    : 40,       // Player de/acceleration in m/s^2
+    acceleration    : 40,       // Player acceleration in m/s^2
+    deceleration    : 40,       // Player deceleration in m/s^2
     turbo           : false,    // True if turbo boost is currently active
     preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
     turboSpeed      : 200,      // Turbo boost speed in m/s
@@ -45,8 +46,6 @@ var Player = PNode.extend({
         sprite.set('scaleX', 0.5);
         sprite.set('scaleY', 0.5);
         this.addChild({child: sprite});
-        
-        this.scheduleUpdate();
     },
     
     // Changes the currently displayed selector on the car
@@ -63,6 +62,8 @@ var Player = PNode.extend({
             opts["string"] = newVal;
             opts["fontColor"] = '#000000';
             var selector = LabelBG.create(opts, '#FFFFFF');
+            selector.set('scaleX', 2);
+            selector.set('scaleY', 2);
             selector.set('position', new geom.Point(selector.get('contentSize').width / 2, 80));
             this.set('selectorX', selector.get('contentSize').width / 2);
             this.set('selectorY', 80);
@@ -89,7 +90,7 @@ var Player = PNode.extend({
     
     // Decelerates the player
     decelerate: function (dt) {
-        var s = this.get('zVelocity') - this.get('acceleration') * dt
+        var s = this.get('zVelocity') - this.get('deceleration') * dt
         s = Math.max(this.get('minSpeed'), s);
         this.set('zVelocity', s);
     },

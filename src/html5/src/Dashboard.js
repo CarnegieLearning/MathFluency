@@ -30,8 +30,11 @@ var Dashboard = cocos.nodes.Node.extend({
     penaltyTime : null, // Displayed penalty time
     pTime       : 0.0,  // Stores numerical penalty time
     speed       : 10,   // Speed for speedometer
-    init: function() {
+    maxSpeed    : 200,  // Maximum possible speed to display/calculate
+    init: function(maxSpeed) {
         Dashboard.superclass.init.call(this);
+        
+        this.set('maxSpeed', maxSpeed);
         
         // Create the visible timer
         var opts = Object();
@@ -124,10 +127,11 @@ var Dashboard = cocos.nodes.Node.extend({
         this.fillArc(context, 50, 200, r, Math.PI / 3 * 2, Math.PI / 3, false);
         
         var s = this.get('speed');
+        var maxs = this.get('maxSpeed');
         
         context.beginPath();
         context.moveTo(50, 200);
-        context.lineTo(Math.sin(s*Math.PI/210 - Math.PI/2)*r + 50, Math.cos(s*Math.PI/210 - Math.PI/2)*-r + 200)
+        context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200)
         context.closePath();
         context.stroke();
         
@@ -158,7 +162,7 @@ var Dashboard = cocos.nodes.Node.extend({
             context.closePath();
             context.stroke();
             
-            var m = this.pHelper(200);
+            var m = this.pHelper(maxs);
             
             context.fillStyle = 'rgba(0,0,0,0.4)';
             this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);

@@ -22,7 +22,11 @@ var RaceControl = BObject.extend({
     }
 });
 
-RaceControl.finishLine  = 3200;                     // Holds the z value of the finish line
-RaceControl.times       = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
+RaceControl.finishLine          = 3200;                     // Holds the z value of the finish line
+RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
+RaceControl.intermissionSpacing = 110;                      // Distance in meters from previous object to intermission
+RaceControl.questionSpacing     = 150;                      // Distance in meters from previous object to question
+RaceControl.finishSpacing       = 110;                      // Distance in meters after the last question to the finish line
+RaceControl.penaltyTime         = 8;                        // Time in seconds lost for a incorrect answer
 
 exports.RaceControl = RaceControl
