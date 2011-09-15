@@ -36,6 +36,7 @@ var Dashboard = cocos.nodes.Node.extend({
         Dashboard.superclass.init.call(this);
         
         this.set('maxSpeed', maxSpeed);
+        this.set('zOrder', 100);
         
         // Create the visible timer
         var opts = Object();
