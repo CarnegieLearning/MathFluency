@@ -65,15 +65,16 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Updates the time
     update: function(dt) {
+        var acc = this.get('timerAcc');
         // Update elapsed timer
         var t = this.get('elapsedTime') + dt;
         this.set('elapsedTime', t);
         
         var d = this.get('displayTime');
-        d.set('string', t.toFixed(this.get('timerAcc')));
+        d.set('string', t.toFixed(acc));
         
         // Update penalty timer
-        this.get('penaltyTime').set('string', this.get('pTime').toFixed(this.get('timerAcc')));
+        this.get('penaltyTime').set('string', this.get('pTime').toFixed(acc));
     },
     
     fillArc: function (c, x, y, r, s, e, b) {
@@ -162,7 +163,7 @@ var Dashboard = cocos.nodes.Node.extend({
         var dc = PNode.cameraZ + 6;
         var tc = this.get('elapsedTime') + this.get('pTime');
         
-        var dr = RC.finishLine - dc;
+        var dr = Math.max(RC.finishLine - dc, 0);
         var tr = dr / s;
         var te = tr + tc;
         
