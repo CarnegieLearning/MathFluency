@@ -42,7 +42,7 @@ var Player = PNode.extend({
         Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
        
         // Load the car sprite for the player
-        var sprite = cocos.nodes.Sprite.create({file: '/resources/car1.png',});
+        var sprite = cocos.nodes.Sprite.create({file: '/resources/car_white.png',});
         sprite.set('scaleX', 0.5);
         sprite.set('scaleY', 0.5);
         this.addChild({child: sprite});

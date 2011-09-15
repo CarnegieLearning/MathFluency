@@ -286,6 +286,36 @@ var FluencyApp = KeyboardLayer.extend({
         // Schedule per frame update function
         this.scheduleUpdate();
         this.get('player').scheduleUpdate();
+        
+        var medalCars = []
+        
+        var opts = {
+            maxScale    : 1.00,
+            alignH      : 0.5,
+            alignV      : 0,
+            visibility  : 1,
+            xCoordinate : 4.5,
+            zCoordinate : 0,
+            dropoffDist : -10,
+            delOnDrop   : false,
+        }
+        
+        // Ghost cars representing medal cutoffs
+        for(var i=0; i<3; i+= 1) {
+            var car = cocos.nodes.Sprite.create({file: '/resources/car'+i+'.png'});
+            car.set('opacity', 192);
+        
+            opts['content'] = car
+            medalCars[i] = PNode.create(opts)
+            medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
+            medalCars[i].scheduleUpdate();
+            this.addChild({child: medalCars[i]});
+            
+            events.addListener(medalCars[i], 'addMe', this.addMeHandler.bind(this));
+            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler.bind(this));
+        }
+        
+        this.set('medalCars', medalCars);
     },
     
     // Handles add requests from PerspectiveNodes
@@ -351,10 +381,25 @@ var FluencyApp = KeyboardLayer.extend({
             // TODO: correct sounds effects
         }
         else {
+            var t = this.get('dash').get('pTime') + RC.penaltyTime + this.get('dash').get('elapsedTime')
+        
             player.wipeout(1, 2);
             this.get('audioMixer').playSound('wipeout', true);
             this.get('dash').modifyPenaltyTime(RC.penaltyTime);
             player.speedChange(player.get('zVelocity') / -2, 1);
+            
+            var c = this.get('medalCars')
+            for(var i=0; i<3; i+=1) {
+                var rd = RC.finishLine - c[i].get('zCoordinate');
+                var rt = RC.times[i+1] - t;
+                if(rt > 0 && rd > 0) {
+                    c[i].set('zVelocity', rd / rt);
+                }
+                else if (rd > 0) {
+                    c[i].set('zVelocity', rd / 1);
+                }
+            }
+            this.set('medalCars', c);
         }
     },
     

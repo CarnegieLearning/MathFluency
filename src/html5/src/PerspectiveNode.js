@@ -36,6 +36,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     zVelocity   : 0,        // Meters per second speed along the Z axis
     xVelocity   : 0,        // Meters per second speed along the X axis
     content     : null,     // Content to be displayed in the node
+    delOnDrop   : true,     // If true, runs cleanup when the node is removed from the scene
     init: function(opts) {
         PerspectiveNode.superclass.init.call(this, opts);
         
@@ -61,17 +62,29 @@ var PerspectiveNode = cocos.nodes.Node.extend({
          cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
     },
     
+    // Explicitly unschedules and unsubscribes this node
+    cleanup: function () {
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        events.clearInstanceListeners(this);
+    },
+    
     // Callen when place into the scene
     onEnter: function() {
         this.set('added', true);
         PerspectiveNode.superclass.onEnter.call(this);
     },
     
-    // Called when removed from the scene, explicitly stops the update function instead of pausing
+    // Called when removed from the scene, if delOnDrop, runs cleanup, otherwise explictly reschedules the node
     onExit: function () {
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
-        events.clearInstanceListeners(this);
+        this.set('added', false);
         PerspectiveNode.superclass.onExit.call(this);
+        
+        if(this.get('delOnDrop')) {
+            this.cleanup();
+        }
+        else {
+            cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+        }
     },
     
     // Applies visibility modifier and clamps to scale, then returns the augmented value
@@ -103,6 +116,9 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     
         // Only worry about drawing once node is on our side of the horizon
         if(distance > PerspectiveNode.horizonDistance) {
+            if(this.get('added') && !this.get('silent')) {
+                events.trigger(this, 'removeMe', this);
+            }
         }
         else if(distance <= PerspectiveNode.horizonDistance && distance > this.get('dropoffDist')) {
             // Make sure that the node gets added to the scene graph once it should be visible
