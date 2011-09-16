@@ -17,6 +17,8 @@ Copyright 2011, Carnegie Learning
 // Import the cocos2d module
 var cocos = require('cocos2d');
 
+var XML = require('XML').XML;
+
 var LabelBG = cocos.nodes.Node.extend({
     label  : null,      //The label that the class wraps
     bgColor: '#FFFFFF', //The color of the background that will be behind the label
@@ -51,6 +53,22 @@ LabelBG.helper = function(String, FontColor, BgColor, FontSize, FontName) {
         fontSize    : FontSize,
         fontName    : FontName
     };
+}
+
+// Static XML parser to build options from a <CONTENT_SETTINGS> node
+LabelBG.helperXML = function (node) {
+    var str = XML.safeComboGet(node, 'String', 'VALUE');
+    var bg = XML.safeComboGet(node, 'BackgroundColor', 'VALUE');
+    var f = XML.parseFont(XML.getFirstByTag(node, 'FontSettings'));
+    
+    var opts = {}
+    opts['string']      = str          == null ? ''          : str;
+    opts['bgColor']     = bg           == null ? '#fff'      : bg;
+    opts['fontName' ]   = f.font       == null ? 'Helvetica' : f.font;
+    opts['fontColor']   = f.fontColor  == null ? '#000'      : f.fontColor;
+    opts['fontSize']    = f.fontSize   == null ? '16'        : f.fontSize;
+    
+    return opts;
 }
 
 exports.LabelBG = LabelBG

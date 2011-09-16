@@ -28,10 +28,16 @@ var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var Question = require('Question').Question;
+
+// Static Imports
 var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
+
+// Content Imports
 var LabelBG = require('LabelBG').LabelBG;
+var PieChart = require('PieChart').PieChart;
+var FractionRenderer = require('FractionRenderer').FractionRenderer;
     
 // Create a new layer
 var FluencyApp = KeyboardLayer.extend({
@@ -40,6 +46,7 @@ var FluencyApp = KeyboardLayer.extend({
     dash        : null,     // Holds the right hand side dashboard
     questionList: [],       // List of all questions in the input
     audioMixer  : null,     // AudioMixer
+    medalCars   : [],       // Contains the pace cars
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
@@ -61,7 +68,7 @@ var FluencyApp = KeyboardLayer.extend({
         //return;
         
         // Set up remote resources
-        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "text/xml"}, data: "set001.xml"};
+        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: "set002.xml"};
         
         // Preload remote resources
         var p = cocos.Preloader.create();
@@ -94,12 +101,18 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
-        this.parseXML(resource("resources/testset.xml"));
+        if(resource("resources/testset.xml") !== undefined) {
+            this.parseXML(resource("resources/testset.xml"));
+        }
+        else {
+            console.log("ERROR: No remote XML found to parse.");
+        }
     },
     
     // Parses the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
     // TODO: Make the parser not expload on bad XML files
+    // TODO: Overhaul parser to generic pull, specific parse rather than semi-specific traverse
     parseXML: function(xmlDoc) {
         // Parse medal information
         var medals = XML.parseMedals(xmlDoc);
@@ -108,7 +121,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.parseSpeed(xmlDoc);
         
         // Get the penalty time for incorrect answers
-        RC.penaltyTime = XML.safeComboGet(xmlDoc, 'DEFAULT_PENALTY', 'VALUE') / 1000;
+        this.parsePenalty(xmlDoc);
     
         // Parse and process questions
         RC.finishLine = this.parseProblemSet(xmlDoc) + RC.finishSpacing;
@@ -126,11 +139,35 @@ var FluencyApp = KeyboardLayer.extend({
         this.preprocessingComplete();
     },
     
+    parsePenalty: function (root) {
+        var time, speed;
+        // Legacy support
+        var hurix = XML.getFirstByTag(root, 'DEFAULT_PENALTY');
+        if(hurix != null) {
+            time = XML.safeGetAttr(hurix, 'VALUE') / 1000;
+        }
+        else {
+            root = XML.getFirstByTag(root, 'PenaltySettings');
+            if(root != null) {
+                time = XML.safeComboGet(root, 'TimeLost', 'VALUE');
+                speed = XML.safeComboGet(root, 'SpeedLost', 'VALUE');
+            }
+        }
+        
+        // Cannot use nonNullSet on a static object
+        if(time != null) {
+            RC.penaltyTime = time;
+        }
+        if(speed != null) {
+            RC.penaltySpeed = speed * -1;
+        }
+    },
+    
     // Parse and set player speed values
     parseSpeed: function (root) {
-        var min, max, speed, accel, decel;
+        var min, max, speed, accel, decel, turbo;
         // Legacy support
-        var hurix = root.getElementsByTagName('MinTPQ')[0]
+        var hurix = XML.getFirstByTag(root, 'MinTPQ');
         if(hurix != null) {
             // Get raw value and transform to seconds
             max = XML.safeComboGet(root, 'MinTPQ', 'VALUE') / 1000;
@@ -138,6 +175,7 @@ var FluencyApp = KeyboardLayer.extend({
             speed = XML.safeComboGet(root, 'DTPQ', 'VALUE') / 1000;
             accel = XML.safeComboGet(root, 'SpeedImpact_Up', 'VALUE') / 1000;
             decel = XML.safeComboGet(root, 'SpeedImpact_Down', 'VALUE') / 1000;
+            turbo = null;
             
             max = RC.questionSpacing / max
             if(min != 0) {
@@ -151,17 +189,33 @@ var FluencyApp = KeyboardLayer.extend({
             decel *= 4;
         }
         else {
-            
+            root = XML.getFirstByTag(root, 'SpeedSettings');
+            if(root != null) {
+                max = XML.safeComboGet(root, 'Max', 'VALUE');
+                min = XML.safeComboGet(root, 'Min', 'VALUE');
+                speed = XML.safeComboGet(root, 'Default', 'VALUE');
+                accel = XML.safeComboGet(root, 'Acceleration', 'VALUE');
+                decel = XML.safeComboGet(root, 'Deceleration', 'VALUE');
+                turbo = XML.safeComboGet(root, 'Turbo', 'VALUE');
+            }
         }
         
-        // Set the values on the player
+        // Set the values on the player, avoiding overwriting default values with null
         var p = this.get('player')
-        p.set('maxSpeed', max);
-        p.set('turboSpeed', max);
-        p.set('minSpeed', min);
-        p.set('zVelocity', speed);
-        p.set('acceleration', accel);
-        p.set('deceleration', decel);
+        this.nonNullSet(p, 'maxSpeed', max);
+        this.nonNullSet(p, 'minSpeed', min);
+        this.nonNullSet(p, 'zVelocity', speed==null ? min : speed);
+        this.nonNullSet(p, 'acceleration', accel==null ? decel : accel);
+        this.nonNullSet(p, 'deceleration', decel==null ? accel : decel);
+        
+        this.nonNullSet(p, 'turboSpeed', turbo==null ? max : turbo);
+    },
+    
+    // Helper to avoid writing over default values
+    nonNullSet : function(obj, key, val){
+        if(val != null) {
+            obj.set(key, val);
+        }
     },
     
     // Parses the PROBLEM_SET
@@ -184,10 +238,7 @@ var FluencyApp = KeyboardLayer.extend({
         z += RC.intermissionSpacing;
         // Gets the intermission value
         var node = subset.firstElementChild;
-        //var inter = Intermission.create(node.getAttribute("VALUE"), z);
-        var interContent = LabelBG.create(LabelBG.helper(node.getAttribute("VALUE"),'#000','#fff'));
-        interContent.set('scaleX', 2);
-        interContent.set('scaleY', 2);
+        var interContent = this.parseContent(node);
         var inter = Intermission.create(interContent, z);
         events.addListener(inter, 'changeSelector', this.get('player').changeSelector.bind(this.get('player')));
         inter.kickstart();
@@ -200,7 +251,8 @@ var FluencyApp = KeyboardLayer.extend({
             var q = this.parseProblem(node)
             
             
-            list[list.length] = Question.create(q[0], q[1], q[2], z);
+            // Create a question
+            list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
             events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
             events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
             list[list.length - 1].kickstart();
@@ -215,7 +267,10 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Parses a question within the subset
     parseProblem: function (node) {
-        var d1, d2, ans;
+        var ans, d1, d2, p1, p2;
+        
+        // Answer is the same in all formats, so get it first
+        ans = XML.safeComboGet(node, 'Answer', 'VALUE');
         
         // Legacy check
         var hurix = node.getElementsByTagName('DELIMETERS_TEXT');
@@ -227,10 +282,58 @@ var FluencyApp = KeyboardLayer.extend({
                 d2 = LabelBG.create(LabelBG.helper(child.nextElementSibling.getAttribute('VALUE'),'#000','#fff'));
             }
         }
+        else {
+            node = XML.getFirstByTag(node, 'Content');
+            d1 = this.parseContent(node);
+            p1 = this.parsePerspective(node);
+            
+            node = node.nextElementSibling;
+            d2 = this.parseContent(node);
+            p2 = this.parsePerspective(node);
+        }
         
-        ans = XML.safeComboGet(node, 'ANSWER', 'VALUE');
+        return [ans, d1, d2, p1, p2];
+    },
+    
+    // Parses a single piece of <CONTENT>
+    parseContent: function (node) {
+        var type = XML.safeGetAttr(node, 'TYPE');
+        var opts = XML.getFirstByTag(node, 'ContentSettings');
         
-        return [ans, d1, d2];
+        var content = null;
+        
+        if(opts == null) {
+            console.log("ERROR: No <ContentSettings> in a content item.");
+            return null;
+        }
+        
+        if(type == 'String') {
+            content = LabelBG.create(LabelBG.helperXML(opts));
+        }
+        else if(type == 'Fraction') {
+            content = FractionRenderer.create(FractionRenderer.helperXML(opts));
+        }
+        else if(type == 'PieChart') {
+            content = PieChart.create(PieChart.helperXML(opts));
+        }
+        else {
+            console.log('ERROR: Unsupported <Content TYPE = "' + type + '">.');
+            return null;
+        }
+        
+        return content;
+    },
+    
+    // Parses the <PERSPECTIVE_SETTINGS> node
+    parsePerspective: function(node) {
+        var p = XML.getFirstByTag(node, 'PerspectiveSettings');
+        var opts = {};
+        
+        opts['visibility'] = XML.safeComboGet(p, 'Visibility', 'VALUE');
+        opts['minScale']   = XML.safeComboGet(p, 'MinScale', 'VALUE');
+        opts['maxScale']   = XML.safeComboGet(p, 'MaxScale', 'VALUE');
+        
+        return opts
     },
     
     // The 'real init()' called after all the preloading/parsing is completed
@@ -333,9 +436,16 @@ var FluencyApp = KeyboardLayer.extend({
     // TODO: Calculate the rest of the statistics needed
     // TODO: Format into XML and send to server
     endOfGame: function(evt) {
-        // Stop the dash from updating and increasing the overall elapsed time
+        // Stop the player from moving further and the dash from increasing the elapsed time
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        // Stops the medal pace cars
+        var mc = this.get('medalCars');
+        mc[0].set('zVelocity', 0);
+        mc[1].set('zVelocity', 0);
+        mc[2].set('zVelocity', 0);
     
         var ql = this.get('questionList')
         var i = 0, correct = 0, incorrect = 0, unanswered = 0;
@@ -386,7 +496,7 @@ var FluencyApp = KeyboardLayer.extend({
             player.wipeout(1, 2);
             this.get('audioMixer').playSound('wipeout', true);
             this.get('dash').modifyPenaltyTime(RC.penaltyTime);
-            player.speedChange(player.get('zVelocity') / -2, 1);
+            player.speedChange((player.get('zVelocity') - player.get('minSpeed')) * RC.penaltySpeed, 1);
             
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
@@ -465,9 +575,9 @@ var MenuLayer = cocos.nodes.Menu.extend({
         
         // Create the button
         var opts = Object();
-        opts['normalImage'] = '/resources/start-button.jpeg';
-        opts['selectedImage'] = '/resources/start-button.jpeg';
-        opts['disabledImage'] = '/resources/start-button.jpeg';
+        opts['normalImage'] = '/resources/start-button.png';
+        opts['selectedImage'] = '/resources/start-button.png';
+        opts['disabledImage'] = '/resources/start-button.png';
         // We use this callback so we can do cleanup before handing everything over to the main game
         opts['callback'] = this.startButtonCallback.bind(this);
         

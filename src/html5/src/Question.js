@@ -29,7 +29,7 @@ var Question = PNode.extend({
     coneR            : null,    // Holds the left delimiter
     timeElapsed      : 0.0,     // Real time elapsed since start of question (including delimeterStaticTime)
     // TODO: Build delimeters internally or externally?
-    init: function(ans, d1, d2, z) {
+    init: function(ans, d1, d2, z, o1, o2) {
         var superOpts = {
             xCoordinate : 0,
             zCoordinate : z,
@@ -45,17 +45,23 @@ var Question = PNode.extend({
         d1.set('position', new geom.Point(d1.get('contentSize').width / 2, 0))
         d2.set('position', new geom.Point(d2.get('contentSize').width / 2, 0))
         
+        //Use defaults if opts are null
+        o1 = o1 == null ? {} : o1;
+        o2 = o2 == null ? {} : o2;
+        
+        var v   = o1['visibility'] == null ? 5 : o1['visibility'];
+        var max = o1['maxScale']   == null ? 4 : o1['maxScale'];
+        var min = o1['minScale']   == null ? 1 : o1['minScale'];
+        
         // Create and display the question content
-        // TODO: Clean up this mess
-        // TODO: Get this working with arbitrary content for delimeters (just pass in PNodes?)
         var opts = {
             lockY       : true,
             silent      : true,
-            minScale    : 1.00,
-            maxScale    : 4.00,
+            minScale    : min,
+            maxScale    : max,
             alignH      : 1,
             alignV      : 1,
-            visibility  : 5,
+            visibility  : v,
             xCoordinate : -1.5,
             zCoordinate : z,
             content     : d1
@@ -67,8 +73,11 @@ var Question = PNode.extend({
         this.set('coneL', delim);
         
         opts['xCoordinate'] = 1.5;
-        opts['alignH'] = 0;
-        opts['content'] = d2;
+        opts['alignH']      = 0;
+        opts['content']     = d2;
+        opts['visibility']  = o2['visibility'] == null ? 5 : o2['visibility'];
+        opts['maxScale']    = o2['maxScale']   == null ? 4 : o2['maxScale'];
+        opts['minScale']    = o2['minScale']   == null ? 1 : o2['minScale'];
         
         delim = PNode.create(opts);
         delim.scheduleUpdate();

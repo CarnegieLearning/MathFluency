@@ -28,5 +28,6 @@ RaceControl.intermissionSpacing = 110;                      // Distance in meter
 RaceControl.questionSpacing     = 150;                      // Distance in meters from previous object to question
 RaceControl.finishSpacing       = 110;                      // Distance in meters after the last question to the finish line
 RaceControl.penaltyTime         = 8;                        // Time in seconds lost for a incorrect answer
+RaceControl.penaltySpeed        = -0.5;                     // Percentage speed LOST for an incorrect answer
 
 exports.RaceControl = RaceControl

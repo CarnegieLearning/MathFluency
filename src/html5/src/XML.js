@@ -1,9 +1,11 @@
+// Static class, so nothing much here
 var XML = BObject.extend({
     init: function() {
         XML.superclass.init.call(this);
     }
 });
 
+// Combines getFirstByTag with safeGetAttr for when you need one value from a certain tag
 XML.safeComboGet = function(root, tag, attr) {
     var result = XML.getFirstByTag(root, tag);
     
@@ -14,19 +16,31 @@ XML.safeComboGet = function(root, tag, attr) {
     return null;
 }
 
+// Safely gets the first instance of a tag starting from the specified node, otherwise returns null
 XML.getFirstByTag = function(root, tag) {
-    var results = root.getElementsByTagName(tag);
-    
-    if(results.length > 0) {
-        return results[0];
+    if(root) {
+        if(root.getElementsByTagName) {
+            var results = root.getElementsByTagName(tag);
+            
+            if(results.length > 0) {
+                return results[0];
+            }
+        }
     }
     
     return null;
 }
 
+// Safely gets an attribute from a node if possible, otherwise returns null
 XML.safeGetAttr = function(node, name) {
-    if(node.hasAttribute(name)) {
-        return node.getAttribute(name);
+    if(node) {
+        if(node.hasAttribute) {
+            if(node.hasAttribute(name)) {
+                if(node.getAttribute) {
+                    return node.getAttribute(name);
+                }
+            }
+        }
     }
     return null;
 }
@@ -54,6 +68,15 @@ XML.parseMedals = function (root) {
     }
     
     return ret;
+}
+
+// Parse font information from a node
+XML.parseFont = function (node) {
+    var f = XML.safeComboGet(node, 'Font', 'VALUE');
+    var fc = XML.safeComboGet(node, 'FontColor', 'VALUE');
+    var fs = XML.safeComboGet(node, 'FontSize', 'VALUE');
+    
+    return {font:f, fontColor:fc, fontSize:fs};
 }
 
 exports.XML = XML
