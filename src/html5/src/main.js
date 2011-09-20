@@ -173,8 +173,8 @@ var FluencyApp = KeyboardLayer.extend({
             max = XML.safeComboGet(root, 'MinTPQ', 'VALUE') / 1000;
             min = XML.safeComboGet(root, 'MaxTPQ', 'VALUE') / 1000;
             speed = XML.safeComboGet(root, 'DTPQ', 'VALUE') / 1000;
-            accel = XML.safeComboGet(root, 'SpeedImpact_Up', 'VALUE') / 1000;
-            decel = XML.safeComboGet(root, 'SpeedImpact_Down', 'VALUE') / 1000;
+            accel = XML.safeComboGet(root, 'SpeedImpact_Up', 'VALUE') / 250;
+            decel = XML.safeComboGet(root, 'SpeedImpact_Down', 'VALUE') / 250;
             turbo = null;
             
             max = RC.questionSpacing / max
@@ -185,8 +185,6 @@ var FluencyApp = KeyboardLayer.extend({
                 min = 0
             }
             speed = RC.questionSpacing / speed
-            accel *= 4;
-            decel *= 4;
         }
         else {
             root = XML.getFirstByTag(root, 'SpeedSettings');
@@ -240,7 +238,7 @@ var FluencyApp = KeyboardLayer.extend({
         var node = subset.firstElementChild;
         var interContent = this.parseContent(node);
         var inter = Intermission.create(interContent, z);
-        events.addListener(inter, 'changeSelector', this.get('player').changeSelector.bind(this.get('player')));
+        events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
         inter.kickstart();
         
         // Interate over questions in subset

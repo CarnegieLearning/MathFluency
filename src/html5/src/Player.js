@@ -38,6 +38,7 @@ var Player = PNode.extend({
     turbo           : false,    // True if turbo boost is currently active
     preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
     turboSpeed      : 200,      // Turbo boost speed in m/s
+    
     init: function() {
         Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
        
@@ -55,10 +56,13 @@ var Player = PNode.extend({
         if(prev != null) {
             this.removeChild(prev);
         }
+        
+        newVal = this.get('newSelector');
     
         // Create the new selector if one is provided
         if(newVal != null) {
             var selector = newVal
+            this.get('parent').removeChild(selector);
             selector.set('position', new geom.Point(selector.get('contentSize').width / 2 * selector.get('scaleX'), 80));
             this.set('selectorX', selector.get('contentSize').width / 2 * selector.get('scaleX'));
             this.set('selectorY', 80);
@@ -67,6 +71,63 @@ var Player = PNode.extend({
         }
         else {
             this.set('selector', null);
+        }
+        
+        setTimeout(this.endIntermission.bind(this), 100);
+    },
+    
+    // Starts an intermission
+    startIntermission: function(newVal) {
+        this.set('intermission', true);
+        this.set('preInter', this.get('zVelocity'));
+        this.set('zVelocity', 0);
+        this.set('newSelector', newVal);
+        newVal.set('anchorPoint', new geom.Point(0.5, 0.5))
+        newVal.set('scale', newVal.get('scale') * 3);
+        newVal.set('position', new geom.Point(450, 100))
+        this.get('parent').addChild({child: newVal});
+        
+        if(this.get('selector') != null) {
+            MOT.create(255, -255, 1.0).bindTo('value', this.get('selector'), 'opacity');
+        }
+        
+        setTimeout(this.blinkOffCallback.bind(this, 250, 4), 250);
+    },
+    
+    // Finishes an intermission
+    endIntermission: function() {
+        this.set('intermission', false);
+        this.set('zVelocity', this.get('preInter'));
+    },
+    
+    // Called to hide the new selector and schedule reshowing it
+    blinkOffCallback: function(freq, count) {
+        this.get('newSelector').set('visible', false);
+        setTimeout(this.blinkOnCallback.bind(this, freq, count), freq / 2);
+    },
+    
+    // Shows the new selector, schedules to hide if blink count is not exhausted
+    blinkOnCallback: function(freq, count) {
+        this.get('newSelector').set('visible', true);
+        
+        if(count > 0) {
+            setTimeout(this.blinkOffCallback.bind(this, freq, count - 1), freq);
+        }
+        // If blink count is exhausted, move new selector behind car and schedule finalizing the change
+        else {
+            var nv = this.get('newSelector');
+            var ns = nv.get('scale') / 3;
+            
+            var a1 = cocos.actions.ScaleTo.create({scale: ns, duration: 1.0});
+            a1.startWithTarget(nv);
+            nv.runAction(a1);
+            
+            var pos = this.get('position');
+            var a2 = cocos.actions.MoveTo.create({position: new geom.Point(pos.x, pos.y + this.get('selectorY')), duration: 1.0});
+            a2.startWithTarget(nv);
+            nv.runAction(a2);
+            
+            setTimeout(this.changeSelector.bind(this), 1000);
         }
     },
     
@@ -78,21 +139,25 @@ var Player = PNode.extend({
     
     // Accelerates the player
     accelerate: function (dt) {
-        var s = this.get('zVelocity') + this.get('acceleration') * dt
-        s = Math.min(this.get('maxSpeed'), s);
-        this.set('zVelocity', s);
+        if(!this.get('intermission')) {
+            var s = this.get('zVelocity') + this.get('acceleration') * dt
+            s = Math.min(this.get('maxSpeed'), s);
+            this.set('zVelocity', s);
+        }
     },
     
     // Decelerates the player
     decelerate: function (dt) {
-        var s = this.get('zVelocity') - this.get('deceleration') * dt
-        s = Math.max(this.get('minSpeed'), s);
-        this.set('zVelocity', s);
+        if(!this.get('intermission')) {
+            var s = this.get('zVelocity') - this.get('deceleration') * dt
+            s = Math.max(this.get('minSpeed'), s);
+            this.set('zVelocity', s);
+        }
     },
 
     // Starts a turbo boost if not already boosting
     startTurboBoost: function() {
-        if(!this.get('turbo') && !(this.get('wipeoutDuration') > 0)) {
+        if(!this.get('turbo') && !(this.get('wipeoutDuration') > 0) && !this.get('intermission')) {
             this.set('turbo', true);
             this.set('preTurbo', this.get('zVelocity'))
             this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
@@ -115,7 +180,7 @@ var Player = PNode.extend({
     
     update: function(dt) {
         // Always maintain at least the minimum speed
-        if(this.get('zVelocity') < this.get('minSpeed')) {
+        if(this.get('zVelocity') < this.get('minSpeed') && !this.get('intermission')) {
             this.set('zVelocity', this.get('minSpeed'));
         }
     
@@ -162,5 +227,13 @@ var Player = PNode.extend({
         }
     },
 });
+
+Player.STATE_OFF          = 0;
+Player.STATE_READY        = 1;
+Player.STATE_RACING       = 2;
+Player.STATE_WIPEOUT      = 3;
+Player.STATE_TURBO        = 4;
+Player.STATE_INTERMISSION = 5;
+Player.STATE_FINISH       = 6;
 
 exports.Player = Player;

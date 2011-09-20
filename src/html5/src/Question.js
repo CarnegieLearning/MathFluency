@@ -28,7 +28,6 @@ var Question = PNode.extend({
     coneL            : null,    // Holds the left delimiter
     coneR            : null,    // Holds the left delimiter
     timeElapsed      : 0.0,     // Real time elapsed since start of question (including delimeterStaticTime)
-    // TODO: Build delimeters internally or externally?
     init: function(ans, d1, d2, z, o1, o2) {
         var superOpts = {
             xCoordinate : 0,
