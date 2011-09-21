@@ -63,6 +63,11 @@ var FluencyApp = KeyboardLayer.extend({
         player.set('position', new geo.Point(400, 450));
         this.set('player', player);
         
+        // Create dashboard
+        var dash = Dashboard.create();
+        dash.set('position', new geo.Point(800, 0));
+        this.set('dash', dash);
+        
         // Uncomment to run locally
         //this.runLocally();
         //return;
@@ -239,6 +244,7 @@ var FluencyApp = KeyboardLayer.extend({
         var interContent = this.parseContent(node);
         var inter = Intermission.create(interContent, z);
         events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
+        events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
         inter.kickstart();
         
         // Interate over questions in subset
@@ -349,13 +355,16 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('background', bg);
         this.addChild({child: bg});
         
-        // Create the right hand side dash
-        var dash = Dashboard.create(this.get('player').get('maxSpeed'));
-        dash.set('position', new geo.Point(800, 0));
-        this.set('dash', dash);
+        var player = this.get('player');
+        
+        // Add the right hand side dash
+        var dash = this.get('dash');
+        dash.set('maxSpeed', player.get('maxSpeed'));
         this.addChild({child: dash});
         
-        this.addChild({child: this.get('player')});
+        events.addListener(player, 'IntermissionComplete', dash.unpauseTimer.bind(dash));
+        
+        this.addChild({child: player});
         
         // Generate things to the side of the road
         var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});

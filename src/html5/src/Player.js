@@ -16,6 +16,7 @@ Copyright 2011, Carnegie Learning
 
 var cocos = require('cocos2d');
 var geom = require('geometry');
+var events = require('events');
 
 var LabelBG = require('LabelBG').LabelBG;
 var PNode = require('PerspectiveNode').PerspectiveNode;
@@ -78,6 +79,7 @@ var Player = PNode.extend({
     
     // Starts an intermission
     startIntermission: function(newVal) {
+        this.endTurboBoost();
         this.set('intermission', true);
         this.set('preInter', this.get('zVelocity'));
         this.set('zVelocity', 0);
@@ -98,6 +100,7 @@ var Player = PNode.extend({
     endIntermission: function() {
         this.set('intermission', false);
         this.set('zVelocity', this.get('preInter'));
+        events.trigger(this, 'IntermissionComplete');
     },
     
     // Called to hide the new selector and schedule reshowing it

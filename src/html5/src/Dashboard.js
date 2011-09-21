@@ -24,18 +24,20 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
 var Dashboard = cocos.nodes.Node.extend({
-    elapsedTime : -3,   // Time in race elapsed so far
-    displayTime : null, // Timer displayed to player
-    gaugeRadius : 40,   // Radius of the gauges
-    penaltyTime : null, // Displayed penalty time
-    pTime       : 0.0,  // Stores numerical penalty time
-    speed       : 10,   // Speed for speedometer
-    maxSpeed    : 200,  // Maximum possible speed to display/calculate
-    timerAcc    : 3,    // Number of digits to the right of the decimal place for timer accuracy
-    init: function(maxSpeed) {
+    elapsedTime : -3,       // Time in race elapsed so far
+    displayTime : null,     // Timer displayed to player
+    gaugeRadius : 40,       // Radius of the gauges
+    penaltyTime : null,     // Displayed penalty time
+    pTime       : 0.0,      // Stores numerical penalty time
+    speed       : 0,        // Speed for speedometer
+    lastS       : 0,        // Previous frame's speed
+    maxSpeed    : 200,      // Maximum possible speed to display/calculate
+    timerAcc    : 3,        // Number of digits to the right of the decimal place for timer accuracy
+    pause       : false,    // Stores if the elapsed timer should be paused.
+    
+    init: function() {
         Dashboard.superclass.init.call(this);
         
-        this.set('maxSpeed', maxSpeed);
         this.set('zOrder', 100);
         
         // Create the visible timer
@@ -64,18 +66,36 @@ var Dashboard = cocos.nodes.Node.extend({
         MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
     },
     
+    pauseTimer: function () {
+        this.set('pause', true);
+    },
+    
+    unpauseTimer: function () {
+        this.set('pause', false);
+    },
+    
     // Updates the time
     update: function(dt) {
-        var acc = this.get('timerAcc');
-        // Update elapsed timer
-        var t = this.get('elapsedTime') + dt;
-        this.set('elapsedTime', t);
-        
-        var d = this.get('displayTime');
-        d.set('string', t.toFixed(acc));
+        if(!this.get('pause')) {
+            var acc = this.get('timerAcc');
+            // Update elapsed timer
+            var t = this.get('elapsedTime') + dt;
+            this.set('elapsedTime', t);
+            
+            var d = this.get('displayTime');
+            d.set('string', t.toFixed(acc));
+        }
         
         // Update penalty timer
         this.get('penaltyTime').set('string', this.get('pTime').toFixed(acc));
+    },
+    
+    // Getter for speed, accounts for the fact that 'speed' is 0 when paused
+    getSpeed: function() {
+        if(!this.get('pause')) {
+            return this.get('speed');
+        }
+        return this.get('lastS');
     },
     
     fillArc: function (c, x, y, r, s, e, b) {
@@ -116,7 +136,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.fillStyle = '#CC2222';
         this.fillArc(context, 50, 200, r, Math.PI / 3 * 2, Math.PI / 3, false);
         
-        var s = this.get('speed');
+        var s = this.getSpeed();
         var maxs = this.get('maxSpeed');
         
         context.beginPath();
@@ -124,6 +144,8 @@ var Dashboard = cocos.nodes.Node.extend({
         context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200)
         context.closePath();
         context.stroke();
+        
+        this.set('lastS', s);
         
         // Medalmeter
         
