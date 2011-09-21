@@ -36,6 +36,11 @@ var ModifyOverTime = BObject.extend({
         // Keep track of this instance so we can remove it automatically later
         ModifyOverTime.list.push(this);
     },
+    
+    // Shortcut for bindTo
+    bind: function (obj, str) {
+        this.bindTo('value', obj, str);
+    },
 
     // Changes value over time
     update: function (dt) {
