@@ -21,7 +21,8 @@ var urllib = require('url'),
 function runServer(config, model)
 {
     config.outputPath = resolveRelativePath(config.outputPath, __dirname);
-    config.cliDataPath = resolveRelativePath(config.cliDataPath, __dirname);
+    config.cliFlashPath = resolveRelativePath(config.cliFlashPath, __dirname);
+    config.dataPath = resolveRelativePath(config.dataPath || '../../data', __dirname);
     config.gameConfig = resolveRelativePath(config.gameConfig, __dirname);
     
     var port = config.port || 80,
@@ -82,10 +83,11 @@ function runServer(config, model)
     app.use(rootPath + '/css', express.static(resolveRelativePath('css', __dirname)));
     
     // These are the MATHia fluency tasks. On the production server, these are served directly by nginx instead of going through the node webapp. We have these static handlers so dev environment can run without the nginx reverse proxy.
-    app.use(rootPath + '/fluency/data', express.static(resolveRelativePath('data', config.cliDataPath)));
-    app.use(rootPath + '/fluency/data', express.directory(resolveRelativePath('data', config.cliDataPath), {icons:true}));
-    app.use(rootPath + '/fluency/games', express.static(resolveRelativePath('games', config.cliDataPath)));
-    app.use(rootPath + '/fluency/games', express.directory(resolveRelativePath('games', config.cliDataPath), {icons:true}));
+    app.use(rootPath + '/fluency/data', express.static(config.dataPath));
+    app.use(rootPath + '/fluency/data', express.directory(config.dataPath, {icons:true}));
+    // Cache Flash resources for 10 seconds.
+    app.use(rootPath + '/fluency/games', express.static(config.cliFlashPath, {maxAge: 10000}));
+    app.use(rootPath + '/fluency/games', express.directory(config.cliFlashPath, {icons:true}));
 
     // Middleware to load student or instructor data before processing requests.
     
@@ -171,6 +173,7 @@ function runServer(config, model)
         var remember = req.body.remember;
         var isStudent = req.params.studentOrInstructor == 'student';
         
+        console.log('Login attemp: ' + loginID + ' (' + req.params.studentOrInstructor + ')');
         if (isStudent && !config.requireStudentPassword)
         {
             model.Student.find({where: {loginID: loginID}}).on('success', callback);
@@ -214,7 +217,7 @@ function runServer(config, model)
     
     app.get(rootPath + '/student', function (req, res)
     {
-        if (!req.student)
+        if (!req.student && !req.instructor)
         {
             res.redirect('home');
             return;

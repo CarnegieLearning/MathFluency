@@ -49,6 +49,19 @@ exports.randomItem = function randomItem(array)
     return array[randomInt(0, array.length)];
 };
 
+// Useful for Array.sort() comparator to put undefineds and nulls at the end.
+exports.compare = function compare(a, b)
+{
+    return (a === b ? 0 :
+            a === undefined ? 1 :
+            b === undefined ? -1 :
+            a === null ? 1 :
+            b === null ? -1 :
+            a < b ? -1 :
+            a > b ? 1 :
+            0);
+};
+
 
 
 /*

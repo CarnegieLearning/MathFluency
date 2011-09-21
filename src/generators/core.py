@@ -65,8 +65,11 @@ class config:
         except IOError:
             logfile.write("IOError attempting to open config file at " + str(filename) + "\n")
             return None
-        
-def loadBatch(loadWith, batchLoad):
+
+#Load and run each set of configs in order
+#INPUT: loadWith should be an instance of your generator specific configuration
+#INPUT: batchLoad should be a list of lists e.g. [[config1], [config2], [config3a, config3b], ...]
+def runMultiBatch(loadWith, batchLoad):
     for configLocs in batchLoad:
         c = []
         for path in configLocs:
@@ -86,7 +89,8 @@ def runBatch(configList):
         
     #Make sure we have a directory to work with
     try:
-        os.mkdir(c.directory)
+        if(not os.path.exists(c.directory)):
+            os.mkdir(c.directory)
     except(OSError):
         logfile.write("Error creating directory or directory already exsists\n")
     
@@ -94,8 +98,8 @@ def runBatch(configList):
     if(c.randomSeed != None):
         random.seed(c.randomSeed)
     
+    #Generate the data
     while(i <= c.datasets_per_run):
-        #Generate the data
         dataset = generateDataSet(configList)
         if(dataset == None):
             logfile.write("Dataset failed generation, aborting runBatch\n")
@@ -105,11 +109,12 @@ def runBatch(configList):
         xml = toXML(dataset)
         towrite = xml.toprettyxml()
         
-        #Write to XML file
+        #Prepare to write to the XML file
         if(c.outputXML):
             filelist.append(c.filename + str(i).zfill(3) + ".xml")
             f = open(c.directory + c.filename + str(i).zfill(3) + ".xml", 'w')
             
+            #Actually write to the XML file
             if(f):
                 logfile.write("Writing to file " + str(filelist[len(filelist)-1]) + "\n")
                 
@@ -147,11 +152,11 @@ def generateDataSet(configList):
     none_counter = 0
     
     while(i < c.subsets_per_set):
-        c = random.choice(configList)
+        config = random.choice(configList)
         
         #Generate the data
         try:
-            temp = c.generate()
+            temp = config.generate()
         except NotImplementedError:
             logfile.write("Error: config class did not implement method generate()")
             return None
@@ -187,13 +192,20 @@ def toXML(dataset):
 
 #Converts a question subset into its XML equivalent
 #INPUT: subset should be [selector, (answer, delim1, delim2, ...), (answer, delim1, delim2, ...), ...]
+#NOTE: A value prepended with "IMAGE:" notifies the XML builder of that selector/delimiter being an image path
+#IMPORTANT: Do NOT mix images with text delimeters (the selector can be different),
+#           but all delimeters must be text or all delimeters must be images
 def XMLSubset(subset):
     selector, questions = subset
-
+    
     subset = Element("PROBLEM_SUBSET")
     target = Element("TARGET")
-    target.setAttribute("TYPE", "text")
-    target.setAttribute("VALUE", selector)
+    if(not "IMAGE:" in selector):
+        target.setAttribute("TYPE", "text")
+        target.setAttribute("VALUE", selector)
+    else:
+        target.setAttribute("TYPE", "Image")
+        target.setAttribute("VALUE", selector[6:])
     subset.appendChild(target)
     
     for q in questions:
@@ -209,17 +221,23 @@ def XMLQuestion(q):
     question.setAttribute("INDEX", str(xml_question_num))
     xml_question_num += 1
     
-    delimiters = Element("DELIMETERS_TEXT")
+    text = Element("DELIMETERS_TEXT")
+    image = Element("DELIMETERS_IMAGE")
     
     i = 1
     while(i < len(q)):
         e = Element("DELIMETER")
-        e.setAttribute("VALUE", q[i])
-        delimiters.appendChild(e)
+        if(not "IMAGE:" in q[i]):
+            e.setAttribute("VALUE", q[i])
+            text.appendChild(e)
+        else:
+            e.setAttribute("VALUE", q[i][6:])
+            image.appendChild(e)
         i += 1
-    
-    question.appendChild(delimiters)
-    question.appendChild(Element("DELIMETERS_IMAGE"))
+                
+            
+    question.appendChild(text)
+    question.appendChild(image)
     
     e = Element("ANSWER")
     e.setAttribute("VALUE", q[0])

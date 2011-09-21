@@ -1,67 +1,65 @@
-<script type="text/javascript" language="javascript" src="js/client/lib/jquery.dataTables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/lib/jquery.event.drag-2.0.min.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/slick.core.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/slick.grid.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/plugins/slick.checkboxselectcolumn.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/plugins/slick.rowselectionmodel.js"></script>
+<script type="text/javascript" language="javascript" src="js/client/lib/SlickGrid/slick.dataview.js"></script>
 <style type="text/css">
-    @import "js/client/lib/jquery.dataTables/css/demo_table_jui.css";
+    @import "js/client/lib/SlickGrid/slick.grid.css";
+    
+    div.slick-grid {
+        font-size: 13px;
+        height: 20em;
+        border: solid 1px #bbb;
+    }
+    div.slick-grid .slick-cell.selected {
+        background: #dfe8f6;
+    }
+    
+    div.medal.gold {
+        background-color: #ffff99;
+        display: inline;
+    }
+    div.medal.silver {
+        background-color: #eee;
+        display: inline;
+    }
+    div.medal.bronze {
+        background-color: #fbf0d2;
+        display: inline;
+    }
+    
+    div.end-state.completed {
+        color: #00bb00;
+    }
+    div.end-state.aborted {
+        color: #ee0000;
+    }
+    div.end-state.unknown {
+        color: gray;
+    }
 </style>
 
 <script type="text/javascript" language="javascript">
     window.FLUENCY.isAdmin = <%- instructor.isAdmin %>;
 </script>
 
-<h2>Instructor Administration</h2>
-
-<p>Welcome <%= loginID %>!
-
-<% if (instructor.isAdmin) { %>
-<p>You have admin privileges. You will see all instructor's students below.
-<% } %>
+<h2>
+    <% if (instructor.isAdmin) { %> Admin <% } else { %> Instructor <% } %>
+    Dashboard
+</h2>
 
 <h3>Actions</h3>
 <button id="new-student-button">Add new student</button>
 <button id="csv-upload-button">Upload roster</button>
-<button id="export-button">Download data</button>
+<a class="button" href="<%= rootPath %>/instructor/export">Download data</a>
+<a class="button" href="<%= rootPath %>/student">Play games</a>
 
 <h3>Students</h3>
-
-<table id="student-table" class="display">
-    <thead>
-        <tr>
-            <% if (instructor.isAdmin) { %>
-                <th>Instructor
-            <% } %>
-            <th>Roster
-            <th>First Name
-            <th>Last Name
-            <th>Login
-            <th>Password
-            <th>Condition
-            <th>Games
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div id="student-table" class="slick-grid"></div>
 
 <h3>Game Results</h3>
-
-<table id="games-table" class="display">
-    <thead>
-        <tr>
-            <th>Roster
-            <th>Login
-            <th>Condition
-            <th>Level
-            <th>Question Set
-            <th>Score
-            <th>Medal
-            <th>Duration
-            <th>End Date
-            <th>Data File
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
+<div id="games-table" class="slick-grid"></div>
 
 <h3>Game Output XML</h3>
 <textarea id="game-output" readonly>

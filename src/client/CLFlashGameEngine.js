@@ -1,4 +1,5 @@
-var swfobject = require('./lib/swfobject').swfobject;
+var swfobject = require('./lib/swfobject').swfobject,
+    uuid = require('../node_modules/node-uuid/uuid');
 
 /*
     Class: CLFlashGameEngine
@@ -31,7 +32,7 @@ exports.CLFlashGameEngine = function CLFlashGameEngine(json)
             props.flashVersion || "10.0.0",
             false,
             {
-                game_id: questionSet.parent.id + '::' + questionSet.id,
+                game_id: uuid() + '::' + 'CLFlashGameEngine' + '::' + questionSet.parent.id + '::' + questionSet.id,
                 input_xml: self.dataPath + '/' + props.input,
                 asset_name: 'ExternalAsset',
                 asset_url: self.swfPath,
@@ -40,7 +41,8 @@ exports.CLFlashGameEngine = function CLFlashGameEngine(json)
     };
 };
 
-var currentDoneCallback;
+var currentDoneCallback,
+    currentDoneCallbackTimeout;
 
 function registerDoneCallback(callback)
 {
@@ -49,5 +51,13 @@ function registerDoneCallback(callback)
 
 window.CLFLashGameEngineDoneCallback = function CLFLashGameEngineDoneCallback(xml)
 {
-    currentDoneCallback(xml);
+    // When a game is aborted, a finish callback and an abort callback happen in quick succession. This can lead to duplicate data on the server. To work around this issue, we delay calling the real callback, only letting the last one through.
+    if (currentDoneCallbackTimeout)
+    {
+        clearTimeout(currentDoneCallbackTimeout);
+    }
+    currentDoneCallbackTimeout = setTimeout(function ()
+    {
+        currentDoneCallback(xml);
+    }, 100);
 };

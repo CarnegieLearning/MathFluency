@@ -1,0 +1,9 @@
+server {
+	listen 80;
+	server_name fluencybrowser.*;
+	
+	location / {
+		root /var/www/fluencybrowser;
+	}
+}
+

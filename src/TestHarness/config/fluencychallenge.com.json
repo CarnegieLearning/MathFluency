@@ -13,6 +13,6 @@
         "logging": false
     },
     "gameConfig": "config/games.json",
-    "cliDataPath": "/var/www/fluencybrowser/fluency",
+    "cliFlashPath": "/var/www/fluencybrowser/fluency/games",
     "debug": false
 }

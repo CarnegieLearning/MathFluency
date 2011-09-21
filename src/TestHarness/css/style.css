@@ -97,7 +97,7 @@ table.display
 #status-message
 {
     display: none;
-    position: fixed;
+    position: absolute;
     top: 15px;
     left: 50%;
     margin-left: -100px;

@@ -7,6 +7,7 @@ var fs = require('fs'),
     path = require('path'),
     GameController = require('../common/GameController').GameController,
     QuestionHierarchy = require('../common/QuestionHierarchy'),
+    constants = require('../common/Constants'),
     util = require('../common/Utilities');
 
 
@@ -43,8 +44,11 @@ exports.gameController = function (serverConfig, model)
     
     gc.getAvailableStagesForPlayer = function (playerState, callback)
     {
-        var stageIDs = config().conditions[playerState.condition].stages;
-        var allStages = config().stages;
+        var conf = config();
+        var allStages = conf.stages;
+        var stageIDs = (playerState ?
+                        conf.conditions[playerState.condition].stages :
+                        util.allDictKeys(allStages).sort());
         var stages = stageIDs.map(function (id)
         {
             return {
@@ -92,48 +96,72 @@ exports.gameController = function (serverConfig, model)
     
     gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
     {
-        var UUID = uuid();
-        var timestamp = Date.now();
-        var filename = UUID + '.xml';
-        var filepath = outputPath + '/' + filename;
-        fs.writeFile(filepath, text, function (error)
+        if (!playerState)
         {
-            if (error)
-            {
-                callback(error);
-                return;
-            }
-            
-            // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
-            var parser = new xml2js.Parser()
-            parser.on('end', function (data)
-            {
-                var scoreNode = data.SCORE_SUMMARY.Score,
-                    scoreAttr = (scoreNode ? scoreNode['@'] : {});
-                var qsOutcome = model.QuestionSetOutcome.build({
+            console.log('Not saving question set results because playerState is null (this is probably instructor preview).');
+            return callback();
+        }
+        
+        var timestamp = Date.now();
+        
+        // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
+        var parser = new xml2js.Parser()
+        parser.on('end', function (data)
+        {
+            var refNode = data.GAME_REFERENCE_NUMBER,
+                refID = refNode ? refNode['@'].ID.split('::') : [uuid()],
+                UUID = refID.length == 0 ? uuid() : refID[0],
+                filename = UUID + '.xml',
+                filepath = outputPath + '/' + filename,
+                scoreNode = data.SCORE_SUMMARY.Score,
+                scoreAttr = (scoreNode ? scoreNode['@'] : {}),
+                endNode = data.END_STATE,
+                endAttr = (endNode ? endNode['@'] : {}),
+                qsOutcomeAttributes = {
                     dataFile: filename,
                     condition: playerState.condition,
                     stageID: questionSet.parent.id,
                     questionSetID: questionSet.id,
                     endTime: Math.round(timestamp / 1000),
-                    elapsedMS: scoreAttr.ElapsedTime || 0,
-                    score: scoreAttr.TotalScore || 0
-                });
-                qsOutcome.setMedalString(scoreAttr.Medal || 'none');
-                
-                // Setting a relation implicitly does a save().
-                qsOutcome.setStudent(playerState)
-                .on('success', function ()
+                    elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
+                    score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0,
+                    endState: constants.endState.stringToCode(endAttr.STATE),
+                    medal: constants.medal.stringToCode(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none')
+                };
+            
+            async.parallel([
+                function (callback)
                 {
-                    callback();
-                })
-                .on('failure', function (error)
+                    console.log('Writing data file for ' + playerState.loginID + ' to ' + filepath);
+                    fs.writeFile(filepath, text, callback);
+                },
+                function (callback)
                 {
-                    callback(error);
-                });
-            });
-            parser.parseString(text);
-        });
+                    model.QuestionSetOutcome.find({where: {dataFile: filename}})
+                    .on('success', function (existingRecord)
+                    {
+                        if (existingRecord)
+                        {
+                            console.log('Updating existing QuestionSetOutcome record for ' + filename);
+                            existingRecord.updateAttributes(qsOutcomeAttributes)
+                            .on('success', function () {callback();})
+                            .on('failure', callback);
+                        }
+                        else
+                        {
+                            console.log('Creating QuestionSetOutcome for ' + filename);
+                            var qsOutcome = model.QuestionSetOutcome.build(qsOutcomeAttributes);                            
+                            // Setting a relation implicitly does a save().
+                            qsOutcome.setStudent(playerState)
+                            .on('success', function () {callback();})
+                            .on('failure', callback);
+                        }
+                    })
+                    .on('error', callback);
+                }
+            ], callback);
+        })
+        .parseString(text);
     };
     
     return gc;
@@ -182,6 +210,7 @@ function makeStage(stageID, config, serverConfig)
 
     if (stageConfig.cli_fluency_task)
     {
+        var engineDataPath = path.join(serverConfig.dataPath, engineConfig.cli_task_id);
         stage._cachedCLITaskConfig = null;
         
         stage.getCLITaskConfig = function (callback)
@@ -192,7 +221,7 @@ function makeStage(stageID, config, serverConfig)
             }
             else
             {
-                var filepath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id, stageConfig.cli_fluency_task, 'dataset.xml');
+                var filepath = path.join(engineDataPath, stageConfig.cli_fluency_task, 'dataset.xml');
                 console.log('Reading CLI Flash task configuration: ' + filepath);
                 fs.readFile(filepath, function (err, str)
                 {
@@ -243,9 +272,8 @@ function makeStage(stageID, config, serverConfig)
         
         stage.getInstructionsHTML = function (baseURL, callback)
         {
-            var enginePath = path.join(serverConfig.cliDataPath, 'data', engineConfig.cli_task_id),
-                instructionsPath = path.join(enginePath, 'ft_instructions.html'),
-                tipsPath = path.join(enginePath, stageConfig.cli_fluency_task, 'ft_tips.html');
+            var instructionsPath = path.join(engineDataPath, 'ft_instructions.html'),
+                tipsPath = path.join(engineDataPath, stageConfig.cli_fluency_task, 'ft_tips.html');
             async.map([instructionsPath, tipsPath],
                 function (path, callback)
                 {

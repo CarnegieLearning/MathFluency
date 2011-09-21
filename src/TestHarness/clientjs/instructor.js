@@ -1,6 +1,7 @@
 "use strict";
 
-require('./common/Utilities');
+var constants = require('./common/Constants'),
+    util = require('./common/Utilities');
 
 $(document).ready(function ()
 {
@@ -10,10 +11,7 @@ $(document).ready(function ()
         here = here + '/';
     }
     
-    $('#export-button').button().click(function ()
-    {
-        window.location.href = here + 'export';
-    });
+    $('a.button').button();
     
     $('#csv-upload-dialog').dialog({
         autoOpen: false,
@@ -76,112 +74,209 @@ $(document).ready(function ()
         $('#new-student-dialog').dialog('open');
     });
     
-    function submitNewStudent()
+    
+    // Table data
+    
+    function fieldComparator(field)
     {
-        $.post(here + 'student', $('#new-student-dialog form').serialize())
-            .success(function (data)
-            {
-                addStudentToTable(0, data.student);
-                $('#new-student-dialog').dialog('close');
-            })
-            .error(function (jqXHR, statusText, errorThrown)
-            {
-                alert('Error saving student: ' + jqXHR.responseText);
-            })
-            .complete(function ()
-            {
-                //unlock();
-            });
+        return function (item1, item2)
+        {
+            return util.compare(item1[field], item2[field]);
+        };
     }
     
-    $.getJSON(here + 'student')
-        .success(function (data)
+    function connectGridToDataView(grid, dataView)
+    {
+        grid.onSort.subscribe(function (e, args)
         {
-            $.each(data.students, addStudentToTable);
-        })
-        .error(function (jqXHR)
-        {
-            alert('Error fetching students: ' + jqXHR.responseText);
+            var sortAsc = args.sortAsc,
+                field = args.sortCol.field;
+            dataView.sort(fieldComparator(field), sortAsc);
         });
-    
-    $.getJSON(here + 'student/result')
-        .success(function (data)
+        dataView.onRowCountChanged.subscribe(function (e, args)
         {
-            $.each(data.results, addResultsToTable);
-        })
-        .error(function (jqXHR)
-        {
-            alert('Error fetching game results: ' + jqXHR.responseText);
+            grid.updateRowCount();
+            grid.render();
         });
+        dataView.onRowsChanged.subscribe(function (e, args)
+        {
+            grid.invalidateRows(args.rows);
+            grid.render();
+        });
+    }
     
-    $('#student-table, #games-table')
-    .attr({
-        cellpadding: 0,
-        cellspacing: 0,
-        border: 0
-    })
-    .css({fontSize: '12px'})
-    .dataTable({
-        "bJQueryUI": true,
-        "sScrollY": "15em",
-        "bPaginate": false
+    function formatTimestamp(row, cell, value, columnDef, dataContext)
+    {
+        return value && util.dateFormat(value * 1000, 'm/d HH:MM');
+    }
+    function formatDuration(row, cell, value, columnDef, dataContext)
+    {
+        return Math.round(value / 1000) + ' s'
+    }
+    function formatDurationLong(row, cell, value, columnDef, dataContext)
+    {
+        if(value === null) {
+            return "0 m";
+        }
+        
+        var val = Math.round(value / 60000);
+        var str = "";
+        if(val > 59) {
+            str += val / 60 + " h ";
+            val = val % 60;
+        }
+    
+        return  str + val + ' m'
+    }
+    function formatMedal(row, cell, value, columnDef, dataContext)
+    {
+        var medal = constants.medal.codeToString(value);
+        return '<div class="medal ' + medal + '">' + medal + '</div>';
+    }
+    function formatEndState(row, cell, value, columnDef, dataContext)
+    {
+        var endState = constants.endState.codeToString(value);
+        return '<div class="end-state ' + endState + '">' + endState + '</div>';
+    }
+    function formatMedalCount(row, cell, value, columnDef, dataContext) {
+        if (!value) return null;
+
+        var ret = '';
+        ret += '<div class="medal gold">' + dataContext.GoldMedals + 'g</div> ';
+        ret += '<div class="medal silver">' + dataContext.SilverMedals + 's</div> ';
+        ret += '<div class="medal bronze">' + dataContext.BronzeMedals + 'b</div> ';
+        return ret;
+    }
+    
+    var selectedStudentLoginIDs = [];
+    var studentDataView = new Slick.Data.DataView();
+    var studentGrid = new Slick.Grid($('#student-table'), studentDataView,
+        [
+            {id:'instructorLoginID', field:'instructorLoginID', name:'Instructor', sortable:true},
+            {id:'rosterID', field:'rosterID', name:'Roster ID', sortable:true},
+            {id:'firstName', field:'firstName', name:'First Name', sortable:true},
+            {id:'lastName', field:'lastName', name:'Last Name', sortable:true},
+            {id:'loginID', field:'loginID', name:'Login ID', sortable:true},
+            {id:'password', field:'password', name:'Password'},
+            {id:'condition', field:'condition', name:'Condition', sortable:true},
+            {id:'completedGames', field:'completedGames', name:'Complete Games', sortable:true},
+            {id:'totalGames', field:'totalGames', name:'Total Games', sortable:true},
+            {id:'TotalTime', field:'TotalTime', name:'Total Time', sortable:true, formatter:formatDurationLong},
+            {id:'Medals', field:'GoldMedals', name:'Medals', sortable:true, formatter:formatMedalCount},
+            {id:'FirstDate', field:'FirstDate', name:'First Date', sortable:true, formatter:formatTimestamp},
+            {id:'LastDate', field:'LastDate', name:'Last Date', sortable:true, formatter:formatTimestamp}
+        ],
+        {
+        });
+    studentGrid.setSelectionModel(new Slick.RowSelectionModel());
+    studentGrid.onSelectedRowsChanged.subscribe(function ()
+    {
+        selectedStudentLoginIDs = [];
+        var rows = studentGrid.getSelectedRows();
+        for (var i = 0; i < rows.length; i++)
+        {
+            selectedStudentLoginIDs.push(studentDataView.getItem(rows[i]).loginID);
+        }
+        gamesDataView.refresh();
     });
+    connectGridToDataView(studentGrid, studentDataView);
     
-    $('#student-table').delegate('tr', 'click', function ()
+    var gamesDataView = new Slick.Data.DataView();
+    var gamesGrid = new Slick.Grid($('#games-table'), gamesDataView,
+        [
+            {id:'loginID', field:'loginID', name:'Login ID', sortable:true},
+            {id:'condition', field:'condition', name:'Condition', sortable:true},
+            {id:'stageID', field:'stageID', name:'Level', sortable:true},
+            {id:'questionSetID', field:'questionSetID', name:'Set', sortable:true},
+            {id:'score', field:'score', name:'Score', sortable:true, width: 65},
+            {id:'medal', field:'medal', name:'Medal', sortable:true, formatter:formatMedal, width:55},
+            {id:'elapsedMS', field:'elapsedMS', name:'Duration', sortable:true, formatter:formatDuration, width: 60},
+            {id:'endTime', field:'endTime', name:'Date', sortable:true, formatter:formatTimestamp},
+            {id:'endState', field:'endState', name:'End', sortable:true, formatter:formatEndState}
+        ],
+        {
+            forceFitColumns: true,
+            multiSelect: false
+        });
+    gamesDataView.setFilter(function (item)
     {
-        $(this).toggleClass('row_selected').siblings('tr').removeClass('row_selected');
-        var data = $('#student-table').dataTable().fnGetData(this);
-        var login = data[4];
-        $('#games-table').dataTable().fnFilter($(this).hasClass('row_selected') ? login : '');
-    })
-    .dataTable().fnSetColumnVis(0, window.FLUENCY.isAdmin); // Show instructor column only when admin.
-    
-    $('#games-table').delegate('tr', 'click', function ()
+        return (selectedStudentLoginIDs.length == 0 ||
+                ~selectedStudentLoginIDs.indexOf(item.loginID));
+    });
+    gamesDataView.sort(fieldComparator('endTime'), false);
+    gamesGrid.setSortColumn('endTime', false);
+    gamesGrid.setSelectionModel(new Slick.RowSelectionModel());
+    gamesGrid.onSelectedRowsChanged.subscribe(function ()
     {
-        $(this).addClass('row_selected').siblings('tr').removeClass('row_selected');
-        var data = $('#games-table').dataTable().fnGetData(this);
-        var dataFile = data[9];
-        $.get(here + '../output/' + dataFile)
+        var item = gamesDataView.getItem(gamesGrid.getSelectedRows()[0]);
+        if (item)
+        {
+            $.get(here + '../output/' + item.dataFile)
             .success(function (data, status, jqXHR)
             {
                 $('#game-output').val(jqXHR.responseText);
             })
-            .error(function (jqXHR)
-            {
-                alert('Error fetching game output: ' + jqXHR.responseText);
-            });
-    })
-    .dataTable().fnSetColumnVis(9, false); // Hide dataFile column.
+            .error(makeXHRErrorHandler('Error fetching game output: '));
+        }
+        else
+        {
+            $('#game-output').val('');
+        }
+    });
+    connectGridToDataView(gamesGrid, gamesDataView);
     
-    function addStudentToTable(index, json)
+    // Fetch the table data.
+    fetchStudents();
+    fetchResults();
+    
+    function makeXHRErrorHandler(message)
     {
-        var cols = [
-            json.instructorLoginID,
-            json.rosterID,
-            json.firstName,
-            json.lastName,
-            json.loginID,
-            json.password,
-            json.condition,
-            json.gameCount
-        ];
-        $('#student-table').dataTable().fnAddData(cols);
+        return function (jqXHR)
+        {
+            alert(message + jqXHR.responseText);
+        };
     }
     
-    function addResultsToTable(index, json)
+    function fetchStudents(instructorID)
     {
-        var cols = [
-            json.rosterID,
-            json.loginID,
-            json.condition,
-            json.stageID,
-            json.questionSetID,
-            json.score,
-            json.medal,
-            Math.round(json.elapsedMS / 1000) + ' s',
-            (new Date(json.endTime * 1000)).format('yy-mm-dd HH:MM'),
-            json.dataFile
-        ];
-        $('#games-table').dataTable().fnAddData(cols);
+        $.getJSON(here + 'student')
+        .success(function (data)
+        {
+            studentDataView.beginUpdate();
+            studentDataView.setItems(data.students);
+            studentDataView.endUpdate();
+        })
+        .error(makeXHRErrorHandler('Error fetching students: '));
+    }
+    
+    function fetchResults()
+    {
+        $.getJSON(here + 'student/result')
+        .success(function (data)
+        {
+            gamesDataView.beginUpdate();
+            gamesDataView.setItems(data.results);
+            gamesDataView.reSort();
+            gamesDataView.endUpdate();
+        })
+        .error(makeXHRErrorHandler('Error fetching game results: '));
+    }
+    
+    function submitNewStudent()
+    {
+        $.post(here + 'student', $('#new-student-dialog form').serialize())
+        .success(function (data)
+        {
+            studentDataView.addItem(data.student);
+            $('#new-student-dialog').dialog('close');
+        })
+        .error(function (jqXHR, statusText, errorThrown)
+        {
+            alert('Error saving student: ' + jqXHR.responseText);
+        })
+        .complete(function ()
+        {
+            //unlock();
+        });
     }
 });

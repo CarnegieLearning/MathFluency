@@ -24,8 +24,6 @@ module.exports = function restapi(gameController)
         gc = gameController;
     
     app.use(express.bodyParser());
-    app.use(express.cookieParser());
-    app.use(express.session({ secret: "keyboard cat" }));
     
     // Middleware to load the playerState when session.playerID is set.
     app.use(function (req, res, next)
@@ -44,6 +42,8 @@ module.exports = function restapi(gameController)
     {
         gc.getStage(stageID, function (stage)
         {
+            if (!stage) return next(new Error('Cannot find stage with ID ' + stageID));
+            
             req.stage = stage;
             next();
         });
@@ -62,6 +62,8 @@ module.exports = function restapi(gameController)
         {
             req.stage.getQuestionSet(questionSetID, function (questionSet)
             {
+                if (!questionSet) return next(new Error('Cannot find question set with ID ' + questionSet + ' in stage ' + req.stage.id));
+                
                 req.questionSet = questionSet;
                 next();
             });
@@ -75,7 +77,7 @@ module.exports = function restapi(gameController)
         
         If stageID is specified, sends the results of <GameController.getStage>.  Otherwise, calls <GameController.getAvailableStagesForPlayer> and returns an object with the key `stageIDs' with an array of stage ID strings.
     */
-    app.get('/stage/:stageID?', function (req, res)
+    app.get('/stage/:stageID?', function (req, res, next)
     {
         if (req.stage)
         {
@@ -95,11 +97,12 @@ module.exports = function restapi(gameController)
         
         If questionSetID is specified, sends the results of <Stage.getQuestionSet>.  Otherwise, calls <Stage.getAllQuestionSetIDs> and returns an object with the key `questionSetIDs' with an array of question set ID strings.
     */
-    app.get('/stage/:stageID/questionSet/:questionSetID?', function (req, res)
+    app.get('/stage/:stageID/questionSet/:questionSetID?', function (req, res, next)
     {
-        if (req.questionSet)
+        if (req.params.questionSetID)
         {
-            res.send(req.questionSet.toJSON());
+            if (req.questionSet) res.send(req.questionSet.toJSON());
+            else  res.send({});
         }
         else
         {
@@ -115,10 +118,12 @@ module.exports = function restapi(gameController)
         
         Sends the engine configuration for the given <QuestionSet> by calling <GameController.getGameEngineForQuestionSet>.
     */
-    app.get('/stage/:stageID/questionSet/:questionSetID/engine', function (req, res)
+    app.get('/stage/:stageID/questionSet/:questionSetID/engine', function (req, res, next)
     {
         gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
         {
+            if (!engine) return next(new Error('Cannot find engine for question set ' + req.questionSet.id));
+            
             res.send(engine.toJSON());
         });
     });
@@ -128,7 +133,7 @@ module.exports = function restapi(gameController)
         
         Saves the body of the request as the results for the given question set by calling <GameController.saveQuestionSetResults>.  Sends an empty object on success, or an error object with status 500 on failure.
     */
-    app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res)
+    app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res, next)
     {
         gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function (error)
         {
@@ -136,7 +141,7 @@ module.exports = function restapi(gameController)
             {
                 console.log('Error saving question set results:');
                 console.log(error);
-                res.send(error, 500);
+                next(error);
             }
             else
             {

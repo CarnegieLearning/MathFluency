@@ -4,41 +4,25 @@
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7"
+                "test-3"
             ]
         },
         "cond2": {
             "stages": [
+                "test-1",
                 "test-2",
-                "test-3",
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "test-1"
+                "test-3"
             ]
         },
         "cond3": {
             "stages": [
-                "test-3",
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
                 "test-1",
-                "test-2"
+                "test-2",
+                "test-3"
             ]
         },
         "cond4": {
             "stages": [
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
                 "test-1",
                 "test-2",
                 "test-3"
@@ -46,63 +30,35 @@
         },
         "cond5": {
             "stages": [
-                "test-5",
-                "test-6",
-                "test-7",
                 "test-1",
                 "test-2",
-                "test-3",
-                "test-4"
+                "test-3"
             ]
         },
         "cond6": {
             "stages": [
-                "test-6",
-                "test-7",
                 "test-1",
                 "test-2",
-                "test-3",
-                "test-4",
-                "test-5"
+                "test-3"
             ]
         }
     },
     
     "stages": {
         "test-1": {
-            "displayName": "Test 1",
+            "displayName": "Week 1: Dec to Pct, Level 1",
             "engine": "racecar",
             "cli_fluency_task": "test1"
         },
         "test-2": {
-            "displayName": "Test 2",
+            "displayName": "Week 1: Dec to Pct, Level 2",
             "engine": "racecar",
             "cli_fluency_task": "test2"
         },
         "test-3": {
-            "displayName": "Test 3",
+            "displayName": "Week 1: Dec to Pct, Level 3",
             "engine": "racecar",
             "cli_fluency_task": "test3"
-        },
-        "test-4": {
-            "displayName": "Test 4",
-            "engine": "racecar",
-            "cli_fluency_task": "test4"
-        },
-        "test-5": {
-            "displayName": "Test 5",
-            "engine": "racecar",
-            "cli_fluency_task": "test5"
-        },
-        "test-6": {
-            "displayName": "Test 6",
-            "engine": "racecar",
-            "cli_fluency_task": "test6"
-        },
-        "test-7": {
-            "displayName": "Test 7",
-            "engine": "racecar",
-            "cli_fluency_task": "test7"
         }
     },
     

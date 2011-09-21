@@ -10,9 +10,10 @@
         "password": "TestHarness"
     },
     "sequelizeOptions": {
-        "logging": true
+        "port": 3306,
+        "logging": false
     },
     "gameConfig": "config/games.json",
-    "cliDataPath": "../static/private/fluency",
+    "cliFlashPath": "../static/private/fluency/games",
     "debug": true
 }

@@ -88,7 +88,8 @@ function Stage(baseURL, json)
     {
         $.getJSON(baseURL + '/stage/' + this.id + '/questionSet/' + questionSetID, function (data)
         {
-            callback(new QuestionHierarchy.QuestionSet(self, data));
+            if (!data.id) callback(null);
+            else callback(new QuestionHierarchy.QuestionSet(self, data));
         });
     };
     

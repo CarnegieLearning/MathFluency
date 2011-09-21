@@ -1,5 +1,9 @@
 <div id="status-message"></div>
 
+<% if (!student) { %>
+    <a id="instructor-dashboard-link" href="/instructor">Back to instructor dashboard</a>
+<% } %>
+
 <div id="stage-list">
     <h3>Levels</h3>
     <ol>
@@ -15,5 +19,5 @@
 </div>
 
 <div>
-    <button id="instructions-link" style="display:none;">Open instructions</Button>
+    <button id="instructions-link" style="display:none;">Instructions</Button>
 </div>

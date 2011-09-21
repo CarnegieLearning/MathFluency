@@ -8,6 +8,7 @@ var csv = require('csv'),
     rimraf = require('rimraf'),
     path = require('path'),
     spawn = require('child_process').spawn,
+    constants = require('../common/Constants'),
     util = require('../common/Utilities');
 
 exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
@@ -65,7 +66,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         });
     });
     
-    app.get(rootPath + '/instructor/student/result.:format?', function (req, res)
+    app.get(rootPath + '/instructor/student/result', function (req, res)
     {
         getResults(req.instructor, function (error, results, fields)
         {
@@ -76,16 +77,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             }
             else
             {
-                if (req.params.format == 'csv')
-                {
-                    res.header('Content-Type', 'text/csv');
-                    res.header('Content-Disposition', 'attachment; filename="game-results.csv"');
-                    outputCSV(res, results, fields);
-                }
-                else
-                {
-                    res.send({results: results});
-                }
+                res.send({results: results});
             }
         });
     });
@@ -118,9 +110,10 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         student.password = req.body.password
         student.condition = condition
 
-        student.setInstructor(req.instructor).on('success', function ()
+        student.setInstructor(req.instructor).on('success', function (student)
         {
             var json = student.toJSON();
+            json.id = student.id;
             json.instructorLoginID = req.instructor.loginID;
             json.gameCount = null;
             res.send({
@@ -193,7 +186,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             {
                 res.render('roster-upload-confirm', {
                     students: students,
-                    instructor: instructor,
+                    assignInstructor: instructor,
                     condition: cond,
                     file: file.filename,
                     formData: {
@@ -263,13 +256,22 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         fs.mkdirSync(dir + '/' + archiveDir, 7 << 6);
         fs.mkdirSync(outputDir, 7 << 6);
         
-        async.parallel([
+        // Note: I switched these async calls from parallel to serial execution because, in the case of an error, we don't want to run cleanup until all concurrently running tasks complete.  See https://github.com/caolan/async/issues/51
+        
+        async.series([
             function (callback)
             {
                 getStudents(req.instructor, function (err, results, fields)
                 {
                     if (err) return callback(err);
                     
+                    // Replace coded fields with strings.
+                    for (var i = 0; i < results.length; i++)
+                    {
+                        var r = results[i];
+                        r.FirstDate = util.dateFormat(r.FirstDate * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
+                        r.LastDate = util.dateFormat(r.LastDate * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
+                    }
                     outputCSV(path.join(dir, archiveDir, 'students.csv'), results, fields, callback);
                 });
             },
@@ -279,7 +281,16 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 {
                     if (err) return callback(err);
                     
-                    async.parallel([
+                    // Replace coded fields with strings.
+                    for (var i = 0; i < results.length; i++)
+                    {
+                        var r = results[i];
+                        r.medal = constants.medal.codeToString(r.medal);
+                        r.endState = constants.endState.codeToString(r.endState);
+                        r.endTime = util.dateFormat(r.endTime * 1000, 'yyyy-mm-dd HH:MM:ss Z', true);
+                    }
+                    
+                    async.series([
                         function (callback)
                         {
                             outputCSV(path.join(dir, archiveDir, 'game-results.csv'), results, fields, callback);
@@ -301,6 +312,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function copyGames(questionResults, callback)
         {
+            console.log('Copying ' + questionResults.length + ' game output files');
+            
             async.forEach(questionResults,
             function (item, callback)
             {
@@ -313,6 +326,8 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function zipAndSend()
         {
+            console.log('Creating tarball at: ' + dir + '/archive.tar.gz');
+            
             var tar = spawn('tar', ['czf', 'archive.tar.gz', archiveDir], {
                 cwd: dir
             });
@@ -332,7 +347,12 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         
         function cleanup(err)
         {
-            if (err) next(err);
+            if (err)
+            {
+                console.log('Got an error:');
+                console.log(err);
+                next(err);
+            }
             
             console.log('Deleting export directory: ' + dir);
             rimraf(dir, function (err)
@@ -355,10 +375,11 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
     function getStudents(instructor, callback)
     {
         // For admins, show all students along with which instructor they belong to.
-        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.  This requires sequelize >1.0.2 (currently not in npm yet) which exposes the MySQL connection pool.
+        // Note: we do raw SQL queries because sequelize ORM doesn't support JOINs, so we end up having to create big mapping tables otherwise.
         var params = [];
         var query = '\
             SELECT \
+                Students.id, \
                 Students.rosterID, \
                 Students.loginID, \
                 Students.firstName, \
@@ -366,28 +387,49 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 Students.password, \
                 Students.condition, \
                 Instructors.loginID AS instructorLoginID, \
-                gameCount \
+                SUM(endState <=> 0) AS completedGames, \
+                COUNT(QuestionSetOutcomes.id) AS totalGames, \
+                medalTable.GoldMedals, \
+                medalTable.SilverMedals, \
+                medalTable.BronzeMedals, \
+                SUM(QuestionSetOutcomes.elapsedMS) AS TotalTime, \
+                MIN(QuestionSetOutcomes.endTime) AS FirstDate, \
+                MAX(QuestionSetOutcomes.endTime) AS LastDate \
             FROM Students \
                 INNER JOIN Instructors ON Instructors.id = Students.InstructorId \
+                LEFT JOIN QuestionSetOutcomes ON QuestionSetOutcomes.studentId = Students.id \
                 LEFT JOIN ( \
                     SELECT \
-                        StudentId, \
-                        COUNT(*) AS gameCount \
-                    FROM QuestionSetOutcomes \
-                    GROUP BY StudentID \
-                ) GameCounts ON GameCounts.StudentId = Students.id \
+                        studentId, \
+                        SUM(medal <=> 3) AS GoldMedals, \
+                        SUM(medal <=> 2) AS SilverMedals, \
+                        SUM(medal <=> 1) AS BronzeMedals \
+                    FROM ( \
+                        SELECT \
+                            DISTINCT \
+                                studentId, \
+                                MAX(medal) AS medal, \
+                                stageID \
+                        FROM \
+                            QuestionSetOutcomes \
+                        WHERE \
+                            medal > 0 \
+                            AND endState = 0 \
+                        GROUP BY \
+                            studentId, stageID \
+                    ) AS T \
+                    GROUP BY \
+                        studentId \
+                ) AS medalTable ON medalTable.studentId = Students.id \
         ';
+        
         if (!instructor.isAdmin)
         {
-            query += 'WHERE Instructors.id = ?';
+            query += ' WHERE Instructors.id = ? ';
             params.push(instructor.id);
         }
-        if (config.debug)
-        {
-            console.log('Custom Query:' + query.replace(/ +/g, ' '));
-            console.log('Parameters: ' + params);
-        }
-        model.sequelize.pool.query(query, params, callback);
+        query += ' GROUP BY Students.id '
+        model.customQuery(query, params, callback);
     }
     
     function getResults(instructor, callback)
@@ -395,6 +437,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         var params = [];
         var query = '\
             SELECT \
+                QuestionSetOutcomes.id,\
                 Students.rosterID, \
                 Students.loginID, \
                 QuestionSetOutcomes.condition, \
@@ -404,6 +447,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
                 QuestionSetOutcomes.medal, \
                 QuestionSetOutcomes.elapsedMS, \
                 QuestionSetOutcomes.endTime, \
+                QuestionSetOutcomes.endState, \
                 QuestionSetOutcomes.dataFile \
             FROM QuestionSetOutcomes \
             INNER JOIN Students ON Students.id = QuestionSetOutcomes.StudentId \
@@ -413,24 +457,21 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
             query += 'WHERE Students.InstructorId = ?';
             params.push(instructor.id);
         }
-        if (config.debug)
-        {
-            console.log('Custom Query:' + query.replace(/ +/g, ' '));
-            console.log('Parameters: ' + params);
-        }
-        model.sequelize.pool.query(query, params, callback);
+        model.customQuery(query, params, callback);
     }
     
     function outputCSV(pathOrStream, results, fields, callback)
     {
+        console.log('Writing CSV file to: ' + pathOrStream);
+        
         var fieldNames = [];
         for (var field in fields) fieldNames.push(field);
         fieldNames.sort(function (a, b)
         {
             return fields[a].number - fields[b].number;
         });
-        var csvWriter = csv();
-        csvWriter.on('end', callback);
+        var csvWriter = csv({columns: fieldNames});
+        csvWriter.on('end', function () {callback();});
         
         if (typeof pathOrStream === 'string') csvWriter.toPath(pathOrStream);
         else csvWriter.toStream(pathOrStream);

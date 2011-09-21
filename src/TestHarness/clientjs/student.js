@@ -4,6 +4,8 @@ var GameControllerClient = require('./client/GameControllerClient').GameControll
 var gc = new GameControllerClient('api');
 gc.registerEngineConstructor('CLFlashGameEngine', CLFlashGameEngine);
 
+var instructionsURL;
+
 $(document).ready(function ()
 {
     $('#stage-list li button').button().click(function ()
@@ -12,7 +14,12 @@ $(document).ready(function ()
         runStage(stageID);
     });
     
-    $('#instructions-link').button();
+    $('#instructions-link').button().click(function ()
+    {
+        window.open(instructionsURL, 'Instructions', 'status=0,location=0,toolbar=0,scrollbars=yes,resizable=yes,width=600,height=500');
+    });
+    
+    $('#instructor-dashboard-link').button();
 });
 
 function runStage(stageID)
@@ -40,10 +47,8 @@ function runQuestionSet(questionSet)
     gc.getGameEngineForQuestionSet(questionSet, function (engine)
     {
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
-        $('#instructions-link').unbind('click').click(function ()
-        {
-            window.open('instructions/' + questionSet.parent.id, 'Instructions', 'status=0,location=0,toolbar=0,width=600,height=500');
-        });
+        instructionsURL = 'instructions/' + questionSet.parent.id;
+        
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data...');
