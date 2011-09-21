@@ -38,7 +38,7 @@ var Player = PNode.extend({
     turbo           : false,    // True if turbo boost is currently active
     preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
     turboSpeed      : 200,      // Turbo boost speed in m/s
-    
+
     init: function() {
         Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
        
@@ -227,13 +227,5 @@ var Player = PNode.extend({
         }
     },
 });
-
-Player.STATE_OFF          = 0;
-Player.STATE_READY        = 1;
-Player.STATE_RACING       = 2;
-Player.STATE_WIPEOUT      = 3;
-Player.STATE_TURBO        = 4;
-Player.STATE_INTERMISSION = 5;
-Player.STATE_FINISH       = 6;
 
 exports.Player = Player;
