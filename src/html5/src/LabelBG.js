@@ -26,8 +26,10 @@ var LabelBG = cocos.nodes.Node.extend({
         // You must always call the super class version of init
         LabelBG.superclass.init.call(this, opts);
         
-        this.set('label', cocos.nodes.Label.create(opts));
-        this.addChild({child: this.get('label')});
+        var label = cocos.nodes.Label.create(opts)
+        label.bindTo('opacity', this, 'opacity');
+        this.set('label', label);
+        this.addChild({child: label});
         
         if(opts.hasOwnProperty('bgColor')) {
             this.set('bgColor', opts['bgColor']);

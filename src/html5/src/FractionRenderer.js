@@ -47,11 +47,13 @@ var FractionRenderer = cocos.nodes.Node.extend({
         opts["fontSize"] = this.get("fontSize");
         var label = cocos.nodes.Label.create(opts);
         label.set('position', new geom.Point(0, -15));
+        label.bindTo('opacity', this, 'opacity');
         this.addChild({child: label});
         
         opts["string"] = this.get("denominator");
         label = cocos.nodes.Label.create(opts);
         label.set('position', new geom.Point(0, 15));
+        label.bindTo('opacity', this, 'opacity');
         this.addChild({child: label});
         
         this.set('contentSize', new geom.Size(40, 50));
