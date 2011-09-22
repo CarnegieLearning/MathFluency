@@ -68,12 +68,18 @@ var FluencyApp = KeyboardLayer.extend({
         dash.set('position', new geo.Point(800, 0));
         this.set('dash', dash);
         
+        // Get "command line" arguments from the div tag
+        var app_div = $("#cocos_test_app")
+        var xml_path = app_div.attr("data");
+        var game_id = app_div.attr("gameid");
+        this.set('gameID', game_id);
+        
         // Uncomment to run locally
         //this.runLocally();
         //return;
         
-        // Set up remote resources
-        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: "set002.xml"};
+        // Set up remote resources, default value allows for running 'locally'
+        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
         
         // Preload remote resources
         var p = cocos.Preloader.create();
@@ -241,7 +247,16 @@ var FluencyApp = KeyboardLayer.extend({
         z += RC.intermissionSpacing;
         // Gets the intermission value
         var node = subset.firstElementChild;
-        var interContent = this.parseContent(node);
+        var interContent;
+        
+        var hurix = XML.safeGetAttr(node, 'VALUE');
+        if(hurix) {
+            interContent = LabelBG.create(LabelBG.helper(hurix,'#000','#fff'));
+        }
+        else {
+            interContent = this.parseContent(node);
+        }
+        
         var inter = Intermission.create(interContent, z);
         events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
         events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
@@ -275,6 +290,9 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Answer is the same in all formats, so get it first
         ans = XML.safeComboGet(node, 'Answer', 'VALUE');
+        if(!ans) {
+            ans = XML.safeComboGet(node, 'ANSWER', 'VALUE');
+        }
         
         // Legacy check
         var hurix = node.getElementsByTagName('DELIMETERS_TEXT');
