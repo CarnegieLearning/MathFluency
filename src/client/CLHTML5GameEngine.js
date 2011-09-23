@@ -26,6 +26,7 @@ exports.CLHTML5GameEngine = function CLHTML5GameEngine(json)
         app_div.attr('id', 'cocos_test_app');
         app_div.attr('data', self.dataPath + '/' + props.input);
         app_div.attr('gameID', uuid() + '::' + 'CLFlashGameEngine' + '::' + questionSet.parent.id + '::' + questionSet.id);
+        app_div.attr('callback', 'CLHTML5GameEngineDoneCallback');
         
         $(div).empty().append(app_div);
         
@@ -34,8 +35,6 @@ exports.CLHTML5GameEngine = function CLHTML5GameEngine(json)
         script.type = 'text/javascript';
         script.src = self.scriptPath + '/' + 'cocos_test.js';
         head.appendChild(script);
-        //data="'+ self.dataPath + '/' + props.input +'"
-        //gameid="' uuid() + '::' + 'CLFlashGameEngine' + '::' + questionSet.parent.id + '::' + questionSet.id + '"
     };
 };
 
