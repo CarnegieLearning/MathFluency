@@ -56,8 +56,11 @@ var Dashboard = cocos.nodes.Node.extend({
         this.set('penaltyTime', disp);
     },
     
-    // Starts tracking time and updating the dashboard timer
-    start: function () {
+    // Starts tracking time and updating the dashboard timer.  Optionally set the initial countdown
+    start: function (initialCountdown) {
+        if(initialCountdown) {
+            this.set('elapsedTime', -1 * initialCountdown)
+        }
         this.scheduleUpdate();
     },
     

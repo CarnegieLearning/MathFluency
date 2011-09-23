@@ -413,12 +413,11 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
-    // TODO: Make countdown configurable
     // TODO: Make countdown more noticible
     countdown: function () {
-        this.get('dash').start();
+        this.get('dash').start(RC.initialCountdown / 1000);
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
-        setTimeout(this.startGame.bind(this), 3000);
+        setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.get('audioMixer').playSound('bg');
     },
     

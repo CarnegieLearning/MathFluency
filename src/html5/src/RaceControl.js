@@ -23,10 +23,17 @@ var RaceControl = BObject.extend({
 });
 
 RaceControl.finishLine          = 3200;                     // Holds the z value of the finish line
+RaceControl.initialCountdown    = 3000;                     // Initial countdown time in milliseconds
+
+// <MEDALS>
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
+
+// <GlobalSpacing>
 RaceControl.intermissionSpacing = 110;                      // Distance in meters from previous object to intermission
 RaceControl.questionSpacing     = 150;                      // Distance in meters from previous object to question
 RaceControl.finishSpacing       = 110;                      // Distance in meters after the last question to the finish line
+
+// <PenaltySettings>
 RaceControl.penaltyTime         = 8;                        // Time in seconds lost for a incorrect answer
 RaceControl.penaltySpeed        = -0.5;                     // Percentage speed LOST for an incorrect answer
 
