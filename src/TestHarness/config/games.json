@@ -59,6 +59,26 @@
             "displayName": "Week 1: Dec to Pct, Level 3",
             "engine": "racecar",
             "cli_fluency_task": "test3"
+        },
+        "test-4": {
+            "displayName": "Week 2: One to Frc, Level 1",
+            "engine": "racecar",
+            "cli_fluency_task": "test4"
+        },
+        "test-5": {
+            "displayName": "Week 2: One to Frc, Level 2",
+            "engine": "racecar",
+            "cli_fluency_task": "test5"
+        },
+        "test-6": {
+            "displayName": "Week 2: One to Frc, Level 3",
+            "engine": "racecar",
+            "cli_fluency_task": "test6"
+        },
+        "test-7": {
+            "displayName": "Week 2: One to Frc, Level 4",
+            "engine": "racecar",
+            "cli_fluency_task": "test7"
         }
     },
     
