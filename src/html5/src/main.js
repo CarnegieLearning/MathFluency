@@ -40,6 +40,7 @@ var PieChart = require('PieChart').PieChart;
 var FractionRenderer = require('FractionRenderer').FractionRenderer;
     
 // Create a new layer
+// TODO: Clean up main, it is getting bloated
 var FluencyApp = KeyboardLayer.extend({
     player      : null,     // Holds the player
     background  : null,     // Holds the the background object
@@ -47,6 +48,10 @@ var FluencyApp = KeyboardLayer.extend({
     questionList: [],       // List of all questions in the input
     audioMixer  : null,     // AudioMixer
     medalCars   : [],       // Contains the pace cars
+    gameID      : '',       // Unique ID for the game
+    
+    endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
+    
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
@@ -69,16 +74,17 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('dash', dash);
         
         // Get "command line" arguments from the div tag
-        var app_div = $("#cocos_test_app")
-        var xml_path = app_div.attr("data");
-        var game_id = app_div.attr("gameid");
-        this.set('gameID', game_id);
+        var app_div = $('#cocos_test_app')
+        var xml_path = app_div.attr('data');
+        this.set('gameID', app_div.attr('gameid'));
+        this.set('endOfGameCallback', app_div.attr('callback'));
         
         // Uncomment to run locally
         //this.runLocally();
         //return;
         
         // Set up remote resources, default value allows for running 'locally'
+        // TODO: Remove default in production, replace with error
         __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
         
         // Preload remote resources
@@ -89,6 +95,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Remote resources failed to load, generate dummy data then proceed
     // TODO: Determine what to do if we get 404s in production
+    // TODO: Bring this up to date with latest Question implementation
     runLocally: function() {
         console.log("Now running locally from this point forward");
         
@@ -124,6 +131,7 @@ var FluencyApp = KeyboardLayer.extend({
     // TODO: Decide on input file format and rewrite this as needed.
     // TODO: Make the parser not expload on bad XML files
     // TODO: Overhaul parser to generic pull, specific parse rather than semi-specific traverse
+    // TODO: Actually do some of the above TODOs
     parseXML: function(xmlDoc) {
         // Parse medal information
         var medals = XML.parseMedals(xmlDoc);
@@ -288,7 +296,8 @@ var FluencyApp = KeyboardLayer.extend({
     parseProblem: function (node) {
         var ans, d1, d2, p1, p2;
         
-        // Answer is the same in all formats, so get it first
+        // Answer is the same in all formats (except for case, ugh...), so get it first
+        // TODO: Revise answer in new format
         ans = XML.safeComboGet(node, 'Answer', 'VALUE');
         if(!ans) {
             ans = XML.safeComboGet(node, 'ANSWER', 'VALUE');
@@ -366,6 +375,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SPEED_UP',     [87, 38]);  // [W, ARROW_UP]
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
         this.setBinding('TURBO',        [32]);      // [SPACE]
+        // TODO: Implement aborting the game
+        this.setBinding('ABORT',        [27]);      // [ESC]
         
         // Draw background
         var bg = Background.create();
@@ -387,7 +398,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Generate things to the side of the road
         var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
         
-        for(var t=10; t<3300; t += Math.ceil(Math.random()*6+4)) {
+        for(var t=10; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6+4)) {
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 events.addListener(p, 'addMe', this.addMeHandler.bind(this));
@@ -402,6 +413,8 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
+    // TODO: Make countdown configurable
+    // TODO: Make countdown more noticible
     countdown: function () {
         this.get('dash').start();
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
@@ -429,6 +442,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // Ghost cars representing medal cutoffs
+        // TODO: Make seperate class, support lines in addition to cars
         for(var i=0; i<3; i+= 1) {
             var car = cocos.nodes.Sprite.create({file: '/resources/car'+i+'.png'});
             car.set('opacity', 192);
@@ -458,8 +472,6 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
-    // TODO: Calculate the rest of the statistics needed
-    // TODO: Format into XML and send to server
     endOfGame: function(evt) {
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
@@ -489,6 +501,60 @@ var FluencyApp = KeyboardLayer.extend({
             i += 1;
         }
         alert("Correct: " + correct);
+        
+        // If the 'command line' specified a call back, feed the callback the xml
+        if(this.get('endOfGameCallback')) {
+            window[this.get('endOfGameCallback')](this.writeXML(correct));
+        }
+    },
+
+    // Writes the output xml file as a string and returns it
+    // TODO: Decide on a new format if needed and update
+    writeXML: function(correct) {
+        // Get needed values
+        var ref = this.get('gameID');
+        var d = this.get('dash');
+        var e = d.get('elapsedTime');
+        var p = d.get('pTime');
+        var m;
+        
+        // Determine medal string
+        if(e + p < RC.times[1]) {
+            m = "Gold";
+        }
+        else if(e + p < RC.times[2]) {
+            m = "Silver";
+        }
+        else if(e + p < RC.times[3]) {
+            m = "Bronze";
+        }
+        else {
+            m = " - ";
+        }
+        
+        // Convert times to milliseconds for reporting
+        e = Math.round(e * 1000)
+        p = Math.round(p * 1000)
+        
+        // Build the XML string
+        var x =
+        '<OUTPUT>\n' + 
+        '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
+        '    <SCORE_SUMMARY>\n' + 
+        '        <Score CorrectAnswers="' + correct +'" ElapsedTime="' + e + '" PenaltyTime="' + p + '" TotalScore="' + (e + p) +'" Medal="' + m + '"/>\n' + 
+        '    </SCORE_SUMMARY>\n' +
+        '    <SCORE_DETAILS>\n';
+                var i = 0;
+                var ql = this.get('questionList');
+                while(i < ql.length) {
+                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
+                i += 1;
+                }
+            x += '    </SCORE_DETAILS>\n' + 
+        '    <END_STATE STATE="FINISH"/>\n' +
+        '</OUTPUT>';
+        
+        return x;
     },
     
     //Handles answering the current question when time expires
