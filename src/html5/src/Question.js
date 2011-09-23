@@ -24,6 +24,7 @@ var PNode = require('PerspectiveNode').PerspectiveNode;
 // Represents a single question to be answered by the player
 var Question = PNode.extend({
     correctAnswer    : null,    // The correct response
+    answer           : null,    // The answer provided by the player
     answeredCorrectly: null,    // Stores if question has been correctly/incorrectly (null=not answered)
     coneL            : null,    // Holds the left delimiter
     coneR            : null,    // Holds the left delimiter
@@ -87,6 +88,7 @@ var Question = PNode.extend({
     // Called when the question is answered, sets and returns the result
     answerQuestion: function(ans) {
         if(this.get('answeredCorrectly') == null) {
+            this.set('answer', ans);
             if(this.get('correctAnswer') == ans) {
                 this.set('answeredCorrectly', true);
                 return true;
