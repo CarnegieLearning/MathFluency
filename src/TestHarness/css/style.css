@@ -94,6 +94,17 @@ table.display
     clear: both;
 }
 
+#cocos_test_app {
+    border: 1px solid #000;
+    width: 900px;
+    height: 600px;
+    margin: 0 auto;
+    -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow:    0 3px 10px rgba(0, 0, 0, 0.75);
+    -o-box-shadow:      0 3px 10px rgba(0, 0, 0, 0.75);
+    box-shadow:         0 2px 2px  rgba(0, 0, 0, 0.75);
+}
+
 #status-message
 {
     display: none;
