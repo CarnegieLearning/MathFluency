@@ -4,48 +4,42 @@
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "html5-test"
+                "test-3"
             ]
         },
         "cond2": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "html5-test"
+                "test-3"
             ]
         },
         "cond3": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "html5-test"
+                "test-3"
             ]
         },
         "cond4": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "html5-test"
+                "test-3"
             ]
         },
         "cond5": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "html5-test"
+                "test-3"
             ]
         },
         "cond6": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3",
-                "html5-test"
+                "test-3"
             ]
         }
     },
@@ -66,33 +60,21 @@
             "engine": "racecar",
             "cli_fluency_task": "test3"
         },
-<<<<<<< HEAD
-        "test-4": {
-            "displayName": "Week 2: One to Frc, Level 1",
-            "engine": "racecar",
-            "cli_fluency_task": "test4"
-        },
-        "test-5": {
-            "displayName": "Week 2: One to Frc, Level 2",
-            "engine": "racecar",
-            "cli_fluency_task": "test5"
-        },
-        "test-6": {
-            "displayName": "Week 2: One to Frc, Level 3",
-            "engine": "racecar",
-            "cli_fluency_task": "test6"
-        },
-        "test-7": {
-            "displayName": "Week 2: One to Frc, Level 4",
-            "engine": "racecar",
-            "cli_fluency_task": "test7"
-=======
-        "html5-test": {
-            "displayName": "HTML5",
+        "html5-test1": {
+            "displayName": "Week 1b: Dec to Pct, Level 1",
             "engine": "racecar_html5",
             "cli_fluency_task": "test1"
->>>>>>> html5-prototype
-        }
+        },
+        "html5-test2": {
+            "displayName": "Week 1b: Dec to Pct, Level 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test2"
+        },
+        "html5-test3": {
+            "displayName": "Week 1b: Dec to Pct, Level 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test3"
+        },
     },
     
     "engines": {
