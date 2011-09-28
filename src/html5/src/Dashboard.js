@@ -24,36 +24,83 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
 var Dashboard = cocos.nodes.Node.extend({
-    elapsedTime : -3,       // Time in race elapsed so far
-    displayTime : null,     // Timer displayed to player
-    gaugeRadius : 40,       // Radius of the gauges
-    penaltyTime : null,     // Displayed penalty time
-    pTime       : 0.0,      // Stores numerical penalty time
-    speed       : 0,        // Speed for speedometer
-    lastS       : 0,        // Previous frame's speed
-    maxSpeed    : 200,      // Maximum possible speed to display/calculate
-    timerAcc    : 3,        // Number of digits to the right of the decimal place for timer accuracy
-    pause       : false,    // Stores if the elapsed timer should be paused.
+    elapsedTime  : -3,      // Time in race elapsed so far
+    displayTime  : null,    // Timer displayed to player
+    gaugeRadius  : 40,      // Radius of the gauges
+    penaltyTime  : null,    // Displayed penalty time
+    pTime        : 0.0,     // Stores numerical penalty time
+    speed        : 0,       // Speed for speedometer
+    currentSpeed : null,    // Numerically displayed speed
+    lastS        : 0,       // Previous frame's speed
+    maxSpeed     : 200,     // Maximum possible speed to display/calculate
+    timerAcc     : 3,       // Number of digits to the right of the decimal place for timer accuracy
+    pause        : false,   // Stores if the elapsed timer should be paused.
+    speedMode    : 2,       // 0: m/s 1: kph 2: mph
+    displayMedal : null,    // Holds the text representation for the current medal the player in on track to get
     
     init: function() {
         Dashboard.superclass.init.call(this);
         
         this.set('zOrder', 100);
         
-        // Create the visible timer
         var opts = Object();
-        opts['string'] = '-3.0';
+        
+        // Create the visible timer
+        opts['string'] = 'Elapsed Time';
         var disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(40, 50));
+        disp.set('position', new geom.Point(5, 35));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
+        this.addChild({child: disp});
+        
+        opts['string'] = '-3.0';
+        disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(5, 50));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.set('displayTime', disp)
         this.addChild({child: disp});
         
+        
         // Create visible penalty timer
+        opts['string'] = 'Penalty Time';
+         disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(5, 85));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
+        this.addChild({child: disp});
+        
         opts['string'] = '0.0';
         disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(40, 100));
+        disp.set('position', new geom.Point(5, 100));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         this.set('penaltyTime', disp);
+        
+        // Create numerical speedometer
+        opts['string'] = 'Speed';
+        disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(5, 215));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
+        this.addChild({child: disp});
+        
+        opts['string'] = '0';
+        disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(5, 230));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
+        this.addChild({child: disp});
+        this.set('displaySpeed', disp);
+        
+        // Create textual medal meter
+        opts['string'] = 'Medal';
+        disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(5, 315));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
+        this.addChild({child: disp});
+        
+        opts['string'] = ' - ';
+        disp = cocos.nodes.Label.create(opts);
+        disp.set('position', new geom.Point(5, 330));
+        disp.set('anchorPoint', new geom.Point(0, 0.5));
+        this.addChild({child: disp});
+        this.set('displayMedal', disp);
     },
     
     // Starts tracking time and updating the dashboard timer.  Optionally set the initial countdown
@@ -69,10 +116,12 @@ var Dashboard = cocos.nodes.Node.extend({
         MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
     },
     
+    // Sets the pause state
     pauseTimer: function () {
         this.set('pause', true);
     },
     
+    // Unsets the pause state
     unpauseTimer: function () {
         this.set('pause', false);
     },
@@ -91,6 +140,61 @@ var Dashboard = cocos.nodes.Node.extend({
         
         // Update penalty timer
         this.get('penaltyTime').set('string', this.get('pTime').toFixed(acc));
+        
+        // Update numerical speedometer
+        this.get('displaySpeed').set('string', this.getConvertedSpeed());
+    },
+    
+    updateMedalText: function(p) {
+        var txt;
+        
+        if(p > 0.75) {
+            txt = 'Gold';
+        }
+        else if(p > 0.5) {
+            txt = 'Silver';
+        }
+        else if(p > 0.25) {
+            txt = 'Bronze';
+        }
+        else {
+            txt = ' - ';
+        }
+        
+        this.get('displayMedal').set('string', txt);
+    },
+    
+    // Get speed converted to specified units
+    getConvertedSpeed: function() {
+        var mode = this.get('speedMode')
+        var s = this.getSpeed();
+        
+        if(mode == Dashboard.SPEED_M_PS) {
+            if(s.toFixed) {
+                s = s.toFixed(0);
+            }
+            s += ' m/s';
+        }
+        else if(mode == Dashboard.SPEED_KM_PH) {
+            s = s * 36 / 10;
+            if(s.toFixed) {
+                s = s.toFixed(0);
+            }
+            s += ' kph';
+        }
+        else if(mode == Dashboard.SPEED_MI_PH) {
+            s = s * 36 / 16;
+            if(s.toFixed) {
+                s = s.toFixed(0);
+            }
+            s += ' mph';
+        }
+        else {
+            console.log('Invalid speedMode = ' + mode);
+            return null;
+        }
+        
+        return s;
     },
     
     // Getter for speed, accounts for the fact that 'speed' is 0 when paused
@@ -101,6 +205,7 @@ var Dashboard = cocos.nodes.Node.extend({
         return this.get('lastS');
     },
     
+    // Helper function for creating an arc of a circle filled with color
     fillArc: function (c, x, y, r, s, e, b) {
         c.beginPath();
         s += Math.PI;
@@ -171,6 +276,8 @@ var Dashboard = cocos.nodes.Node.extend({
         if(this.get('elapsedTime') > 0) {
             var p = this.pHelper(s);
             
+            this.updateMedalText(p);
+            
             context.beginPath();
             context.moveTo(50, 300);
             context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*r + 50, Math.cos(Math.PI*p - Math.PI/2)*-r + 300)
@@ -206,5 +313,9 @@ var Dashboard = cocos.nodes.Node.extend({
         }
     },
 });
+
+Dashboard.SPEED_M_PS = 0;
+Dashboard.SPEED_KM_PH = 1;
+Dashboard.SPEED_MI_PH = 2;
 
 exports.Dashboard = Dashboard
