@@ -395,6 +395,23 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.addChild({child: player});
         
+        // Create finish line
+        var opts = {
+            maxScale    : 1.00,
+            alignH      : 0.5,
+            alignV      : 0,
+            visibility  : 1,
+            xCoordinate : 0,
+            lockX       : true,
+            zCoordinate : RC.finishLine,
+            dropoffDist : -10,
+        }
+        opts['content'] = cocos.nodes.Sprite.create({file: '/resources/finishline.png',});
+        
+        var fl = PNode.create(opts);
+        events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
+        fl.kickstart();
+        
         // Generate things to the side of the road
         var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
         
@@ -460,6 +477,7 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Handles add requests from PerspectiveNodes
+    // TODO: Make a PerspectiveView class to handle these functions?
     addMeHandler: function (toAdd) {
         this.addChild({child: toAdd});
         events.addListener(toAdd, 'removeMe', this.removeMeHandler.bind(this));
