@@ -106,6 +106,20 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         return s;
     },
     
+    getContentWidth: function() {
+        if(this.get('content')) {
+            return this.get('contentSize').width * this.get('content').get('scaleX');
+        }
+        return this.get('contentSize').width;
+    },
+    
+    getContentHeight: function() {
+        if(this.get('content')) {
+            return this.get('contentSize').height * this.get('content').get('scaleY');
+        }
+        return this.get('contentSize').height;
+    },
+    
     // Called every frame for distance checking and rendering
     update: function (dt) {
         // Update current position based on velocity
@@ -137,20 +151,20 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             // Check to see if X axis is locked
             if(!lockX) {
                 screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.get('xCoordinate') / PerspectiveNode.roadWidth));
-                screenX -= this.get('alignH') * this.get('contentSize').width * displayScale;
+                screenX -= this.get('alignH') * this.getContentWidth() * displayScale;
             }
             else {
-                screenX = this.get('alignH') * this.get('contentSize').width * displayScale;
+                screenX = this.get('alignH') * this.getContentWidth() * displayScale;
             }
             
             // Check to see if Y axis is locked
             if(!lockY) {
                 var yScale = (1.0 / (1.0 - PerspectiveNode.horizonScale)) * (scale - PerspectiveNode.horizonScale);
                 screenY = PerspectiveNode.horizonStart + PerspectiveNode.horizonHeight * (yScale);
-                screenY -= this.get('alignV') * this.get('contentSize').height * displayScale;
+                screenY -= this.get('alignV') * this.getContentHeight() * displayScale;
             }
             else {
-                screenY = -1 * this.get('alignV') * this.get('contentSize').height * displayScale;
+                screenY = -1 * this.get('alignV') * this.getContentHeight() * displayScale;
             }
 
             // Set position
