@@ -272,7 +272,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.closePath();
         context.stroke();
         
-        context.fillStyle = '#236B8E';
+        context.fillStyle = '#202020';
         this.fillArc(context, 50, 300, r, 0,               Math.PI / 4, false);
         context.fillStyle = '#A67D3D';
         this.fillArc(context, 50, 300, r, Math.PI / 4,     Math.PI / 4, false);
