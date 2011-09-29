@@ -14,12 +14,17 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Cocos requirements
 var cocos = require('cocos2d');
 var geom = require('geometry');
 var events = require('events');
 
+// Project requirements
 var LabelBG = require('LabelBG').LabelBG;
 var PNode = require('PerspectiveNode').PerspectiveNode;
+
+// Static requirements
+var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Represents the player in the game
@@ -185,6 +190,12 @@ var Player = PNode.extend({
         // Always maintain at least the minimum speed
         if(this.get('zVelocity') < this.get('minSpeed') && !this.get('intermission')) {
             this.set('zVelocity', this.get('minSpeed'));
+        }
+        
+        if(this.get('zCoordinate') > RC.finishLine) {
+            this.set('zCoordinate', RC.finishLine);
+            this.unbind('zVelocity');
+            this.set('zVelocity', 0);
         }
     
         // Set the chase distance based on current speed
