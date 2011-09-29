@@ -182,7 +182,7 @@ var Player = PNode.extend({
     
     // Shortcut function for applying a speed change over time
     speedChange: function (amt, dur) {
-        MOT.create(this.get('zVelocity'), amt, dur).bindTo('value', this, 'zVelocity');
+        MOT.create(this.get('zVelocity'), amt, dur).bind(this, 'zVelocity');
     },
     
     

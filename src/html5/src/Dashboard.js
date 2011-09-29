@@ -121,7 +121,7 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Changes the current amount of penalty time accured
     modifyPenaltyTime: function(dt) {
-        MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
+        MOT.create(this.get('pTime'), dt, RC.maxTimeWindow).bindTo('value', this, 'pTime');
     },
     
     // Sets the pause state

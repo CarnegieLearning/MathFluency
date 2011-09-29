@@ -38,4 +38,6 @@ RaceControl.finishSpacing       = 110;                      // Distance in meter
 RaceControl.penaltyTime         = 8;                        // Time in seconds lost for a incorrect answer
 RaceControl.penaltySpeed        = -0.5;                     // Percentage speed LOST for an incorrect answer
 
+RaceControl.maxTimeWindow       = 110 / 200.0 * 0.9;        // Maximum time between two important z values: min z spacing / max speed * 90%
+
 exports.RaceControl = RaceControl

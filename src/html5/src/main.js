@@ -384,7 +384,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SPEED_UP',     [87, 38]);  // [W, ARROW_UP]
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
         this.setBinding('TURBO',        [32]);      // [SPACE]
-        // TODO: Implement aborting the game
         this.setBinding('ABORT',        [27]);      // [ESC]
         
         // Draw background
@@ -402,6 +401,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         events.addListener(player, 'IntermissionComplete', dash.unpauseTimer.bind(dash));
         
+        // Add player
         this.addChild({child: player});
         
         // Create finish line
@@ -422,6 +422,12 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
         fl.kickstart();
         fl.set('zOrder', -5);
+        
+        // Calculate new min safe time
+        var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
+        m = Math.min(m, RC.finishSpacing);
+        
+        RC.maxTimeWindow = x / player.get('maxSpeed') * 0.9;
         
         // Generate things to the side of the road
         var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
@@ -449,6 +455,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.get('audioMixer').playSound('bg');
+        
+        $(window).unload(this.endOfGame.bind(this));
     },
     
     // Starts the game
@@ -502,7 +510,9 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
-    endOfGame: function(evt) {
+    endOfGame: function(finished) {
+        $(window).unbind('unload')
+    
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
@@ -530,24 +540,42 @@ var FluencyApp = KeyboardLayer.extend({
             }
             i += 1;
         }
-        var tt = this.get('dash').getTotalTime()
-        var m = 1;
         
-        while(m < 5 && RC.times[m] < tt) {
-            m += 1;
+        // Checks to see if abort was related to window.unload
+        if(typeof finished !== undefined) {
+            
+            var tt = this.get('dash').getTotalTime()
+            var m = 1;
+            
+            if(finished) {
+                while(m < 4 && RC.times[m] < tt) {
+                    m += 1;
+                }
+            }
+            else {
+                m = 4;
+            }
+            
+            alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+        
+            // If the 'command line' specified a call back, feed the callback the xml
+            if(this.get('endOfGameCallback')) {
+                if(finished) {
+                    window[this.get('endOfGameCallback')](this.writeXML(correct, 'FINISH'));
+                }
+                else {
+                    window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
+                }
+            }
         }
-        
-        alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned:' + RC.medalNames[m] );
-        
-        // If the 'command line' specified a call back, feed the callback the xml
-        if(this.get('endOfGameCallback')) {
-            window[this.get('endOfGameCallback')](this.writeXML(correct));
+        else {
+            window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
         }
     },
 
     // Writes the output xml file as a string and returns it
     // TODO: Decide on a new format if needed and update
-    writeXML: function(correct) {
+    writeXML: function(correct, state) {
         // Get needed values
         var ref = this.get('gameID');
         var d = this.get('dash');
@@ -556,13 +584,13 @@ var FluencyApp = KeyboardLayer.extend({
         var m;
         
         // Determine medal string
-        if(e + p < RC.times[1]) {
+        if(e + p < RC.times[1] && state == 'FINISH') {
             m = "Gold";
         }
-        else if(e + p < RC.times[2]) {
+        else if(e + p < RC.times[2] && state == 'FINISH') {
             m = "Silver";
         }
-        else if(e + p < RC.times[3]) {
+        else if(e + p < RC.times[3] && state == 'FINISH') {
             m = "Bronze";
         }
         else {
@@ -588,7 +616,7 @@ var FluencyApp = KeyboardLayer.extend({
                 i += 1;
                 }
             x += '    </SCORE_DETAILS>\n' + 
-        '    <END_STATE STATE="FINISH"/>\n' +
+        '    <END_STATE STATE="' + state + '"/>\n' +
         '</OUTPUT>';
         
         return x;
@@ -624,7 +652,7 @@ var FluencyApp = KeyboardLayer.extend({
             player.wipeout(1, 2);
             this.get('audioMixer').playSound('wipeout', true);
             this.get('dash').modifyPenaltyTime(RC.penaltyTime);
-            player.speedChange((player.get('zVelocity') - player.get('minSpeed')) * RC.penaltySpeed, 1);
+            player.speedChange((player.get('zVelocity') - player.get('minSpeed')) * RC.penaltySpeed, RC.maxTimeWindow);
             
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
@@ -650,7 +678,7 @@ var FluencyApp = KeyboardLayer.extend({
     // Called every frame, manages keyboard input
     update: function(dt) {
         if(this.get('player').get('zCoordinate') > RC.finishLine) {
-            this.endOfGame();
+            this.endOfGame(true);
             return;
         }
     
@@ -688,6 +716,11 @@ var FluencyApp = KeyboardLayer.extend({
         // 'SPACE' turbo boost, press
         if(this.checkBinding('TURBO') > KeyboardLayer.UP) {
             this.get('player').startTurboBoost();
+        }
+        
+        // 'ESC' Abort game, discreet
+        if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
+            this.endOfGame(false);
         }
     },
 });
