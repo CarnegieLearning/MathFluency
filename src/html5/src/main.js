@@ -38,7 +38,16 @@ var XML = require('XML').XML;
 var LabelBG = require('LabelBG').LabelBG;
 var PieChart = require('PieChart').PieChart;
 var FractionRenderer = require('FractionRenderer').FractionRenderer;
-    
+
+// TODO: De-magic number these
+/* Zorder
+-10 Background
+-5  Finish Line
+-4  Trees
+0   Anything not mentioned
+100 Question Delimiters
+*/
+
 // Create a new layer
 // TODO: Clean up main, it is getting bloated
 var FluencyApp = KeyboardLayer.extend({
@@ -380,7 +389,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Draw background
         var bg = Background.create();
-        bg.set('zOrder', -1);
+        bg.set('zOrder', -10);
         this.set('background', bg);
         this.addChild({child: bg});
         
@@ -412,6 +421,7 @@ var FluencyApp = KeyboardLayer.extend({
         var fl = PNode.create(opts);
         events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
         fl.kickstart();
+        fl.set('zOrder', -5);
         
         // Generate things to the side of the road
         var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
@@ -419,11 +429,13 @@ var FluencyApp = KeyboardLayer.extend({
         for(var t=10; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6+4)) {
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                p.set('zOrder', -4);
                 events.addListener(p, 'addMe', this.addMeHandler.bind(this));
                 p.kickstart();
             }
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                p.set('zOrder', -4);
                 events.addListener(p, 'addMe', this.addMeHandler.bind(this));
                 p.kickstart();
             }
