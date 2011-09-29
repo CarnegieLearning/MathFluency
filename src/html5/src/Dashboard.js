@@ -111,6 +111,14 @@ var Dashboard = cocos.nodes.Node.extend({
         this.scheduleUpdate();
     },
     
+    getTotalTime: function () {
+        var tt = this.get('pTime') + this.get('elapsedTime');
+        if(tt.toFixed) {
+            tt = tt.toFixed(this.get('timerAcc'));
+        }
+        return tt;
+    },
+    
     // Changes the current amount of penalty time accured
     modifyPenaltyTime: function(dt) {
         MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');

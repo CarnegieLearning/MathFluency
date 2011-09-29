@@ -27,6 +27,7 @@ RaceControl.initialCountdown    = 3000;                     // Initial countdown
 
 // <MEDALS>
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
+RaceControl.medalNames          = ['Ludicrous Speed', 'Gold', 'Silver', 'Bronze', ' - '];
 
 // <GlobalSpacing>
 RaceControl.intermissionSpacing = 110;                      // Distance in meters from previous object to intermission

@@ -517,7 +517,14 @@ var FluencyApp = KeyboardLayer.extend({
             }
             i += 1;
         }
-        alert("Correct: " + correct);
+        var tt = this.get('dash').getTotalTime()
+        var m = 1;
+        
+        while(m < 5 && RC.times[m] < tt) {
+            m += 1;
+        }
+        
+        alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned:' + RC.medalNames[m] );
         
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
