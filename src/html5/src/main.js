@@ -402,11 +402,12 @@ var FluencyApp = KeyboardLayer.extend({
             alignV      : 0,
             visibility  : 1,
             xCoordinate : 0,
-            lockX       : true,
             zCoordinate : RC.finishLine,
             dropoffDist : -10,
         }
         opts['content'] = cocos.nodes.Sprite.create({file: '/resources/finishline.png',});
+        opts['content'].set('scaleX', 2);
+        opts['content'].set('scaleY', 0.5);
         
         var fl = PNode.create(opts);
         events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
