@@ -61,6 +61,15 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
+    // Remote resources loaded successfully, proceed as normal
+    runRemotely: function() {
+        if(resource("resources/testset.xml") !== undefined) {
+            this.parseXML(resource("resources/testset.xml"));
+        }
+        else {
+            console.log("ERROR: No remote XML found to parse.");
+        }
+    },
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
@@ -126,15 +135,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.preprocessingComplete();
     },
     
-    // Remote resources loaded successfully, proceed as normal
-    runRemotely: function() {
-        if(resource("resources/testset.xml") !== undefined) {
-            this.parseXML(resource("resources/testset.xml"));
-        }
-        else {
-            console.log("ERROR: No remote XML found to parse.");
-        }
-    },
     
     // Parses the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
@@ -768,6 +768,31 @@ var MenuLayer = cocos.nodes.Menu.extend({
 
 // Initialise application
 exports.main = function() {
+
+    // From: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
+    // This defines function.bind for web browsers that have not implemented it:
+    // Firefox < 4 ; Chrome < 7 ; IE < 9 ; Safari (all) ; Opera (all)
+    if (!Function.prototype.bind) {  
+        Function.prototype.bind = function (oThis) {  
+      
+        if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
+            throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
+        }
+
+        var aArgs = Array.prototype.slice.call(arguments, 1),   
+            fToBind = this,   
+            fNOP = function () {},  
+            fBound = function () {  
+              return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));      
+            };  
+
+        fNOP.prototype = this.prototype;  
+        fBound.prototype = new fNOP();  
+
+        return fBound;  
+      };  
+    }  
+    
     // Get director
     var director = cocos.Director.get('sharedDirector');
 
