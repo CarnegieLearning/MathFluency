@@ -111,6 +111,7 @@ var Dashboard = cocos.nodes.Node.extend({
         this.scheduleUpdate();
     },
     
+    // Helper function for grabbing the elapsed + penalty time
     getTotalTime: function () {
         var tt = this.get('pTime') + this.get('elapsedTime');
         if(tt.toFixed) {
@@ -153,6 +154,7 @@ var Dashboard = cocos.nodes.Node.extend({
         this.get('displaySpeed').set('string', this.getConvertedSpeed());
     },
     
+    // Updates the text under the medal meter to the indicated medal
     updateMedalText: function(p) {
         var txt;
         
@@ -225,7 +227,6 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Draws the dash
     draw: function(context) {
-        context.lineWidth = "4";
         context.fillStyle = "#8B7765";
         context.beginPath();
         context.moveTo(0,-10);
@@ -238,26 +239,51 @@ var Dashboard = cocos.nodes.Node.extend({
         // Speedometer
         var r = this.get('gaugeRadius');
         
+        // Interior fills
+        context.fillStyle = '#202020';
+        this.fillArc(context, 50, 200, r, 0               , Math.PI * 5 / 6, false);
+        context.fillStyle = '#FF8C00';
+        this.fillArc(context, 50, 200, r, Math.PI / 12 * 9, Math.PI / 12   , false);
+        context.fillStyle = '#DD1111';
+        this.fillArc(context, 50, 200, r, Math.PI / 6 * 5 , Math.PI / 6    , false);
+        
+        // Hash marks
+        context.strokeStyle = '#FFFFFF';
+        context.lineWidth = "2";
+        var maxStep = 6
+        for(var step = 1; step < maxStep; step += 1) {
+            context.beginPath();
+            context.moveTo(Math.sin(step*Math.PI/maxStep - Math.PI/2)*r + 50, Math.cos(step*Math.PI/maxStep - Math.PI/2)*-r + 200);
+            context.lineTo(Math.sin(step*Math.PI/maxStep - Math.PI/2)*(r-10) + 50, Math.cos(step*Math.PI/maxStep - Math.PI/2)*-(r-10) + 200)
+            context.closePath();
+            context.stroke();
+        }
+        
+        // Gauge frame
         context.strokeStyle = "#000000";
+        context.lineWidth = "4";
         context.beginPath();
         context.arc(50, 200, r, 0, Math.PI, true);
         context.lineTo(10, 200);
         context.closePath();
         context.stroke();
         
-        context.fillStyle = '#11CC33';
-        this.fillArc(context, 50, 200, r, 0,               Math.PI / 3, false);
-        context.fillStyle = '#BBBB22';
-        this.fillArc(context, 50, 200, r, Math.PI / 3,     Math.PI / 3, false);
-        context.fillStyle = '#CC2222';
-        this.fillArc(context, 50, 200, r, Math.PI / 3 * 2, Math.PI / 3, false);
-        
         var s = this.getSpeed();
         var maxs = this.get('maxSpeed');
         
+        // Needle outline
         context.beginPath();
         context.moveTo(50, 200);
-        context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200)
+        context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200);
+        context.closePath();
+        context.stroke();
+        
+        // Needle
+        context.strokeStyle = "#11CC22";
+        context.lineWidth = "2";
+        context.beginPath();
+        context.moveTo(50, 200);
+        context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200);
         context.closePath();
         context.stroke();
         
@@ -265,13 +291,7 @@ var Dashboard = cocos.nodes.Node.extend({
         
         // Medalmeter
         
-        context.strokeStyle = "#000000";
-        context.beginPath();
-        context.arc(50, 300, r, 0, Math.PI, true);
-        context.lineTo(10, 300);
-        context.closePath();
-        context.stroke();
-        
+        // Interior fills
         context.fillStyle = '#202020';
         this.fillArc(context, 50, 300, r, 0,               Math.PI / 4, false);
         context.fillStyle = '#A67D3D';
@@ -281,11 +301,34 @@ var Dashboard = cocos.nodes.Node.extend({
         context.fillStyle = '#CC9900';
         this.fillArc(context, 50, 300, r, Math.PI / 4 * 3, Math.PI / 4, false);
         
+        // Gauge frame
+        context.strokeStyle = "#000000";
+        context.lineWidth = "4";
+        context.beginPath();
+        context.arc(50, 300, r, 0, Math.PI, true);
+        context.lineTo(10, 300);
+        context.closePath();
+        context.stroke();
+        
+        
+        // Negative time is bad for calculating the medal meter
         if(this.get('elapsedTime') > 0) {
             var p = this.pHelper(s);
             
             this.updateMedalText(p);
             
+            // Needle outline
+            context.strokeStyle = "000000";
+            context.lineWidth = "4";
+            context.beginPath();
+            context.moveTo(50, 300);
+            context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*r + 50, Math.cos(Math.PI*p - Math.PI/2)*-r + 300)
+            context.closePath();
+            context.stroke();
+            
+            // Needle
+            context.strokeStyle = "#11CC22";
+            context.lineWidth = "2";
             context.beginPath();
             context.moveTo(50, 300);
             context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*r + 50, Math.cos(Math.PI*p - Math.PI/2)*-r + 300)
@@ -294,11 +337,14 @@ var Dashboard = cocos.nodes.Node.extend({
             
             var m = this.pHelper(maxs);
             
+            // Impossible grayed out area
             context.fillStyle = 'rgba(0,0,0,0.4)';
             this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
         }
     },
     
+    // Helper function for calculating needle position
+    // TODO: Possibly rewrite to account for proportial areas instead of statically sized areas
     pHelper: function (s) {
         // TODO: Add chaseDist back into this, otherwise calculation will be off by part of a meter
         var dc = PNode.cameraZ + 6;
