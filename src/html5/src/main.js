@@ -427,7 +427,7 @@ var FluencyApp = KeyboardLayer.extend({
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
         m = Math.min(m, RC.finishSpacing);
         
-        RC.maxTimeWindow = x / player.get('maxSpeed') * 0.9;
+        RC.maxTimeWindow = m / player.get('maxSpeed') * 0.9;
         
         // Generate things to the side of the road
         var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
