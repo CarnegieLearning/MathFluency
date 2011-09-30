@@ -39,8 +39,8 @@ var Player = PNode.extend({
     chaseDelta      : 1,        // How many meters the player will pull away from the camera by moving at maximum speed
     minSpeed        : 0,        // Minimum player speed in m/s (Zero is okay, negatives are BAD)
     maxSpeed        : 200,      // Maximum player speed in m/s
-    acceleration    : 40,       // Player acceleration in m/s^2
-    deceleration    : 40,       // Player deceleration in m/s^2
+    acceleration    : 13,       // Player acceleration in m/s^2
+    deceleration    : 26,       // Player deceleration in m/s^2
     turbo           : false,    // True if turbo boost is currently active
     preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
     turboSpeed      : 200,      // Turbo boost speed in m/s
@@ -89,16 +89,21 @@ var Player = PNode.extend({
         this.set('preInter', this.get('zVelocity'));
         this.set('zVelocity', 0);
         this.set('newSelector', newVal);
-        newVal.set('anchorPoint', new geom.Point(0.5, 0.5))
-        newVal.set('scale', newVal.get('scale') * 3);
-        newVal.set('position', new geom.Point(450, 100))
+        newVal.set('anchorPoint', new geom.Point(0.5, 0.5));
+        var s = newVal.get('scale') * 3;
+        newVal.set('scale', 0.1);
+        newVal.set('position', new geom.Point(450, 100));
         this.get('parent').addChild({child: newVal});
         
         if(this.get('selector') != null) {
             MOT.create(255, -255, 1.0).bindTo('value', this.get('selector'), 'opacity');
         }
         
-        setTimeout(this.blinkOffCallback.bind(this, 250, 4), 250);
+        var a1 = cocos.actions.ScaleTo.create({scale: s, duration: 0.25});
+        a1.startWithTarget(newVal);
+        newVal.runAction(a1);
+        
+        setTimeout(this.startAnimationCallback.bind(this), 1000);
     },
     
     // Finishes an intermission
@@ -108,35 +113,22 @@ var Player = PNode.extend({
         events.trigger(this, 'IntermissionComplete');
     },
     
-    // Called to hide the new selector and schedule reshowing it
-    blinkOffCallback: function(freq, count) {
-        this.get('newSelector').set('visible', false);
-        setTimeout(this.blinkOnCallback.bind(this, freq, count), freq / 2);
-    },
     
     // Shows the new selector, schedules to hide if blink count is not exhausted
-    blinkOnCallback: function(freq, count) {
-        this.get('newSelector').set('visible', true);
+    startAnimationCallback: function() {
+        var nv = this.get('newSelector');
+        var ns = nv.get('scale') / 3;
         
-        if(count > 0) {
-            setTimeout(this.blinkOffCallback.bind(this, freq, count - 1), freq);
-        }
-        // If blink count is exhausted, move new selector behind car and schedule finalizing the change
-        else {
-            var nv = this.get('newSelector');
-            var ns = nv.get('scale') / 3;
-            
-            var a1 = cocos.actions.ScaleTo.create({scale: ns, duration: 1.0});
-            a1.startWithTarget(nv);
-            nv.runAction(a1);
-            
-            var pos = this.get('position');
-            var a2 = cocos.actions.MoveTo.create({position: new geom.Point(pos.x, pos.y + this.get('selectorY')), duration: 1.0});
-            a2.startWithTarget(nv);
-            nv.runAction(a2);
-            
-            setTimeout(this.changeSelector.bind(this), 1000);
-        }
+        var a1 = cocos.actions.ScaleTo.create({scale: ns, duration: 1.0});
+        a1.startWithTarget(nv);
+        nv.runAction(a1);
+        
+        var pos = this.get('position');
+        var a2 = cocos.actions.MoveTo.create({position: new geom.Point(pos.x, pos.y + this.get('selectorY')), duration: 1.0});
+        a2.startWithTarget(nv);
+        nv.runAction(a2);
+        
+        setTimeout(this.changeSelector.bind(this), 1000);
     },
     
     // Sets the wipeout status of the car, causing it to spin over time
