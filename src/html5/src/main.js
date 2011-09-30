@@ -456,14 +456,19 @@ var FluencyApp = KeyboardLayer.extend({
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.get('audioMixer').playSound('bg');
         
-        $(window).unload(this.endOfGame.bind(this));
+        $(window).unload(this.endOfGame.bind(this, null));
     },
     
     // Starts the game
     startGame: function () {
         // Schedule per frame update function
         this.scheduleUpdate();
-        this.get('player').scheduleUpdate();
+        var p = this.get('player');
+        p.scheduleUpdate();
+        
+        var ds = p.get('zVelocity');
+        p.set('zVelocity', 0);
+        MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
         
         var medalCars = []
         
@@ -541,7 +546,6 @@ var FluencyApp = KeyboardLayer.extend({
             i += 1;
         }
         
-        // TODO: Check to see if abort was related to window.unload
         var tt = this.get('dash').getTotalTime()
         var m = 1;
         
@@ -554,7 +558,10 @@ var FluencyApp = KeyboardLayer.extend({
             m = 4;
         }
         
-        alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+        // Checks to see if abort was related to window.unload
+        if(finished != null) {
+            alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+        }
     
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
