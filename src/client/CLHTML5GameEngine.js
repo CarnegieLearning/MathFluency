@@ -22,6 +22,7 @@ exports.CLHTML5GameEngine = function CLHTML5GameEngine(json)
         var props = questionSet.allGameProperties();
         registerDoneCallback(callback);
         
+        $('#game-container').height('610px');
         var app_div = $('<div>');
         app_div.attr('id', 'cocos_test_app');
         app_div.attr('data', self.dataPath + '/' + props.input);

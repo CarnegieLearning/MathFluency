@@ -23,6 +23,7 @@ exports.CLFlashGameEngine = function CLFlashGameEngine(json)
         var props = questionSet.allGameProperties();
         registerDoneCallback(callback);
         var flashID = 'CLFlashGameEngine_flashID';
+        $('#game-container').height('570px');
         $(div).empty().append($('<div>').attr('id', flashID));
         swfobject.embedSWF(
             self.swfPath + '/Shell.swf',
