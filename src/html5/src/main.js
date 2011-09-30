@@ -541,35 +541,29 @@ var FluencyApp = KeyboardLayer.extend({
             i += 1;
         }
         
-        // Checks to see if abort was related to window.unload
-        if(typeof finished !== undefined) {
-            
-            var tt = this.get('dash').getTotalTime()
-            var m = 1;
-            
-            if(finished) {
-                while(m < 4 && RC.times[m] < tt) {
-                    m += 1;
-                }
-            }
-            else {
-                m = 4;
-            }
-            
-            alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+        // TODO: Check to see if abort was related to window.unload
+        var tt = this.get('dash').getTotalTime()
+        var m = 1;
         
-            // If the 'command line' specified a call back, feed the callback the xml
-            if(this.get('endOfGameCallback')) {
-                if(finished) {
-                    window[this.get('endOfGameCallback')](this.writeXML(correct, 'FINISH'));
-                }
-                else {
-                    window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
-                }
+        if(finished) {
+            while(m < 4 && RC.times[m] < tt) {
+                m += 1;
             }
         }
         else {
-            window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
+            m = 4;
+        }
+        
+        alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+    
+        // If the 'command line' specified a call back, feed the callback the xml
+        if(this.get('endOfGameCallback')) {
+            if(finished) {
+                window[this.get('endOfGameCallback')](this.writeXML(correct, 'FINISH'));
+            }
+            else {
+                window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
+            }
         }
     },
 
