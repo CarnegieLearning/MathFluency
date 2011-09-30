@@ -707,16 +707,16 @@ var FluencyApp = KeyboardLayer.extend({
         // 'S' / 'DOWN' Slow down, press
         // TODO: Paramatertize acceleration
         if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
-            this.get('player').decelerate(dt);
+            player.decelerate(dt);
         }
         // 'W' / 'UP' Speed up, press
         else if(this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
-            this.get('player').accelerate(dt);
+            player.accelerate(dt);
         }
         
         // 'SPACE' turbo boost, press
         if(this.checkBinding('TURBO') > KeyboardLayer.UP) {
-            this.get('player').startTurboBoost();
+            player.startTurboBoost();
         }
         
         // 'ESC' Abort game, discreet
