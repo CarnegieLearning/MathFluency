@@ -192,7 +192,7 @@ function makeEngine(engineConfig)
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
     }
     else if (engineConfig.type == 'CLHTML5GameEngine') {
-        engineConfig.scriptPath = '/fluency/games/' + engineConfig.cli_task_id + '_html5';
+        engineConfig.scriptPath = '/fluency/games/' + engineConfig.cli_task_id;
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
     }
     

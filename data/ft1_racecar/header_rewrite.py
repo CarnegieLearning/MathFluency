@@ -7,22 +7,24 @@ def getFile(filename):
         f.close()
         return file
 
-j = 3
-while(j < 7):
+j = 0
+while(j < 3):
     j+= 1
     i = 0
     while(i < 40):
         i += 1
         
-        file = getFile('test' + str(j) + '/set' + str(i).zfill(3) + ".xml")
+        file = getFile('test' + str(j) + 'b/set' + str(i).zfill(3) + ".xml")
         
-        file[3] = file[3].replace('46000', '27000');
-        file[4] = file[4].replace('62000', '43000');
-        file[5] = file[5].replace('90000', '72000');
+        #file[7] = '<SpeedSettings>\n'
+        file[8] = '\t<Max VALUE="150"/>\n'
+        file[9] = '\t<Min VALUE="0"/>\n'
+        file[10] = '\t<Default VALUE="18"/>\n'
+        #file[11] = '</SpeedSettings>\n'
         
-        file[10] = file[10].replace('2000', '1000');
+        #file = file[:12] + file[88:]
         
-        f = open('test' + str(j) + '/set' + str(i).zfill(3) + ".xml", 'w')
+        f = open('test' + str(j) + 'b/set' + str(i).zfill(3) + ".xml", 'w')
         
         for line in file:
             f.write(line)
