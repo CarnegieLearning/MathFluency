@@ -4,42 +4,66 @@
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3"
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         },
         "cond2": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3"
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         },
         "cond3": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3"
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         },
         "cond4": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3"
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         },
         "cond5": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3"
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         },
         "cond6": {
             "stages": [
                 "test-1",
                 "test-2",
-                "test-3"
+                "test-3",
+                "test-4",
+                "test-5",
+                "test-6",
+                "test-7"
             ]
         }
     },
@@ -75,6 +99,26 @@
             "engine": "racecar_html5",
             "cli_fluency_task": "test3"
         },
+        "test-4": {
+            "displayName": "Week 2: Comparing Frt, Level 1",
+            "engine": "racecar",
+            "cli_fluency_task": "test4"
+        },
+        "test-5": {
+            "displayName": "Week 2: Comparing Frt, Level 2",
+            "engine": "racecar",
+            "cli_fluency_task": "test5"
+        },
+        "test-6": {
+            "displayName": "Week 2: Comparing Frt, Level 3",
+            "engine": "racecar",
+            "cli_fluency_task": "test6"
+        },
+        "test-7": {
+            "displayName": "Week 2: Comparing Frt, Level 4",
+            "engine": "racecar",
+            "cli_fluency_task": "test7"
+        }
     },
     
     "engines": {
