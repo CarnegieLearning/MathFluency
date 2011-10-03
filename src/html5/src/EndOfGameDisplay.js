@@ -178,7 +178,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         else if(step == 8)
             this.slideLabelIn(this.get('totalLabel'), 0.75);
         else if(step == 9) {
-            var tt = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;            
+            var tt = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;
             this.totalLabelUp(this.get('total'), 'totalLink', tt, 1.0);
             
             var x;
@@ -275,6 +275,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         
         if(this.get('step') >= 10) {
             // Draw the medal
+            var t = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;
             if(this.get('abort') || t > RC.times[3])
                 ctx.fillStyle = '#202020';
             else if(t < RC.times[1])
