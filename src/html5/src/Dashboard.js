@@ -148,7 +148,7 @@ var Dashboard = cocos.nodes.Node.extend({
         }
         
         // Update penalty timer
-        this.get('penaltyTime').set('string', this.get('pTime').toFixed(acc));
+        this.get('penaltyTime').set('string', parseFloat(this.get('pTime')).toFixed(acc));
         
         // Update numerical speedometer
         this.get('displaySpeed').set('string', this.getConvertedSpeed());
