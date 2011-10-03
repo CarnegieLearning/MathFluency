@@ -28,6 +28,7 @@ var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var Question = require('Question').Question;
+var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 
 // Static Imports
 var RC = require('RaceControl').RaceControl;
@@ -134,7 +135,6 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.preprocessingComplete();
     },
-    
     
     // Parses the level xml file
     // TODO: Decide on input file format and rewrite this as needed.
@@ -560,7 +560,11 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Checks to see if abort was related to window.unload
         if(finished != null) {
-            alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+            //alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
+            var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
+            e.set('position', new geo.Point(200, 50));
+            this.addChild({child: e});
+            e.start();
         }
     
         // If the 'command line' specified a call back, feed the callback the xml
