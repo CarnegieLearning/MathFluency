@@ -180,8 +180,12 @@ var Player = PNode.extend({
     
     update: function(dt) {
         // Always maintain at least the minimum speed
-        if(this.get('zVelocity') < this.get('minSpeed') && !this.get('intermission')) {
+        var v = this.get('zVelocity');
+        if(v < this.get('minSpeed') && !this.get('intermission')) {
             this.set('zVelocity', this.get('minSpeed'));
+        }
+        else if(v < 0) {
+            this.set('zVelocity', 0);
         }
         
         if(this.get('zCoordinate') > RC.finishLine) {
