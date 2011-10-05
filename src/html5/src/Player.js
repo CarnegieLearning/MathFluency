@@ -30,20 +30,28 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 // Represents the player in the game
 var Player = PNode.extend({
     selector        : null,     // Label that represents the value the player has control over
+    
     wipeoutDuration : 0,        // Duration remaining on a wipeout
     wipeoutRotSpeed : 0,        // Rotational velocity in degrees per second for the current wipeout
+    
     selectorX       : null,     // The X coordinate that the label should be at, ignoring rotational transforms
     selectorY       : null,     // The Y coordinate that the label should be at, ignoring rotational transforms
+    
     chaseDist       : 6,        // The distance in meters the player is ahead of the camera by
     chaseMin        : 6,        // The closest the camera can get behind the car in meters
     chaseDelta      : 1,        // How many meters the player will pull away from the camera by moving at maximum speed
+    
     minSpeed        : 0,        // Minimum player speed in m/s (Zero is okay, negatives are BAD)
     maxSpeed        : 200,      // Maximum player speed in m/s
     acceleration    : 13,       // Player acceleration in m/s^2
     deceleration    : 26,       // Player deceleration in m/s^2
+    
     turbo           : false,    // True if turbo boost is currently active
     preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
     turboSpeed      : 200,      // Turbo boost speed in m/s
+    turboMOT        : null,     // Hold the MOT currently affecting zVelocity
+    
+    speedControl    : false,    // When true, a MOT is affecting zVelocity
 
     init: function() {
         Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
@@ -85,6 +93,13 @@ var Player = PNode.extend({
     // Starts an intermission
     startIntermission: function(newVal) {
         this.endTurboBoost();
+        
+        var tm = this.get('turboMOT');
+        if(tm != null) {
+            tm.pause();
+            this.set('turboMOT', tm);
+        }
+        
         this.set('intermission', true);
         this.set('preInter', this.get('zVelocity'));
         this.set('zVelocity', 0);
@@ -109,6 +124,13 @@ var Player = PNode.extend({
     // Finishes an intermission
     endIntermission: function() {
         this.set('intermission', false);
+        
+        var tm = this.get('turboMOT');
+        if(tm != null) {
+            tm.resume();
+            this.set('turboMOT', tm);
+        }
+        
         this.set('zVelocity', this.get('preInter'));
         events.trigger(this, 'IntermissionComplete');
     },
@@ -131,10 +153,24 @@ var Player = PNode.extend({
         setTimeout(this.changeSelector.bind(this), 1000);
     },
     
-    // Sets the wipeout status of the car, causing it to spin over time
-    wipeout: function(duration, spins) {
-        this.set('wipeoutDuration', duration);
-        this.set('wipeoutRotSpeed', spins * 360.0 / duration);
+    // Sets the wipeout status of the car, causing it to spin over time and slow down
+    wipeout: function(spins) {
+        this.set('wipeoutDuration', RC.maxTimeWindow / 2.0);
+        this.set('wipeoutRotSpeed', spins * 360.0 / (RC.maxTimeWindow / 2.0));
+        
+        if(this.get('turbo')) {
+            this.endTurboBoost();
+        }
+        else {
+            this.incorrectSlowdown();
+        }
+    },
+    
+    // Slows the player down due to an incorrect answer
+    incorrectSlowdown: function() {
+        if(!this.speedChange((this.get('zVelocity') - this.get('minSpeed')) * RC.penaltySpeed, 0.1)) {
+            setTimeout(this.incorrectSlowdown.bind(this), 100);
+        }
     },
     
     // Accelerates the player
@@ -157,26 +193,43 @@ var Player = PNode.extend({
 
     // Starts a turbo boost if not already boosting
     startTurboBoost: function() {
-        if(!this.get('turbo') && !(this.get('wipeoutDuration') > 0) && !this.get('intermission')) {
+        if(!this.get('turbo') && !(this.get('wipeoutDuration') > 0) && !this.get('intermission') && this.get('turboMOT') == null) {
             this.set('turbo', true);
             this.set('preTurbo', this.get('zVelocity'))
-            this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
+            
+            var tm = this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
+            this.set('turboMOT', tm);
+            events.addListener(tm, 'Completed', this.turboCompleted.bind(this));
         }
+    },
+    
+    turboCompleted: function() {
+        this.set('turboMOT', null);
     },
     
     // Ends a turbo boost if it is active (usually called when answering a question, but could be used to cut the boost early)
     endTurboBoost: function() {
         if(this.get('turbo')) {
+            var tm = this.get('turboMOT');
+            if(tm != null) {
+                tm.kill();
+                this.set('turboMOT', null);
+            }
+        
             this.set('turbo', false);
-            this.speedChange(this.get('preTurbo') - this.get('zVelocity'), 0.1);
+            var tm =this.speedChange(this.get('preTurbo') - this.get('zVelocity'), 0.1);
+            this.set('turboMOT', tm);
+            events.addListener(tm, 'Completed', this.turboCompleted.bind(this));
         }
     },
     
-    // Shortcut function for applying a speed change over time
+    // Shortcut function for applying a speed change over time, returns the MOT
     speedChange: function (amt, dur) {
-        MOT.create(this.get('zVelocity'), amt, dur).bind(this, 'zVelocity');
+        var m = MOT.create(this.get('zVelocity'), amt, dur);
+        m.bind(this, 'zVelocity');
+        
+        return m;
     },
-    
     
     update: function(dt) {
         // Always maintain at least the minimum speed

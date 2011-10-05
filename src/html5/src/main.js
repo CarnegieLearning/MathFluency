@@ -634,8 +634,6 @@ var FluencyApp = KeyboardLayer.extend({
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
         
-        player.endTurboBoost();
-        
         // Determine answer based on the lane
         if(playerX < PNode.roadWidth / -6) {
             result = question.answerQuestion(0);
@@ -654,10 +652,9 @@ var FluencyApp = KeyboardLayer.extend({
         else {
             var t = this.get('dash').get('pTime') + RC.penaltyTime + this.get('dash').get('elapsedTime')
         
-            player.wipeout(1, 2);
+            player.wipeout(1);
             this.get('audioMixer').playSound('wipeout', true);
             this.get('dash').modifyPenaltyTime(RC.penaltyTime);
-            player.speedChange((player.get('zVelocity') - player.get('minSpeed')) * RC.penaltySpeed, RC.maxTimeWindow);
             
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
@@ -672,6 +669,8 @@ var FluencyApp = KeyboardLayer.extend({
             }
             this.set('medalCars', c);
         }
+        
+        player.endTurboBoost();
     },
     
     // Toggles the AudioMixer's mute
@@ -709,7 +708,6 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // 'S' / 'DOWN' Slow down, press
-        // TODO: Paramatertize acceleration
         if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
             player.decelerate(dt);
         }
