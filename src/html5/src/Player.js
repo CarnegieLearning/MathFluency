@@ -184,7 +184,7 @@ var Player = PNode.extend({
         if(v < this.get('minSpeed') && !this.get('intermission')) {
             this.set('zVelocity', this.get('minSpeed'));
         }
-        else if(v < 0) {
+        else if(v < 0 || isNaN(v)) {
             this.set('zVelocity', 0);
         }
         
