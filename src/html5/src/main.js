@@ -62,6 +62,8 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
+    version     : 'v 0.1.0',// Current version number
+    
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
         if(resource("resources/testset.xml") !== undefined) {
@@ -398,6 +400,7 @@ var FluencyApp = KeyboardLayer.extend({
         var dash = this.get('dash');
         dash.set('maxSpeed', player.get('maxSpeed'));
         this.addChild({child: dash});
+        dash.set('zOrder', -1);
         
         events.addListener(player, 'IntermissionComplete', dash.unpauseTimer.bind(dash));
         
@@ -422,6 +425,12 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
         fl.kickstart();
         fl.set('zOrder', -5);
+        
+        // Add version number
+        var vtag = cocos.nodes.Label.create({string: this.get('version')})
+        vtag.set('anchor-point', new geo.Point(0.5, 0.5));
+        vtag.set('position', new geo.Point(850, 590));
+        this.addChild({child: vtag});
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
