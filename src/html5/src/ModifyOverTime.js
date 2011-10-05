@@ -22,6 +22,7 @@ var ModifyOverTime = BObject.extend({
     duration: 0,    // Remaining duration of the change
     rate    : 0,    // Rate at which the value changes per second
     value   : null, // The value that is being changed
+    
     init: function (x, amount, time) {
         ModifyOverTime.superclass.init.call();
         
@@ -60,17 +61,31 @@ var ModifyOverTime = BObject.extend({
         else {
             // Let anyone who wants to know that this change has finished
             events.trigger(this, 'Completed', this);
-        
-            // Clean up
-            cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
-            events.clearInstanceListeners(this);
-            this.unbind(this.get('value'));
             
-            // and remove
-            var index = ModifyOverTime.list.indexOf(this);
-            ModifyOverTime.list.splice(index, 1);
+            // Then kill it
+            this.kill();
         }
-    }
+    },
+    
+    // Calling this directly will stop the MOT from modifying and remove it just like if its duration expired, but will not notify anything that it has ended
+    kill: function () {
+        // Clean up
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        events.clearInstanceListeners(this);
+        this.unbind(this.get('value'));
+        
+        // and remove
+        var index = ModifyOverTime.list.indexOf(this);
+        ModifyOverTime.list.splice(index, 1);
+    },
+    
+    pause: function () {
+        cocos.Scheduler.get('sharedScheduler').pauseTarget(this);
+    },
+    
+    resume: function () {
+        cocos.Scheduler.get('sharedScheduler').resumeTarget(this);
+    },
 });
 
 // Static variables
