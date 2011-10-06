@@ -24,7 +24,7 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
 var Dashboard = cocos.nodes.Node.extend({
-    elapsedTime  : -3,      // Time in race elapsed so far
+    elapsedTime  : 0,       // Time in race elapsed so far
     displayTime  : null,    // Timer displayed to player
     gaugeRadius  : 40,      // Radius of the gauges
     penaltyTime  : null,    // Displayed penalty time
@@ -52,7 +52,7 @@ var Dashboard = cocos.nodes.Node.extend({
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         
-        opts['string'] = '-3.0';
+        opts['string'] = '0.000';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 50));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
@@ -67,7 +67,7 @@ var Dashboard = cocos.nodes.Node.extend({
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         
-        opts['string'] = '0.0';
+        opts['string'] = '0.000';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 100));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
@@ -103,11 +103,9 @@ var Dashboard = cocos.nodes.Node.extend({
         this.set('displayMedal', disp);
     },
     
-    // Starts tracking time and updating the dashboard timer.  Optionally set the initial countdown
-    start: function (initialCountdown) {
-        if(initialCountdown) {
-            this.set('elapsedTime', -1 * initialCountdown)
-        }
+    // Starts tracking time and updating the dashboard timer.
+    start: function () {
+        this.set('elapsedTime', 0)
         this.scheduleUpdate();
     },
     

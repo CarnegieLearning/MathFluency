@@ -77,17 +77,21 @@ var Player = PNode.extend({
         if(newVal != null) {
             var selector = newVal
             this.get('parent').removeChild(selector);
-            selector.set('position', new geom.Point(selector.get('contentSize').width / 2 * selector.get('scaleX'), 80));
-            this.set('selectorX', selector.get('contentSize').width / 2 * selector.get('scaleX'));
-            this.set('selectorY', 80);
-            this.addChild({child: selector});
-            this.set('selector', selector);
+            this.changeSelectorByForce(selector);
         }
         else {
             this.set('selector', null);
         }
         
         setTimeout(this.endIntermission.bind(this), 100);
+    },
+    
+    changeSelectorByForce: function(selector) {
+        selector.set('position', new geom.Point(selector.get('contentSize').width / 2 * selector.get('scaleX'), 80));
+        this.set('selectorX', selector.get('contentSize').width / 2 * selector.get('scaleX'));
+        this.set('selectorY', 80);
+        this.addChild({child: selector});
+        this.set('selector', selector);
     },
     
     // Starts an intermission

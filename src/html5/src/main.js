@@ -45,6 +45,7 @@ var FractionRenderer = require('FractionRenderer').FractionRenderer;
 -10 Background
 -5  Finish Line
 -4  Trees
+-1  Dashboard
 0   Anything not mentioned
 100 Question Delimiters
 */
@@ -169,6 +170,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.preprocessingComplete();
     },
     
+    // Parse the penalty settings
     parsePenalty: function (root) {
         var time, speed;
         // Legacy support
@@ -251,9 +253,11 @@ var FluencyApp = KeyboardLayer.extend({
         var problemRoot = XML.getFirstByTag(root, 'PROBLEM_SET');
         var subset = problemRoot.firstElementChild;
         var z = 0;
+        var once = true;
         
         while(subset != null) {
-            z = this.parseProblemSubset(subset, z);
+            z = this.parseProblemSubset(subset, z, once);
+            once = false;
             
             subset = subset.nextElementSibling;
         }
@@ -262,9 +266,7 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Parses a subset within the PROBLEM_SET
-    parseProblemSubset: function (subset, z) {
-        z += RC.intermissionSpacing;
-        // Gets the intermission value
+    parseProblemSubset: function (subset, z, once) {
         var node = subset.firstElementChild;
         var interContent;
         
@@ -276,10 +278,20 @@ var FluencyApp = KeyboardLayer.extend({
             interContent = this.parseContent(node);
         }
         
-        var inter = Intermission.create(interContent, z);
-        events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
-        events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
-        inter.kickstart();
+        // Not the first subset
+        if(!once) {
+            z += RC.intermissionSpacing;
+            // Gets the intermission value
+            
+            var inter = Intermission.create(interContent, z);
+            events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
+            events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
+            inter.kickstart();
+        }
+        else {
+            this.set('startSelector', interContent);
+            console.log(this.get('startSelector'));
+        }
         
         // Interate over questions in subset
         var list = this.get('questionList');
@@ -460,7 +472,6 @@ var FluencyApp = KeyboardLayer.extend({
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
-        this.get('dash').start(RC.initialCountdown / 1000);
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.get('audioMixer').playSound('bg');
@@ -472,6 +483,9 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.set('cdt', cd);
         this.addChild({child: cd});
+        
+        // Set the starting value on the player's car
+        this.get('player').changeSelectorByForce(this.get('startSelector'));
         
         var that = this;
         setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
@@ -489,6 +503,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.scheduleUpdate();
         var p = this.get('player');
         p.scheduleUpdate();
+        this.get('dash').start();
         
         var ds = p.get('zVelocity');
         p.set('zVelocity', 0);
