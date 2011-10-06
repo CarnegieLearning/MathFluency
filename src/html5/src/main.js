@@ -290,7 +290,6 @@ var FluencyApp = KeyboardLayer.extend({
         }
         else {
             this.set('startSelector', interContent);
-            console.log(this.get('startSelector'));
         }
         
         // Interate over questions in subset
@@ -399,6 +398,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
         this.setBinding('TURBO',        [32]);      // [SPACE]
         this.setBinding('ABORT',        [27]);      // [ESC]
+        this.setBinding('SHOW_FPS',     [36]);      // [HOME]
         
         // Draw background
         var bg = Background.create();
@@ -443,6 +443,13 @@ var FluencyApp = KeyboardLayer.extend({
         vtag.set('anchor-point', new geo.Point(0.5, 0.5));
         vtag.set('position', new geo.Point(850, 590));
         this.addChild({child: vtag});
+        
+        // Create FPS meter
+        var fps = cocos.nodes.Label.create({string: '0 FPS'})
+        fps.set('position', new geo.Point(20, 20));
+        this.set('fps', fps);
+        this.set('fpsTracker', [30, 30, 30, 30, 30]);
+        this.set('fpsToggle', false);
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
@@ -763,6 +770,44 @@ var FluencyApp = KeyboardLayer.extend({
         // 'ESC' Abort game, discreet
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
             this.endOfGame(false);
+        }
+        
+        var fps = this.get('fps');
+        var trk = this.get('fpsTracker');
+        var sub = parseFloat(0);
+        var cur = 1 / dt;
+        
+        trk.shift();
+        trk.push(cur);
+        
+        if(this.get('fpsToggle')) {
+            if(1 / dt < 20) {
+                console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
+            }
+        }
+        
+        fps.set('fontColor', '#FFFFFF');
+        for each(t in trk){
+            sub += t;
+            
+            if(t < 20) {
+                fps.set('fontColor', '#DD2222');
+            }
+        }
+        
+        fps.set('string', (sub / trk.length).toFixed(1) + ' FPS');
+        this.set('fpsTracker', trk);
+        
+        // 'HOME' Show FPS meter, discreet
+        if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
+            if(!this.get('fpsToggle')) {
+                this.addChild({child: fps});
+                this.set('fpsToggle', true)
+            }
+            else {
+                this.removeChild({child: fps});
+                this.set('fpsToggle', false)
+            }
         }
     },
 });
