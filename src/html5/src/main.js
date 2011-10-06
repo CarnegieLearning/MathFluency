@@ -465,6 +465,21 @@ var FluencyApp = KeyboardLayer.extend({
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.get('audioMixer').playSound('bg');
         
+        var cd = cocos.nodes.Label.create({string: '3', textColor: '#000000'});
+        cd.set('scaleX', 10);
+        cd.set('scaleY', 10);
+        cd.set('position', new geo.Point(400, 300));
+        
+        this.set('cdt', cd);
+        this.addChild({child: cd});
+        
+        var that = this;
+        setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
+        setTimeout(function () { that.get('cdt').set('string', '1'); }, 2000)
+        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
+        setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
+        
+        // Catch window unloads at this point as aborts
         $(window).unload(this.endOfGame.bind(this, null));
     },
     
