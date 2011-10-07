@@ -791,11 +791,11 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Smooth over multiple frames
         fps.set('fontColor', '#FFFFFF');
-        for each(t in trk){
-            sub += t;
+        for(t in trk){
+            sub += trk[t];
             
             // Flash red on low framerate spikes
-            if(t < 20) {
+            if(trk[t] < 20) {
                 fps.set('fontColor', '#DD2222');
             }
         }
