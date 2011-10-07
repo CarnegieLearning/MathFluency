@@ -63,7 +63,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.1.0',// Current version number
+    version     : 'v 0.1.1',// Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -398,7 +398,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
         this.setBinding('TURBO',        [32]);      // [SPACE]
         this.setBinding('ABORT',        [27]);      // [ESC]
-        this.setBinding('SHOW_FPS',     [36]);      // [HOME]
+        this.setBinding('SHOW_FPS',     [80]);      // [P]
         
         // Draw background
         var bg = Background.create();
@@ -772,33 +772,39 @@ var FluencyApp = KeyboardLayer.extend({
             this.endOfGame(false);
         }
         
+        // FPS calculations and display
         var fps = this.get('fps');
         var trk = this.get('fpsTracker');
         var sub = parseFloat(0);
         var cur = 1 / dt;
         
+        // Get rid of oldest frame, add this frame
         trk.shift();
         trk.push(cur);
         
+        // Log spikes to console if FPS tracker is enabled
         if(this.get('fpsToggle')) {
             if(1 / dt < 20) {
                 console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
             }
         }
         
+        // Smooth over multiple frames
         fps.set('fontColor', '#FFFFFF');
         for each(t in trk){
             sub += t;
             
+            // Flash red on low framerate spikes
             if(t < 20) {
                 fps.set('fontColor', '#DD2222');
             }
         }
         
+        // Update the FPS tracker label
         fps.set('string', (sub / trk.length).toFixed(1) + ' FPS');
         this.set('fpsTracker', trk);
         
-        // 'HOME' Show FPS meter, discreet
+        // 'P' Toggle showing FPS tracker, discreet
         if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
             if(!this.get('fpsToggle')) {
                 this.addChild({child: fps});
