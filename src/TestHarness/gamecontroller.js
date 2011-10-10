@@ -96,10 +96,10 @@ exports.gameController = function (serverConfig, model)
     
     gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
     {
+        // No longer abort on playerState == null
         if (!playerState)
         {
-            console.log('Not saving question set results because playerState is null (this is probably instructor preview).');
-            return callback();
+            console.log('Saving question set results while playerState is null (this is probably instructor preview).');
         }
         
         var timestamp = Date.now();
@@ -119,7 +119,7 @@ exports.gameController = function (serverConfig, model)
                 endAttr = (endNode ? endNode['@'] : {}),
                 qsOutcomeAttributes = {
                     dataFile: filename,
-                    condition: playerState.condition,
+                    condition: playerState ? playerState.condition : null,
                     stageID: questionSet.parent.id,
                     questionSetID: questionSet.id,
                     endTime: Math.round(timestamp / 1000),
@@ -132,11 +132,19 @@ exports.gameController = function (serverConfig, model)
             async.parallel([
                 function (callback)
                 {
-                    console.log('Writing data file for ' + playerState.loginID + ' to ' + filepath);
+                    // Catch the null playerState safely
+                    console.log('Writing data file for ' + (playerState ? playerState.loginID : 'null') + ' to ' + filepath);
                     fs.writeFile(filepath, text, callback);
                 },
                 function (callback)
                 {
+                    // Do not write null playerState data to the SQL server
+                    if (!playerState)
+                    {
+                        console.log('Not pushing question set results to SQL as playerState is null (this is probably instructor preview).');
+                        return callback();
+                    }
+                
                     model.QuestionSetOutcome.find({where: {dataFile: filename}})
                     .on('success', function (existingRecord)
                     {
