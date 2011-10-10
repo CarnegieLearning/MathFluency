@@ -450,6 +450,9 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('fps', fps);
         this.set('fpsTracker', [30, 30, 30, 30, 30]);
         this.set('fpsToggle', false);
+        this.set('fpsSpike', []);
+        this.set('fpsAvg', 0);
+        this.set('fpsCount', 0);
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
@@ -668,6 +671,23 @@ var FluencyApp = KeyboardLayer.extend({
                 }
             x += '    </SCORE_DETAILS>\n' + 
         '    <END_STATE STATE="' + state + '"/>\n' +
+        '    <DEBUG>\n' +
+        '        <Navigator>\n' + 
+        '            <appCodeName Value="' + navigator.appCodeName + '"/>\n' + 
+        '            <appName Value="' + navigator.appName + '"/>\n' + 
+        '            <appVersion Value="' + navigator.appVersion + '"/>\n' + 
+        '            <userAgent Value="' + navigator.userAgent + '"/>\n' + 
+        '        </Navigator>\n' + 
+        '        <FPS Avg="' + this.get('fpsAvg') + '">\n' + 
+        '        <SPIKES>\n';
+                    var i = 0;
+                    var l = this.get('fpsSpike');
+                    while(i < l.length) {
+                    x += '            <SPIKE Number="' + (i+1) +'" Frame="' +  l[i].frame + '" Fps="' + l[i].fps + '" Dt="' + l[i].dt + '"/>\n';
+                    i += 1;
+                    }
+                x += '        </SPIKES>\n' +
+        '    </DEBUG>\n' +
         '</OUTPUT>';
         
         return x;
@@ -778,13 +798,18 @@ var FluencyApp = KeyboardLayer.extend({
         var sub = parseFloat(0);
         var cur = 1 / dt;
         
+        // Running average
+        this.set('fpsAvg', (this.get('fpsAvg') * this.get('fpsCount') + cur) / (this.get('fpsCount') + 1));
+        this.set('fpsCount', this.get('fpsCount') + 1);
+        
         // Get rid of oldest frame, add this frame
         trk.shift();
         trk.push(cur);
         
         // Log spikes to console if FPS tracker is enabled
-        if(this.get('fpsToggle')) {
-            if(1 / dt < 20) {
+        if(1 / dt < 12) {
+            this.get('fpsSpike').push({frame: this.get('fpsCount'), fps: cur.toFixed(1), dt: (dt*1000).toFixed(0)});
+            if(this.get('fpsToggle')) {
                 console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
             }
         }
@@ -795,7 +820,7 @@ var FluencyApp = KeyboardLayer.extend({
             sub += trk[t];
             
             // Flash red on low framerate spikes
-            if(trk[t] < 20) {
+            if(trk[t] < 12) {
                 fps.set('fontColor', '#DD2222');
             }
         }
