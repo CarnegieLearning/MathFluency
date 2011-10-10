@@ -678,7 +678,7 @@ var FluencyApp = KeyboardLayer.extend({
         '            <appVersion Value="' + navigator.appVersion + '"/>\n' + 
         '            <userAgent Value="' + navigator.userAgent + '"/>\n' + 
         '        </Navigator>\n' + 
-        '        <FPS Avg="' + this.get('fpsAvg') + '">\n' + 
+        '        <FPS Avg="' + this.get('fpsAvg').toFixed(1) + '"/>\n' + 
         '        <SPIKES>\n';
                     var i = 0;
                     var l = this.get('fpsSpike');
