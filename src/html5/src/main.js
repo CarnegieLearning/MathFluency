@@ -98,7 +98,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Get "command line" arguments from the div tag
         var app_div = $('#cocos_test_app')
         var xml_path = app_div.attr('data');
-        this.set('gameID', app_div.attr('gameid'));
+        this.set('gameID', '_DEBUG_' + app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
         
         // Uncomment to run locally
