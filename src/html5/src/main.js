@@ -688,7 +688,7 @@ var FluencyApp = KeyboardLayer.extend({
                     }
                 x += '        </SPIKES>\n' +
         '    </DEBUG>\n' +
-        '</OUTPUT>';
+        '</OUTPUT>\n';
         
         return x;
     },
