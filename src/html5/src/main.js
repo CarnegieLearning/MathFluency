@@ -727,13 +727,13 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called every frame, manages keyboard input
     update: function(dt) {
-        if(this.get('player').get('zCoordinate') > RC.finishLine) {
+        var player = this.get('player');
+        var playerX = player.get('xCoordinate');
+        
+        if(player.get('zCoordinate') > RC.finishLine) {
             this.endOfGame(true);
             return;
         }
-    
-        var player = this.get('player');
-        var playerX = player.get('xCoordinate');
         
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
@@ -773,45 +773,42 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // FPS calculations and display
-        var fps = this.get('fps');
-        var trk = this.get('fpsTracker');
         var sub = parseFloat(0);
         var cur = 1 / dt;
         
         // Get rid of oldest frame, add this frame
-        trk.shift();
-        trk.push(cur);
+        this.fpsTracker.shift();
+        this.fpsTracker.push(cur);
         
         // Log spikes to console if FPS tracker is enabled
-        if(this.get('fpsToggle')) {
+        if(this.fpsToggle) {
             if(1 / dt < 20) {
                 console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
             }
         }
         
         // Smooth over multiple frames
-        fps.set('fontColor', '#FFFFFF');
-        for(t in trk){
-            sub += trk[t];
+        this.fps.set('fontColor', '#FFFFFF');
+        for(t in this.fpsTracker){
+            sub += this.fpsTracker[t];
             
             // Flash red on low framerate spikes
-            if(trk[t] < 20) {
-                fps.set('fontColor', '#DD2222');
+            if(this.fpsTracker[t] < 20) {
+                this.fps.set('fontColor', '#DD2222');
             }
         }
         
         // Update the FPS tracker label
-        fps.set('string', (sub / trk.length).toFixed(1) + ' FPS');
-        this.set('fpsTracker', trk);
+        this.fps.set('string', (sub / this.fpsTracker.length).toFixed(1) + ' FPS');
         
         // 'P' Toggle showing FPS tracker, discreet
         if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
             if(!this.get('fpsToggle')) {
-                this.addChild({child: fps});
+                this.addChild({child: this.fps});
                 this.set('fpsToggle', true)
             }
             else {
-                this.removeChild({child: fps});
+                this.removeChild({child: this.fps});
                 this.set('fpsToggle', false)
             }
         }
@@ -901,23 +898,23 @@ exports.main = function() {
     if (!Function.prototype.bind) {  
         Function.prototype.bind = function (oThis) {  
       
-        if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
-            throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
-        }
+            if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
+                throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
+            }
 
-        var aArgs = Array.prototype.slice.call(arguments, 1),   
-            fToBind = this,   
-            fNOP = function () {},  
-            fBound = function () {  
-              return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));      
-            };  
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));
+                };  
 
-        fNOP.prototype = this.prototype;  
-        fBound.prototype = new fNOP();  
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
 
-        return fBound;  
-      };  
-    }  
+            return fBound;
+        };
+    }
     
     // Get director
     var director = cocos.Director.get('sharedDirector');
