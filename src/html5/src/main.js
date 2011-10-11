@@ -79,6 +79,11 @@ var FluencyApp = KeyboardLayer.extend({
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
+        // Static binds
+        this.addMeHandler = this.addMeHandler.bind(this)
+        this.answerQuestion = this.answerQuestion.bind(this)
+        this.removeMeHandler = this.removeMeHandler.bind(this)
+        
         // Set up basic audio
         var AM = AudioMixer.create();
         AM.loadSound('bg', "sound/01 Yellow Line");
@@ -124,12 +129,11 @@ var FluencyApp = KeyboardLayer.extend({
         var list = [];
         for(var i=0; i<6; i+=1) {
             var inter = Intermission.create(20000+i, i*500+10);
-            events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
             inter.idle();
             for(var j=1; j<4; j+=1) {
                 list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
-                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
-                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
+                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
+                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
                 list[list.length - 1].idle();
             }
         }
@@ -284,7 +288,7 @@ var FluencyApp = KeyboardLayer.extend({
             // Gets the intermission value
             
             var inter = Intermission.create(interContent, z);
-            events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
+            events.addListener(inter, 'changeSelector', this.get('player').startIntermission);
             events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
             inter.idle();
         }
@@ -302,8 +306,8 @@ var FluencyApp = KeyboardLayer.extend({
             
             // Create a question
             list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
-            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
-            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
+            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
+            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
             list[list.length - 1].idle();
             
             node = node.nextElementSibling;
@@ -434,7 +438,7 @@ var FluencyApp = KeyboardLayer.extend({
         opts['content'].set('scaleY', 0.5);
         
         var fl = PNode.create(opts);
-        events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
+        events.addListener(fl, 'addMe', this.addMeHandler);
         fl.idle();
         fl.set('zOrder', -5);
         
@@ -464,13 +468,13 @@ var FluencyApp = KeyboardLayer.extend({
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
             }
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
             }
         }
@@ -541,8 +545,8 @@ var FluencyApp = KeyboardLayer.extend({
             medalCars[i].scheduleUpdate();
             this.addChild({child: medalCars[i]});
             
-            events.addListener(medalCars[i], 'addMe', this.addMeHandler.bind(this));
-            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler.bind(this));
+            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
+            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
         }
         
         this.set('medalCars', medalCars);
@@ -550,12 +554,14 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Handles add requests from PerspectiveNodes
     // TODO: Make a PerspectiveView class to handle these functions?
+    // STATIC BIND
     addMeHandler: function (toAdd) {
         this.addChild({child: toAdd});
-        events.addListener(toAdd, 'removeMe', this.removeMeHandler.bind(this));
+        events.addListener(toAdd, 'removeMe', this.removeMeHandler);
     },
     
     // Handles removal requests from PerspectiveNodes
+    // STATIC BIND
     removeMeHandler: function (toRemove) {
         this.removeChild(toRemove);
     },
@@ -675,7 +681,8 @@ var FluencyApp = KeyboardLayer.extend({
         return x;
     },
     
-    //Handles answering the current question when time expires
+    // Handles answering the current question when time expires
+    // STATIC BIND
     answerQuestion: function(question) {
         var result;
         

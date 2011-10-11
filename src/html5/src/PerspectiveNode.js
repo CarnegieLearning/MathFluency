@@ -105,6 +105,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         return s;
     },
     
+    // Helper function for determining node width
     getContentWidth: function() {
         if(this.content) {
             return this.contentSize.width * this.content.scaleX;
@@ -112,6 +113,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         return this.contentSize.width;
     },
     
+    // Helper function for determining node height
     getContentHeight: function() {
         if(this.content) {
             return this.contentSize.height * this.content.scaleY;
@@ -119,6 +121,8 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         return this.contentSize.height;
     },
     
+    // Called once per second until node is 'just over the horizon' at which point, it starts running update() every frame instead
+    // NOTE: This only works with stationary nodes
     idle: function () {
         var distance = this.zCoordinate - PerspectiveNode.cameraZ;
         
