@@ -125,12 +125,12 @@ var FluencyApp = KeyboardLayer.extend({
         for(var i=0; i<6; i+=1) {
             var inter = Intermission.create(20000+i, i*500+10);
             events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
-            inter.kickstart();
+            inter.idle();
             for(var j=1; j<4; j+=1) {
                 list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
                 events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
                 events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
-                list[list.length - 1].kickstart();
+                list[list.length - 1].idle();
             }
         }
         
@@ -286,7 +286,7 @@ var FluencyApp = KeyboardLayer.extend({
             var inter = Intermission.create(interContent, z);
             events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
             events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
-            inter.kickstart();
+            inter.idle();
         }
         else {
             this.set('startSelector', interContent);
@@ -304,7 +304,7 @@ var FluencyApp = KeyboardLayer.extend({
             list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
             events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
             events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
-            list[list.length - 1].kickstart();
+            list[list.length - 1].idle();
             
             node = node.nextElementSibling;
         }
@@ -435,7 +435,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         var fl = PNode.create(opts);
         events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
-        fl.kickstart();
+        fl.idle();
         fl.set('zOrder', -5);
         
         // Add version number
@@ -465,13 +465,13 @@ var FluencyApp = KeyboardLayer.extend({
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
                 events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
+                p.idle();
             }
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
                 events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
+                p.idle();
             }
         }
     },

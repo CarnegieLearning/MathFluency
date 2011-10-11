@@ -19,6 +19,8 @@ var geom = require('geometry');
 var events = require('events');
 var util = require('util');
 
+var RC = require('RaceControl').RaceControl;
+
 // Base class for rending objects in perspective view
 var PerspectiveNode = cocos.nodes.Node.extend({
     visibility  : 1,        // Content scale multiplier, used BEFORE clamping
@@ -55,11 +57,8 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             this.addChild({child: this.get('content')});
             this.set('contentSize', this.get('content').get('contentSize'));
         }
-    },
-    
-    // Explicitly start update, even if not in scene
-    kickstart: function () {
-         cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+        
+        this.idle = this.idle.bind(this);
     },
     
     // Explicitly unschedules and unsubscribes this node
@@ -118,6 +117,17 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             return this.contentSize.height * this.content.scaleY;
         }
         return this.contentSize.height;
+    },
+    
+    idle: function () {
+        var distance = this.zCoordinate - PerspectiveNode.cameraZ;
+        
+        if(distance <= PerspectiveNode.horizonDistance + RC.maxDistWindow) {
+            cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+        }
+        else {
+            setTimeout(this.idle, 1000);
+        }
     },
     
     // Called every frame for distance checking and rendering
