@@ -561,13 +561,15 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
+    // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
         $(window).unbind('unload')
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        this.dash.pauseTimer();
         
         // Stops the medal pace cars
         var mc = this.get('medalCars');
