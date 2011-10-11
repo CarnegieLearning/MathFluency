@@ -447,9 +447,9 @@ var FluencyApp = KeyboardLayer.extend({
         // Create FPS meter
         var fps = cocos.nodes.Label.create({string: '0 FPS'})
         fps.set('position', new geo.Point(20, 20));
-        this.set('fps', fps);
-        this.set('fpsTracker', [30, 30, 30, 30, 30]);
-        this.set('fpsToggle', false);
+        this.fps = fps;
+        this.fpsTracker = [30, 30, 30, 30, 30];
+        this.fpsToggle = false;
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
