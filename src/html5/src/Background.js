@@ -26,23 +26,11 @@ var Background = cocos.nodes.Node.extend({
     draw: function(context) {
         // Ground
         context.fillStyle = "#44AA22";
-        context.beginPath();
-        context.moveTo(-10, PNode.horizonStart);
-        context.lineTo(-10, 610);
-        context.lineTo(810, 610);
-        context.lineTo(810, PNode.horizonStart);
-        context.closePath();
-        context.fill();
+        context.fillRect(-10, -10, 820, 620);
         
         // Sky
         context.fillStyle = "#1122BB";
-        context.beginPath();
-        context.moveTo(-10,-10);
-        context.lineTo(-10, PNode.horizonStart);
-        context.lineTo(810, PNode.horizonStart);
-        context.lineTo(810,-10);
-        context.closePath();
-        context.fill();
+        context.fillRect(-10, -10, 820, PNode.horizonStart + 10);
         
         // Road
         context.fillStyle = "#808080";
@@ -63,8 +51,8 @@ var Background = cocos.nodes.Node.extend({
         context.lineTo(x - 4, 610);
         context.lineTo(x + 4, 610);
         context.lineTo(395,   PNode.horizonStart);
-        context.fill();
         context.closePath();
+        context.fill();
         
         x = 400 + PNode.roadWidthPix / 9 * 1.5;
         context.beginPath();
@@ -72,8 +60,8 @@ var Background = cocos.nodes.Node.extend({
         context.lineTo(x - 4, 610);
         context.lineTo(x + 4, 610);
         context.lineTo(405,   PNode.horizonStart);
-        context.fill();
         context.closePath();
+        context.fill();
     },
 });
 
