@@ -29,37 +29,32 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
         this.set('isKeyboardEnabled', true);
         
         // Build the array to hold keyboard state
-        var keys = new Array(256);
-        for(key in keys) {
+        this.keys = Array(256);
+        for(key in this.keys) {
             key = 0;
         }
-        
-        this.set('keys', keys);
     },
     
     // Sets key to true when pressed
     keyDown: function(evt) {
-        keys = this.get('keys');
-        keys[evt.keyCode] = KeyboardLayer.PRESS;
+        this.keys[evt.keyCode] = KeyboardLayer.PRESS;
     },
     
     // Sets key to false when no longer pressed
     keyUp: function(evt) {
-        keys = this.get('keys');
-        keys[evt.keyCode] = KeyboardLayer.UP;
+        this.keys[evt.keyCode] = KeyboardLayer.UP;
     },
     
     // Check to see if a valid key is pressed
     // Returns false is the key was invalid or not pressed
     // Returns 1 if this is the first time we are detecting the press, 2 if we have detected this press previously
     checkKey: function(keyCode) {
-        keys = this.get('keys');
         if(keyCode > -1 && keyCode < 256) {
-            var ret = keys[keyCode];
+            var ret = this.keys[keyCode];
             
             // Lets us know if we have polled this key before and the user has not let it back up
             if(ret == KeyboardLayer.PRESS) {
-                keys[keyCode] = KeyboardLayer.HOLD;
+                this.keys[keyCode] = KeyboardLayer.HOLD;
             }
             
             return ret;
@@ -125,11 +120,10 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
     // Checks to see if any key in the binding is pressed and returns the highest state of any such button pressed
     checkBinding: function(bind) {
         var ret = KeyboardLayer.UP;
-        var b = this.get('bindings')
         
-        if(bind in b) {
-            for(var i = 0; i < b[bind].length; i += 1) {
-                var temp = this.checkKey(b[bind][i]);
+        if(bind in this.bindings) {
+            for(var i = 0; i < this.bindings[bind].length; i += 1) {
+                var temp = this.checkKey(this.bindings[bind][i]);
                 if(temp > ret) {
                     ret = temp;
                 }

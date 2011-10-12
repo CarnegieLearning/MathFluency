@@ -63,7 +63,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'D 0.1.1',// Current version number
+    version     : 'D 0.1.2',// Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -78,6 +78,11 @@ var FluencyApp = KeyboardLayer.extend({
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
+        
+        // Static binds
+        this.addMeHandler = this.addMeHandler.bind(this)
+        this.answerQuestion = this.answerQuestion.bind(this)
+        this.removeMeHandler = this.removeMeHandler.bind(this)
         
         // Set up basic audio
         var AM = AudioMixer.create();
@@ -124,13 +129,12 @@ var FluencyApp = KeyboardLayer.extend({
         var list = [];
         for(var i=0; i<6; i+=1) {
             var inter = Intermission.create(20000+i, i*500+10);
-            events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
-            inter.kickstart();
+            inter.idle();
             for(var j=1; j<4; j+=1) {
                 list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
-                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
-                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
-                list[list.length - 1].kickstart();
+                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
+                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
+                list[list.length - 1].idle();
             }
         }
         
@@ -284,9 +288,9 @@ var FluencyApp = KeyboardLayer.extend({
             // Gets the intermission value
             
             var inter = Intermission.create(interContent, z);
-            events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
+            events.addListener(inter, 'changeSelector', this.get('player').startIntermission);
             events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
-            inter.kickstart();
+            inter.idle();
         }
         else {
             this.set('startSelector', interContent);
@@ -302,9 +306,9 @@ var FluencyApp = KeyboardLayer.extend({
             
             // Create a question
             list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
-            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
-            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
-            list[list.length - 1].kickstart();
+            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
+            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
+            list[list.length - 1].idle();
             
             node = node.nextElementSibling;
         }
@@ -434,8 +438,8 @@ var FluencyApp = KeyboardLayer.extend({
         opts['content'].set('scaleY', 0.5);
         
         var fl = PNode.create(opts);
-        events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
-        fl.kickstart();
+        events.addListener(fl, 'addMe', this.addMeHandler);
+        fl.idle();
         fl.set('zOrder', -5);
         
         // Add version number
@@ -447,12 +451,13 @@ var FluencyApp = KeyboardLayer.extend({
         // Create FPS meter
         var fps = cocos.nodes.Label.create({string: '0 FPS'})
         fps.set('position', new geo.Point(20, 20));
-        this.set('fps', fps);
-        this.set('fpsTracker', [30, 30, 30, 30, 30]);
-        this.set('fpsToggle', false);
-        this.set('fpsSpike', []);
-        this.set('fpsAvg', 0);
-        this.set('fpsCount', 0);
+
+        this.fps = fps;
+        this.fpsTracker = [30, 30, 30, 30, 30];
+        this.fpsToggle = false;
+        this.fpsSpike = [];
+        this.fpsAvg = 0;
+        this.fpsCount = 0;
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
@@ -467,14 +472,14 @@ var FluencyApp = KeyboardLayer.extend({
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
+                events.addListener(p, 'addMe', this.addMeHandler);
+                p.idle();
             }
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
+                events.addListener(p, 'addMe', this.addMeHandler);
+                p.idle();
             }
         }
     },
@@ -544,8 +549,8 @@ var FluencyApp = KeyboardLayer.extend({
             medalCars[i].scheduleUpdate();
             this.addChild({child: medalCars[i]});
             
-            events.addListener(medalCars[i], 'addMe', this.addMeHandler.bind(this));
-            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler.bind(this));
+            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
+            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
         }
         
         this.set('medalCars', medalCars);
@@ -553,24 +558,28 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Handles add requests from PerspectiveNodes
     // TODO: Make a PerspectiveView class to handle these functions?
+    // STATIC BIND
     addMeHandler: function (toAdd) {
         this.addChild({child: toAdd});
-        events.addListener(toAdd, 'removeMe', this.removeMeHandler.bind(this));
+        events.addListener(toAdd, 'removeMe', this.removeMeHandler);
     },
     
     // Handles removal requests from PerspectiveNodes
+    // STATIC BIND
     removeMeHandler: function (toRemove) {
         this.removeChild(toRemove);
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
+    // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
         $(window).unbind('unload')
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        this.dash.pauseTimer();
         
         // Stops the medal pace cars
         var mc = this.get('medalCars');
@@ -693,7 +702,8 @@ var FluencyApp = KeyboardLayer.extend({
         return x;
     },
     
-    //Handles answering the current question when time expires
+    // Handles answering the current question when time expires
+    // STATIC BIND
     answerQuestion: function(question) {
         var result;
         
@@ -747,13 +757,13 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called every frame, manages keyboard input
     update: function(dt) {
-        if(this.get('player').get('zCoordinate') > RC.finishLine) {
+        var player = this.get('player');
+        var playerX = player.get('xCoordinate');
+        
+        if(player.get('zCoordinate') > RC.finishLine) {
             this.endOfGame(true);
             return;
         }
-    
-        var player = this.get('player');
-        var playerX = player.get('xCoordinate');
         
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
@@ -793,8 +803,6 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // FPS calculations and display
-        var fps = this.get('fps');
-        var trk = this.get('fpsTracker');
         var sub = parseFloat(0);
         var cur = 1 / dt;
         
@@ -803,8 +811,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('fpsCount', this.get('fpsCount') + 1);
         
         // Get rid of oldest frame, add this frame
-        trk.shift();
-        trk.push(cur);
+        this.fpsTracker.shift();
+        this.fpsTracker.push(cur);
         
         // Log spikes to console if FPS tracker is enabled
         if(1 / dt < 12) {
@@ -815,29 +823,28 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // Smooth over multiple frames
-        fps.set('fontColor', '#FFFFFF');
-        for(t in trk){
-            sub += trk[t];
+        this.fps.set('fontColor', '#FFFFFF');
+        for(t in this.fpsTracker){
+            sub += this.fpsTracker[t];
             
             // Flash red on low framerate spikes
-            if(trk[t] < 12) {
-                fps.set('fontColor', '#DD2222');
+            if(this.fpsTracker[t] < 12) {
+                this.fps.set('fontColor', '#DD2222');
             }
         }
         
         // Update the FPS tracker label
-        fps.set('string', (sub / trk.length).toFixed(1) + ' FPS');
-        this.set('fpsTracker', trk);
+        this.fps.set('string', (sub / this.fpsTracker.length).toFixed(1) + ' FPS');
         
         // 'P' Toggle showing FPS tracker, discreet
         if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
             if(!this.get('fpsToggle')) {
-                this.addChild({child: fps});
-                this.set('fpsToggle', true)
+                this.addChild({child: this.fps});
+                this.fpsToggle = true;
             }
             else {
-                this.removeChild({child: fps});
-                this.set('fpsToggle', false)
+                this.removeChild({child: this.fps});
+                this.fpsToggle = false;
             }
         }
     },
@@ -926,23 +933,23 @@ exports.main = function() {
     if (!Function.prototype.bind) {  
         Function.prototype.bind = function (oThis) {  
       
-        if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
-            throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
-        }
+            if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
+                throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
+            }
 
-        var aArgs = Array.prototype.slice.call(arguments, 1),   
-            fToBind = this,   
-            fNOP = function () {},  
-            fBound = function () {  
-              return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));      
-            };  
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));
+                };  
 
-        fNOP.prototype = this.prototype;  
-        fBound.prototype = new fNOP();  
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
 
-        return fBound;  
-      };  
-    }  
+            return fBound;
+        };
+    }
     
     // Get director
     var director = cocos.Director.get('sharedDirector');

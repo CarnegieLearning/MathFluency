@@ -55,7 +55,14 @@ var Player = PNode.extend({
 
     init: function() {
         Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
-       
+        
+        // Static binds
+        this.changeSelector = this.changeSelector.bind(this)
+        this.turboCompleted = this.turboCompleted.bind(this)
+        this.endIntermission = this.endIntermission.bind(this)
+        this.startIntermission = this.startIntermission.bind(this)
+        this.startAnimationCallback = this.startAnimationCallback.bind(this)
+        
         // Load the car sprite for the player
         var sprite = cocos.nodes.Sprite.create({file: '/resources/car_white.png',});
         sprite.set('scaleX', 0.5);
@@ -64,6 +71,7 @@ var Player = PNode.extend({
     },
     
     // Changes the currently displayed selector on the car
+    // STATIC BIND
     changeSelector: function(newVal) {
         // Remove previous selector if there was one
         var prev = this.get('selector');
@@ -83,7 +91,7 @@ var Player = PNode.extend({
             this.set('selector', null);
         }
         
-        setTimeout(this.endIntermission.bind(this), 100);
+        setTimeout(this.endIntermission, 100);
     },
     
     changeSelectorByForce: function(selector) {
@@ -95,6 +103,7 @@ var Player = PNode.extend({
     },
     
     // Starts an intermission
+    // STATIC BIND
     startIntermission: function(newVal) {
         this.endTurboBoost();
         
@@ -122,10 +131,11 @@ var Player = PNode.extend({
         a1.startWithTarget(newVal);
         newVal.runAction(a1);
         
-        setTimeout(this.startAnimationCallback.bind(this), 1000);
+        setTimeout(this.startAnimationCallback, 1000);
     },
     
     // Finishes an intermission
+    // STATIC BIND
     endIntermission: function() {
         this.set('intermission', false);
         
@@ -141,6 +151,7 @@ var Player = PNode.extend({
     
     
     // Shows the new selector, schedules to hide if blink count is not exhausted
+    // STATIC BIND
     startAnimationCallback: function() {
         var nv = this.get('newSelector');
         var ns = nv.get('scale') / 3;
@@ -203,10 +214,11 @@ var Player = PNode.extend({
             
             var tm = this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
             this.set('turboMOT', tm);
-            events.addListener(tm, 'Completed', this.turboCompleted.bind(this));
+            events.addListener(tm, 'Completed', this.turboCompleted);
         }
     },
     
+    // STATIC BIND
     turboCompleted: function() {
         this.set('turboMOT', null);
     },
@@ -223,7 +235,7 @@ var Player = PNode.extend({
             this.set('turbo', false);
             var tm =this.speedChange(this.get('preTurbo') - this.get('zVelocity'), 0.1);
             this.set('turboMOT', tm);
-            events.addListener(tm, 'Completed', this.turboCompleted.bind(this));
+            events.addListener(tm, 'Completed', this.turboCompleted);
         }
     },
     
@@ -245,6 +257,7 @@ var Player = PNode.extend({
             this.set('zVelocity', 0);
         }
         
+        // Stop on the finish line when crossed
         if(this.get('zCoordinate') > RC.finishLine) {
             this.set('zCoordinate', RC.finishLine);
             this.unbind('zVelocity');

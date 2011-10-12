@@ -111,45 +111,43 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Helper function for grabbing the elapsed + penalty time
     getTotalTime: function () {
-        var tt = this.get('pTime') + this.get('elapsedTime');
+        var tt = this.get('pTime') + this.elapsedTime;
         if(tt.toFixed) {
-            tt = tt.toFixed(this.get('timerAcc'));
+            tt = tt.toFixed(this.timerAcc);
         }
         return tt;
     },
     
     // Changes the current amount of penalty time accured
     modifyPenaltyTime: function(dt) {
-        MOT.create(this.get('pTime'), dt, RC.maxTimeWindow).bindTo('value', this, 'pTime');
+        MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
     },
     
     // Sets the pause state
     pauseTimer: function () {
-        this.set('pause', true);
+        this.pause = true;
     },
     
     // Unsets the pause state
     unpauseTimer: function () {
-        this.set('pause', false);
+        this.pause = false;
     },
     
     // Updates the time
     update: function(dt) {
-        if(!this.get('pause')) {
-            var acc = this.get('timerAcc');
+        if(!this.pause) {
             // Update elapsed timer
             var t = this.get('elapsedTime') + dt;
             this.set('elapsedTime', t);
             
-            var d = this.get('displayTime');
-            d.set('string', t.toFixed(acc));
+            this.displayTime.set('string', t.toFixed(this.timerAcc));
         }
         
         // Update penalty timer
-        this.get('penaltyTime').set('string', parseFloat(this.get('pTime')).toFixed(acc));
+        this.penaltyTime.set('string', parseFloat(this.get('pTime')).toFixed(this.timerAcc));
         
         // Update numerical speedometer
-        this.get('displaySpeed').set('string', this.getConvertedSpeed());
+        this.displaySpeed.set('string', this.getConvertedSpeed());
     },
     
     // Updates the text under the medal meter to the indicated medal
@@ -169,28 +167,27 @@ var Dashboard = cocos.nodes.Node.extend({
             txt = ' - ';
         }
         
-        this.get('displayMedal').set('string', txt);
+        this.displayMedal.set('string', txt);
     },
     
     // Get speed converted to specified units
     getConvertedSpeed: function() {
-        var mode = this.get('speedMode')
         var s = this.getSpeed();
         
-        if(mode == Dashboard.SPEED_M_PS) {
+        if(this.speedMode == Dashboard.SPEED_M_PS) {
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
             s += ' m/s';
         }
-        else if(mode == Dashboard.SPEED_KM_PH) {
+        else if(this.speedMode == Dashboard.SPEED_KM_PH) {
             s = s * 36 / 10;
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
             s += ' kph';
         }
-        else if(mode == Dashboard.SPEED_MI_PH) {
+        else if(this.speedMode == Dashboard.SPEED_MI_PH) {
             s = s * 36 / 16;
             if(s.toFixed) {
                 s = s.toFixed(0);
@@ -207,10 +204,10 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Getter for speed, accounts for the fact that 'speed' is 0 when paused
     getSpeed: function() {
-        if(!this.get('pause')) {
+        if(!this.pause) {
             return this.get('speed');
         }
-        return this.get('lastS');
+        return this.lastS;
     },
     
     // Helper function for creating an arc of a circle filled with color
@@ -235,7 +232,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.fill();
         
         // Speedometer
-        var r = this.get('gaugeRadius');
+        var r = this.gaugeRadius;
         
         // Interior fills
         context.fillStyle = '#202020';
@@ -267,7 +264,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.stroke();
         
         var s = this.getSpeed();
-        var maxs = this.get('maxSpeed');
+        var maxs = this.maxSpeed;
         
         // Needle outline
         context.beginPath();
@@ -346,7 +343,7 @@ var Dashboard = cocos.nodes.Node.extend({
     pHelper: function (s) {
         // TODO: Add chaseDist back into this, otherwise calculation will be off by part of a meter
         var dc = PNode.cameraZ + 6;
-        var tc = this.get('elapsedTime') + this.get('pTime');
+        var tc = this.elapsedTime + this.get('pTime');
         
         var dr = Math.max(RC.finishLine - dc, 0);
         var tr = dr / s;

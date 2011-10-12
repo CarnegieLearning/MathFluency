@@ -39,5 +39,6 @@ RaceControl.penaltyTime         = 15;                       // Time in seconds l
 RaceControl.penaltySpeed        = -0.1;                     // Percentage speed LOST for an incorrect answer
 
 RaceControl.maxTimeWindow       = 110 / 200.0 * 0.9;        // Maximum time between two important z values: min z spacing / max speed * 90%
+RaceControl.maxDistWindow       = 300;                      // Maximum distance coverable in 2 seconds
 
 exports.RaceControl = RaceControl
