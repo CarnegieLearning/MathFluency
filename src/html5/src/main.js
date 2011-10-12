@@ -405,7 +405,9 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SHOW_FPS',     [80]);      // [P]
         
         // Draw background
-        var bg = Background.create();
+        //var bg = Background.create();
+        var bg = cocos.nodes.Sprite.create({file: '/resources/bg.png',});
+        bg.set('anchorPoint', new geo.Point(0, 0));
         bg.set('zOrder', -10);
         this.set('background', bg);
         this.addChild({child: bg});

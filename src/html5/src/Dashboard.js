@@ -45,13 +45,18 @@ var Dashboard = cocos.nodes.Node.extend({
         
         var opts = Object();
         
+        var png = cocos.nodes.Sprite.create({file: "/resources/dash.png"});
+        png.set('anchorPoint', new geom.Point(0, 0));
+        this.addChild({child: png});
+        
+        /*
         // Create the visible timer
         opts['string'] = 'Elapsed Time';
         var disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 35));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
-        
+        */
         opts['string'] = '0.000';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 50));
@@ -59,42 +64,42 @@ var Dashboard = cocos.nodes.Node.extend({
         this.set('displayTime', disp)
         this.addChild({child: disp});
         
-        
+        /*
         // Create visible penalty timer
         opts['string'] = 'Penalty Time';
-         disp = cocos.nodes.Label.create(opts);
+        disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 85));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
-        
+        */
         opts['string'] = '0.000';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 100));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         this.set('penaltyTime', disp);
-        
+        /*
         // Create numerical speedometer
         opts['string'] = 'Speed';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 215));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
-        
+        */
         opts['string'] = '0';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 230));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         this.set('displaySpeed', disp);
-        
+        /*
         // Create textual medal meter
         opts['string'] = 'Medal';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 315));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
-        
+        */
         opts['string'] = ' - ';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 330));
@@ -221,7 +226,7 @@ var Dashboard = cocos.nodes.Node.extend({
     },
     
     // Draws the dash
-    draw: function(context) {
+    draw: function(context) {/*
         context.fillStyle = "#8B7765";
         context.beginPath();
         context.moveTo(0,-10);
@@ -229,11 +234,11 @@ var Dashboard = cocos.nodes.Node.extend({
         context.lineTo(110,610);
         context.lineTo(110,-10);
         context.closePath();
-        context.fill();
+        context.fill();*/
         
         // Speedometer
         var r = this.gaugeRadius;
-        
+        /*
         // Interior fills
         context.fillStyle = '#202020';
         this.fillArc(context, 50, 200, r, 0               , Math.PI * 5 / 6, false);
@@ -262,7 +267,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.lineTo(10, 200);
         context.closePath();
         context.stroke();
-        
+        */
         var s = this.getSpeed();
         var maxs = this.maxSpeed;
         
@@ -285,7 +290,7 @@ var Dashboard = cocos.nodes.Node.extend({
         this.set('lastS', s);
         
         // Medalmeter
-        
+        /*
         // Interior fills
         context.fillStyle = '#202020';
         this.fillArc(context, 50, 300, r, 0,               Math.PI / 4, false);
@@ -305,7 +310,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.closePath();
         context.stroke();
         
-        
+        */
         // Negative time is bad for calculating the medal meter
         if(this.get('elapsedTime') > 0) {
             var p = this.pHelper(s);
