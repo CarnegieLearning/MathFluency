@@ -88,7 +88,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     
     // Applies visibility modifier and clamps to scale, then returns the augmented value
     scale: function (s) {
-        s *= this.get('visibility');
+        s *= this.visibility;
     
         // Apply clamps to scale as needed
         if(this.minScale != null) {
@@ -99,8 +99,8 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         }
         
         // Set scale
-        this.set('scaleX', s);
-        this.set('scaleY', s);
+        this.scaleX = s;
+        this.scaleY = s;
         
         return s;
     },
@@ -137,8 +137,8 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     // Called every frame for distance checking and rendering
     update: function (dt) {
         // Update current position based on velocity
-        this.set('zCoordinate', this.zCoordinate + this.zVelocity * dt);
-        this.set('xCoordinate', this.xCoordinate + this.xVelocity * dt);
+        this.zCoordinate = this.zCoordinate + this.zVelocity * dt;
+        this.xCoordinate = this.xCoordinate + this.xVelocity * dt;
         
         var distance = this.zCoordinate - PerspectiveNode.cameraZ;
     

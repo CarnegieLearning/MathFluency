@@ -814,11 +814,11 @@ var FluencyApp = KeyboardLayer.extend({
         if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
             if(!this.get('fpsToggle')) {
                 this.addChild({child: this.fps});
-                this.set('fpsToggle', true)
+                this.fpsToggle = true;
             }
             else {
                 this.removeChild({child: this.fps});
-                this.set('fpsToggle', false)
+                this.fpsToggle = false;
             }
         }
     },
