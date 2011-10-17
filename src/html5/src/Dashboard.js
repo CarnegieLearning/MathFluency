@@ -47,6 +47,7 @@ var Dashboard = cocos.nodes.Node.extend({
         
         var png = cocos.nodes.Sprite.create({file: "/resources/dash.png"});
         png.set('anchorPoint', new geom.Point(0, 0));
+        png.set('zOrder', -5);
         this.addChild({child: png});
         
         /*
@@ -106,6 +107,9 @@ var Dashboard = cocos.nodes.Node.extend({
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         this.set('displayMedal', disp);
+        
+        // Real time tracking
+        this.realTime = 0
     },
     
     // Starts tracking time and updating the dashboard timer.
@@ -146,6 +150,12 @@ var Dashboard = cocos.nodes.Node.extend({
             this.set('elapsedTime', t);
             
             this.displayTime.set('string', t.toFixed(this.timerAcc));
+            
+            // Keeps track of the real time elapsed (due to dt reduction in engine for low FPS)
+            var d = cocos.Director.get('sharedDirector');
+            if(d.realDt) {
+                this.realTime += cocos.Director.get('sharedDirector').realDt;
+            }
         }
         
         // Update penalty timer
@@ -272,6 +282,8 @@ var Dashboard = cocos.nodes.Node.extend({
         var maxs = this.maxSpeed;
         
         // Needle outline
+        context.strokeStyle = "#000000";
+        context.lineWidth = "4";
         context.beginPath();
         context.moveTo(50, 200);
         context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200);

@@ -460,6 +460,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.fpsSpike = [];
         this.fpsAvg = 0;
         this.fpsCount = 0;
+        this.frameCount = 0;
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
@@ -677,10 +678,10 @@ var FluencyApp = KeyboardLayer.extend({
                 var i = 0;
                 var ql = this.get('questionList');
                 while(i < ql.length) {
-                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
+    x +='        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
                 i += 1;
                 }
-            x += '    </SCORE_DETAILS>\n' + 
+    x +='    </SCORE_DETAILS>\n' + 
         '    <END_STATE STATE="' + state + '"/>\n' +
         '    <DEBUG>\n' +
         '        <Navigator>\n' + 
@@ -689,15 +690,16 @@ var FluencyApp = KeyboardLayer.extend({
         '            <appVersion Value="' + navigator.appVersion + '"/>\n' + 
         '            <userAgent Value="' + navigator.userAgent + '"/>\n' + 
         '        </Navigator>\n' + 
-        '        <FPS Avg="' + this.get('fpsAvg').toFixed(1) + '"/>\n' + 
+        '        <RealTime Value="' + d.realTime + '"/>\n' +
+        '        <FPS Avg="' + this.get('fpsAvg').toFixed(1) + '" FrameCount="' + this.frameCount + '"/>\n' + 
         '        <SPIKES>\n';
                     var i = 0;
                     var l = this.get('fpsSpike');
                     while(i < l.length) {
-                    x += '            <SPIKE Number="' + (i+1) +'" Frame="' +  l[i].frame + '" Fps="' + l[i].fps + '" Dt="' + l[i].dt + '"/>\n';
+    x +='            <SPIKE Number="' + (i+1) +'" Frame="' +  l[i].frame + '" Fps="' + l[i].fps + '" Dt="' + l[i].dt + '"/>\n';
                     i += 1;
                     }
-                x += '        </SPIKES>\n' +
+    x +='        </SPIKES>\n' +
         '    </DEBUG>\n' +
         '</OUTPUT>\n';
         
@@ -803,6 +805,8 @@ var FluencyApp = KeyboardLayer.extend({
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
             this.endOfGame(false);
         }
+        
+        this.frameCount += 1;
         
         // FPS calculations and display
         var sub = parseFloat(0);
