@@ -2,86 +2,98 @@
     "conditions": {
         "cond1": {
             "stages": [
-                "test-1",
-                "test-2",
-                "test-3",
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7"
+                "test-7",
+                "html5-test4",
+                "html5-test5",
+                "html5-test6",
+                "html5-test7",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4"
             ]
         },
         "cond2": {
             "stages": [
-                "test-1",
-                "test-2",
-                "test-3",
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7"
+                "test-7",
+                "html5-test4",
+                "html5-test5",
+                "html5-test6",
+                "html5-test7",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4"
             ]
         },
         "cond3": {
             "stages": [
-                "test-1",
-                "test-2",
-                "test-3",
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7"
+                "test-7",
+                "html5-test4",
+                "html5-test5",
+                "html5-test6",
+                "html5-test7",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4"
             ]
         },
         "cond4": {
             "stages": [
-                "test-1",
-                "test-2",
-                "test-3",
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7"
+                "test-7",
+                "html5-test4",
+                "html5-test5",
+                "html5-test6",
+                "html5-test7",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4"
             ]
         },
         "cond5": {
             "stages": [
-                "test-1",
-                "test-2",
-                "test-3",
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7"
+                "test-7",
+                "html5-test4",
+                "html5-test5",
+                "html5-test6",
+                "html5-test7",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4"
             ]
         },
         "cond6": {
             "stages": [
-                "test-1",
-                "test-2",
-                "test-3",
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
                 "test-4",
                 "test-5",
                 "test-6",
-                "test-7"
+                "test-7",
+                "html5-test4",
+                "html5-test5",
+                "html5-test6",
+                "html5-test7",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4"
             ]
         }
     },
@@ -161,6 +173,26 @@
             "displayName": "Racecar DEBUG Mode",
             "engine": "racecar_debug",
             "cli_fluency_task": "test1b"
+        },
+        "level03-stage1": {
+            "displayName": "Lvl 3: HTML 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage1"
+        },
+        "level03-stage2": {
+            "displayName": "Lvl 3: HTML 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage2"
+        },
+        "level03-stage3": {
+            "displayName": "Lvl 3: HTML 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage3"
+        },
+        "level03-stage4": {
+            "displayName": "Lvl 3: HTML 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage4"
         }
     },
     
