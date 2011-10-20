@@ -569,7 +569,13 @@ var FluencyApp = KeyboardLayer.extend({
     // Called when game ends, should collect results, display them to the screen and output the result XML
     // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
-        $(window).unbind('unload')
+        if(finished != null) {
+            $(window).unbind('unload')
+            $(window).unload(this.cleanup.bind(this, null));
+        }
+        else {
+            this.cleanup();
+        }
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
@@ -618,6 +624,7 @@ var FluencyApp = KeyboardLayer.extend({
             var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
             e.set('position', new geo.Point(200, 50));
             this.addChild({child: e});
+            events.addListener(e, 'complete', this.cleanup.bind(this));
             e.start();
         }
     
@@ -679,6 +686,31 @@ var FluencyApp = KeyboardLayer.extend({
         '</OUTPUT>';
         
         return x;
+    },
+    
+    // Code to be run when the game is finished
+    cleanup: function() {
+        // Clear the bind
+        $(window).unbind('unload');
+        
+        var d = cocos.Director.get('sharedDirector');
+        
+        // Stop the main loop and clear the scenes
+        d.stopAnimation();
+        delete d.sceneStack.pop();
+        delete d.sceneStack.pop();
+        
+        // Clear the setup functions
+        d.attachInView = null;
+        d.runWithScene = null;
+        
+        // Clear the animating functions
+        d.startAnimation = null;
+        d.animate = null;
+        d.drawScene = null;
+        
+        // Clear the instance
+        d._instance = null;
     },
     
     // Handles answering the current question when time expires
@@ -906,7 +938,7 @@ exports.main = function() {
     // Firefox < 4 ; Chrome < 7 ; IE < 9 ; Safari (all) ; Opera (all)
     if (!Function.prototype.bind) {  
         Function.prototype.bind = function (oThis) {  
-      
+        
             if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
                 throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
             }
