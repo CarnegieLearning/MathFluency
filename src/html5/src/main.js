@@ -29,6 +29,7 @@ var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var Question = require('Question').Question;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
+var Preloader = require('Preloader').Preloader;
 
 // Static Imports
 var RC = require('RaceControl').RaceControl;
@@ -74,11 +75,22 @@ var FluencyApp = KeyboardLayer.extend({
             console.log("ERROR: No remote XML found to parse.");
         }
     },
+    
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
+        var preloader = Preloader.create();
+        this.addChild({child: preloader});
+        this.preloader = preloader;
+        
+        events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
+    },
+    
+    delayedInit: function() {
+        this.removeChild({child: this.preloader});
+    
         // Static binds
         this.addMeHandler = this.addMeHandler.bind(this)
         this.answerQuestion = this.answerQuestion.bind(this)
@@ -862,9 +874,13 @@ var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
     muted       : false,    // State of the volume mute button
-    init: function(hook) {
+    init: function() {
         MenuLayer.superclass.init.call(this, {});
         
+        setTimeout(function () {that.createMenu();}, 3300)
+    },
+    
+    createMenu: function() {
         // Create the button
         var opts = Object();
         opts['normalImage'] = '/resources/start-button.png';
@@ -900,9 +916,6 @@ var MenuLayer = cocos.nodes.Menu.extend({
         var vc = cocos.nodes.MenuItemImage.create(opts);
         vc.set('position', new geo.Point(400, 250));
         this.set('volumeButtonOff', vc);
-        
-        // Store the function to call when pressing the button
-        this.set('startGame', hook);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -977,7 +990,7 @@ exports.main = function() {
     // Add our layers to the scene
     scene.addChild({child: app});
     scene.addChild({child: menu});
-
+    
     // Run the scene
     director.runWithScene(scene);
 };
