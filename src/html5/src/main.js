@@ -877,6 +877,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     init: function() {
         MenuLayer.superclass.init.call(this, {});
         
+        var that = this;
         setTimeout(function () {that.createMenu();}, 3300)
     },
     
