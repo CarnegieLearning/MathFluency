@@ -64,7 +64,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.1.2',// Current version number
+    version     : 'v 0.1.3',// Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -130,6 +130,8 @@ var FluencyApp = KeyboardLayer.extend({
         var p = cocos.Preloader.create();
         events.addListener(p, 'complete', this.runRemotely.bind(this));
         p.load();
+        
+        events.trigger(this, 'loaded');
     },
     
     // Remote resources failed to load, generate dummy data then proceed
@@ -314,7 +316,6 @@ var FluencyApp = KeyboardLayer.extend({
         while(node != null) {
             z += RC.questionSpacing
             var q = this.parseProblem(node)
-            
             
             // Create a question
             list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
@@ -916,7 +917,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         MenuLayer.superclass.init.call(this, {});
         
         var that = this;
-        setTimeout(function () {that.createMenu();}, 3300)
+        //setTimeout(function () {that.createMenu();}, 3300)
     },
     
     createMenu: function() {
@@ -1023,8 +1024,10 @@ exports.main = function() {
     var menu = MenuLayer.create();
     
     // Set up inter-layer events
-    events.addListener(menu, "startGameEvent", app.countdown.bind(app));
-    events.addListener(menu, "muteEvent", app.muteHandler.bind(app));
+    events.addListener(app, 'loaded', menu.createMenu.bind(menu));
+    
+    events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
+    events.addListener(menu, 'muteEvent', app.muteHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});

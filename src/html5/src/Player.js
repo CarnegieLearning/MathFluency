@@ -94,6 +94,7 @@ var Player = PNode.extend({
         setTimeout(this.endIntermission, 100);
     },
     
+    // Used to set the selector at the start of the game
     changeSelectorByForce: function(selector) {
         selector.set('position', new geom.Point(selector.get('contentSize').width / 2 * selector.get('scaleX'), 80));
         this.set('selectorX', selector.get('contentSize').width / 2 * selector.get('scaleX'));
@@ -119,8 +120,9 @@ var Player = PNode.extend({
         this.set('newSelector', newVal);
         newVal.set('anchorPoint', new geom.Point(0.5, 0.5));
         var s = newVal.get('scale') * 3;
+        var cs = newVal.get('contentSize');
         newVal.set('scale', 0.1);
-        newVal.set('position', new geom.Point(450, 100));
+        newVal.set('position', new geom.Point(400 + cs.width * 1.5, 100 + cs.height * 1.5));
         this.get('parent').addChild({child: newVal});
         
         if(this.get('selector') != null) {
