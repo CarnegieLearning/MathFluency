@@ -46,7 +46,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         this.set('anchorPoint', new geom.Point(0, 0));
         
         //Set properties from the option object
-        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity content'.w(), util.callback(this, function (name) {
+        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity content delOnDrop'.w(), util.callback(this, function (name) {
             if (opts[name]) {
                 this.set(name, opts[name]);
             }

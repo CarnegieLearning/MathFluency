@@ -301,7 +301,7 @@ var FluencyApp = KeyboardLayer.extend({
             
             var inter = Intermission.create(interContent, z);
             events.addListener(inter, 'changeSelector', this.get('player').startIntermission);
-            events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
+            events.addListener(inter, 'changeSelector', this.pause.bind(this));
             inter.idle();
         }
         else {
@@ -328,6 +328,32 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('questionList', list);
         
         return z;
+    },
+    
+    pause: function () {
+        this.get('dash').pauseTimer();
+        
+        var mc = this.get('medalCars');
+        
+        for(var i=0; i<3; i+=1) {
+            mc[i].prepause = mc[i].zVelocity;
+            mc[i].zVelocity = 0;
+        }
+        
+        this.set('medalCars', mc);
+    },
+    
+    unpause: function () {
+        this.get('dash').unpauseTimer();
+        
+        var mc = this.get('medalCars');
+        
+        for(var i=0; i<3; i+=1) {
+            mc[i].zVelocity = mc[i].prepause;
+            mc[i].prepause = 0;
+        }
+        
+        this.set('medalCars', mc);
     },
     
     // Parses a question within the subset
@@ -430,7 +456,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: dash});
         dash.set('zOrder', -1);
         
-        events.addListener(player, 'IntermissionComplete', dash.unpauseTimer.bind(dash));
+        events.addListener(player, 'IntermissionComplete', this.unpause.bind(this));
         
         // Add player
         this.addChild({child: player});
@@ -495,7 +521,41 @@ var FluencyApp = KeyboardLayer.extend({
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
+        var medalCars = []
+        
+        var opts = {
+            maxScale    : 1.00,
+            alignH      : 0.5,
+            alignV      : 0,
+            visibility  : 1,
+            xCoordinate : 4.5,
+            zCoordinate : 0,
+            dropoffDist : -10,
+            delOnDrop   : false,
+        }
+        
+        // Ghost cars representing medal cutoffs
+        // TODO: Make seperate class, support lines in addition to cars
+        for(var i=0; i<3; i+= 1) {
+            var car = cocos.nodes.Sprite.create({file: '/resources/car'+i+'.png'});
+            car.set('opacity', 192);
+        
+            opts['content'] = car
+            medalCars[i] = PNode.create(opts)
+            medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
+            
+            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
+            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
+            medalCars[i].delOnDrop = false;
+        }
+        
+        this.set('medalCars', medalCars);
+    
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
+        this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
+        this.get('dash').bindTo('goldZ', this.medalCars[0], 'zCoordinate');
+        this.get('dash').bindTo('silverZ', this.medalCars[1], 'zCoordinate');
+        this.get('dash').bindTo('bronzeZ', this.medalCars[2], 'zCoordinate');
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.get('audioMixer').playSound('bg');
         
@@ -532,36 +592,12 @@ var FluencyApp = KeyboardLayer.extend({
         p.set('zVelocity', 0);
         MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
         
-        var medalCars = []
-        
-        var opts = {
-            maxScale    : 1.00,
-            alignH      : 0.5,
-            alignV      : 0,
-            visibility  : 1,
-            xCoordinate : 4.5,
-            zCoordinate : 0,
-            dropoffDist : -10,
-            delOnDrop   : false,
-        }
-        
-        // Ghost cars representing medal cutoffs
-        // TODO: Make seperate class, support lines in addition to cars
-        for(var i=0; i<3; i+= 1) {
-            var car = cocos.nodes.Sprite.create({file: '/resources/car'+i+'.png'});
-            car.set('opacity', 192);
-        
-            opts['content'] = car
-            medalCars[i] = PNode.create(opts)
-            medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
-            medalCars[i].scheduleUpdate();
-            this.addChild({child: medalCars[i]});
-            
-            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
-            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
-        }
-        
-        this.set('medalCars', medalCars);
+        this.medalCars[0].scheduleUpdate();
+        this.addChild({child: this.medalCars[0]});
+        this.medalCars[1].scheduleUpdate();
+        this.addChild({child: this.medalCars[1]});
+        this.medalCars[2].scheduleUpdate();
+        this.addChild({child: this.medalCars[2]});
     },
     
     // Handles add requests from PerspectiveNodes
@@ -749,21 +785,23 @@ var FluencyApp = KeyboardLayer.extend({
             // TODO: correct sounds effects
         }
         else {
-            var t = this.get('dash').get('pTime') + RC.penaltyTime + this.get('dash').get('elapsedTime')
+            var dash = this.get('dash');
+            var t = dash.elapsedTime + dash.pTime + parseFloat(RC.penaltyTime);
         
             player.wipeout(1);
             this.get('audioMixer').playSound('wipeout', true);
-            this.get('dash').modifyPenaltyTime(RC.penaltyTime);
+            dash.modifyPenaltyTime(RC.penaltyTime);
             
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
                 var rd = RC.finishLine - c[i].get('zCoordinate');
                 var rt = RC.times[i+1] - t;
-                if(rt > 0 && rd > 0) {
+                
+                if(rt > 0.1 && rd > 0) {
                     c[i].set('zVelocity', rd / rt);
                 }
                 else if (rd > 0) {
-                    c[i].set('zVelocity', rd / 1);
+                    c[i].set('zVelocity', rd / 0.1);
                 }
             }
             this.set('medalCars', c);

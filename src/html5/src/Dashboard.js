@@ -37,6 +37,10 @@ var Dashboard = cocos.nodes.Node.extend({
     pause        : false,   // Stores if the elapsed timer should be paused.
     speedMode    : 2,       // 0: m/s 1: kph 2: mph
     displayMedal : null,    // Holds the text representation for the current medal the player in on track to get
+    playerZ      : 0,       // The player's current location
+    goldZ        : 0,
+    silverZ      : 0,
+    bronzeZ      : 0,
     
     init: function() {
         Dashboard.superclass.init.call(this);
@@ -336,6 +340,60 @@ var Dashboard = cocos.nodes.Node.extend({
             context.fillStyle = 'rgba(0,0,0,0.4)';
             this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
         }
+        
+        context.strokeStyle = "#FFFFFF";
+        context.lineWidth = "2";
+        context.beginPath();
+        context.moveTo(50, 400);
+        context.lineTo(50, 500)
+        context.closePath();
+        context.stroke();
+        
+        context.beginPath();
+        context.moveTo(45, 400);
+        context.lineTo(55, 400)
+        context.closePath();
+        context.stroke();
+        
+        context.beginPath();
+        context.moveTo(45, 500);
+        context.lineTo(55, 500)
+        context.closePath();
+        context.stroke();
+        
+        var colors = ['#A67D3D', '#C0C0C0', '#CC9900']
+        var pos = [this.get('bronzeZ'), this.get('silverZ'), this.get('goldZ')]
+        
+        for(var i = 0; i < 3; i++) {
+            var p = pos[i] / RC.finishLine;
+            if(p > 1) {
+                p = 1;
+            }
+        
+            context.fillStyle = "#000000";
+            context.beginPath();
+            context.arc(52, 500 - 100 * p, 5, 0, Math.PI * 2);
+            context.closePath();
+            context.fill();
+            
+            context.fillStyle = colors[i];
+            context.beginPath();
+            context.arc(52, 500 - 100 * p, 4, 0, Math.PI * 2);
+            context.closePath();
+            context.fill();
+        }
+        
+        context.fillStyle = "#000000";
+        context.beginPath();
+        context.arc(48, 500 - 100 * (this.get('playerZ') / RC.finishLine), 5, 0, Math.PI * 2);
+        context.closePath();
+        context.fill();
+        
+        context.fillStyle = "#22DD22";
+        context.beginPath();
+        context.arc(48, 500 - 100 * (this.get('playerZ') / RC.finishLine), 4, 0, Math.PI * 2);
+        context.closePath();
+        context.fill();
     },
     
     // Helper function for calculating needle position
