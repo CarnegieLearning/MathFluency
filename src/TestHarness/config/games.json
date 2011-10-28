@@ -82,9 +82,6 @@
         },
         "cond6": {
             "stages": [
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
 				"test-4",
                 "test-5",
                 "test-6",
@@ -118,17 +115,17 @@
             "cli_fluency_task": "test3"
         },
         "html5-test1": {
-            "displayName": "Carlow 1",
+            "displayName": "Week 1b: Dec to Pct, Level 1",
             "engine": "racecar_html5",
             "cli_fluency_task": "test1b"
         },
         "html5-test2": {
-            "displayName": "Carlow 2",
+            "displayName": "Week 1b: Dec to Pct, Level 2",
             "engine": "racecar_html5",
             "cli_fluency_task": "test2b"
         },
         "html5-test3": {
-            "displayName": "Carlow 3",
+            "displayName": "Week 1b: Dec to Pct, Level 3",
             "engine": "racecar_html5",
             "cli_fluency_task": "test3b"
         },
