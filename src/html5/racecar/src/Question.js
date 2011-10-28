@@ -104,21 +104,22 @@ var Question = PNode.extend({
     update: function(dt) {
         Question.superclass.update.call(this, dt);
         
-        if(this.added) {
-            if(this.answeredCorrectly == null) {
-                this.set('timeElapsed', this.timeElapsed + dt);
+        if(this.get('added')) {
+            if(this.get('answeredCorrectly') == null) {
+                var te = this.get('timeElapsed') + dt;
+                this.set('timeElapsed', te);
                 
                 // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
-                if(PNode.cameraZ + 6 >= this.zCoordinate) {
+                if(PNode.cameraZ + 6 >= this.get('zCoordinate')) {
                     events.trigger(this, "questionTimeExpired", this);
                 }
             }
             
             // Pulls the delimiters more onto the lane lines as they progress down the screen
-            var shift = (this.position.y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
+            var shift = (this.get('position').y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
             
-            this.coneL.set('alignH', 1 - shift);
-            this.coneR.set('alignH', 0 + shift);
+            this.get('coneL').set('alignH', 1 - shift);
+            this.get('coneR').set('alignH', 0 + shift);
         }
     },
 });

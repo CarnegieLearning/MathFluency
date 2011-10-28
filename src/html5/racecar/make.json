@@ -1,0 +1,6 @@
+{
+    "output": "cocos_test.js",
+    "paths": {
+        "src" : "/"
+    }
+}

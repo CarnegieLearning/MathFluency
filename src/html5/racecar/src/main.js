@@ -29,7 +29,6 @@ var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var Question = require('Question').Question;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
-var Preloader = require('Preloader').Preloader;
 
 // Static Imports
 var RC = require('RaceControl').RaceControl;
@@ -46,7 +45,6 @@ var FractionRenderer = require('FractionRenderer').FractionRenderer;
 -10 Background
 -5  Finish Line
 -4  Trees
--1  Dashboard
 0   Anything not mentioned
 100 Question Delimiters
 */
@@ -64,8 +62,6 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.1.3',// Current version number
-    
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
         if(resource("resources/testset.xml") !== undefined) {
@@ -75,26 +71,10 @@ var FluencyApp = KeyboardLayer.extend({
             console.log("ERROR: No remote XML found to parse.");
         }
     },
-    
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
-        
-        var preloader = Preloader.create();
-        this.addChild({child: preloader});
-        this.preloader = preloader;
-        
-        events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
-    },
-    
-    delayedInit: function() {
-        this.removeChild({child: this.preloader});
-    
-        // Static binds
-        this.addMeHandler = this.addMeHandler.bind(this)
-        this.answerQuestion = this.answerQuestion.bind(this)
-        this.removeMeHandler = this.removeMeHandler.bind(this)
         
         // Set up basic audio
         var AM = AudioMixer.create();
@@ -130,8 +110,6 @@ var FluencyApp = KeyboardLayer.extend({
         var p = cocos.Preloader.create();
         events.addListener(p, 'complete', this.runRemotely.bind(this));
         p.load();
-        
-        events.trigger(this, 'loaded');
     },
     
     // Remote resources failed to load, generate dummy data then proceed
@@ -143,12 +121,13 @@ var FluencyApp = KeyboardLayer.extend({
         var list = [];
         for(var i=0; i<6; i+=1) {
             var inter = Intermission.create(20000+i, i*500+10);
-            inter.idle();
+            events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
+            inter.kickstart();
             for(var j=1; j<4; j+=1) {
                 list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
-                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
-                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
-                list[list.length - 1].idle();
+                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
+                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
+                list[list.length - 1].kickstart();
             }
         }
         
@@ -188,7 +167,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.preprocessingComplete();
     },
     
-    // Parse the penalty settings
     parsePenalty: function (root) {
         var time, speed;
         // Legacy support
@@ -271,11 +249,9 @@ var FluencyApp = KeyboardLayer.extend({
         var problemRoot = XML.getFirstByTag(root, 'PROBLEM_SET');
         var subset = problemRoot.firstElementChild;
         var z = 0;
-        var once = true;
         
         while(subset != null) {
-            z = this.parseProblemSubset(subset, z, once);
-            once = false;
+            z = this.parseProblemSubset(subset, z);
             
             subset = subset.nextElementSibling;
         }
@@ -284,7 +260,9 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Parses a subset within the PROBLEM_SET
-    parseProblemSubset: function (subset, z, once) {
+    parseProblemSubset: function (subset, z) {
+        z += RC.intermissionSpacing;
+        // Gets the intermission value
         var node = subset.firstElementChild;
         var interContent;
         
@@ -296,19 +274,10 @@ var FluencyApp = KeyboardLayer.extend({
             interContent = this.parseContent(node);
         }
         
-        // Not the first subset
-        if(!once) {
-            z += RC.intermissionSpacing;
-            // Gets the intermission value
-            
-            var inter = Intermission.create(interContent, z);
-            events.addListener(inter, 'changeSelector', this.get('player').startIntermission);
-            events.addListener(inter, 'changeSelector', this.pause.bind(this));
-            inter.idle();
-        }
-        else {
-            this.set('startSelector', interContent);
-        }
+        var inter = Intermission.create(interContent, z);
+        events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
+        events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
+        inter.kickstart();
         
         // Interate over questions in subset
         var list = this.get('questionList');
@@ -317,11 +286,12 @@ var FluencyApp = KeyboardLayer.extend({
             z += RC.questionSpacing
             var q = this.parseProblem(node)
             
+            
             // Create a question
             list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
-            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
-            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
-            list[list.length - 1].idle();
+            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
+            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
+            list[list.length - 1].kickstart();
             
             node = node.nextElementSibling;
         }
@@ -329,32 +299,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('questionList', list);
         
         return z;
-    },
-    
-    pause: function () {
-        this.get('dash').pauseTimer();
-        
-        var mc = this.get('medalCars');
-        
-        for(var i=0; i<3; i+=1) {
-            mc[i].prepause = mc[i].zVelocity;
-            mc[i].zVelocity = 0;
-        }
-        
-        this.set('medalCars', mc);
-    },
-    
-    unpause: function () {
-        this.get('dash').unpauseTimer();
-        
-        var mc = this.get('medalCars');
-        
-        for(var i=0; i<3; i+=1) {
-            mc[i].zVelocity = mc[i].prepause;
-            mc[i].prepause = 0;
-        }
-        
-        this.set('medalCars', mc);
     },
     
     // Parses a question within the subset
@@ -441,7 +385,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
         this.setBinding('TURBO',        [32]);      // [SPACE]
         this.setBinding('ABORT',        [27]);      // [ESC]
-        this.setBinding('SHOW_FPS',     [80]);      // [P]
         
         // Draw background
         var bg = Background.create();
@@ -455,9 +398,8 @@ var FluencyApp = KeyboardLayer.extend({
         var dash = this.get('dash');
         dash.set('maxSpeed', player.get('maxSpeed'));
         this.addChild({child: dash});
-        dash.set('zOrder', -1);
         
-        events.addListener(player, 'IntermissionComplete', this.unpause.bind(this));
+        events.addListener(player, 'IntermissionComplete', dash.unpauseTimer.bind(dash));
         
         // Add player
         this.addChild({child: player});
@@ -477,22 +419,9 @@ var FluencyApp = KeyboardLayer.extend({
         opts['content'].set('scaleY', 0.5);
         
         var fl = PNode.create(opts);
-        events.addListener(fl, 'addMe', this.addMeHandler);
-        fl.idle();
+        events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
+        fl.kickstart();
         fl.set('zOrder', -5);
-        
-        // Add version number
-        var vtag = cocos.nodes.Label.create({string: this.get('version')})
-        vtag.set('anchor-point', new geo.Point(0.5, 0.5));
-        vtag.set('position', new geo.Point(850, 590));
-        this.addChild({child: vtag});
-        
-        // Create FPS meter
-        var fps = cocos.nodes.Label.create({string: '0 FPS'})
-        fps.set('position', new geo.Point(20, 20));
-        this.fps = fps;
-        this.fpsTracker = [30, 30, 30, 30, 30];
-        this.fpsToggle = false;
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
@@ -507,14 +436,14 @@ var FluencyApp = KeyboardLayer.extend({
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler);
-                p.idle();
+                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                p.kickstart();
             }
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler);
-                p.idle();
+                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
+                p.kickstart();
             }
         }
     },
@@ -522,6 +451,25 @@ var FluencyApp = KeyboardLayer.extend({
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
+        this.get('dash').start(RC.initialCountdown / 1000);
+        this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
+        setTimeout(this.startGame.bind(this), RC.initialCountdown);
+        this.get('audioMixer').playSound('bg');
+        
+        $(window).unload(this.endOfGame.bind(this, null));
+    },
+    
+    // Starts the game
+    startGame: function () {
+        // Schedule per frame update function
+        this.scheduleUpdate();
+        var p = this.get('player');
+        p.scheduleUpdate();
+        
+        var ds = p.get('zVelocity');
+        p.set('zVelocity', 0);
+        MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
+        
         var medalCars = []
         
         var opts = {
@@ -544,93 +492,36 @@ var FluencyApp = KeyboardLayer.extend({
             opts['content'] = car
             medalCars[i] = PNode.create(opts)
             medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
+            medalCars[i].scheduleUpdate();
+            this.addChild({child: medalCars[i]});
             
-            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
-            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
-            medalCars[i].delOnDrop = false;
+            events.addListener(medalCars[i], 'addMe', this.addMeHandler.bind(this));
+            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler.bind(this));
         }
         
         this.set('medalCars', medalCars);
-    
-        this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
-        this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
-        this.get('dash').bindTo('goldZ', this.medalCars[0], 'zCoordinate');
-        this.get('dash').bindTo('silverZ', this.medalCars[1], 'zCoordinate');
-        this.get('dash').bindTo('bronzeZ', this.medalCars[2], 'zCoordinate');
-        setTimeout(this.startGame.bind(this), RC.initialCountdown);
-        this.get('audioMixer').playSound('bg');
-        
-        var cd = cocos.nodes.Label.create({string: '3', textColor: '#000000'});
-        cd.set('scaleX', 10);
-        cd.set('scaleY', 10);
-        cd.set('position', new geo.Point(400, 300));
-        
-        this.set('cdt', cd);
-        this.addChild({child: cd});
-        
-        // Set the starting value on the player's car
-        this.get('player').changeSelectorByForce(this.get('startSelector'));
-        
-        var that = this;
-        setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
-        setTimeout(function () { that.get('cdt').set('string', '1'); }, 2000)
-        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
-        setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
-        
-        // Catch window unloads at this point as aborts
-        $(window).unload(this.endOfGame.bind(this, null));
-    },
-    
-    // Starts the game
-    startGame: function () {
-        // Schedule per frame update function
-        this.scheduleUpdate();
-        var p = this.get('player');
-        p.scheduleUpdate();
-        this.get('dash').start();
-        
-        var ds = p.get('zVelocity');
-        p.set('zVelocity', 0);
-        MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
-        
-        this.medalCars[0].scheduleUpdate();
-        this.addChild({child: this.medalCars[0]});
-        this.medalCars[1].scheduleUpdate();
-        this.addChild({child: this.medalCars[1]});
-        this.medalCars[2].scheduleUpdate();
-        this.addChild({child: this.medalCars[2]});
     },
     
     // Handles add requests from PerspectiveNodes
     // TODO: Make a PerspectiveView class to handle these functions?
-    // STATIC BIND
     addMeHandler: function (toAdd) {
         this.addChild({child: toAdd});
-        events.addListener(toAdd, 'removeMe', this.removeMeHandler);
+        events.addListener(toAdd, 'removeMe', this.removeMeHandler.bind(this));
     },
     
     // Handles removal requests from PerspectiveNodes
-    // STATIC BIND
     removeMeHandler: function (toRemove) {
         this.removeChild(toRemove);
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
-    // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
-        if(finished != null) {
-            $(window).unbind('unload')
-            $(window).unload(this.cleanup.bind(this, null));
-        }
-        else {
-            this.cleanup();
-        }
+        $(window).unbind('unload')
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
-        
-        this.dash.pauseTimer();
         
         // Stops the medal pace cars
         var mc = this.get('medalCars');
@@ -673,7 +564,6 @@ var FluencyApp = KeyboardLayer.extend({
             var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
             e.set('position', new geo.Point(200, 50));
             this.addChild({child: e});
-            events.addListener(e, 'complete', this.cleanup.bind(this));
             e.start();
         }
     
@@ -737,33 +627,7 @@ var FluencyApp = KeyboardLayer.extend({
         return x;
     },
     
-    // Code to be run when the game is finished
-    cleanup: function() {
-        // Clear the bind
-        $(window).unbind('unload');
-        
-        var d = cocos.Director.get('sharedDirector');
-        
-        // Stop the main loop and clear the scenes
-        d.stopAnimation();
-        delete d.sceneStack.pop();
-        delete d.sceneStack.pop();
-        
-        // Clear the setup functions
-        d.attachInView = null;
-        d.runWithScene = null;
-        
-        // Clear the animating functions
-        d.startAnimation = null;
-        d.animate = null;
-        d.drawScene = null;
-        
-        // Clear the instance
-        d._instance = null;
-    },
-    
-    // Handles answering the current question when time expires
-    // STATIC BIND
+    //Handles answering the current question when time expires
     answerQuestion: function(question) {
         var result;
         
@@ -786,23 +650,21 @@ var FluencyApp = KeyboardLayer.extend({
             // TODO: correct sounds effects
         }
         else {
-            var dash = this.get('dash');
-            var t = dash.elapsedTime + dash.pTime + parseFloat(RC.penaltyTime);
+            var t = this.get('dash').get('pTime') + RC.penaltyTime + this.get('dash').get('elapsedTime')
         
             player.wipeout(1);
             this.get('audioMixer').playSound('wipeout', true);
-            dash.modifyPenaltyTime(RC.penaltyTime);
+            this.get('dash').modifyPenaltyTime(RC.penaltyTime);
             
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
                 var rd = RC.finishLine - c[i].get('zCoordinate');
                 var rt = RC.times[i+1] - t;
-                
-                if(rt > 0.1 && rd > 0) {
+                if(rt > 0 && rd > 0) {
                     c[i].set('zVelocity', rd / rt);
                 }
                 else if (rd > 0) {
-                    c[i].set('zVelocity', rd / 0.1);
+                    c[i].set('zVelocity', rd / 1);
                 }
             }
             this.set('medalCars', c);
@@ -819,13 +681,13 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called every frame, manages keyboard input
     update: function(dt) {
-        var player = this.get('player');
-        var playerX = player.get('xCoordinate');
-        
-        if(player.get('zCoordinate') > RC.finishLine) {
+        if(this.get('player').get('zCoordinate') > RC.finishLine) {
             this.endOfGame(true);
             return;
         }
+    
+        var player = this.get('player');
+        var playerX = player.get('xCoordinate');
         
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
@@ -854,55 +716,14 @@ var FluencyApp = KeyboardLayer.extend({
             player.accelerate(dt);
         }
         
-        // 'SPACE' turbo boost, discreet
-        if(this.checkBinding('TURBO') == KeyboardLayer.PRESS) {
+        // 'SPACE' turbo boost, press
+        if(this.checkBinding('TURBO') > KeyboardLayer.UP) {
             player.startTurboBoost();
         }
         
         // 'ESC' Abort game, discreet
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
             this.endOfGame(false);
-        }
-        
-        // FPS calculations and display
-        var sub = parseFloat(0);
-        var cur = 1 / dt;
-        
-        // Get rid of oldest frame, add this frame
-        this.fpsTracker.shift();
-        this.fpsTracker.push(cur);
-        
-        // Log spikes to console if FPS tracker is enabled
-        if(this.fpsToggle) {
-            if(1 / dt < 20) {
-                console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
-            }
-        }
-        
-        // Smooth over multiple frames
-        this.fps.set('fontColor', '#FFFFFF');
-        for(t in this.fpsTracker){
-            sub += this.fpsTracker[t];
-            
-            // Flash red on low framerate spikes
-            if(this.fpsTracker[t] < 20) {
-                this.fps.set('fontColor', '#DD2222');
-            }
-        }
-        
-        // Update the FPS tracker label
-        this.fps.set('string', (sub / this.fpsTracker.length).toFixed(1) + ' FPS');
-        
-        // 'P' Toggle showing FPS tracker, discreet
-        if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
-            if(!this.get('fpsToggle')) {
-                this.addChild({child: this.fps});
-                this.fpsToggle = true;
-            }
-            else {
-                this.removeChild({child: this.fps});
-                this.fpsToggle = false;
-            }
         }
     },
 });
@@ -913,14 +734,9 @@ var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
     muted       : false,    // State of the volume mute button
-    init: function() {
+    init: function(hook) {
         MenuLayer.superclass.init.call(this, {});
         
-        var that = this;
-        //setTimeout(function () {that.createMenu();}, 3300)
-    },
-    
-    createMenu: function() {
         // Create the button
         var opts = Object();
         opts['normalImage'] = '/resources/start-button.png';
@@ -956,6 +772,9 @@ var MenuLayer = cocos.nodes.Menu.extend({
         var vc = cocos.nodes.MenuItemImage.create(opts);
         vc.set('position', new geo.Point(400, 250));
         this.set('volumeButtonOff', vc);
+        
+        // Store the function to call when pressing the button
+        this.set('startGame', hook);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -991,24 +810,24 @@ exports.main = function() {
     // Firefox < 4 ; Chrome < 7 ; IE < 9 ; Safari (all) ; Opera (all)
     if (!Function.prototype.bind) {  
         Function.prototype.bind = function (oThis) {  
-        
-            if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
-                throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
-            }
+      
+        if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
+            throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
+        }
 
-            var aArgs = Array.prototype.slice.call(arguments, 1),
-                fToBind = this,
-                fNOP = function () {},
-                fBound = function () {
-                    return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));
-                };  
+        var aArgs = Array.prototype.slice.call(arguments, 1),   
+            fToBind = this,   
+            fNOP = function () {},  
+            fBound = function () {  
+              return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));      
+            };  
 
-            fNOP.prototype = this.prototype;
-            fBound.prototype = new fNOP();
+        fNOP.prototype = this.prototype;  
+        fBound.prototype = new fNOP();  
 
-            return fBound;
-        };
-    }
+        return fBound;  
+      };  
+    }  
     
     // Get director
     var director = cocos.Director.get('sharedDirector');
@@ -1024,15 +843,13 @@ exports.main = function() {
     var menu = MenuLayer.create();
     
     // Set up inter-layer events
-    events.addListener(app, 'loaded', menu.createMenu.bind(menu));
-    
-    events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
-    events.addListener(menu, 'muteEvent', app.muteHandler.bind(app));
+    events.addListener(menu, "startGameEvent", app.countdown.bind(app));
+    events.addListener(menu, "muteEvent", app.muteHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
     scene.addChild({child: menu});
-    
+
     // Run the scene
     director.runWithScene(scene);
 };

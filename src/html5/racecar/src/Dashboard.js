@@ -24,7 +24,7 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
 var Dashboard = cocos.nodes.Node.extend({
-    elapsedTime  : 0,       // Time in race elapsed so far
+    elapsedTime  : -3,      // Time in race elapsed so far
     displayTime  : null,    // Timer displayed to player
     gaugeRadius  : 40,      // Radius of the gauges
     penaltyTime  : null,    // Displayed penalty time
@@ -37,10 +37,6 @@ var Dashboard = cocos.nodes.Node.extend({
     pause        : false,   // Stores if the elapsed timer should be paused.
     speedMode    : 2,       // 0: m/s 1: kph 2: mph
     displayMedal : null,    // Holds the text representation for the current medal the player in on track to get
-    playerZ      : 0,       // The player's current location
-    goldZ        : 0,
-    silverZ      : 0,
-    bronzeZ      : 0,
     
     init: function() {
         Dashboard.superclass.init.call(this);
@@ -56,7 +52,7 @@ var Dashboard = cocos.nodes.Node.extend({
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         
-        opts['string'] = '0.000';
+        opts['string'] = '-3.0';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 50));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
@@ -71,7 +67,7 @@ var Dashboard = cocos.nodes.Node.extend({
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
         
-        opts['string'] = '0.000';
+        opts['string'] = '0.0';
         disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 100));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
@@ -107,51 +103,55 @@ var Dashboard = cocos.nodes.Node.extend({
         this.set('displayMedal', disp);
     },
     
-    // Starts tracking time and updating the dashboard timer.
-    start: function () {
-        this.set('elapsedTime', 0)
+    // Starts tracking time and updating the dashboard timer.  Optionally set the initial countdown
+    start: function (initialCountdown) {
+        if(initialCountdown) {
+            this.set('elapsedTime', -1 * initialCountdown)
+        }
         this.scheduleUpdate();
     },
     
     // Helper function for grabbing the elapsed + penalty time
     getTotalTime: function () {
-        var tt = this.get('pTime') + this.elapsedTime;
+        var tt = this.get('pTime') + this.get('elapsedTime');
         if(tt.toFixed) {
-            tt = tt.toFixed(this.timerAcc);
+            tt = tt.toFixed(this.get('timerAcc'));
         }
         return tt;
     },
     
     // Changes the current amount of penalty time accured
     modifyPenaltyTime: function(dt) {
-        MOT.create(this.get('pTime'), dt, 1.0).bindTo('value', this, 'pTime');
+        MOT.create(this.get('pTime'), dt, RC.maxTimeWindow).bindTo('value', this, 'pTime');
     },
     
     // Sets the pause state
     pauseTimer: function () {
-        this.pause = true;
+        this.set('pause', true);
     },
     
     // Unsets the pause state
     unpauseTimer: function () {
-        this.pause = false;
+        this.set('pause', false);
     },
     
     // Updates the time
     update: function(dt) {
-        if(!this.pause) {
+        if(!this.get('pause')) {
+            var acc = this.get('timerAcc');
             // Update elapsed timer
             var t = this.get('elapsedTime') + dt;
             this.set('elapsedTime', t);
             
-            this.displayTime.set('string', t.toFixed(this.timerAcc));
+            var d = this.get('displayTime');
+            d.set('string', t.toFixed(acc));
         }
         
         // Update penalty timer
-        this.penaltyTime.set('string', parseFloat(this.get('pTime')).toFixed(this.timerAcc));
+        this.get('penaltyTime').set('string', parseFloat(this.get('pTime')).toFixed(acc));
         
         // Update numerical speedometer
-        this.displaySpeed.set('string', this.getConvertedSpeed());
+        this.get('displaySpeed').set('string', this.getConvertedSpeed());
     },
     
     // Updates the text under the medal meter to the indicated medal
@@ -171,27 +171,28 @@ var Dashboard = cocos.nodes.Node.extend({
             txt = ' - ';
         }
         
-        this.displayMedal.set('string', txt);
+        this.get('displayMedal').set('string', txt);
     },
     
     // Get speed converted to specified units
     getConvertedSpeed: function() {
+        var mode = this.get('speedMode')
         var s = this.getSpeed();
         
-        if(this.speedMode == Dashboard.SPEED_M_PS) {
+        if(mode == Dashboard.SPEED_M_PS) {
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
             s += ' m/s';
         }
-        else if(this.speedMode == Dashboard.SPEED_KM_PH) {
+        else if(mode == Dashboard.SPEED_KM_PH) {
             s = s * 36 / 10;
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
             s += ' kph';
         }
-        else if(this.speedMode == Dashboard.SPEED_MI_PH) {
+        else if(mode == Dashboard.SPEED_MI_PH) {
             s = s * 36 / 16;
             if(s.toFixed) {
                 s = s.toFixed(0);
@@ -208,10 +209,10 @@ var Dashboard = cocos.nodes.Node.extend({
     
     // Getter for speed, accounts for the fact that 'speed' is 0 when paused
     getSpeed: function() {
-        if(!this.pause) {
+        if(!this.get('pause')) {
             return this.get('speed');
         }
-        return this.lastS;
+        return this.get('lastS');
     },
     
     // Helper function for creating an arc of a circle filled with color
@@ -236,7 +237,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.fill();
         
         // Speedometer
-        var r = this.gaugeRadius;
+        var r = this.get('gaugeRadius');
         
         // Interior fills
         context.fillStyle = '#202020';
@@ -268,7 +269,7 @@ var Dashboard = cocos.nodes.Node.extend({
         context.stroke();
         
         var s = this.getSpeed();
-        var maxs = this.maxSpeed;
+        var maxs = this.get('maxSpeed');
         
         // Needle outline
         context.beginPath();
@@ -340,60 +341,6 @@ var Dashboard = cocos.nodes.Node.extend({
             context.fillStyle = 'rgba(0,0,0,0.4)';
             this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
         }
-        
-        context.strokeStyle = "#FFFFFF";
-        context.lineWidth = "2";
-        context.beginPath();
-        context.moveTo(50, 400);
-        context.lineTo(50, 500)
-        context.closePath();
-        context.stroke();
-        
-        context.beginPath();
-        context.moveTo(45, 400);
-        context.lineTo(55, 400)
-        context.closePath();
-        context.stroke();
-        
-        context.beginPath();
-        context.moveTo(45, 500);
-        context.lineTo(55, 500)
-        context.closePath();
-        context.stroke();
-        
-        var colors = ['#A67D3D', '#C0C0C0', '#CC9900']
-        var pos = [this.get('bronzeZ'), this.get('silverZ'), this.get('goldZ')]
-        
-        for(var i = 0; i < 3; i++) {
-            var p = pos[i] / RC.finishLine;
-            if(p > 1) {
-                p = 1;
-            }
-        
-            context.fillStyle = "#000000";
-            context.beginPath();
-            context.arc(52, 500 - 100 * p, 5, 0, Math.PI * 2);
-            context.closePath();
-            context.fill();
-            
-            context.fillStyle = colors[i];
-            context.beginPath();
-            context.arc(52, 500 - 100 * p, 4, 0, Math.PI * 2);
-            context.closePath();
-            context.fill();
-        }
-        
-        context.fillStyle = "#000000";
-        context.beginPath();
-        context.arc(48, 500 - 100 * (this.get('playerZ') / RC.finishLine), 5, 0, Math.PI * 2);
-        context.closePath();
-        context.fill();
-        
-        context.fillStyle = "#22DD22";
-        context.beginPath();
-        context.arc(48, 500 - 100 * (this.get('playerZ') / RC.finishLine), 4, 0, Math.PI * 2);
-        context.closePath();
-        context.fill();
     },
     
     // Helper function for calculating needle position
@@ -401,7 +348,7 @@ var Dashboard = cocos.nodes.Node.extend({
     pHelper: function (s) {
         // TODO: Add chaseDist back into this, otherwise calculation will be off by part of a meter
         var dc = PNode.cameraZ + 6;
-        var tc = this.elapsedTime + this.get('pTime');
+        var tc = this.get('elapsedTime') + this.get('pTime');
         
         var dr = Math.max(RC.finishLine - dc, 0);
         var tr = dr / s;

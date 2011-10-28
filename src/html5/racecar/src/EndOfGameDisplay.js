@@ -190,15 +190,13 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
                 x = 290 * (tt - RC.times[0]) / (RC.times[3] - RC.times[0]);
             
             MOT.create(this.get('sliderX'), x, 1.0).bind(this, 'sliderX');
+            
         }
         else if(step == 10) {
             // "Stamp" the medal on the score sheet here
-            var that = this;
-            setTimeout(function() {events.trigger(that, 'actionComplete');}, 1000);
         }
         else if(step == 11) {
             // Motivational message / tip / advice popup
-            events.trigger(this, 'complete');
         }
             
         this.set('step', step + 1);
