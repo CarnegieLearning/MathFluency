@@ -50,8 +50,6 @@ var Player = PNode.extend({
     preTurbo        : 0,        // Holds what the zVelocity was before turbo boosting
     turboSpeed      : 200,      // Turbo boost speed in m/s
     turboMOT        : null,     // Hold the MOT currently affecting zVelocity
-    
-    speedControl    : false,    // When true, a MOT is affecting zVelocity
 
     init: function() {
         Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
@@ -192,7 +190,7 @@ var Player = PNode.extend({
     
     // Accelerates the player
     accelerate: function (dt) {
-        if(!this.get('intermission')) {
+        if(!this.get('intermission') && this.get('turboMOT') == null) {
             var s = this.get('zVelocity') + this.get('acceleration') * dt
             s = Math.min(this.get('maxSpeed'), s);
             this.set('zVelocity', s);
@@ -201,7 +199,7 @@ var Player = PNode.extend({
     
     // Decelerates the player
     decelerate: function (dt) {
-        if(!this.get('intermission')) {
+        if(!this.get('intermission') && this.get('turboMOT') == null) {
             var s = this.get('zVelocity') - this.get('deceleration') * dt
             s = Math.max(this.get('minSpeed'), s);
             this.set('zVelocity', s);
