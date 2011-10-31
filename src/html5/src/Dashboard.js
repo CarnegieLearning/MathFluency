@@ -38,9 +38,9 @@ var Dashboard = cocos.nodes.Node.extend({
     speedMode    : 2,       // 0: m/s 1: kph 2: mph
     displayMedal : null,    // Holds the text representation for the current medal the player in on track to get
     playerZ      : 0,       // The player's current location
-    goldZ        : 0,
-    silverZ      : 0,
-    bronzeZ      : 0,
+    goldZ        : 0,		// Z position of the gold medal car
+    silverZ      : 0,		// Z position of the silver medal car 
+    bronzeZ      : 0,		// Z position of the bronze medal car
     
     init: function() {
         Dashboard.superclass.init.call(this);
@@ -341,6 +341,7 @@ var Dashboard = cocos.nodes.Node.extend({
             this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
         }
         
+		// Draw minimap
         context.strokeStyle = "#FFFFFF";
         context.lineWidth = "2";
         context.beginPath();
@@ -421,6 +422,7 @@ var Dashboard = cocos.nodes.Node.extend({
     },
 });
 
+// Speed setting constants
 Dashboard.SPEED_M_PS = 0;
 Dashboard.SPEED_KM_PH = 1;
 Dashboard.SPEED_MI_PH = 2;
