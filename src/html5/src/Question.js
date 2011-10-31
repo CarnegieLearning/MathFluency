@@ -121,6 +121,14 @@ var Question = PNode.extend({
             this.coneR.set('alignH', 0 + shift);
         }
     },
+	
+	// Should prevent race condition of being removed before being answered
+	onExit: function () {
+		if(this.answeredCorrectly == null) {
+			events.trigger(this, "questionTimeExpired", this);
+		}
+        Question.superclass.onExit.call(this);
+    },
 });
 
 // TODO: Write static helper for building an options object to initialize a question

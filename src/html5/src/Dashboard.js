@@ -66,7 +66,7 @@ var Dashboard = cocos.nodes.Node.extend({
         
         // Create visible penalty timer
         opts['string'] = 'Penalty Time';
-         disp = cocos.nodes.Label.create(opts);
+        disp = cocos.nodes.Label.create(opts);
         disp.set('position', new geom.Point(5, 85));
         disp.set('anchorPoint', new geom.Point(0, 0.5));
         this.addChild({child: disp});
