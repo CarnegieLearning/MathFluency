@@ -61,6 +61,7 @@ var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     medalCars   : [],       // Contains the pace cars
     gameID      : '',       // Unique ID for the game
+	inters		: [],
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
@@ -305,6 +306,27 @@ var FluencyApp = KeyboardLayer.extend({
             events.addListener(inter, 'changeSelector', this.get('player').startIntermission);
             events.addListener(inter, 'changeSelector', this.pause.bind(this));
             inter.idle();
+			
+			var temp = this.get('inters');
+			temp.push(z);
+			this.set('inters', temp);
+			
+			// Add checkpoint marker to the race track
+			var opts = {
+				maxScale    : 1.00,
+				alignH      : 0.5,
+				alignV      : 0,
+				visibility  : 1,
+				xCoordinate : 0,
+				zCoordinate : z+6,
+				dropoffDist : -10,
+			}
+			opts['content'] = cocos.nodes.Sprite.create({file: '/resources/checkpoint_p.png',});
+			
+			var fl = PNode.create(opts);
+			events.addListener(fl, 'addMe', this.addMeHandler);
+			fl.idle();
+			fl.set('zOrder', -5);
         }
         else {
             this.set('startSelector', interContent);
@@ -331,6 +353,7 @@ var FluencyApp = KeyboardLayer.extend({
         return z;
     },
     
+	// Pauses the dashboard and medal cars
     pause: function () {
         this.get('dash').pauseTimer();
         
@@ -344,6 +367,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('medalCars', mc);
     },
     
+	// Unpauses the dashboard and medal cars
     unpause: function () {
         this.get('dash').unpauseTimer();
         
@@ -456,6 +480,7 @@ var FluencyApp = KeyboardLayer.extend({
         dash.set('maxSpeed', player.get('maxSpeed'));
         this.addChild({child: dash});
         dash.set('zOrder', -1);
+		dash.set('checkpoints', this.get('inters'));
         
         events.addListener(player, 'IntermissionComplete', this.unpause.bind(this));
         

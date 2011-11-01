@@ -41,6 +41,7 @@ var Dashboard = cocos.nodes.Node.extend({
     goldZ        : 0,		// Z position of the gold medal car
     silverZ      : 0,		// Z position of the silver medal car 
     bronzeZ      : 0,		// Z position of the bronze medal car
+	checkpoints	 : [],		// Z positions of the checkpoints
     
     init: function() {
         Dashboard.superclass.init.call(this);
@@ -361,6 +362,16 @@ var Dashboard = cocos.nodes.Node.extend({
         context.lineTo(55, 500)
         context.closePath();
         context.stroke();
+		
+		// Checkpoint hashmarks
+		var cp = this.get('checkpoints')
+		for(var i=0; i<cp.length; i++) {
+			context.beginPath();
+			context.moveTo(45, 500 - 100 * cp[i] / RC.finishLine);
+			context.lineTo(55, 500 - 100 * cp[i] / RC.finishLine)
+			context.closePath();
+			context.stroke();
+		}
         
         var colors = ['#A67D3D', '#C0C0C0', '#CC9900']
         var pos = [this.get('bronzeZ'), this.get('silverZ'), this.get('goldZ')]
