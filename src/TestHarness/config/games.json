@@ -193,6 +193,31 @@
             "displayName": "Lvl 3: HTML 4",
             "engine": "racecar_html5",
             "cli_fluency_task": "level03stage4"
+        },
+        "level04-stage1": {
+            "displayName": "Lvl 4: HTML 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage1"
+        },
+        "level04-stage2": {
+            "displayName": "Lvl 4: HTML 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage2"
+        },
+        "level04-stage3": {
+            "displayName": "Lvl 4: HTML 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage3"
+        },
+        "level04-stage4": {
+            "displayName": "Lvl 4: HTML 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage4"
+        },
+        "level04-stage5": {
+            "displayName": "Lvl 4: HTML 5",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage5"
         }
     },
     
