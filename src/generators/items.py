@@ -1,6 +1,7 @@
 import core
 import random
 import fractions
+import operator
 
 #Shortcut abbreviations
 RI = random.randint
@@ -34,22 +35,26 @@ class fractionItem:
         return RC(self.unreduced[self.getRD()])
     
     # Syntatic suger
-    def getSmaller(self, fract):
-        return self.getConditionally(fract, operator.lt, w)
+    def getSmaller(self, fract, d=None):
+        return self.getConditionally(fract, operator.lt, d)
     
     # Syntatic suger    
-    def getLarger(self, fract):
-        return self.getConditionally(fract, operator.gt, w)
+    def getLarger(self, fract, d=None):
+        return self.getConditionally(fract, operator.gt, d)
     
     # Get a random fraction satisfying a condition
-    def getConditionally(self, fract, conditional):
-        f = F(fract)
+    def getConditionally(self, fract, conditional, d=None):
         attempt = 0
         while(attempt < 10):
-            r = this.get()
-                
-            if(conditional(F(r), f)):
+            if(d == None):
+                r = self.get()
+            else:
+                r = RC(self.unreduced[d])
+            
+            if(conditional(F(r[0], r[1]), fract)):
                 return r
+            attempt += 1
+
         return None
         
     # Returns a unreduced improper fraction given a whole number and a (numerator, denominator)
@@ -80,6 +85,7 @@ class decimalItem:
             r = this.get(d, m)
             if(conditional(r, val)):
                 return r
+            attempt += 1
         return None
         
     # Syntatic suger
