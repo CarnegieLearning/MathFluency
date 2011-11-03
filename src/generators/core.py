@@ -269,7 +269,7 @@ def generateDataSet(configList):
             none_counter += 1
         
         #Guard against bad configs that fail to generate data
-        if(none_counter >= 20):
+        if(none_counter >= 100):
             logfile.write("Detected " + str(none_counter) + " consecutive generate()s returning 'None', possibly bad config, aborting...\n")
             return None
     
