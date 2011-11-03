@@ -1,5 +1,13 @@
 <datasets game_id="ft1_racecar_html5">
+	<dataset ="level03stage1"/>
+	<dataset ="level03stage2"/>
+	<dataset ="level03stage3"/>
+	<dataset ="level03stage4"/>
 	<dataset ="test1b"/>
 	<dataset ="test2b"/>
 	<dataset ="test3b"/>
+	<dataset ="test4b"/>
+	<dataset ="test5b"/>
+	<dataset ="test6b"/>
+	<dataset ="test7b"/>
 </datasets>

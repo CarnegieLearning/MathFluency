@@ -9,8 +9,13 @@ Element = xml.dom.minidom.Element
 #Globals
 TRUE = 1
 FALSE = 0
-xml_question_num = 0
 
+LEGACY = FALSE          #Set to TRUE to enable Hurix compatable format
+xml_question_num = 0    #This is the needed due to laziness
+
+###############################################################################
+
+#Setup logging
 try:
     logfile = open("last_run.log", 'w')
     if(not logfile):
@@ -19,6 +24,89 @@ except:
     import sys
     sys.stdout.write("Error opening logfile to write.  Dumping log into stdout")
     logfile = sys.stdout
+
+###############################################################################
+
+#Base <content> class
+class content:
+    #Default constructor
+    def __init__(self, type = "Undefined"):
+        self.type = type
+    
+    #Hack to make sure __str__ is called even when not using str() or print
+    def __repr__(self):
+        return self.__str__()
+    
+    #Subclassed must define a toXML function
+    def toXML(self, node):
+        raise NotImplementedError()
+
+#Fraction <content>
+class frtContent(content):
+    def __init__(self, num, den, whole = None):
+        content.__init__(self, "Fraction")
+        
+        self.n = num
+        self.d = den
+        self.w = whole
+    
+    #toString()
+    def __str__(self):
+        s = ""
+        if(self.w != None):
+            s += self.w + ' '
+            
+        s += self.n + ' / ' + self.d
+        
+        return s
+    
+    #Hooks the content into the specified node
+    def toXML(self, node):
+        node.setAttribute("TYPE", "Fraction")
+        
+        settings = Element("ContentSettings")
+        temp = Element("Numerator")
+        temp.setAttribute("VALUE", self.n)
+        settings.appendChild(temp)
+        temp = Element("Denominator")
+        temp.setAttribute("VALUE", self.d)
+        settings.appendChild(temp)
+        
+        #Only add <Whole> if there is a value to display (as zero will be displayed)
+        if(self.w != None):
+            temp = Element("Whole")
+            temp.setAttribute("VALUE", self.w)
+            settings.appendChild(temp)
+    
+        node.appendChild(settings)
+        
+        return node
+        
+#String <content>
+class strContent(content):
+    def __init__(self, s):
+        content.__init__(self, "String")
+        
+        self.s = s
+    
+    #toString()
+    def __str__(self):
+        return self.s
+    
+    #Hooks the content into the specified node
+    def toXML(self, node):
+        node.setAttribute("TYPE", "String")
+        
+        settings = Element("ContentSettings")
+        temp = Element("String")
+        temp.setAttribute("VALUE", self.s)
+        settings.appendChild(temp)
+        
+        node.appendChild(settings)
+        
+        return node
+
+###############################################################################
 
 #base configuration settings for the generator
 class config:
@@ -46,6 +134,7 @@ class config:
         else:
             logfile.write("Error saving config to " + str(filename) + "\n")
     
+    #Subclasses must implement their own generate method
     def generate(self):
         raise NotImplementedError()
     
@@ -65,6 +154,8 @@ class config:
         except IOError:
             logfile.write("IOError attempting to open config file at " + str(filename) + "\n")
             return None
+
+###############################################################################
 
 #Load and run each set of configs in order
 #INPUT: loadWith should be an instance of your generator specific configuration
@@ -106,7 +197,11 @@ def runBatch(configList):
             return None
         
         #Convert to XML
-        xml = toXML(dataset)
+        if(not LEGACY):
+            xml = toXML(dataset)
+        else:
+            xml = toXMLLegacy(dataset)
+            
         towrite = xml.toprettyxml()
         
         #Prepare to write to the XML file
@@ -137,6 +232,7 @@ def runBatch(configList):
         
         i += 1
     
+    #Only bother with dataset.xml if we are ouputting XML
     if(c.outputXML):
         create_datasetxml(c.directory, filelist, c.engine)
     else:
@@ -150,6 +246,8 @@ def generateDataSet(configList):
     c = configList[0]   #Use the first config in list is the primary config
     list = []
     none_counter = 0
+    
+    logfile.write("\n")
     
     while(i < c.subsets_per_set):
         config = random.choice(configList)
@@ -171,7 +269,7 @@ def generateDataSet(configList):
             none_counter += 1
         
         #Guard against bad configs that fail to generate data
-        if(none_counter >= 20):
+        if(none_counter >= 100):
             logfile.write("Detected " + str(none_counter) + " consecutive generate()s returning 'None', possibly bad config, aborting...\n")
             return None
     
@@ -189,13 +287,58 @@ def toXML(dataset):
         allQuestions.appendChild(XMLSubset(subset))
         
     return allQuestions
-
+    
 #Converts a question subset into its XML equivalent
 #INPUT: subset should be [selector, (answer, delim1, delim2, ...), (answer, delim1, delim2, ...), ...]
-#NOTE: A value prepended with "IMAGE:" notifies the XML builder of that selector/delimiter being an image path
-#IMPORTANT: Do NOT mix images with text delimeters (the selector can be different),
-#           but all delimeters must be text or all delimeters must be images
 def XMLSubset(subset):
+    selector, questions = subset
+    
+    subset = Element("PROBLEM_SUBSET")
+    target = Element("TARGET")
+    target = selector.toXML(target)
+    subset.appendChild(target)
+    
+    for q in questions:
+        subset.appendChild(XMLQuestion(q))
+        
+    return subset
+    
+#Converts a question into its XML equivalent
+#INPUTL (answer, delim1, delim2, ...)
+def XMLQuestion(q):
+    global xml_question_num
+    question = Element("QUESTION")
+    question.setAttribute("INDEX", str(xml_question_num))
+    xml_question_num += 1
+    
+    i = 1
+    while(i < len(q)):
+        c = Element("Content")
+        c = q[i].toXML(c)
+        question.appendChild(c)
+        
+        i += 1
+        
+    ans = Element("Answer")
+    ans.setAttribute("VALUE", q[0])
+    question.appendChild(ans)
+    
+    return question
+    
+#Hurix Legacy Format - Converts internal dataset representation to XML
+def toXMLLegacy(dataset):
+    global xml_question_num
+    xml_question_num = 1
+    
+    allQuestions = Element("PROBLEM_SET")
+    
+    for subset in dataset:
+        allQuestions.appendChild(XMLSubsetLegacy(subset))
+        
+    return allQuestions
+
+#Hurix Legacy Format - Converts a question subset into its XML equivalent
+def XMLSubsetLegacy(subset):
     selector, questions = subset
     
     subset = Element("PROBLEM_SUBSET")
@@ -209,13 +352,12 @@ def XMLSubset(subset):
     subset.appendChild(target)
     
     for q in questions:
-        subset.appendChild(XMLQuestion(q))
+        subset.appendChild(XMLQuestionLegacy(q))
         
     return subset
 
-#Converts a single question into its XML equivalent
-#INPUT: q should be (answer, delim1, delim2, ...)
-def XMLQuestion(q):
+#Hurix Legacy Format - Converts a single question into its XML equivalent
+def XMLQuestionLegacy(q):
     global xml_question_num
     question = Element("QUESTION")
     question.setAttribute("INDEX", str(xml_question_num))
@@ -251,6 +393,7 @@ def create_datasetxml(directory, filelist, engine):
     towrite = datasetxml.toprettyxml()
     f = open(directory + "dataset.xml", 'w')
     if(f):
+        logfile.write("Writing datasets.xml\n")
         f.write(towrite)
         f.close()
     else:
