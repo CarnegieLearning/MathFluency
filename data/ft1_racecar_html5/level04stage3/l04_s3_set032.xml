@@ -18,20 +18,21 @@
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="String">
 			<ContentSettings>
-				<String VALUE="0.625"/>
+				<String VALUE="1.2"/>
 			</ContentSettings>
 		</TARGET>
 		<QUESTION INDEX="1">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="97"/>
-					<Denominator VALUE="1000"/>
+					<Numerator VALUE="3"/>
+					<Denominator VALUE="3"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
 					<Numerator VALUE="3"/>
-					<Denominator VALUE="4"/>
+					<Denominator VALUE="5"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Answer VALUE="1"/>
@@ -40,28 +41,87 @@
 			<Content TYPE="Fraction">
 				<ContentSettings>
 					<Numerator VALUE="0"/>
-					<Denominator VALUE="4"/>
+					<Denominator VALUE="10"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="2"/>
-					<Denominator VALUE="3"/>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="10"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="1"/>
+			<Answer VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="3">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="2"/>
-					<Denominator VALUE="3"/>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="5"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="6"/>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="10"/>
+					<Whole VALUE="1"/>
+				</ContentSettings>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings>
+				<String VALUE="1.1"/>
+			</ContentSettings>
+		</TARGET>
+		<QUESTION INDEX="4">
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="7"/>
+					<Denominator VALUE="12"/>
+				</ContentSettings>
+			</Content>
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="5"/>
 					<Denominator VALUE="8"/>
+					<Whole VALUE="1"/>
+				</ContentSettings>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="5">
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="8"/>
+					<Whole VALUE="1"/>
+				</ContentSettings>
+			</Content>
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="3"/>
+					<Denominator VALUE="4"/>
+					<Whole VALUE="1"/>
+				</ContentSettings>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="4"/>
+					<Whole VALUE="1"/>
+				</ContentSettings>
+			</Content>
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="3"/>
+					<Denominator VALUE="5"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Answer VALUE="0"/>
@@ -70,72 +130,22 @@
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="String">
 			<ContentSettings>
-				<String VALUE="0.55"/>
-			</ContentSettings>
-		</TARGET>
-		<QUESTION INDEX="4">
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="0"/>
-					<Denominator VALUE="4"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="16"/>
-					<Denominator VALUE="100"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="5">
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="0"/>
-					<Denominator VALUE="2"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="31"/>
-					<Denominator VALUE="100"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="6">
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="0"/>
-					<Denominator VALUE="2"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="9"/>
-					<Denominator VALUE="10"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-	<PROBLEM_SUBSET>
-		<TARGET TYPE="String">
-			<ContentSettings>
-				<String VALUE="0.5"/>
+				<String VALUE="1.25"/>
 			</ContentSettings>
 		</TARGET>
 		<QUESTION INDEX="7">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="578"/>
-					<Denominator VALUE="1000"/>
+					<Numerator VALUE="5"/>
+					<Denominator VALUE="12"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="82"/>
-					<Denominator VALUE="100"/>
+					<Numerator VALUE="4"/>
+					<Denominator VALUE="5"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Answer VALUE="0"/>
@@ -143,51 +153,53 @@
 		<QUESTION INDEX="8">
 			<Content TYPE="Fraction">
 				<ContentSettings>
+					<Numerator VALUE="0"/>
+					<Denominator VALUE="3"/>
+				</ContentSettings>
+			</Content>
+			<Content TYPE="Fraction">
+				<ContentSettings>
 					<Numerator VALUE="3"/>
+					<Denominator VALUE="3"/>
+				</ContentSettings>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="9">
+			<Content TYPE="Fraction">
+				<ContentSettings>
+					<Numerator VALUE="4"/>
 					<Denominator VALUE="5"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="602"/>
-					<Denominator VALUE="1000"/>
+					<Numerator VALUE="2"/>
+					<Denominator VALUE="4"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="0"/>
-		</QUESTION>
-		<QUESTION INDEX="9">
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="33"/>
-					<Denominator VALUE="100"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="Fraction">
-				<ContentSettings>
-					<Numerator VALUE="3"/>
-					<Denominator VALUE="8"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
+			<Answer VALUE="1"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="String">
 			<ContentSettings>
-				<String VALUE="0.201"/>
+				<String VALUE="1.375"/>
 			</ContentSettings>
 		</TARGET>
 		<QUESTION INDEX="10">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="0"/>
-					<Denominator VALUE="2"/>
+					<Numerator VALUE="2"/>
+					<Denominator VALUE="10"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="369"/>
-					<Denominator VALUE="1000"/>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="2"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Answer VALUE="1"/>
@@ -195,14 +207,16 @@
 		<QUESTION INDEX="11">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="37"/>
-					<Denominator VALUE="100"/>
+					<Numerator VALUE="2"/>
+					<Denominator VALUE="3"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="3"/>
-					<Denominator VALUE="4"/>
+					<Numerator VALUE="96"/>
+					<Denominator VALUE="100"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Answer VALUE="0"/>
@@ -211,50 +225,53 @@
 			<Content TYPE="Fraction">
 				<ContentSettings>
 					<Numerator VALUE="0"/>
-					<Denominator VALUE="5"/>
+					<Denominator VALUE="4"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="2"/>
-					<Denominator VALUE="4"/>
+					<Numerator VALUE="6"/>
+					<Denominator VALUE="8"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="1"/>
+			<Answer VALUE="2"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="String">
 			<ContentSettings>
-				<String VALUE="0.78"/>
+				<String VALUE="1.666"/>
 			</ContentSettings>
 		</TARGET>
 		<QUESTION INDEX="13">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="0"/>
+					<Numerator VALUE="4"/>
 					<Denominator VALUE="5"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="3"/>
-					<Denominator VALUE="12"/>
+					<Numerator VALUE="9"/>
+					<Denominator VALUE="10"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="2"/>
+			<Answer VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="14">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="1"/>
-					<Denominator VALUE="12"/>
+					<Numerator VALUE="0"/>
+					<Denominator VALUE="10"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="1"/>
-					<Denominator VALUE="2"/>
+					<Numerator VALUE="43"/>
+					<Denominator VALUE="100"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Answer VALUE="2"/>
@@ -262,35 +279,35 @@
 		<QUESTION INDEX="15">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="119"/>
-					<Denominator VALUE="1000"/>
+					<Numerator VALUE="4"/>
+					<Denominator VALUE="8"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="10"/>
-					<Denominator VALUE="12"/>
+					<Numerator VALUE="2"/>
+					<Denominator VALUE="2"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="1"/>
+			<Answer VALUE="2"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="String">
 			<ContentSettings>
-				<String VALUE="0.462"/>
+				<String VALUE="0.75"/>
 			</ContentSettings>
 		</TARGET>
 		<QUESTION INDEX="16">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="0"/>
-					<Denominator VALUE="2"/>
+					<Numerator VALUE="36"/>
+					<Denominator VALUE="100"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="1"/>
+					<Numerator VALUE="2"/>
 					<Denominator VALUE="3"/>
 				</ContentSettings>
 			</Content>
@@ -299,32 +316,34 @@
 		<QUESTION INDEX="17">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="2"/>
-					<Denominator VALUE="5"/>
+					<Numerator VALUE="5"/>
+					<Denominator VALUE="10"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="662"/>
+					<Numerator VALUE="820"/>
 					<Denominator VALUE="1000"/>
+					<Whole VALUE="1"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="1"/>
+			<Answer VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="18">
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="2"/>
-					<Denominator VALUE="3"/>
+					<Numerator VALUE="1"/>
+					<Denominator VALUE="8"/>
 				</ContentSettings>
 			</Content>
 			<Content TYPE="Fraction">
 				<ContentSettings>
-					<Numerator VALUE="888"/>
-					<Denominator VALUE="1000"/>
+					<Numerator VALUE="5"/>
+					<Denominator VALUE="5"/>
 				</ContentSettings>
 			</Content>
-			<Answer VALUE="0"/>
+			<Answer VALUE="1"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 </PROBLEM_SET>
