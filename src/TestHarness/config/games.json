@@ -130,22 +130,22 @@
             "cli_fluency_task": "test3b"
         },
         "test-4": {
-            "displayName": "Lvl 2: Flash 1",
+            "displayName": "Carlow 1",
             "engine": "racecar",
             "cli_fluency_task": "test4"
         },
         "test-5": {
-            "displayName": "Lvl 2: Flash 2",
+            "displayName": "Carlow 2",
             "engine": "racecar",
             "cli_fluency_task": "test5"
         },
         "test-6": {
-            "displayName": "Lvl 2: Flash 3",
+            "displayName": "Carlow 3",
             "engine": "racecar",
             "cli_fluency_task": "test6"
         },
         "test-7": {
-            "displayName": "Lvl 2: Flash 4",
+            "displayName": "Carlow 4",
             "engine": "racecar",
             "cli_fluency_task": "test7"
         },
