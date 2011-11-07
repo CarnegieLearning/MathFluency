@@ -13,7 +13,12 @@
                 "level03-stage1",
                 "level03-stage2",
                 "level03-stage3",
-                "level03-stage4"
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         },
         "cond2": {
@@ -29,7 +34,12 @@
                 "level03-stage1",
                 "level03-stage2",
                 "level03-stage3",
-                "level03-stage4"
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         },
         "cond3": {
@@ -45,7 +55,12 @@
                 "level03-stage1",
                 "level03-stage2",
                 "level03-stage3",
-                "level03-stage4"
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         },
         "cond4": {
@@ -61,7 +76,12 @@
                 "level03-stage1",
                 "level03-stage2",
                 "level03-stage3",
-                "level03-stage4"
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         },
         "cond5": {
@@ -77,7 +97,12 @@
                 "level03-stage1",
                 "level03-stage2",
                 "level03-stage3",
-                "level03-stage4"
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         },
         "cond6": {
@@ -93,7 +118,12 @@
                 "level03-stage1",
                 "level03-stage2",
                 "level03-stage3",
-                "level03-stage4"
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         }
     },
