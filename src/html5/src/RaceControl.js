@@ -29,6 +29,11 @@ RaceControl.initialCountdown    = 3000;                     // Initial countdown
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
 RaceControl.medalNames          = ['Ludicrous Speed', 'Gold', 'Silver', 'Bronze', ' - '];
 
+RaceControl.gold    = '#CC9900';        // Color for gold medals
+RaceControl.silver  = '#C0C0C0';        // Color for silver medals
+RaceControl.bronze  = '#E26B10';        // Color for bronze medals
+RaceControl.noMedal = '#202020';        // Color for no medal
+
 // <GlobalSpacing>
 RaceControl.intermissionSpacing = 110;                      // Distance in meters from previous object to intermission
 RaceControl.questionSpacing     = 150;                      // Distance in meters from previous object to question

@@ -292,13 +292,13 @@ var Dashboard = cocos.nodes.Node.extend({
         // Medalmeter
         
         // Interior fills
-        context.fillStyle = '#202020';
+        context.fillStyle = RC.noMedal;
         this.fillArc(context, 50, 300, r, 0,               Math.PI / 4, false);
-        context.fillStyle = '#A67D3D';
+        context.fillStyle = RC.bronze;
         this.fillArc(context, 50, 300, r, Math.PI / 4,     Math.PI / 4, false);
-        context.fillStyle = '#C0C0C0';
+        context.fillStyle = RC.silver;
         this.fillArc(context, 50, 300, r, Math.PI / 2,     Math.PI / 4, false);
-        context.fillStyle = '#CC9900';
+        context.fillStyle = RC.gold;
         this.fillArc(context, 50, 300, r, Math.PI / 4 * 3, Math.PI / 4, false);
         
         // Gauge frame
@@ -373,7 +373,7 @@ var Dashboard = cocos.nodes.Node.extend({
 			context.stroke();
 		}
         
-        var colors = ['#A67D3D', '#C0C0C0', '#CC9900']
+        var colors = [RC.bronze, RC.silver, RC.gold]
         var pos = [this.get('bronzeZ'), this.get('silverZ'), this.get('goldZ')]
         
         for(var i = 0; i < 3; i++) {

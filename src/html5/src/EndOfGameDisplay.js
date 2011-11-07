@@ -248,21 +248,21 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         var offset = 10;
         
         var run = this.proportions(1) * 290;
-        ctx.fillStyle = '#CC9900';
+        ctx.fillStyle = RC.gold;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
         run = this.proportions(2) * 290;
-        ctx.fillStyle = '#C0C0C0';
+        ctx.fillStyle = RC.silver;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
         run = this.proportions(3) * 290;
-        ctx.fillStyle = '#A67D3D';
+        ctx.fillStyle = RC.bronze;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
-        ctx.fillStyle = '#202020';
+        ctx.fillStyle = RC.noMedal;
         ctx.fillRect(offset, 160, 390 - offset, 20);
         
         // Draw the indicator for the medal meter line
@@ -279,13 +279,13 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
             // Draw the medal
             var t = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;
             if(this.get('abort') || t > RC.times[3])
-                ctx.fillStyle = '#202020';
+                ctx.fillStyle = RC.noMedal;
             else if(t < RC.times[1])
-                ctx.fillStyle = '#CC9900';
+                ctx.fillStyle = RC.gold;
             else if(t < RC.times[2])
-                ctx.fillStyle = '#C0C0C0';
+                ctx.fillStyle = RC.silver;
             else
-                ctx.fillStyle = '#A67D3D';
+                ctx.fillStyle = RC.bronze;
             ctx.beginPath();
             ctx.arc(300, 300, 80, 0, Math.PI * 2);
             ctx.closePath();
