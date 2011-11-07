@@ -123,7 +123,10 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5"
+                "level04-stage5",
+                "html5-test1",
+                "html5-test2",
+                "html5-test3"
             ]
         }
     },
@@ -145,17 +148,17 @@
             "cli_fluency_task": "test3"
         },
         "html5-test1": {
-            "displayName": "Week 1b: Dec to Pct, Level 1",
+            "displayName": "Carlow Makeup 1",
             "engine": "racecar_html5",
             "cli_fluency_task": "test1b"
         },
         "html5-test2": {
-            "displayName": "Week 1b: Dec to Pct, Level 2",
+            "displayName": "Carlow Makeup 2",
             "engine": "racecar_html5",
             "cli_fluency_task": "test2b"
         },
         "html5-test3": {
-            "displayName": "Week 1b: Dec to Pct, Level 3",
+            "displayName": "Carlow Makeup 3",
             "engine": "racecar_html5",
             "cli_fluency_task": "test3b"
         },
