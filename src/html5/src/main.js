@@ -65,7 +65,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.1.3',// Current version number
+    version     : 'v 0.2.0',// Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
