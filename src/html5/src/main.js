@@ -84,13 +84,17 @@ var FluencyApp = KeyboardLayer.extend({
         
         var preloader = Preloader.create();
         this.addChild({child: preloader});
-        this.preloader = preloader;
+        this.set('preloader', preloader);
         
         events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
     },
     
     delayedInit: function() {
-        this.removeChild({child: this.preloader});
+        // Remove the 'preloader'
+        var preloader = this.get('preloader')
+        this.removeChild({child: preloader});
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(preloader);
+        this.set('preloader', null);
     
         // Static binds
         this.addMeHandler = this.addMeHandler.bind(this)
