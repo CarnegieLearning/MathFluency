@@ -145,7 +145,9 @@ var Dashboard = cocos.nodes.Node.extend({
             var t = this.get('elapsedTime') + dt;
             this.set('elapsedTime', t);
             
-            this.displayTime.set('string', t.toFixed(this.timerAcc));
+            if(t > 0) {
+                this.displayTime.set('string', t.toFixed(this.timerAcc));
+            }
         }
         
         // Update penalty timer
