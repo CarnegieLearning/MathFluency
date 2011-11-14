@@ -194,6 +194,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         else if(step == 10) {
             // "Stamp" the medal on the score sheet here
             var that = this;
+            events.trigger(this, 'almostComplete');
             setTimeout(function() {events.trigger(that, 'actionComplete');}, 1000);
         }
         else if(step == 11) {

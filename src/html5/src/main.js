@@ -125,6 +125,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Uncomment to run locally
         //this.runLocally();
+        //this.runLocally();
         //return;
         
         // Set up remote resources, default value allows for running 'locally'
@@ -702,7 +703,10 @@ var FluencyApp = KeyboardLayer.extend({
             var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
             e.set('position', new geo.Point(200, 50));
             this.addChild({child: e});
+            var that = this;
+            events.addListener(e, 'almostComplete', function () {that.get('menuLayer').addRetryButton();});
             events.addListener(e, 'complete', this.cleanup.bind(this));
+            this.set('eogd', e);
             e.start();
         }
     
@@ -1009,6 +1013,24 @@ var MenuLayer = cocos.nodes.Menu.extend({
             this.addChild({child: this.get('volumeButtonOn')});
         }
         this.set('muted', !m);
+    },
+    
+    addRetryButton: function() {
+        var opts = Object();
+        opts['normalImage'] = '/resources/retry.png';
+        opts['selectedImage'] = '/resources/retry-selected.png';
+        opts['disabledImage'] = '/resources/retry.png';
+        opts['callback'] = this.retryButtonCallback.bind(this);
+        
+        var rb = cocos.nodes.MenuItemImage.create(opts);
+        rb.set('position', new geo.Point(10-450+200, 230-300+50));
+        rb.set('anchorPoint', new geo.Point(0, 0));
+        this.set('retryButton', rb);
+        this.addChild({child: rb});
+    },
+    
+    retryButtonCallback: function() {
+        window.runStage(window.currentStage);
     }
 });
 
@@ -1061,6 +1083,9 @@ exports.main = function() {
     // Add our layers to the scene
     scene.addChild({child: app});
     scene.addChild({child: menu});
+    
+    // Allow the App layer to directly access the UI layer
+    app.set('menuLayer', menu);
     
     // Run the scene
     director.runWithScene(scene);
