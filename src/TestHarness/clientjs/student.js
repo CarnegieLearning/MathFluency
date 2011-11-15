@@ -13,7 +13,9 @@ $(document).ready(function ()
     $('#stage-list li button').button().click(function ()
     {
         var stageID = $(this).val();
-        runStage(stageID);
+        //HACK: Putting things on the window level is bad...
+        window.runStage(stageID);
+        window.currentStage = stageID;
     });
     
     $('#instructions-link').button().click(function ()
@@ -24,7 +26,8 @@ $(document).ready(function ()
     $('#instructor-dashboard-link').button();
 });
 
-function runStage(stageID)
+//HACK: Putting things on the window level is bad...
+window.runStage = function runStage(stageID)
 {
     lock('Loading level ' + stageID + '...');
     gc.getStage(stageID, function (stage)
