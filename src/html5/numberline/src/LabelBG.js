@@ -27,12 +27,12 @@ var LabelBG = cocos.nodes.Node.extend({
     init: function(opts) {
         // You must always call the super class version of init
         LabelBG.superclass.init.call(this, opts);
-    
+        
         opts['string']    = this.defaulter(opts, 'string',    '');
         opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
         opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
         opts['fontSize']  = this.defaulter(opts, 'fontSize',  '16');
-    
+        
         var label = cocos.nodes.Label.create(opts)
         label.bindTo('opacity', this, 'opacity');
         this.set('label', label);
@@ -53,7 +53,7 @@ var LabelBG = cocos.nodes.Node.extend({
     
     //TODO: Put into a utility script/class
     defaulter: function(obj, prop, def) {
-        return obj.hasOwnProperty(prop) ? def, obj[prop];
+        return obj.hasOwnProperty(prop) ? obj[prop] : def;
     }
 });
 
@@ -71,4 +71,3 @@ LabelBG.helper = function(String, FontColor, BgColor, FontSize, FontName) {
 LabelBG.identifier = 'String';
 
 exports.LabelBG = LabelBG
-Content.registerContent(LabelBG.identifier, LabelBG.create);

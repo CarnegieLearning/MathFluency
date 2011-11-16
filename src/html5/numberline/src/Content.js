@@ -27,19 +27,20 @@ var Content = BObject.extend({
 // Holds registered subclasses' creation functions
 Content.registeredContent = {};
 
-// Every defined subclass used should be registered, the function should be '<class>.create'
-Content.registerContent = function(str, func) {
-    Content.registeredContent[str] = func;
+// Every defined subclass used should be registered, the cls should be the class
+Content.registerContent = function(str, cls) {
+    Content.registeredContent[str] = cls;
 }
 
 // Build Content subclass from parsed XML
 Content.buildFrom = function(xmlNode) {
-    if(xmlNode.n$ == 'CONTENT') {
+    if(xmlNode.name == 'CONTENT') {
         if(xmlNode.attributes.hasOwnProperty('TYPE')) {
-            if(Content.registeredContent.hasOwnProperty(xmlNode.TYPE)) {
-                var cs = XML.getChildByName(node, 'ContentSettings');
+            if(Content.registeredContent.hasOwnProperty(xmlNode.attributes.TYPE)) {
+                var cs = XML.getChildByName(xmlNode, 'ContentSettings');
                 if(cs) {
-                    return Content.registeredContent[xmlNode.TYPE].call(cs.attributes);
+                    return Content.registeredContent[xmlNode.attributes.TYPE].create.call(
+                        Content.registeredContent[xmlNode.attributes.TYPE], cs.attributes);
                 }
             }
         }
