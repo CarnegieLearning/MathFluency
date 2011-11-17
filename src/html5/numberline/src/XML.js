@@ -21,25 +21,80 @@ var XML = BObject.extend({
     }
 });
 
-// Simple, XML parser... attempting to simplify/generalize the parsing process
+// Simple, general XML parser
 XML.parser = function(root, ret) {
 	var r = {}
 
-	// Grab attributes
+    r.name = root.tagName;
+    
+	// Process attributes
+    r.attributes = {}
 	for (var i = 0; i < root.attributes.length; i++) {
-		var n = root.attributes[i];
-		r[n] = root.getAttribute(n);
+		var n = root.attributes[i].nodeName;
+        
+        r.attributes[n] = root.attributes[i].nodeValue;
 	}
 	
-	// Process children
-	for (var i = 0; i < root.childNodes.length; i++) {
-		r[root.childNodes[i].name] = XML.parser(root.childNodes[i]);
+    r.children = [];
+    
+    // Process children
+	for (var i = root.firstElementChild; i != null; i = i.nextElementSibling) {
+		r.children.push(XML.parser(i));
 	}
 	
-	r.v$ = root.value;
+    // Process tagged value (ex: <TAG>This info here<INNER></INNER>but not here</TAG>
+    r.value = null;
+    if(root.childNodes) {
+        if(root.childNodes.length > 0) {
+            r.value = root.childNodes[0].nodeValue;
+        }
+    }
 	
 	return r;
 }
+
+// Gets the first child of the current node with the specified name
+XML.getChildByName = function(root, name) {
+    for(var i = 0; i < root.children.length; i++) {
+        if(root.children[i].name == name) {
+            return root.children[i];
+        }
+    }
+    
+    return null;
+}
+
+// As getChildByName, but at any depth from the current node
+XML.getDeepChildByName = function(root, name) {
+    for(var i = 0; i < root.children.length; i++) {
+        if(root.children[i].name == name) {
+            return root.children[i];
+        }
+        else {
+            var ret = XML.getDeepChildByName(root.children[i], name);
+            if(ret != null) {
+                return ret;
+            }
+        }
+    }
+    
+    return null;
+}
+
+// Gets an array of all children with the specified name
+XML.getChildrenByName = function(root, name) {
+    var ret = []
+    
+    for(var i = 0; i < root.children.length; i++) {
+        if(root.children[i].name == name) {
+            ret.push(root.children[i]);
+        }
+    }
+    
+    return ret;
+}
+
+// -------------------- Legacy Code --------------------
 
 // Combines getFirstByTag with safeGetAttr for when you need one value from a certain tag
 XML.safeComboGet = function(root, tag, attr) {
