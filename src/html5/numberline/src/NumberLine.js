@@ -49,7 +49,7 @@ var NumberLine = cocos.nodes.Node.extend({
             }
             
             this.hashes[i].set('anchorPoint', new geo.Point(0.5, 0));
-            this.hashes[i].set('position', new geo.Point(500 * this.hashes[i].location, 0));
+            this.hashes[i].set('position', new geo.Point(this.length * this.hashes[i].location, 0));
             
             this.addChild({child: this.hashes[i]});
         }
@@ -62,7 +62,6 @@ var NumberLine = cocos.nodes.Node.extend({
         context.beginPath();
         context.moveTo(0, 0);
         context.lineTo(this.length, 0);
-        context.closePath();
         context.stroke();
 	},
 });
