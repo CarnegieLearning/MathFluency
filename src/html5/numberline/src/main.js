@@ -161,6 +161,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.background = Background.create();
         this.addChild({child: this.background});
         
+        this.versionLabel = cocos.nodes.Label.create({string: this.version});
+        this.versionLabel.set('position', new geo.Point(800, 500));
+        this.addChild({child: this.versionLabel});
+        
         if(this.timeLimit != null) {
             this.timeLeft = this.timeLimit;
             this.timeLabel = cocos.nodes.Label.create({string: this.timeLimit});
