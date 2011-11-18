@@ -1,0 +1,324 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="gold" MEDAL_THRESHOLD="54000"><![CDATA[Gold]]></MEDAL>
+	<MEDAL Id="silver" MEDAL_THRESHOLD="32000"><![CDATA[Silver]]></MEDAL>
+	<MEDAL Id="bronze" MEDAL_THRESHOLD="28000"><![CDATA[Bronze]]></MEDAL>
+</MEDALS>
+<GAME_DATA>
+<MESSAGES>
+		<MESSAGES_EVENT type="start">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Start1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/Start.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="jump">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Jump1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[All right!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+			<MESSAGE id="2">
+				<TEXT_MSG><![CDATA[Yummy!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_accum2.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Good choice!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Uh!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You missed a good one!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="background">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[background1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/Background.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="interlude">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Interlude1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/interlude.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+	</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="medal">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You earned a medal!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/medal.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="end">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Game over.]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/End.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="new">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[new]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+</MESSAGES>
+	<CORRECT ACCUMULATE="2000" AVOID="2000" /> 
+	<INCORRECT ACCUMULATE="-100" AVOID="-100" /> 
+	<BONUS_REMAINING_LIFE VALUE="5000" />
+	<LIVES ACCUM_IMPACT="-1" AVOID_IMPACT="-1" TOTAL="3" />
+	<GRAVITY VALUE="true" />
+	<BASE_LANE VALUE="0" />
+	<COMMIT_AREA VALUE="70" />
+	<RANDOM_SEED VALUE="549" />
+<PROBLEM_SET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
+			<TARGET ID="1" Type="Text" Value="Unsimplified Fractions"> 
+ 
+			</TARGET>
+			<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="24/36">
+		<DISPLAY><![CDATA[fluency/data/images/3fc827db265c21936b8b1eb7713b808d.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="16/12">
+		<DISPLAY><![CDATA[fluency/data/images/d36f5d99894509795dd7196102ca1489.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="27/50">
+		<DISPLAY><![CDATA[fluency/data/images/e2cdf5b1a0b0cf3b168cf21c73f0224d.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="110/42">
+		<DISPLAY><![CDATA[fluency/data/images/76094ab5a4b770f2ddd365a3a8c2aefd.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="96/4">
+		<DISPLAY><![CDATA[fluency/data/images/0fc8fb6876baa4665962731ea434ab0f.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="30/96">
+		<DISPLAY><![CDATA[fluency/data/images/816c4a707cfab34767f724f0594d2297.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="36/72">
+		<DISPLAY><![CDATA[fluency/data/images/7cb85a02f9a3d715023d614f4e08fa62.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="90/14">
+		<DISPLAY><![CDATA[fluency/data/images/073a436c66c22c830d96d3360cba1952.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="108/36">
+		<DISPLAY><![CDATA[fluency/data/images/84ebadf3fa120896ed9e48cb9eabc290.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="18/18">
+		<DISPLAY><![CDATA[fluency/data/images/bd6241da834a5ce39619a2b65dd81604.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="1500">
+			<TARGET ID="2" Type="Text" Value="Simplified Fractions"> 
+ 
+			</TARGET>
+			<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="77/30">
+		<DISPLAY><![CDATA[fluency/data/images/7c7bcbe599dc2fb547ee55d8dffc2f3f.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="96/11">
+		<DISPLAY><![CDATA[fluency/data/images/0cff6fafe3ec4fe6baa5e3d41ab4aeed.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="10/90">
+		<DISPLAY><![CDATA[fluency/data/images/adef5375e6c6724aa0599421d8080c60.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="88/15">
+		<DISPLAY><![CDATA[fluency/data/images/9c0f2b62e4345ca49646e28c4f545213.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="24/120">
+		<DISPLAY><![CDATA[fluency/data/images/6521628f8909e36903552099bbb4d8ae.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="42/6">
+		<DISPLAY><![CDATA[fluency/data/images/76dbcb1d5262eed751acbd956d3c21e3.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="42/45">
+		<DISPLAY><![CDATA[fluency/data/images/6fd0b27db938ac50eb75bc22eb468fef.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="45/5">
+		<DISPLAY><![CDATA[fluency/data/images/86936c1466f9880d30a1f333c33c8a69.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="66/45">
+		<DISPLAY><![CDATA[fluency/data/images/9d9d6274574fc506faa41c4fb7c6ff7f.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="88/30">
+		<DISPLAY><![CDATA[fluency/data/images/2ef893ec2bf6374231085765220fd126.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
+			<TARGET ID="3" Type="Text" Value="Unsimplified Fractions"> 
+ 
+			</TARGET>
+			<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="36/12">
+		<DISPLAY><![CDATA[fluency/data/images/4fbc9e4e19abdd60a8e3c64ffbb259f6.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="14/30">
+		<DISPLAY><![CDATA[fluency/data/images/7ab79795217a1552318cb0c83a1f82c7.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="12/4">
+		<DISPLAY><![CDATA[fluency/data/images/b6f4bbbb3c3cefdbdd080dfdbb20a164.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="88/36">
+		<DISPLAY><![CDATA[fluency/data/images/45666ec29f189a631d1e689aad5efda9.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="96/60">
+		<DISPLAY><![CDATA[fluency/data/images/050930b4e829c493b1f274fee36474b9.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="16/50">
+		<DISPLAY><![CDATA[fluency/data/images/a470f4f290b98803b8f5dfe3ac18eb76.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="66/55">
+		<DISPLAY><![CDATA[fluency/data/images/dadca50ec729372efc1f0020e49daace.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="32/4">
+		<DISPLAY><![CDATA[fluency/data/images/19dc7a2a7a906eb2dab644add1d1b456.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="9" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="1/84">
+		<DISPLAY><![CDATA[fluency/data/images/63881ad808e20dd191bd5d9951714c48.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="10" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="44/49">
+		<DISPLAY><![CDATA[fluency/data/images/6002989abc1f14377d335baafa73b39c.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
+			<TARGET ID="4" Type="Text" Value="Simplified Fractions"> 
+ 
+			</TARGET>
+			<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="50/16">
+		<DISPLAY><![CDATA[fluency/data/images/7e1839e7f121ef15e69775faebefe925.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="12/72">
+		<DISPLAY><![CDATA[fluency/data/images/cccc0966358d49ba91c026a62dc6529a.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="14/42">
+		<DISPLAY><![CDATA[fluency/data/images/f3e4cd53637370ba55de6e713d210560.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="25/42">
+		<DISPLAY><![CDATA[fluency/data/images/f0eac984bf7ba67a718f74c081e381de.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="28/6">
+		<DISPLAY><![CDATA[fluency/data/images/fe9519a9d3f866d56ab3e45f17f4d5fc.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="30/20">
+		<DISPLAY><![CDATA[fluency/data/images/73bb645d652eef7630b9a4b13b57509b.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="5/20">
+		<DISPLAY><![CDATA[fluency/data/images/6505c307316a96d0b6f7e08d129fe83c.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="15/24">
+		<DISPLAY><![CDATA[fluency/data/images/8c5bb157f843acde4b806305becdd1ff.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+				<QUESTION Lane="0" Type="Image" Value="27/108">
+		<DISPLAY><![CDATA[fluency/data/images/31ceaedfb4cade1a1e7606a6d40088aa.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+				<QUESTION Lane="1" Type="Image" Value="18/4">
+		<DISPLAY><![CDATA[fluency/data/images/bf0f7246b27a6849a7e87e9278a316fb.png]]></DISPLAY> 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+ </PROBLEM_SET>
+
+</GAME_DATA>
+</INPUT>

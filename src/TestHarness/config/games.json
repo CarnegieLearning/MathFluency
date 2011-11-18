@@ -2,124 +2,6 @@
     "conditions": {
         "cond1": {
             "stages": [
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond2": {
-            "stages": [
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond3": {
-            "stages": [
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond4": {
-            "stages": [
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond5": {
-            "stages": [
-                "test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond6": {
-            "stages": [
-				"test-4",
-                "test-5",
-                "test-6",
-                "test-7",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
                 "level03-stage0",
                 "level03-stage1",
                 "level03-stage2",
@@ -130,6 +12,88 @@
                 "level04-stage3",
                 "level04-stage4",
                 "level04-stage5",
+                "level05-stage1",
+                "level05-stage2"
+            ]
+        },
+        "cond2": {
+            "stages": [
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5",
+                "level05-stage1",
+                "level05-stage2"
+            ]
+        },
+        "cond3": {
+            "stages": [
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5",
+                "level05-stage1",
+                "level05-stage2"
+            ]
+        },
+        "cond4": {
+            "stages": [
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5",
+                "level05-stage1",
+                "level05-stage2"
+            ]
+        },
+        "cond5": {
+            "stages": [
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5",
+                "level05-stage1",
+                "level05-stage2"
+            ]
+        },
+        "cond6": {
+            "stages": [
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5",
+                "level05-stage1",
+                "level05-stage2",
                 "carlow-level03-stage0",
                 "carlow-level03-stage1",
                 "carlow-level03-stage2",
@@ -289,6 +253,16 @@
             "displayName": "Carlow 4",
             "engine": "racecar_html5",
             "cli_fluency_task": "carlow_level03stage4"
+        },
+        "level05-stage1": {
+            "displayName": "Lvl 5: Jungle 1",
+            "engine": "jungle",
+            "cli_fluency_task": "junglebalanceeqn"
+        },
+        "level05-stage2": {
+            "displayName": "Lvl 5: Scuba 2",
+            "engine": "scuba",
+            "cli_fluency_task": "scubabalanceeqn"
         }
     },
     

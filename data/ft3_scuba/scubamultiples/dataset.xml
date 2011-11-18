@@ -1,0 +1,22 @@
+<dataset id="scubamultiples" game_id="ft3_scuba">
+    <datafile id="ft3scuba_multiples_001" name="ft3scuba_multiples_001.xml"/>
+    <datafile id="ft3scuba_multiples_002" name="ft3scuba_multiples_002.xml"/>
+    <datafile id="ft3scuba_multiples_003" name="ft3scuba_multiples_003.xml"/>
+    <datafile id="ft3scuba_multiples_004" name="ft3scuba_multiples_004.xml"/>
+    <datafile id="ft3scuba_multiples_005" name="ft3scuba_multiples_005.xml"/>
+    <datafile id="ft3scuba_multiples_006" name="ft3scuba_multiples_006.xml"/>
+    <datafile id="ft3scuba_multiples_007" name="ft3scuba_multiples_007.xml"/>
+    <datafile id="ft3scuba_multiples_008" name="ft3scuba_multiples_008.xml"/>
+    <datafile id="ft3scuba_multiples_009" name="ft3scuba_multiples_009.xml"/>
+    <datafile id="ft3scuba_multiples_010" name="ft3scuba_multiples_010.xml"/>
+    <datafile id="ft3scuba_multiples_011" name="ft3scuba_multiples_011.xml"/>
+    <datafile id="ft3scuba_multiples_012" name="ft3scuba_multiples_012.xml"/>
+    <datafile id="ft3scuba_multiples_013" name="ft3scuba_multiples_013.xml"/>
+    <datafile id="ft3scuba_multiples_014" name="ft3scuba_multiples_014.xml"/>
+    <datafile id="ft3scuba_multiples_015" name="ft3scuba_multiples_015.xml"/>
+    <datafile id="ft3scuba_multiples_016" name="ft3scuba_multiples_016.xml"/>
+    <datafile id="ft3scuba_multiples_017" name="ft3scuba_multiples_017.xml"/>
+    <datafile id="ft3scuba_multiples_018" name="ft3scuba_multiples_018.xml"/>
+    <datafile id="ft3scuba_multiples_019" name="ft3scuba_multiples_019.xml"/>
+    <datafile id="ft3scuba_multiples_020" name="ft3scuba_multiples_020.xml"/>
+</dataset>

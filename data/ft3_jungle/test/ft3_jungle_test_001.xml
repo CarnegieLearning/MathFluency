@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<INPUT>
+<!-- Medal Descriptions
+Gold Highest Range is calculated by the game itself from INPUT xml data using the formulae
+	(Correct Accumulate Value *No. of Questions) + (Correct Avoid Value *No. of Questions) + (Total Lives* Bonus remaining lives)
+	(10000*15) + (10000*15) + (3*5000) =   150000    +    150000    +   25000    = 325000
+	   
+Gold threshold value Should be less than  Gold Highest Range and greater than SILVER Threshold Value.
+Silver threshold value Should be less than Gold Threshold Value and greater than Bronze Threshold Value.
+Bronze threshold value Should be less than Silver threshold value and greater than 0.
+-->
+	<MEDALS>
+		<MEDAL Id="gold" MEDAL_THRESHOLD="100000"><![CDATA[Gold]]></MEDAL>
+		<MEDAL Id="silver" MEDAL_THRESHOLD="55000"><![CDATA[Silver]]></MEDAL>
+		<MEDAL Id="bronze" MEDAL_THRESHOLD="30500"><![CDATA[Bronze]]></MEDAL>
+	</MEDALS>
+	<GAME_DATA>
+		<MESSAGES>
+			<MESSAGES_EVENT type="start">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[Start1]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/start1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="jump">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[Jump1]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/start1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="correct_accum">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[Good work!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_accum1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+				<MESSAGE id="2">
+					<TEXT_MSG><![CDATA[Awesome!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_accum2.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="correct_avoid">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[Way to go!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_avoid1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="incorrect_accum">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[Not a good move!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_accum1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+				<MESSAGE id="2">
+					<TEXT_MSG><![CDATA[Doh!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_accum1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="incorrect_avoid">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[You missed a good one!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_avoid.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="background">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[background1]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/background_sea.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="interlude">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[Interlude1]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/interlude1.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+				<MESSAGE id="2">
+					<TEXT_MSG><![CDATA[Interlude2]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/interlude2.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="medal">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[You earned a medal!]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/medal.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="end">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[End1]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/end.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+			<MESSAGES_EVENT type="new">
+				<MESSAGE id="1">
+					<TEXT_MSG><![CDATA[new]]></TEXT_MSG>
+					<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/new.mp3]]></AUDIO_MSG>
+				</MESSAGE>
+			</MESSAGES_EVENT>
+		</MESSAGES>
+		<CORRECT ACCUMULATE="10000" AVOID="10000"/><!-- Minimum value is 1000  and Maximum  value is 1000000 -->
+		<INCORRECT ACCUMULATE="-100" AVOID="-100"/><!-- Minimum value is 1000  and Maximum  value is 1000000 -->
+		<BONUS_REMAINING_LIFE VALUE="5000"/><!-- Minimum value is 1000  and Maximum  value is 10000 -->
+		<LIVES TOTAL="3" ACCUM_IMPACT="-1" AVOID_IMPACT="-1"/><!-- Minimum value for life is 1  and only 5 lives can be displayed on the Panel -->
+		<GRAVITY VALUE="true"/> <!-- Gravity Values are "true" or "false". -->
+		<BASE_LANE VALUE="0"/><!-- Base Line Value can be 0 OR 1. 0 is for Lower Path and 1 is for Upper path -->
+		<COMMIT_AREA VALUE="50"/><!-- Minimum Commit Area value is 10 and  Maximum Commit area value is 100  -->
+		<RANDOM_SEED VALUE="123"/> 
+		<PROBLEM_SET>
+<!--
+For Attribute TIME_PER_QUESTION Minimum Value 1000 and Maximum is 10000.
+
+When Target Type="Text" Then <Target> Tag can be Closed as "<TARGET ID="1" Type="Text" Value=" />" for better readability.
+When Question Type="Text" Then <Question> Tag can be Closed as <QUESTION Lane="" Type="Text" Value=""/>  for better readability.
+
+When PLATFORM="False" then No item will  be displayed in the lane 1.
+If <QUESTION Lane="1" Type="" Value=""> tag is used with (PLATFORM="False") then the Correct Accumulate, Correct Avoid, InCorrect Accumulate, InCorrect Avoid will not work properly.
+
+When  PLATFORM="False"  Then <QUESTION Lane="0" Type="" Value=""> tag is  Compulsarily required.
+AND                                                 <QUESTION Lane="1" Type="" Value="">  tag should not be Used. 
+
+When  PLATFORM="True"  Then <QUESTION Lane="1" Type="" Value=""> tag is  Compulsarily required.
+BUT                                                 <QUESTION Lane="0" Type="" Value=""> tag can be added or removed as per requirement.
+
+-->
+			<PROBLEM_SUBSET TIME_PER_QUESTION="3500"><!-- No of Questions  4-->
+				<TARGET ID="1" Type="Image" Value="4(x-7)+1">
+					<TARGET_DISPLAY><![CDATA[fluency/data/images/4(x-7)+1black.png]]></TARGET_DISPLAY>
+				</TARGET>
+				
+				<QUESTION ID="1" PLATFORM="true" ANSWER="0">
+					<QUESTION Lane="0" Type="Text" Value="4x-27"/>
+					<QUESTION Lane="1" Type="Text" Value="4(x-7+1)"/>
+				</QUESTION>
+				
+				<QUESTION ID="2" PLATFORM="false" ANSWER="1">
+					<QUESTION Lane="0" Type="Text" Value="4x-7"/>
+				</QUESTION>
+				
+				<QUESTION ID="3" PLATFORM="false" ANSWER="1">
+					<QUESTION Lane="0" Type="Image" Value=" 1/2">
+						<DISPLAY><![CDATA[fluency/data/images/1over2white.png]]></DISPLAY>
+					</QUESTION>
+				</QUESTION>
+				
+				<QUESTION ID="4" PLATFORM="false" ANSWER="1">
+					<QUESTION Lane="0" Type="Text" Value="4(x-7+1)">
+						<DISPLAY><![CDATA[fluency/data/images/11over12black.png]]></DISPLAY>
+					</QUESTION>
+				</QUESTION>
+				
+			</PROBLEM_SUBSET>
+			
+			<PROBLEM_SUBSET TIME_PER_QUESTION="2500"><!-- No of Questions  3 -->
+				<TARGET ID="2" Type="Image" Value="multiples of 3">
+					<TARGET_DISPLAY><![CDATA[fluency/data/images/mult3.png]]></TARGET_DISPLAY>
+				</TARGET>
+				
+				<QUESTION ID="1" PLATFORM="true" ANSWER="0">
+					<QUESTION Lane="1" Type="Image" Value="100.33">
+						<DISPLAY><![CDATA[fluency/data/images/1over1nd.png]]></DISPLAY>
+					</QUESTION>
+				</QUESTION>
+				
+				<QUESTION ID="2" PLATFORM="true" ANSWER="1">
+					<QUESTION Lane="1" Type="Text" Value="27x333"/>
+				</QUESTION>
+				
+				<QUESTION ID="3" PLATFORM="true" ANSWER="0">
+					<QUESTION Lane="1" Type="Image" Value="3 1/2">
+						<DISPLAY><![CDATA[fluency/data/images/7over2white.png]]></DISPLAY>
+					</QUESTION>
+				</QUESTION>
+				
+			</PROBLEM_SUBSET>
+			
+			<PROBLEM_SUBSET TIME_PER_QUESTION="3500"> <!-- No of Questions  4-->
+				<TARGET ID="3" Type="Image" Value="4(x-7)+1">
+					<TARGET_DISPLAY><![CDATA[fluency/data/images/10over12black.png]]></TARGET_DISPLAY>
+				</TARGET>
+				
+				<QUESTION ID="1" PLATFORM="true" ANSWER="0">               
+					<QUESTION Lane="1" Type="Text" Value="4(x-7+1)"/>
+				</QUESTION>
+				
+				<QUESTION ID="2" PLATFORM="false" ANSWER="0">
+					<QUESTION Lane="0" Type="Text" Value="4x-7"/>
+				</QUESTION>
+				
+				<QUESTION ID="3" PLATFORM="false" ANSWER="1">
+					<QUESTION Lane="0" Type="Image" Value=" 1/2">
+						<DISPLAY><![CDATA[fluency/data/images/1over2white.png]]></DISPLAY>
+					</QUESTION>               
+				</QUESTION>
+				
+				<QUESTION ID="4" PLATFORM="true" ANSWER="0">
+					<QUESTION Lane="1" Type="Text" Value="4(x-7+1)">
+						<DISPLAY><![CDATA[fluency/data/images/11over12black.png]]></DISPLAY>
+					</QUESTION>
+				</QUESTION>
+				
+			</PROBLEM_SUBSET>
+			
+			<PROBLEM_SUBSET TIME_PER_QUESTION="3500"><!-- No of Questions  3-->
+				<TARGET ID="4" Type="Image" Value="multiples of 3">
+					<TARGET_DISPLAY><![CDATA[fluency/data/images/mult3.png]]></TARGET_DISPLAY>
+				</TARGET>
+				
+				<QUESTION ID="1" PLATFORM="false" ANSWER="1">
+					<QUESTION Lane="0" Type="Image" Value="100.33">
+						<DISPLAY><![CDATA[fluency/data/images/1over1nd.png]]></DISPLAY>
+					</QUESTION>               
+				</QUESTION>
+				
+				<QUESTION ID="2" PLATFORM="false" ANSWER="0">
+					<QUESTION Lane="0" Type="Text" Value="27*333"/>
+				</QUESTION>
+				
+				<QUESTION ID="3" PLATFORM="true" ANSWER="0">
+					<QUESTION Lane="1" Type="Image" Value="3 1/2">
+						<DISPLAY><![CDATA[fluency/data/images/7over2white.png]]></DISPLAY>
+					</QUESTION>
+					
+				</QUESTION>
+			</PROBLEM_SUBSET>     
+		</PROBLEM_SET>  
+	</GAME_DATA>
+</INPUT>

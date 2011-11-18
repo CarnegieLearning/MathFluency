@@ -1,0 +1,22 @@
+<dataset id="scubasimpfractions" game_id="ft3_scuba">
+    <datafile id="ft3scuba_fraction_001" name="ft3scuba_fraction_001.xml"/>
+    <datafile id="ft3scuba_fraction_002" name="ft3scuba_fraction_002.xml"/>
+    <datafile id="ft3scuba_fraction_003" name="ft3scuba_fraction_003.xml"/>
+    <datafile id="ft3scuba_fraction_004" name="ft3scuba_fraction_004.xml"/>
+    <datafile id="ft3scuba_fraction_005" name="ft3scuba_fraction_005.xml"/>
+    <datafile id="ft3scuba_fraction_006" name="ft3scuba_fraction_006.xml"/>
+    <datafile id="ft3scuba_fraction_007" name="ft3scuba_fraction_007.xml"/>
+    <datafile id="ft3scuba_fraction_008" name="ft3scuba_fraction_008.xml"/>
+    <datafile id="ft3scuba_fraction_009" name="ft3scuba_fraction_009.xml"/>
+    <datafile id="ft3scuba_fraction_010" name="ft3scuba_fraction_010.xml"/>
+    <datafile id="ft3scuba_fraction_011" name="ft3scuba_fraction_011.xml"/>
+    <datafile id="ft3scuba_fraction_012" name="ft3scuba_fraction_012.xml"/>
+    <datafile id="ft3scuba_fraction_013" name="ft3scuba_fraction_013.xml"/>
+    <datafile id="ft3scuba_fraction_014" name="ft3scuba_fraction_014.xml"/>
+    <datafile id="ft3scuba_fraction_015" name="ft3scuba_fraction_015.xml"/>
+    <datafile id="ft3scuba_fraction_016" name="ft3scuba_fraction_016.xml"/>
+    <datafile id="ft3scuba_fraction_017" name="ft3scuba_fraction_017.xml"/>
+    <datafile id="ft3scuba_fraction_018" name="ft3scuba_fraction_018.xml"/>
+    <datafile id="ft3scuba_fraction_019" name="ft3scuba_fraction_019.xml"/>
+    <datafile id="ft3scuba_fraction_020" name="ft3scuba_fraction_020.xml"/>
+</dataset>

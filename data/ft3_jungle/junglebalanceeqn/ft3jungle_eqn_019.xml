@@ -1,0 +1,324 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="gold" MEDAL_THRESHOLD="40500"><![CDATA[Gold]]></MEDAL>
+	<MEDAL Id="silver" MEDAL_THRESHOLD="24000"><![CDATA[Silver]]></MEDAL>
+	<MEDAL Id="bronze" MEDAL_THRESHOLD="21000"><![CDATA[Bronze]]></MEDAL>
+</MEDALS>
+<GAME_DATA>
+<MESSAGES>
+		<MESSAGES_EVENT type="start">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Start1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/Start.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="jump">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Jump1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[All right!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+			<MESSAGE id="2">
+				<TEXT_MSG><![CDATA[Yummy!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_accum2.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Good choice!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/correct_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Uh!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You missed a good one!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/incorrect_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="background">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[background1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/Background.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="interlude">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Interlude1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/interlude.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+	</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="medal">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You earned a medal!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/medal.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="end">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Game over.]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/End.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="new">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[new]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_jungle/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+</MESSAGES>
+	<CORRECT ACCUMULATE="1500" AVOID="1500"/> 
+	<INCORRECT ACCUMULATE="-100" AVOID="-100"/> 
+	<BONUS_REMAINING_LIFE VALUE="5000"/>
+	<LIVES TOTAL="3" ACCUM_IMPACT="-1" AVOID_IMPACT="-1"/>
+	<GRAVITY VALUE="true"/>
+	<BASE_LANE VALUE="0"/>
+	<COMMIT_AREA VALUE="50"/>
+	<RANDOM_SEED VALUE="616"/>
+<PROBLEM_SET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="3500">
+			<TARGET ID="1" Type="Text" Value="True Statements"> 
+ 
+			</TARGET>
+			<QUESTION ID="1" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="5*3=15*2">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="2" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="8*1=8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="3" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="0*8=8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="4" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="1*8=8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="5" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="0=0*6">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="6" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="3*4=4*3">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="7" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="5+0=5">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="8" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="20=5*4">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="9" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="4=4+4">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="10" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="10*6=6*10">
+ 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="3000">
+			<TARGET ID="2" Type="Text" Value="True Statements"> 
+ 
+			</TARGET>
+			<QUESTION ID="1" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="4+3=7+2">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="2" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="4+6=6+4">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="3" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="9*1=1*9">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="4" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="4/2=2/4">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="5" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="10+1=10">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="6" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="6+3=9+2">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="7" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="4=4+5">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="8" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="9*6=6*9">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="9" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="1*8=8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="10" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="5+1=1+5">
+ 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
+			<TARGET ID="3" Type="Text" Value="True Statements"> 
+ 
+			</TARGET>
+			<QUESTION ID="1" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="8*5=5*8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="2" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="6+1=6">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="3" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="0+9=9">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="4" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="6=6+0">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="5" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="5*4=20*2">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="6" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="0*6=6*0">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="7" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="8=1*8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="8" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="0*7=7*0">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="9" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="8*1=1*8">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="10" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="4=4+6">
+ 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
+			<TARGET ID="4" Type="Text" Value="True Statements"> 
+ 
+			</TARGET>
+			<QUESTION ID="1" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="10*0=10">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="2" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="0=6*0">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="3" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="6+1=1+6">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="4" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="6*3=18*2">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="5" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="3+4=4+3">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="6" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="1" Type="Text" Value="5+1=1+5">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="7" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="5/2=2/5">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="8" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="0" Type="Text" Value="4+5=5+4">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="9" PLATFORM="true" ANSWER="1">
+				<QUESTION Lane="0" Type="Text" Value="6/2=2/6">
+ 
+				</QUESTION>
+			</QUESTION>
+			<QUESTION ID="10" PLATFORM="true" ANSWER="0">
+				<QUESTION Lane="1" Type="Text" Value="8*0=8">
+ 
+				</QUESTION>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+ </PROBLEM_SET>
+
+</GAME_DATA>
+</INPUT>

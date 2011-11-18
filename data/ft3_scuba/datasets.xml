@@ -1,0 +1,6 @@
+<datasets game_id="ft3_scuba">
+    <dataset>scubabalanceeqn</dataset>
+    <dataset>scubamultiples</dataset>
+    <dataset>scubasimpfractions</dataset>
+    <dataset>test</dataset>
+</datasets>

@@ -1,0 +1,22 @@
+<dataset id="junglebalanceeqn" game_id="ft3_jungle">
+    <datafile id="ft3jungle_eqn_001" name="ft3jungle_eqn_001.xml"/>
+    <datafile id="ft3jungle_eqn_002" name="ft3jungle_eqn_002.xml"/>
+    <datafile id="ft3jungle_eqn_003" name="ft3jungle_eqn_003.xml"/>
+    <datafile id="ft3jungle_eqn_004" name="ft3jungle_eqn_004.xml"/>
+    <datafile id="ft3jungle_eqn_005" name="ft3jungle_eqn_005.xml"/>
+    <datafile id="ft3jungle_eqn_006" name="ft3jungle_eqn_006.xml"/>
+    <datafile id="ft3jungle_eqn_007" name="ft3jungle_eqn_007.xml"/>
+    <datafile id="ft3jungle_eqn_008" name="ft3jungle_eqn_008.xml"/>
+    <datafile id="ft3jungle_eqn_009" name="ft3jungle_eqn_009.xml"/>
+    <datafile id="ft3jungle_eqn_010" name="ft3jungle_eqn_010.xml"/>
+    <datafile id="ft3jungle_eqn_011" name="ft3jungle_eqn_011.xml"/>
+    <datafile id="ft3jungle_eqn_012" name="ft3jungle_eqn_012.xml"/>
+    <datafile id="ft3jungle_eqn_013" name="ft3jungle_eqn_013.xml"/>
+    <datafile id="ft3jungle_eqn_014" name="ft3jungle_eqn_014.xml"/>
+    <datafile id="ft3jungle_eqn_015" name="ft3jungle_eqn_015.xml"/>
+    <datafile id="ft3jungle_eqn_016" name="ft3jungle_eqn_016.xml"/>
+    <datafile id="ft3jungle_eqn_017" name="ft3jungle_eqn_017.xml"/>
+    <datafile id="ft3jungle_eqn_018" name="ft3jungle_eqn_018.xml"/>
+    <datafile id="ft3jungle_eqn_019" name="ft3jungle_eqn_019.xml"/>
+    <datafile id="ft3jungle_eqn_020" name="ft3jungle_eqn_020.xml"/>
+</dataset>
