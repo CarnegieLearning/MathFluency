@@ -14,56 +14,156 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
-var cocos = require('cocos');
+// Engine Imports
+var cocos = require('cocos2d');
+var geo = require('geometry');
 var events = require('events');
 
+// Static Imports
+var XML = require('XML').XML;
+
+// Project Imports
+var Question = require('Question').Question;
+var NumberLine = require('NumberLine').NumberLine;
+
 var QuestionSet = cocos.nodes.Node.extend({
-	numberline	: null,		// Holds the numberline for this set of questions
-	questions	: [],		// List of questions in this QuestionSet
-	current		: -1,		// Index of the current question being presented
-	init: function (n, q) {
-		this.numberline = n;
-		this.questions = q;
-		
-		this.addChild({child: this.numberline});
-	},
-	
-	// Advance to the next question
-	nextQuestion: function() {
-		if(this.current < this.questions.length) {
-			// Advance to next question
-			events.trigger(this, 'beforeNextQuestion');
-			
-			// Remove the current question only if this is not a first question
-			if(this.current > -1) {
-				this.removeChild({child: this.questions[this.current]});
-			}
-			this.current += 1;
-			
-			setTimeout(this.nextQuestionCallback.bind(this), 1000);
-		}
-		else {
-			events.trigger(this, 'onEndOfSet');
-		}
-	},
-	
-	// Finish advancing to the next question
-	nextQuestionCallback() {
-		this.addChild({child: this.questions[this.current]});
-		events.trigger(this, 'onNextQuestion');
-	}
-	
-	// Answers the current question
-	giveAnswer: function(ans) {
-		if(this.questions[this.current].answerQuestion(ans)) {
-			// Correct feedback
-			events.trigger(this, 'onRightAnswer');
-		}
-		else {
-			// Incorrect feedback
-			events.trigger(this, 'onWrongAnswer');
-		}
-	},
+    numberline   : null,        // Holds the numberline for this set of questions
+    questions    : null,        // List of questions in this QuestionSet
+    current      : -1,          // Index of the current question being presented (within this set)
+    lineColor    : '#FFFFFF',   // Current numberline color
+    
+    init: function (node) {
+        QuestionSet.superclass.init.call(this);
+    
+        this.resetColor = this.resetColor.bind(this);
+        
+        this.set('position', new geo.Point(100, 200));
+    
+        this.numberline = NumberLine.create(XML.getChildByName(node, 'NUMBER_LINE'));
+        
+        var ql = XML.getChildrenByName(node, 'QUESTION')
+        this.questions = [];
+        
+        for(var i=0; i<ql.length; i++) {
+            this.questions.push(Question.create(ql[i]));
+            events.addListener(this.questions[i], 'questionTimeout', this.onQuestionTimeout.bind(this));
+        }
+        
+        this.addChild({child: this.numberline});
+        this.numberline.set('position', new geo.Point(30, 20));
+    },
+    
+    // Advance to the next question
+    nextQuestion: function() {
+        if(this.current < this.questions.length - 1) {
+            // Advance to next question
+            events.trigger(this, 'beforeNextQuestion');
+            
+            // Remove the current question only if this is not a first question
+            if(this.current > -1) {
+                this.removeChild({child: this.questions[this.current]});
+            }
+            this.current += 1;
+            
+            setTimeout(this.nextQuestionCallback.bind(this), 1000);
+        }
+        else {
+            var that = this;
+            setTimeout(function() {events.trigger(that, 'onEndOfSet')}, 1000);
+        }
+    },
+    
+    // Finish advancing to the next question
+    nextQuestionCallback: function() {
+        this.questions[this.current].set('position', new geo.Point(250, 100));
+        this.addChild({child: this.questions[this.current]});
+        this.questions[this.current].scheduleUpdate();
+        events.trigger(this, 'nextQuestion');
+    },
+    
+    // Answers the current question
+    giveAnswer: function(ans) {
+        ans -= (this.get('position').x + this.numberline.get('position').x);
+        ans /= this.numberline.length;
+        
+        console.log('Answer given: ' + ans);
+        
+        if(ans > 1.05) {
+            return;
+        }
+        ans = Math.min(ans, 1);
+        
+        if(ans < -0.05) {
+            return
+        }
+        ans = Math.max(ans, 0);
+    
+        if(this.questions[this.current].answerQuestion(ans)) {
+            // Correct feedback
+            events.trigger(this, 'rightAnswer');
+            this.set('lineColor', '#22FF22');
+        }
+        else {
+            // Incorrect feedback
+            events.trigger(this, 'wrongAnswer');
+            this.set('lineColor', '#FF2222');
+        }
+        
+        var that = this;
+        setTimeout(this.resetColor, 1000);
+        
+        this.nextQuestion();
+    },
+    
+    // Handles questions timing out
+    onQuestionTimeout: function () {
+        events.trigger(this, 'questionTimeout');
+        this.set('lineColor', '#220000');
+        
+        var that = this;
+        setTimeout(this.resetColor, 1000);
+        
+        this.nextQuestion();
+    },
+    
+    resetColor: function() {
+        this.set('lineColor', '#FFFFFF');
+    },
+    
+    set_lineColor: function(c) {
+        this.lineColor = c;
+        this.numberline.lineColor = c;
+    },
+    
+    draw: function (context) {
+        context.strokeStyle = this.get('lineColor');
+        context.lineWidth = 6;
+        
+        // Left side arrow
+        context.beginPath();
+        context.moveTo(20,  0);
+        context.lineTo( 0, 20);
+        context.lineTo(20, 40);
+        context.stroke();
+        
+        context.beginPath();
+        context.moveTo( 0, 20);
+        context.lineTo(30, 20);
+        context.closePath();
+        context.stroke();
+        
+        // Right side arrow
+        context.moveTo(540,  0);
+        context.lineTo(560, 20);
+        context.lineTo(540, 40);
+        context.stroke();
+        
+        context.beginPath();
+        context.moveTo(560, 20);
+        context.lineTo(530, 20);
+        context.closePath();
+        context.stroke();
+    }
 });
 
 exports.QuestionSet = QuestionSet;

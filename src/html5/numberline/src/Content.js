@@ -14,6 +14,11 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Project Imports
+var FractionRenderer = require('FractionRenderer').FractionRenderer;
+var LabelBG = require('LabelBG').LabelBG;
+var PieChart = require('PieChart').PieChart
+
 // Static Imports
 var XML = require('XML').XML;
 
@@ -30,6 +35,11 @@ Content.registeredContent = {};
 // Every defined subclass used should be registered, the cls should be the class
 Content.registerContent = function(str, cls) {
     Content.registeredContent[str] = cls;
+}
+
+Content.initialize = function () {
+    Content.registerContent(LabelBG.identifier, LabelBG);
+    Content.registerContent('Fraction', FractionRenderer);
 }
 
 // Build Content subclass from parsed XML

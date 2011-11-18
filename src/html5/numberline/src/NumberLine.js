@@ -14,42 +14,54 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
-var cocos = require('cocos');
+var cocos = require('cocos2d');
 var geo = require('geometry');
+
+// Static Imports
+var Content = require('Content').Content;
+var XML = require('XML').XML;
+
+// Project Imports
+var Hashmarks = require('Hashmarks').Hashmarks;
 
 // Visually represents the number line
 var NumberLine = cocos.nodes.Node.extend({
-	hashes		: [],		// Percentage based locations of hash marks
-	contents	: [],		// Holds Content under hash marks
-	init: function (hashes, values) {
-		this.hashes = hashes;
-        this.set('z-order', 0);
+	hashes		: null,		    // Percentage based locations of hash marks
+	contents	: null,		    // Holds Content under hash marks
+    length      : 500,          // Length, in pixels, of this numberline
+    lineColor   : '#FFFFFF',    // Color of the number line
+    
+	init: function (node) {
+        NumberLine.superclass.init.call(this);
         
-        for(var i=0; i<this.hashes.length; i+=1) {
-            this.hashes[i].set('position', new geo.Point(this.hashes[i].location * 500, 0));
+        this.hashes = [];
+        this.contents = [];
+        
+        this.set('zOrder', -2);
+        
+        var ha = XML.getChildrenByName(node, 'HASH');
+        for(var i=0; i<ha.length; i+=1) {
+            if(ha[i].children.length > 0) {
+                this.hashes.push(Hashmarks.create(ha[i].attributes['location'], Content.buildFrom(ha[i].children[0])));
+            }
+            else {
+                this.hashes.push(Hashmarks.create(ha[i].attributes['location'], null));
+            }
+            
+            this.hashes[i].set('anchorPoint', new geo.Point(0.5, 0));
+            this.hashes[i].set('position', new geo.Point(500 * this.hashes[i].location, 0));
+            
             this.addChild({child: this.hashes[i]});
         }
-		
-		// Set up the end point content
-		var temp;
-		for(var i=0; i<values.length; i+=1) {
-			if(values[i] != null) {
-				temp.set('anchorPoint', new geo.Point(0.5, 0));
-				temp.set('position', new geo.Point(-300 + 600 * hashes[i], -30));
-				this.addChild(temp);
-				
-				this.contents.push(temp);
-			}
-		}
 	},
     
-	draw: function () {
+	draw: function (context) {
 		// Draw the number line
-		context.strokeStyle = this.get('lineColor');
+		context.strokeStyle = this.lineColor;
 		context.lineWidth = 6;
         context.beginPath();
-        context.moveTo(-320, 0);
-        context.lineTo(320, 0);
+        context.moveTo(0, 0);
+        context.lineTo(this.length, 0);
         context.closePath();
         context.stroke();
 	},

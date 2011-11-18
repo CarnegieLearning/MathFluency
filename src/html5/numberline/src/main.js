@@ -19,29 +19,39 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
 
-// Project Imports
+// Global Imports
 var AudioMixer = require('AudioMixer').AudioMixer;
-var Intermission = require('Intermission').Intermission;
 var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
-var PNode = require('PerspectiveNode').PerspectiveNode;
 
 // Static Imports
+var Content = require('Content').Content;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
 
+// Project Imports
+var Background = require('Background').Background;
+var QuestionSet = require('QuestionSet').QuestionSet;
+
 // TODO: De-magic number these
 /* Zorder
+-10 Background
 0   Anything not mentioned
+1   Hashmarks
 */
 
 // Create a new layer
-// TODO: Clean up main, it is getting bloated
+// TODO: Clean up main, it is getting bloated0
 var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     gameID      : '',       // Unique ID for the game
     questionList: [],       // List of all question sets in the input
 	current		: -1,		// The index of the current QuestionSet
 	crosshairs	: null,		// The cursor location
+    timeLimit   : null,     // The time limit
+    timeLeft    : null,     // The time currently remaining
+    timeLabel   : null,
+    ended       : false,    // If true, the gamew has ended
+    version     : 'v -0.1', // The version number
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
@@ -62,13 +72,12 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('gameID', app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
         
-		this.crosshairs = cocos.nodes.Node.create({file: resources('/resources/crosshairs.png')});
-		this.crosshairs.set('position', new geo.Point(400, 300));
-		this.addChild({child: this.crosshairs});
+		this.crosshairs = cocos.nodes.Sprite.create({file: '/resources/crosshairs.png'});
+        this.crosshairs.set('scale', 0.25);
 		
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
-        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
+        __remote_resources__["/resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "numberline.xml"};
         
         // Preload remote resources
         var p = cocos.Preloader.create();
@@ -80,28 +89,39 @@ var FluencyApp = KeyboardLayer.extend({
 	
 	// Callback for when a QuestionSet ends
 	onEndOfSet: function() {
-		if(this.current > -1) {
-			this.removeChild({child: this.questionList[this.current]});
-		}
-		if(this.current > this.questionList.length) {
+		if(this.current < this.questionList.length - 1) {
+            if(this.current > -1) {
+                this.removeChild({child: this.questionList[this.current]});
+            }
 			this.current += 1;
 			this.addChild({child: this.questionList[this.current]});
+            this.questionList[this.current].nextQuestion();
 		}
 		else {
 			// End game
+            this.endOfGame(true);
 		}
 	},
 	
 	// Callback for whenever the mouse is moved in canvas
 	mouseMoved: function(evt) {
-		var pt = this.crosshairs.get('position');
-		pt.x = evt.locationInCanvas.x;
-		this.crosshairs.set('position', pt);
+        if(this.current > -1 && !this.ended) {
+            var pt = this.crosshairs.get('position');
+        
+            var c = this.questionList[this.current];
+            var min_x = c.get('position').x + c.numberline.get('position').x;
+            var max_x = min_x + c.numberline.length;
+            pt.x = Math.max(Math.min(evt.locationInCanvas.x, max_x), min_x);
+            
+            this.crosshairs.set('position', pt);
+        }
 	},
 	
 	// Callback for mouseDown events
 	mouseDown: function (evt) {
-		this.answerQuestion(1);
+        if(!this.ended && this.current > -1) {
+            this.answerQuestion(evt.locationInCanvas.x);
+        }
 	},
 	
 	// Callback for mouseUp events
@@ -113,37 +133,73 @@ var FluencyApp = KeyboardLayer.extend({
 	
 	// Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
-        if(resource("resources/testset.xml") !== undefined) {
-            this.parseXML(resource("resources/testset.xml"));
+        if(resource("/resources/testset.xml") !== undefined) {
+            console.log(resource("/resources/testset.xml"));
+            this.loadXML(XML.parser(resource("/resources/testset.xml").firstChild));
         }
         else {
             console.log("ERROR: No remote XML found to parse.");
         }
     },
     
+    loadXML: function(root) {
+        console.log(root);
+        
+        this.timeLimit = XML.getDeepChildByName(root, 'TIME_LIMIT').value;
+        
+        var set = XML.getDeepChildByName(root, 'PROBLEM_SET');
+        for(var i=0; i<set.children.length; i++) {
+            this.questionList.push(QuestionSet.create(set.children[i]));
+            events.addListener(this.questionList[i], 'onEndOfSet', this.onEndOfSet.bind(this));
+        }
+        
+        this.preprocessingComplete();
+    },
+    
     // The 'real init()' called after all the preloading/parsing is completed
     preprocessingComplete: function () {
+        this.background = Background.create();
+        this.addChild({child: this.background});
+        
+        if(this.timeLimit != null) {
+            this.timeLeft = this.timeLimit;
+            this.timeLabel = cocos.nodes.Label.create({string: this.timeLimit});
+            this.timeLabel.set('position', new geo.Point(800, 100));
+            this.addChild({child: this.timeLabel});
+        }
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
-        setTimeout(this.startGame.bind(this), RC.initialCountdown);
+        setTimeout(this.startGame.bind(this), 3000);
         
-        $(window).unload(this.endOfGame.bind(this, null));
+        //$(window).unload(this.endOfGame.bind(this, null));
     },
     
     // Starts the game
     startGame: function () {
         // Schedule per frame update function
         this.scheduleUpdate();
+        
+        this.onEndOfSet();
+        
+        this.addChild({child: this.crosshairs});
+        this.crosshairs.set('position', new geo.Point(400, 220));
+        this.crosshairs.set('zOrder', 10);
+        console.log(this.crosshairs);
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
     endOfGame: function(finished) {
-        $(window).unbind('unload')
+        //$(window).unbind('unload')
     
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        this.ended = true;
+        
+        this.removeChild({child: this.crosshairs});
+        this.removeChild({child: this.questionList[this.current]});
     
         var ql = this.get('questionList')
         var i = 0, correct = 0, incorrect = 0, unanswered = 0;
@@ -186,12 +242,59 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Handles answering the current question
     answerQuestion: function(ans) {
-		this.questionList.giveAnswer(ans);
+		this.questionList[this.current].giveAnswer(ans);
     },
     
     // Called every frame, manages keyboard input
     update: function(dt) {
+        if(this.timeLimit != null) {
+            this.timeLeft -= dt;
+            if(this.timeLeft < 0) {
+                this.timeLeft = 0;
+                cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+                this.endOfGame();
+            }
+            
+            var temp = this.timeLeft;
+            if(temp.toFixed) {
+                temp = temp.toFixed(1);
+            }
+            this.timeLabel.string = temp;
+        }
 	},
+});
+
+var MenuLayer = cocos.nodes.Menu.extend({
+    startButton : null,     // Holds the button to start the game
+    startGame   : null,     // Holds the function in the app that starts the game
+    init: function(hook) {
+        MenuLayer.superclass.init.call(this, {});
+        
+        // Create the button
+        var opts = Object();
+        opts['normalImage'] = '/resources/start-button.png';
+        opts['selectedImage'] = '/resources/start-button.png';
+        opts['disabledImage'] = '/resources/start-button.png';
+        // We use this callback so we can do cleanup before handing everything over to the main game
+        opts['callback'] = this.startButtonCallback.bind(this);
+        
+        var sb = cocos.nodes.MenuItemImage.create(opts);
+        sb.set('position', new geo.Point(0, 0));
+        sb.set('scaleX', 0.5);
+        sb.set('scaleY', 0.5);
+        this.set('startButton', sb);
+        this.addChild({child: sb});
+        
+        var vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(400, 250));
+        this.set('volumeButtonOff', vc);
+    },
+    
+    // Called when the button is pressed, clears the button, then hands control over to the main game
+    startButtonCallback: function() {
+        this.removeChild(this.get('startButton'));
+        events.trigger(this, 'startGameEvent');
+    },
 });
 
 //========== Main program body ================================================
@@ -202,41 +305,43 @@ exports.main = function() {
     // From: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
     // This defines function.bind for web browsers that have not implemented it:
     // Firefox < 4 ; Chrome < 7 ; IE < 9 ; Safari (all) ; Opera (all)
-    if (!Function.prototype.bind) {  
-        Function.prototype.bind = function (oThis) {  
-      
-        if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
-            throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
-        }
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function (oThis) {
+            if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function
+                throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");
+            }
 
-        var aArgs = Array.prototype.slice.call(arguments, 1),   
-            fToBind = this,   
-            fNOP = function () {},  
-            fBound = function () {  
-              return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));      
-            };  
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));
+                };  
 
-        fNOP.prototype = this.prototype;  
-        fBound.prototype = new fNOP();  
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
 
-        return fBound;  
-      };  
-    }  
+            return fBound;
+        };  
+    }
     
-    // Get director
-    var director = cocos.Director.get('sharedDirector');
-
+    Content.initialize();
+    
     // Attach director to our <div> element
+    var director = cocos.Director.get('sharedDirector');
     director.attachInView(document.getElementById('cocos_test_app'));
     
-    // Create a scene
+    // Create a scene and layers
     var scene = cocos.nodes.Scene.create();
-
-    // Create our layers
     var app = FluencyApp.create();
+    var menu = MenuLayer.create();
+    
+    // Set up inter-layer events
+    events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
+    scene.addChild({child: menu});
 
     // Run the scene
     director.runWithScene(scene);
