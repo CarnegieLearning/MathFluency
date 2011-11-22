@@ -70,13 +70,13 @@ var Player = PNode.extend({
     
     // Changes the currently displayed selector on the car
     // STATIC BIND
-    changeSelector: function(newVal) {
+    changeSelector: function(newVal, location) {
         // Remove previous selector if there was one
         var prev = this.get('selector');
         if(prev != null) {
             this.removeChild(prev);
         }
-        
+
         newVal = this.get('newSelector');
     
         // Create the new selector if one is provided
@@ -103,13 +103,18 @@ var Player = PNode.extend({
     
     // Starts an intermission
     // STATIC BIND
-    startIntermission: function(newVal) {
+    startIntermission: function(newVal, location) {
         this.endTurboBoost();
         
         var tm = this.get('turboMOT');
         if(tm != null) {
             tm.pause();
             this.set('turboMOT', tm);
+        }
+        
+        // Stop the player on the checkpoint
+        if(this.get('zCoordinate') > location) {
+            this.set('zCoordinate', location);
         }
         
         this.set('intermission', true);

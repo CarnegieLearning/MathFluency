@@ -37,9 +37,9 @@ var Intermission = PNode.extend({
     
     // Manages question timing and movement
     update: function(dt) {
-        if(PNode.cameraZ >= this.get('zCoordinate') && !this.fired) {
+        if(PNode.cameraZ + 6 >= this.get('zCoordinate') && !this.fired) {
             this.fired = true;
-            events.trigger(this, 'changeSelector', this.selector);
+            events.trigger(this, 'changeSelector', this.selector, this.get('zCoordinate'));
         }
         
         Intermission.superclass.update.call(this, dt);

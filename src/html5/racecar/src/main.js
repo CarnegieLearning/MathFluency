@@ -308,7 +308,7 @@ var FluencyApp = KeyboardLayer.extend({
             // Gets the intermission value
             
             var inter = Intermission.create(interContent, z);
-            events.addListener(inter, 'changeSelector', this.get('player').startIntermission);
+            events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
             events.addListener(inter, 'changeSelector', this.pause.bind(this));
             inter.idle();
 			
@@ -323,7 +323,7 @@ var FluencyApp = KeyboardLayer.extend({
 				alignV      : 0,
 				visibility  : 1,
 				xCoordinate : 0,
-				zCoordinate : z+6,
+				zCoordinate : z,
 				dropoffDist : -10,
 			}
 			opts['content'] = cocos.nodes.Sprite.create({file: '/resources/checkpoint_p.png',});
