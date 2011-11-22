@@ -40,19 +40,27 @@ Content.registerContent = function(str, cls) {
 Content.initialize = function () {
     Content.registerContent(LabelBG.identifier, LabelBG);
     Content.registerContent('Fraction', FractionRenderer);
+    Content.registerContent('PieChart', PieChart);
+}
+
+Content._validateNode = function (xmlNode) {
+    if(xmlNode.name == 'CONTENT') {
+        if(xmlNode.attributes.hasOwnProperty('TYPE')) {
+            if(Content.registeredContent.hasOwnProperty(xmlNode.attributes.TYPE)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 // Build Content subclass from parsed XML
 Content.buildFrom = function(xmlNode) {
-    if(xmlNode.name == 'CONTENT') {
-        if(xmlNode.attributes.hasOwnProperty('TYPE')) {
-            if(Content.registeredContent.hasOwnProperty(xmlNode.attributes.TYPE)) {
-                var cs = XML.getChildByName(xmlNode, 'ContentSettings');
-                if(cs) {
-                    return Content.registeredContent[xmlNode.attributes.TYPE].create.call(
-                        Content.registeredContent[xmlNode.attributes.TYPE], cs.attributes);
-                }
-            }
+    if(Content._validateNode(xmlNode)) {
+        var cs = XML.getChildByName(xmlNode, 'ContentSettings');
+        if(cs) {
+            return Content.registeredContent[xmlNode.attributes.TYPE].create.call(
+                Content.registeredContent[xmlNode.attributes.TYPE], cs.attributes);
         }
     }
     
