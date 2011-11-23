@@ -11,9 +11,7 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5",
-                "level05-stage1",
-                "level05-stage2"
+                "level04-stage5"
             ]
         },
         "cond2": {
@@ -27,9 +25,7 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5",
-                "level05-stage1",
-                "level05-stage2"
+                "level04-stage5"
             ]
         },
         "cond3": {
@@ -43,9 +39,7 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5",
-                "level05-stage1",
-                "level05-stage2"
+                "level04-stage5"
             ]
         },
         "cond4": {
@@ -59,9 +53,7 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5",
-                "level05-stage1",
-                "level05-stage2"
+                "level04-stage5"
             ]
         },
         "cond5": {
@@ -75,9 +67,7 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5",
-                "level05-stage1",
-                "level05-stage2"
+                "level04-stage5"
             ]
         },
         "cond6": {
@@ -91,14 +81,7 @@
                 "level04-stage2",
                 "level04-stage3",
                 "level04-stage4",
-                "level04-stage5",
-                "level05-stage1",
-                "level05-stage2",
-                "carlow-level03-stage0",
-                "carlow-level03-stage1",
-                "carlow-level03-stage2",
-                "carlow-level03-stage3",
-                "carlow-level03-stage4"
+                "level04-stage5"
             ]
         }
     },
@@ -228,41 +211,6 @@
             "displayName": "Lvl 4: HTML 5",
             "engine": "racecar_html5",
             "cli_fluency_task": "level04stage5"
-        },
-        "carlow-level03-stage0": {
-            "displayName": "Carlow 0",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage0"
-        },
-        "carlow-level03-stage1": {
-            "displayName": "Carlow 1",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage1"
-        },
-        "carlow-level03-stage2": {
-            "displayName": "Carlow 2",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage2"
-        },
-        "carlow-level03-stage3": {
-            "displayName": "Carlow 3",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage3"
-        },
-        "carlow-level03-stage4": {
-            "displayName": "Carlow 4",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage4"
-        },
-        "level05-stage1": {
-            "displayName": "Lvl 5: Jungle 1",
-            "engine": "jungle",
-            "cli_fluency_task": "junglebalanceeqn"
-        },
-        "level05-stage2": {
-            "displayName": "Lvl 5: Scuba 2",
-            "engine": "scuba",
-            "cli_fluency_task": "scubabalanceeqn"
         }
     },
     
