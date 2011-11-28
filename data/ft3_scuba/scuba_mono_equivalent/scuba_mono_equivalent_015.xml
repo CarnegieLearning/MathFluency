@@ -1,0 +1,327 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="gold" MEDAL_THRESHOLD="40500"><![CDATA[Gold]]></MEDAL>
+	<MEDAL Id="silver" MEDAL_THRESHOLD="24000"><![CDATA[Silver]]></MEDAL>
+	<MEDAL Id="bronze" MEDAL_THRESHOLD="21000"><![CDATA[Bronze]]></MEDAL>
+</MEDALS>
+<GAME_DATA>
+<MESSAGES>
+		<MESSAGES_EVENT type="start">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Start1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/start.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="jump">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Jump1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[All right!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/correct_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+			<MESSAGE id="2">
+				<TEXT_MSG><![CDATA[Cha-ching!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/correct_accum2.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Good choice!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/correct_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Uh!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/incorrect_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+			<MESSAGE id="2">
+				<TEXT_MSG><![CDATA[Bad move!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/incorrect_accum2.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You missed a good one!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/incorrect_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="background">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[background1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/background.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="interlude">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Interlude1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/interlude.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+	</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="medal">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You earned a medal!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/medal.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="end">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Game over.]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/end.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="new">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[new]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+</MESSAGES>
+	<CORRECT ACCUMULATE="1500" AVOID="1500"/> 
+	<INCORRECT ACCUMULATE="-100" AVOID="-100"/> 
+	<BONUS_REMAINING_LIFE VALUE="5000"/>
+	<LIVES TOTAL="3" ACCUM_IMPACT="-1" AVOID_IMPACT="-1"/>
+	<GRAVITY VALUE="true"/>
+	<BASE_LANE VALUE="1"/>
+	<COMMIT_AREA VALUE="50"/>
+	<RANDOM_SEED VALUE="966"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="3500">
+		<TARGET ID="1" Type="Text" Value="Equal to 4x">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="3x + x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(2 + 2)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3x + x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="2x + 2">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="8x / 2">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3x + 1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="2x + 2">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="5(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="5(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="2x + 2x">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="3000">
+		<TARGET ID="2" Type="Text" Value="Equal to 2x">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="3x - 1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(4 - 2)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x + 1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="x(1 + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x + 1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x + 1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="6x - 4x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="10" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="4x / 2">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
+		<TARGET ID="3" Type="Text" Value="Equal to 4x">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(1 + 3)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="7x - 3x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="5(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="7x - 3x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="x + 3x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="6(x - 2)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3(x + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="12x / 3">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="x(1 + 3)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3(x + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
+		<TARGET ID="4" Type="Text" Value="Equal to 5x">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="2(x + 3)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="3x + 2x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="4x + x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="20x / 4">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(3 + 2)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="10x / 2">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="24x / 4">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3(x + 2)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="8x - 3x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(6 - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</GAME_DATA>
+</INPUT>
