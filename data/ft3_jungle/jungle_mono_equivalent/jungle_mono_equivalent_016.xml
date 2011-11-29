@@ -99,211 +99,101 @@
 	<RANDOM_SEED VALUE="158"/>
 <PROBLEM_SET>
 	<PROBLEM_SUBSET TIME_PER_QUESTION="3500">
-		<TARGET ID="1" Type="Text" Value="Equal to 2x">
+		<TARGET ID="1" Type="Text" Value="Equal to 5x">
 			
 		</TARGET>
-		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="x(1 + 1)">
+		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(4x + 1)">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="1(x + 1)">
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="x + 4x">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="12x / 4">
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="5(2x - x)">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="1(x + 1)">
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="12x / 2">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="3x - 1">
+		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(3 + 2)">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="6x - 4x">
+			<QUESTION Lane="0" Type="Text" Value="4(x + 1)">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="1(x + 1)">
+			<QUESTION Lane="1" Type="Text" Value="x(3 + 2)">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="3(x - 1)">
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="6x - 1">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="x + 1">
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(4x + 1)">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="10" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="1(x + 1)">
+			<QUESTION Lane="1" Type="Text" Value="x(8 - 3)">
 				
 			</QUESTION>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET TIME_PER_QUESTION="3000">
-		<TARGET ID="2" Type="Text" Value="Equal to 5x">
+		<TARGET ID="2" Type="Text" Value="Equal to 6x">
 			
 		</TARGET>
 		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="x(1 + 4)">
+			<QUESTION Lane="1" Type="Text" Value="3(x + 3)">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="2(x + 3)">
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="24x / 4">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="15x / 3">
+			<QUESTION Lane="1" Type="Text" Value="10x - 4">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="1(x + 4)">
+			<QUESTION Lane="1" Type="Text" Value="7(x - 1)">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="x(8 - 3)">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="8x - 3">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="3x + 2x">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="7(x - 2)">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="12x / 2">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="18x / 3">
-				
-			</QUESTION>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-	<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
-		<TARGET ID="3" Type="Text" Value="Equal to 3x">
-			
-		</TARGET>
-		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="4x - 1">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="4x - x">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="5x - 2x">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="x(4 - 1)">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="2x + x">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="2x + x">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="12x / 4">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="x + 2x">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="12x / 3">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="4x - x">
-				
-			</QUESTION>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-	<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
-		<TARGET ID="4" Type="Text" Value="Equal to 6x">
-			
-		</TARGET>
-		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="28x / 4">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="x(3 + 3)">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
 			<QUESTION Lane="1" Type="Text" Value="9x - 3x">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="2(x + 4)">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="2x + 4">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="x(4 + 2)">
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="28x / 4">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="8(x - 2)">
+			<QUESTION Lane="1" Type="Text" Value="18x / 3">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="x + 5">
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="8x - 2x">
 				
 			</QUESTION>
 		</QUESTION>
@@ -312,8 +202,118 @@
 				
 			</QUESTION>
 		</QUESTION>
+		<QUESTION ANSWER="1" ID="10" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(x + 5)">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
+		<TARGET ID="3" Type="Text" Value="Equal to 2x">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="6x / 2">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="x(x + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="3x - x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(x + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x + 1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="x + x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x(x + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="2(x - 0)">
+				
+			</QUESTION>
+		</QUESTION>
 		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="5x + 1">
+			<QUESTION Lane="0" Type="Text" Value="x(5 - 3)">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
+		<TARGET ID="4" Type="Text" Value="Equal to 3x">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x + 2x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="6x - 3x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="4(x - 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="12x / 4">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="8x / 2">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="5(x - 2)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="x + 2x">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="3(x - 0)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="2(x + 1)">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="5x - 2">
 				
 			</QUESTION>
 		</QUESTION>

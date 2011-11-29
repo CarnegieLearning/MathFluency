@@ -37,25 +37,28 @@ def generateDataSet():
     i = 0
     list = []
     
+    coeff = [2,3,4,5,6]
     while(i < 4):
-        temp = generate()
+        temp = generate(coeff)
         
         if(temp != None):
             list.append(temp)
             i += 1
-    
+
     return list
 
 # Generates a subset
-def generate():
+def generate(coeff):
     if(random.randint(0, 0) == 0):
-        r = random.randint(2, 6)
+        r = random.choice(coeff)
+        coeff.remove(r)
         sub = 'Equal to ' + str(r) + 'x'
         set = []
         valid = getMonoValid
         invalid = getMonoInvalid
     else:
-        r = (random.randint(2, 6), random.randint(1, 9))
+        r = (random.choice(coeff), random.randint(1, 9))
+        coeff.remove(r[0])
         sub = 'Equal to ' + str(r[0]) + 'x + ' + str(r[1])
         set = []
         valid = getBiValid
@@ -67,9 +70,9 @@ def generate():
         ans = str(random.randint(0, 1))
     
         if(ol == ans):
-            s = valid(r).replace('1x', 'x')
+            s = oneX(valid(r))
         else:
-            s = invalid(r).replace('1x', 'x')
+            s = oneX(invalid(r))
     
         set.append((ol, s, ans))
     
@@ -77,16 +80,27 @@ def generate():
         
     return (sub, set)
 
+    # Eliminate "1x" WITHOUT eliminating "11x", "21x", etc.
+def oneX(s):
+    p = s.split('1x')
+    i = 0
+    while(len(p) > 1):
+        if(len(p[0]) > 0 and p[0][-1].isdigit()):
+            p[0] = p[0] + '1'
+        p[0] = p[0] + 'x' + p.pop(1)
+        
+    return p[0]
+    
 # Gets a correct monomial
 def getMonoValid(coeff):
-    r = random.randint(0, 4)
+    r = random.randint(0, 6)
     
     if(r == 0):
         val = random.randint(1, coeff-1)
-        return str(coeff-val) + 'x + ' + str(val).replace('1', '') + 'x'
+        return str(coeff-val) + 'x + ' + str(val) + 'x'
     elif(r == 1):
         val = random.randint(1, 4)
-        return str(coeff+val) + 'x - ' + str(val).replace('1', '') + 'x'
+        return str(coeff+val) + 'x - ' + str(val) + 'x'
     elif(r == 2):
         val = random.randint(1, coeff-1)
         return 'x(' + str(coeff-val) + ' + ' + str(val) + ')'
@@ -96,10 +110,18 @@ def getMonoValid(coeff):
     elif(r == 4):
         val = random.randint(2, 4)
         return str(val*coeff) + 'x / ' + str(val)
+    elif(r == 5):
+        return 'x + ' + str(coeff-1) + 'x'
+    elif(r == 6):
+        if(random.randint(0, 1) == 0):
+            return str(coeff) + '(x - 0)'
+        else:
+            return str(coeff) + '(2x - x)'
+        
 
 # Gets an incorrect monomial
 def getMonoInvalid(coeff):
-    r = random.randint(0, 4)
+    r = random.randint(0, 5)
     val = random.randint(1, coeff-1)
     
     if(r == 0):
@@ -113,6 +135,8 @@ def getMonoInvalid(coeff):
     elif(r == 4):
         val = random.randint(2, 4)
         return str(val*(coeff+1)) + 'x / ' + str(val)
+    elif(r == 5):
+        return 'x(' + str(coeff - val) + 'x + ' + str(val) + ')'
 
 # Gets a correct binomial
 def getBiValid(tup):
@@ -132,7 +156,7 @@ def getBiValid(tup):
 # Gets an incorrect binomial
 def getBiInvalid(tup):
     coeff, c = tup
-    r = random.randint(0, 6)
+    r = random.randint(0, 5)
     val = random.randint(1, coeff-1)
     
     if(r < 3):
@@ -142,11 +166,6 @@ def getBiInvalid(tup):
     elif(r == 4):
         return str(coeff) + '(x + ' + str(c) + ')'
     elif(r == 5):
-        if(random.randint(0, 1) == 0):
-            return str(coeff) + 'x - ' + str(c)
-        else:
-            return str(c) + ' - ' + str(coeff) + 'x'
-    elif(r == 6):
         val = random.randint(2, 4)
         return '(' + str((coeff+1)*val) + 'x + ' + str((c+1)*val) + ') / ' + str(val)
         
@@ -241,5 +260,6 @@ def getHeader(filename):
         logfile.write("Error opening xml header file\n")
         return [""]
 
-runBatch("jungle_mono_equivalent")
-runBatch("scuba_mono_equivalent")
+postfix = "_mono_equivalent"
+runBatch("jungle" + postfix)
+runBatch("scuba" + postfix)
