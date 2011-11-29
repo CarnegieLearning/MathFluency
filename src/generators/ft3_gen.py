@@ -5,7 +5,7 @@ import xml.dom.minidom
 Element = xml.dom.minidom.Element
 Text = xml.dom.minidom.Text
 
-def runBatch():
+def runBatch(prefix):
     i = 1
     filelist = []       #Keeps tracks of files written so far
 
@@ -18,8 +18,8 @@ def runBatch():
         towrite = toXMLLegacy(dataset).toprettyxml()
         
         #Prepare to write to the XML file
-        filelist.append("jungle_mono_equivalent" + str(i).zfill(3) + ".xml")
-        f = open("private/jungle_mono_equivalent/jungle_mono_equivalent_" + str(i).zfill(3) + ".xml", 'w')
+        filelist.append(prefix + str(i).zfill(3) + ".xml")
+        f = open("private/" + prefix + "/" + prefix + "_" + str(i).zfill(3) + ".xml", 'w')
         
         #Actually write to the XML file
         if(f):
@@ -46,10 +46,20 @@ def generateDataSet():
     
     return list
 
+# Generates a subset
 def generate():
-    r = random.randint(2, 6)
-    sub = 'Equal to ' + str(r) + 'x'
-    set = []
+    if(random.randint(0, 0) == 0):
+        r = random.randint(2, 6)
+        sub = 'Equal to ' + str(r) + 'x'
+        set = []
+        valid = getMonoValid
+        invalid = getMonoInvalid
+    else:
+        r = (random.randint(2, 6), random.randint(1, 9))
+        sub = 'Equal to ' + str(r[0]) + 'x + ' + str(r[1])
+        set = []
+        valid = getBiValid
+        invalid = getBiInvalid
     
     i = 0
     while(i < 10):
@@ -57,25 +67,26 @@ def generate():
         ans = str(random.randint(0, 1))
     
         if(ol == ans):
-            s = getMonoValid(r)
+            s = valid(r).replace('1x', 'x')
         else:
-            s = getMonoInvalid(r)
+            s = invalid(r).replace('1x', 'x')
     
         set.append((ol, s, ans))
     
         i += 1
         
     return (sub, set)
-    
+
+# Gets a correct monomial
 def getMonoValid(coeff):
     r = random.randint(0, 4)
     
     if(r == 0):
         val = random.randint(1, coeff-1)
-        return str(coeff-val).replace('1', '') + 'x + ' + str(val).replace('1', '') + 'x'
+        return str(coeff-val) + 'x + ' + str(val).replace('1', '') + 'x'
     elif(r == 1):
         val = random.randint(1, 4)
-        return str(coeff+val).replace('1', '') + 'x - ' + str(val).replace('1', '') + 'x'
+        return str(coeff+val) + 'x - ' + str(val).replace('1', '') + 'x'
     elif(r == 2):
         val = random.randint(1, coeff-1)
         return 'x(' + str(coeff-val) + ' + ' + str(val) + ')'
@@ -85,37 +96,61 @@ def getMonoValid(coeff):
     elif(r == 4):
         val = random.randint(2, 4)
         return str(val*coeff) + 'x / ' + str(val)
-    
+
+# Gets an incorrect monomial
 def getMonoInvalid(coeff):
     r = random.randint(0, 4)
+    val = random.randint(1, coeff-1)
     
     if(r == 0):
-        val = random.randint(1, coeff-1)
-        return str(coeff + val).replace('1', '') + 'x - ' + str(val)
+        return str(coeff + val) + 'x - ' + str(val)
     elif(r == 1):
-        val = random.randint(1, coeff-1)
-        return str(coeff - val).replace('1', '') + 'x + ' + str(val)
+        return str(coeff - val) + 'x + ' + str(val)
     elif(r == 2):
-        val = random.randint(1, coeff-1)
         return str(coeff + val) + '(x - ' + str(val) + ')'
     elif(r == 3):
-        val = random.randint(1, coeff-1)
         return str(coeff - val) + '(x + ' + str(val) + ')'
     elif(r == 4):
         val = random.randint(2, 4)
         return str(val*(coeff+1)) + 'x / ' + str(val)
-    
-def getBiValid(coeff, c):
-    s = '(' + str(coeff*2) + ' + ' + str(c*2) + ') / 2'
-    
-    s = getMonoValid(coeff) + ' + ' + str(c)
-    
-    s = getMonoValid(coeff) + ' + ' + str(c-1) + ' + 1'
 
-def getBiInvalid(coeff, c):
-    pass
+# Gets a correct binomial
+def getBiValid(tup):
+    coeff, c = tup
+    r = random.randint(0, 4)
     
-#Hurix Legacy Format - Converts internal dataset representation to XML
+    if(r < 3):
+        return getMonoValid(coeff) + ' + ' + str(c)
+    elif(r == 3):
+        val = random.randint(2, 4)
+        return '(' + str(coeff*val) + 'x + ' + str(c*val) + ') / ' + str(val)
+    elif(r == 4):
+        return str(c) + ' + ' + str(coeff) + 'x'
+    elif(r == 5):
+        return str(val) + 'x + (' + str(coeff - val) + 'x + ' + str(c) + ')'
+
+# Gets an incorrect binomial
+def getBiInvalid(tup):
+    coeff, c = tup
+    r = random.randint(0, 6)
+    val = random.randint(1, coeff-1)
+    
+    if(r < 3):
+        return getMonoInvalid(coeff) + ' + ' + str(c)
+    elif(r == 3):
+        return str(val) + 'x(' + str(coeff - val) + 'x + ' + str(c) + ')'
+    elif(r == 4):
+        return str(coeff) + '(x + ' + str(c) + ')'
+    elif(r == 5):
+        if(random.randint(0, 1) == 0):
+            return str(coeff) + 'x - ' + str(c)
+        else:
+            return str(c) + ' - ' + str(coeff) + 'x'
+    elif(r == 6):
+        val = random.randint(2, 4)
+        return '(' + str((coeff+1)*val) + 'x + ' + str((c+1)*val) + ') / ' + str(val)
+        
+#FT3 Hurix Legacy Format - Converts internal dataset representation to XML
 def toXMLLegacy(dataset):
     allQuestions = Element("PROBLEM_SET")
     
@@ -126,7 +161,7 @@ def toXMLLegacy(dataset):
         
     return allQuestions
 
-#Hurix Legacy Format - Converts a question subset into its XML equivalent
+#FT3 Hurix Legacy Format - Converts a question subset into its XML equivalent
 def XMLSubsetLegacy(subset, sNum):
     selector, questions = subset
     
@@ -149,7 +184,7 @@ def XMLSubsetLegacy(subset, sNum):
         
     return subset
 
-#Hurix Legacy Format - Converts a single question into its XML equivalent
+#FT3 Hurix Legacy Format - Converts a single question into its XML equivalent
 def XMLQuestionLegacy(q, qNum):
     question = Element("QUESTION")
     question.setAttribute("ID", str(qNum))
@@ -206,4 +241,5 @@ def getHeader(filename):
         logfile.write("Error opening xml header file\n")
         return [""]
 
-runBatch()
+runBatch("jungle_mono_equivalent")
+runBatch("scuba_mono_equivalent")
