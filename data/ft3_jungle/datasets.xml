@@ -1,4 +1,6 @@
 <datasets game_id="ft3_jungle">
+    <dataset>jungle_bi_equivalent</dataset>
+    <dataset>jungle_mix_equivalent</dataset>
     <dataset>jungle_mono_equivalent</dataset>
     <dataset>junglebalanceeqn</dataset>
     <dataset>junglemultiples</dataset>

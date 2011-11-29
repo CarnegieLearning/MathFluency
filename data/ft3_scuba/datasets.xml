@@ -1,4 +1,6 @@
 <datasets game_id="ft3_scuba">
+    <dataset>scuba_bi_equivalent</dataset>
+    <dataset>scuba_mix_equivalent</dataset>
     <dataset>scuba_mono_equivalent</dataset>
     <dataset>scubabalanceeqn</dataset>
     <dataset>scubamultiples</dataset>
