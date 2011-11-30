@@ -53,17 +53,16 @@ def generate(coeff):
         r = random.choice(coeff)
         coeff.remove(r)
         sub = 'Equal to ' + str(r) + 'x'
-        set = []
         valid = getMonoValid
         invalid = getMonoInvalid
     else:
         r = (random.choice(coeff), random.randint(1, 9))
         coeff.remove(r[0])
         sub = 'Equal to ' + str(r[0]) + 'x + ' + str(r[1])
-        set = []
         valid = getBiValid
         invalid = getBiInvalid
-    
+        
+    set = []
     i = 0
     while(i < 10):
         ol = str(random.randint(0, 1))
@@ -79,8 +78,34 @@ def generate(coeff):
         i += 1
         
     return (sub, set)
+    
+# Generates values for the Carlow paper tests    
+def paperGen():
+    i = 0
+    f = open('private/carlow_test.txt', 'w')
+    
+    while(i < 25):
+        mono = random.randint(2, 6)
+        monoStr = str(mono) + 'x = '
+        if(random.randint(0, 1) == 1):
+            monoStr += getMonoValid(mono)
+        else:
+            monoStr += getMonoInvalid(mono)
+        
+        f.write(monoStr + '\n')
+    
+        bi = (random.randint(2, 6), random.randint(1, 9))
+        biStr = str(bi[0]) + 'x + ' + str(bi[1]) + ' = '
+        if(random.randint(0, 1) == 1):
+            biStr += getBiValid(bi)
+        else:
+            biStr += getBiInvalid(bi)
+    
+        f.write(biStr + '\n\n')
+        
+        i += 1
 
-    # Eliminate "1x" WITHOUT eliminating "11x", "21x", etc.
+# Eliminate "1x" WITHOUT eliminating "11x", "21x", etc.
 def oneX(s):
     p = s.split('1x')
     i = 0
@@ -263,3 +288,4 @@ def getHeader(filename):
 postfix = "_mono_equivalent"
 runBatch("jungle" + postfix)
 runBatch("scuba" + postfix)
+#paperGen()
