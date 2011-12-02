@@ -21,4 +21,10 @@ var NumberLineControl = BObject.extend({
     }
 });
 
+
+NumberLineControl.goldColor     = '#CC9900';
+NumberLineControl.silverColor   = '#C0C0C0';
+NumberLineControl.bronzeColor   = '#A67D3D';
+NumberLineControl.noMedalColor  = '#202020';
+
 exports.NumberLineControl = NumberLineControl
