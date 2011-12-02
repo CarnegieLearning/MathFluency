@@ -314,7 +314,7 @@ exports.addInstructorEndpoints = function (app, rootPath, gc, model, config)
         {
             console.log('Copying ' + questionResults.length + ' game output files');
             
-            async.forEach(questionResults,
+            async.forEachSeries(questionResults,
             function (item, callback)
             {
                 var inputPath = path.join(config.outputPath, item.dataFile);
