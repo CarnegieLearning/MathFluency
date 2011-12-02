@@ -72,12 +72,16 @@
         },
         "cond6": {
             "stages": [
-                "level05-stage1",
-                "level05-stage2",
-                "level05-stage3",
-                "level05-stage4",
-                "level05-stage5",
-                "level05-stage6"
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         }
     },
@@ -209,32 +213,32 @@
             "cli_fluency_task": "level04stage5"
         },
         "level05-stage1": {
-            "displayName": "Carlow 1",
+            "displayName": "Lvl 5: HTML 1",
             "engine": "jungle",
             "cli_fluency_task": "jungle_mono_equivalent"
         },
         "level05-stage2": {
-            "displayName": "Carlow 2",
+            "displayName": "Lvl 5: HTML 2",
             "engine": "scuba",
             "cli_fluency_task": "scuba_bi_equivalent"
         },
         "level05-stage3": {
-            "displayName": "Carlow 3",
+            "displayName": "Lvl 5: HTML 3",
             "engine": "jungle",
             "cli_fluency_task": "jungle_mix_equivalent"
         },
         "level05-stage4": {
-            "displayName": "Carlow 4",
+            "displayName": "Lvl 5: HTML 4",
             "engine": "scuba",
             "cli_fluency_task": "scuba_mono_equivalent"
         },
         "level05-stage5": {
-            "displayName": "Carlow 5",
+            "displayName": "Lvl 5: HTML 5",
             "engine": "jungle",
             "cli_fluency_task": "jungle_bi_equivalent"
         },
         "level05-stage6": {
-            "displayName": "Carlow 6",
+            "displayName": "Lvl 5: HTML 6",
             "engine": "scuba",
             "cli_fluency_task": "scuba_mix_equivalent"
         }
