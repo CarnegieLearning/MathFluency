@@ -21,6 +21,7 @@ var NumberLineControl = BObject.extend({
     }
 });
 
+NumberLineControl.medalScores   = [100, 75, 50, 25]
 
 NumberLineControl.goldColor     = '#CC9900';
 NumberLineControl.silverColor   = '#C0C0C0';

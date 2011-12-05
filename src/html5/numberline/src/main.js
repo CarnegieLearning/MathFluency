@@ -30,6 +30,7 @@ var XML = require('XML').XML;
 
 // Project Imports
 var Background = require('Background').Background;
+var HUD = require('HUD').HUD;
 var QuestionSet = require('QuestionSet').QuestionSet;
 
 // TODO: De-magic number these
@@ -47,11 +48,9 @@ var FluencyApp = KeyboardLayer.extend({
     questionList: [],       // List of all question sets in the input
 	current		: -1,		// The index of the current QuestionSet
 	crosshairs	: null,		// The cursor location
-    timeLimit   : null,     // The time limit
-    timeLeft    : null,     // The time currently remaining
-    timeLabel   : null,
+    hud         : null,     // Holds the player's heads up display
     ended       : false,    // If true, the gamew has ended
-    version     : 'v -0.1', // The version number
+    version     : 'v 0.0',  // The version number
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
@@ -75,6 +74,11 @@ var FluencyApp = KeyboardLayer.extend({
 		this.crosshairs = cocos.nodes.Sprite.create({file: '/resources/crosshairs.png'});
         this.crosshairs.set('scale', 0.25);
 		
+        // Create and add the HUD
+        var h = HUD.create();
+        this.set('hud', h);
+        this.addChild({child: h});
+        
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
         __remote_resources__["/resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "numberline.xml"};
@@ -145,12 +149,14 @@ var FluencyApp = KeyboardLayer.extend({
     loadXML: function(root) {
         console.log(root);
         
-        this.timeLimit = XML.getDeepChildByName(root, 'TIME_LIMIT').value;
+        this.hud.setTimeLeft(XML.getDeepChildByName(root, 'TIME_LIMIT').value);
         
         var set = XML.getDeepChildByName(root, 'PROBLEM_SET');
         for(var i=0; i<set.children.length; i++) {
             this.questionList.push(QuestionSet.create(set.children[i]));
-            events.addListener(this.questionList[i], 'onEndOfSet', this.onEndOfSet.bind(this));
+            events.addListener(this.questionList[i], 'endOfSet', this.onEndOfSet.bind(this));
+            events.addListener(this.questionList[i], 'beforeNextQuestion', this.hud.onBeforeNextQuestion);
+            events.addListener(this.questionList[i], 'questionTimerStart', this.hud.onQuestionTimerStart);
         }
         
         this.preprocessingComplete();
@@ -165,12 +171,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.versionLabel.set('position', new geo.Point(800, 500));
         this.addChild({child: this.versionLabel});
         
-        if(this.timeLimit != null) {
-            this.timeLeft = this.timeLimit;
-            this.timeLabel = cocos.nodes.Label.create({string: this.timeLimit});
-            this.timeLabel.set('position', new geo.Point(800, 100));
-            this.addChild({child: this.timeLabel});
-        }
+        events.addListener(this.hud, 'stageTimeExpired', this.endOfGame.bind(this));
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
@@ -191,14 +192,17 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: this.crosshairs});
         this.crosshairs.set('position', new geo.Point(400, 220));
         this.crosshairs.set('zOrder', 10);
-        console.log(this.crosshairs);
+        
+        this.hud.startGame();
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
     endOfGame: function(finished) {
         //$(window).unbind('unload')
     
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        s = cocos.Scheduler.get('sharedScheduler')
+        s.unscheduleUpdateForTarget(this);
+        s.unscheduleUpdateForTarget(this.hud);
         
         this.ended = true;
         
@@ -251,20 +255,6 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called every frame, manages keyboard input
     update: function(dt) {
-        if(this.timeLimit != null) {
-            this.timeLeft -= dt;
-            if(this.timeLeft < 0) {
-                this.timeLeft = 0;
-                cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
-                this.endOfGame();
-            }
-            
-            var temp = this.timeLeft;
-            if(temp.toFixed) {
-                temp = temp.toFixed(1);
-            }
-            this.timeLabel.string = temp;
-        }
 	},
 });
 

@@ -27,12 +27,13 @@ var Question = cocos.nodes.Node.extend({
 	displayValue: null,		// Content to display to the player
 	correctValue: null,		// The exact correct answer
 	tolerance	: 0.05,		// Allowable difference between response and answer
-	playerValue	: null,		// Player's response to the question
+	
+    playerValue	: null,		// Player's response to the question
     isCorrect   : null,     // Stores truth value
     isTimeout   : false,    // If true, the player timed out of responding to this question
+    
     responseTime: 0,        // Amount of time it took player to respond
     timeLimit   : null,     // Maximum amount of time allowed to answer this Question
-    timeLabel   : null,
     
     init: function(node) {
         Question.superclass.init.call(this);
@@ -41,11 +42,7 @@ var Question = cocos.nodes.Node.extend({
 		this.correctValue = XML.getChildByName(node, 'ANSWER').value;
         
         if(node.attributes.hasOwnProperty('timeLimit')) {
-            console.log('Time Limit: ' + node.attributes['timeLimit'])
             this.timeLimit = node.attributes['timeLimit'];
-            this.timeLabel = cocos.nodes.Label.create({string: this.timeLimit});
-            this.timeLabel.set('position', new geo.Point(0,50));
-            this.addChild({child: this.timeLabel});
         }
 		
 		this.addChild({child: this.displayValue});
@@ -57,6 +54,7 @@ var Question = cocos.nodes.Node.extend({
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
         
 		// Evaluate the response
+        //TODO: Implement bands of correctness rather than just correct/incorrect
 		if(Math.abs(ans - this.correctValue) < this.tolerance) {
             this.isCorrect = true;
 			return true;
@@ -65,6 +63,7 @@ var Question = cocos.nodes.Node.extend({
 		return false;
     },
     
+    // Called every frame
     update: function(dt) {
         if(this.playerValue == null) {
             this.responseTime += dt;
@@ -73,10 +72,9 @@ var Question = cocos.nodes.Node.extend({
                 if(this.responseTime > this.timeLimit) {
                     this.responseTime = this.timeLimit;
                     this.isCorrect = false;
+                    this.isTimeout = true;
                     events.trigger(this, 'questionTimeout');
                 }
-                
-                this.timeLabel.string = (this.timeLimit - this.responseTime).toFixed(1);
             }
         }
     }

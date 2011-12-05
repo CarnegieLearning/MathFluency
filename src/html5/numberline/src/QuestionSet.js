@@ -69,7 +69,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         }
         else {
             var that = this;
-            setTimeout(function() {events.trigger(that, 'onEndOfSet')}, 1000);
+            setTimeout(function() {events.trigger(that, 'endOfSet')}, 1000);
         }
     },
     
@@ -79,6 +79,10 @@ var QuestionSet = cocos.nodes.Node.extend({
         this.addChild({child: this.questions[this.current]});
         this.questions[this.current].scheduleUpdate();
         events.trigger(this, 'nextQuestion');
+        
+        if(this.questions[this.current].timeLimit != null) {
+            events.trigger(this, 'questionTimerStart', this.questions[this.current].timeLimit);
+        }
     },
     
     // Answers the current question
@@ -98,13 +102,14 @@ var QuestionSet = cocos.nodes.Node.extend({
         }
         ans = Math.max(ans, 0);
     
+        //TODO: Allow for more than 2 'bands' for results
+        // Correct feedback
         if(this.questions[this.current].answerQuestion(ans)) {
-            // Correct feedback
             events.trigger(this, 'rightAnswer');
             this.set('lineColor', '#22FF22');
         }
+        // Incorrect feedback
         else {
-            // Incorrect feedback
             events.trigger(this, 'wrongAnswer');
             this.set('lineColor', '#FF2222');
         }
