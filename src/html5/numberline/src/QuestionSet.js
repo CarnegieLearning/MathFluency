@@ -38,6 +38,7 @@ var QuestionSet = cocos.nodes.Node.extend({
     
         // Statically binding functions used only as callbacks
         this.resetColor = this.resetColor.bind(this);
+        this.onQuestionTimeout = this.onQuestionTimeout.bind(this)
         
         this.set('position', new geo.Point(100, 200));
         this.numberline = NumberLine.create(XML.getChildByName(node, 'NUMBER_LINE'));
@@ -49,7 +50,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         // Build the list of questions in the subset
         for(var i=0; i<ql.length; i++) {
             this.questions.push(Question.create(ql[i]));
-            events.addListener(this.questions[i], 'questionTimeout', this.onQuestionTimeout.bind(this));
+            events.addListener(this.questions[i], 'questionTimeout', this.onQuestionTimeout);
         }
         
         this.addChild({child: this.numberline});
