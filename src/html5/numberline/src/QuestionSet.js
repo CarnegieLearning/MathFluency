@@ -26,6 +26,7 @@ var XML = require('XML').XML;
 var Question = require('Question').Question;
 var NumberLine = require('NumberLine').NumberLine;
 
+// Holds the in game representation of a QuestionSubset
 var QuestionSet = cocos.nodes.Node.extend({
     numberline   : null,        // Holds the numberline for this set of questions
     questions    : null,        // List of questions in this QuestionSet
@@ -35,15 +36,17 @@ var QuestionSet = cocos.nodes.Node.extend({
     init: function (node) {
         QuestionSet.superclass.init.call(this);
     
+        // Statically binding functions used only as callbacks
         this.resetColor = this.resetColor.bind(this);
         
         this.set('position', new geo.Point(100, 200));
-    
         this.numberline = NumberLine.create(XML.getChildByName(node, 'NUMBER_LINE'));
         
+        // Get XML representation
         var ql = XML.getChildrenByName(node, 'QUESTION')
         this.questions = [];
         
+        // Build the list of questions in the subset
         for(var i=0; i<ql.length; i++) {
             this.questions.push(Question.create(ql[i]));
             events.addListener(this.questions[i], 'questionTimeout', this.onQuestionTimeout.bind(this));
@@ -92,6 +95,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         
         console.log('Answer given: ' + ans);
         
+        //Prevent off line answers
         if(ans > 1.05) {
             return;
         }

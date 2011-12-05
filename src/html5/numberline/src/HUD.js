@@ -44,7 +44,7 @@ var HUD = cocos.nodes.Node.extend({
         this.addChild({child: this.timeLabel});
         
         // Set up the score label
-        this.scoreLabel = cocos.nodes.Label.create({string: '0'})
+        this.scoreLabel = cocos.nodes.Label.create({string: '0'});
         this.scoreLabel.set('position', new geo.Point(50, 50));
         this.addChild({child: this.scoreLabel});
         
@@ -108,7 +108,7 @@ var HUD = cocos.nodes.Node.extend({
     setTimeLeft: function(val) {
         this.timeLeft = val;
         if(this.timeLeft != null) {
-            this.timeLabel.set('string', this.timeLeft.toFixed(1));
+            this.timeLabel.set('string', parseFloat(this.timeLeft).toFixed(1));
         }
     },
     

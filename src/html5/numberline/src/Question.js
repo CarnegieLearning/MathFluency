@@ -68,6 +68,7 @@ var Question = cocos.nodes.Node.extend({
         if(this.playerValue == null) {
             this.responseTime += dt;
             
+            // Only worry about timeout if the question has a time limit
             if(this.timeLimit != null) {
                 if(this.responseTime > this.timeLimit) {
                     this.responseTime = this.timeLimit;
