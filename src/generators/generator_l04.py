@@ -4,6 +4,7 @@ import random
 import fractions
 import decimal
 import operator
+import level_output
 
 #Shortcut abbreviations
 RI = random.randint
@@ -132,6 +133,8 @@ configs = [configV2('ft1_racecar_html5', 'f1header_w3.xml', 'private/level'+leve
 configs[0].subsets_per_set = 6
 configs[0].datasets_per_run = 40
 configs[0].outputCSV = 0
+
+configs[0].toXML = level_output.Racecar_toXML
 
 #Load config(s)
 if(LOAD_PREVIOUS_CONFIG):

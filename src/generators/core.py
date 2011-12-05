@@ -10,7 +10,6 @@ Element = xml.dom.minidom.Element
 TRUE = 1
 FALSE = 0
 
-LEGACY = FALSE          #Set to TRUE to enable Hurix compatable format
 xml_question_num = 0    #This is the needed due to laziness
 
 ###############################################################################
@@ -137,6 +136,10 @@ class config:
     #Subclasses must implement their own generate method
     def generate(self):
         raise NotImplementedError()
+        
+    #Subclasses must provide a XML level generation function
+    def toXML(self):
+        raise NotImplementedError()
     
     #Returns a loaded config from file; None if it fails to load
     @staticmethod
@@ -197,11 +200,7 @@ def runBatch(configList):
             return None
         
         #Convert to XML
-        if(not LEGACY):
-            xml = toXML(dataset)
-        else:
-            xml = toXMLLegacy(dataset)
-            
+        xml = c.toXML(dataset)
         towrite = xml.toprettyxml()
         
         #Prepare to write to the XML file
@@ -274,118 +273,6 @@ def generateDataSet(configList):
             return None
     
     return list
-
-#Converts internal dataset representation to XML
-#IMPUT: dataset should be a list of subsets
-def toXML(dataset):
-    global xml_question_num
-    xml_question_num = 1
-    
-    allQuestions = Element("PROBLEM_SET")
-    
-    for subset in dataset:
-        allQuestions.appendChild(XMLSubset(subset))
-        
-    return allQuestions
-    
-#Converts a question subset into its XML equivalent
-#INPUT: subset should be [selector, (answer, delim1, delim2, ...), (answer, delim1, delim2, ...), ...]
-def XMLSubset(subset):
-    selector, questions = subset
-    
-    subset = Element("PROBLEM_SUBSET")
-    target = Element("TARGET")
-    target = selector.toXML(target)
-    subset.appendChild(target)
-    
-    for q in questions:
-        subset.appendChild(XMLQuestion(q))
-        
-    return subset
-    
-#Converts a question into its XML equivalent
-#INPUTL (answer, delim1, delim2, ...)
-def XMLQuestion(q):
-    global xml_question_num
-    question = Element("QUESTION")
-    question.setAttribute("INDEX", str(xml_question_num))
-    xml_question_num += 1
-    
-    i = 1
-    while(i < len(q)):
-        c = Element("Content")
-        c = q[i].toXML(c)
-        question.appendChild(c)
-        
-        i += 1
-        
-    ans = Element("Answer")
-    ans.setAttribute("VALUE", q[0])
-    question.appendChild(ans)
-    
-    return question
-    
-#Hurix Legacy Format - Converts internal dataset representation to XML
-def toXMLLegacy(dataset):
-    global xml_question_num
-    xml_question_num = 1
-    
-    allQuestions = Element("PROBLEM_SET")
-    
-    for subset in dataset:
-        allQuestions.appendChild(XMLSubsetLegacy(subset))
-        
-    return allQuestions
-
-#Hurix Legacy Format - Converts a question subset into its XML equivalent
-def XMLSubsetLegacy(subset):
-    selector, questions = subset
-    
-    subset = Element("PROBLEM_SUBSET")
-    target = Element("TARGET")
-    if(not "IMAGE:" in selector):
-        target.setAttribute("TYPE", "text")
-        target.setAttribute("VALUE", selector)
-    else:
-        target.setAttribute("TYPE", "Image")
-        target.setAttribute("VALUE", selector[6:])
-    subset.appendChild(target)
-    
-    for q in questions:
-        subset.appendChild(XMLQuestionLegacy(q))
-        
-    return subset
-
-#Hurix Legacy Format - Converts a single question into its XML equivalent
-def XMLQuestionLegacy(q):
-    global xml_question_num
-    question = Element("QUESTION")
-    question.setAttribute("INDEX", str(xml_question_num))
-    xml_question_num += 1
-    
-    text = Element("DELIMETERS_TEXT")
-    image = Element("DELIMETERS_IMAGE")
-    
-    i = 1
-    while(i < len(q)):
-        e = Element("DELIMETER")
-        if(not "IMAGE:" in q[i]):
-            e.setAttribute("VALUE", q[i])
-            text.appendChild(e)
-        else:
-            e.setAttribute("VALUE", q[i][6:])
-            image.appendChild(e)
-        i += 1
-                
-            
-    question.appendChild(text)
-    question.appendChild(image)
-    
-    e = Element("ANSWER")
-    e.setAttribute("VALUE", q[0])
-    question.appendChild(e)
-    
-    return question
 
 #Outputs the dataset.xml file which functions as an index for the GameController in the output directory
 def create_datasetxml(directory, filelist, engine):
