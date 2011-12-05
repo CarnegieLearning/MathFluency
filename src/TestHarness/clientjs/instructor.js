@@ -122,7 +122,7 @@ $(document).ready(function ()
         var val = Math.round(value / 60000);
         var str = "";
         if(val > 59) {
-            str += val / 60 + " h ";
+            str += Math.floor(val / 60) + " h ";
             val = val % 60;
         }
     
