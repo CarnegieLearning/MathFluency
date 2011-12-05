@@ -73,6 +73,11 @@ var FluencyApp = KeyboardLayer.extend({
         
 		this.crosshairs = cocos.nodes.Sprite.create({file: '/resources/crosshairs.png'});
         this.crosshairs.set('scale', 0.25);
+        
+        // Set keyboard key bindings
+        this.setBinding('MOVE_LEFT',    [65, 37]);  // [A, ARROW_LEFT]
+        this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
+        this.setBinding('ANSWER',       [32, 13]);  // [SPACE, ENTER]
 		
         // Create and add the HUD
         var h = HUD.create();
@@ -128,12 +133,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
 	},
 	
-	// Callback for mouseUp events
-	mouseUp: function (evt) {
-		// Not needed currently
-	},
-	
-//==============================================================================
+//============ Pre Game ========================================================
 	
 	// Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -195,6 +195,8 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.hud.startGame();
     },
+
+//============ Post Game =======================================================
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
     endOfGame: function(finished) {
@@ -247,6 +249,8 @@ var FluencyApp = KeyboardLayer.extend({
     // Writes the output xml file as a string and returns it
     writeXML: function(correct, state) {
     },
+
+//============ In Game =========================================================
     
     // Handles answering the current question
     answerQuestion: function(ans) {
@@ -255,6 +259,22 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called every frame, manages keyboard input
     update: function(dt) {
+        var pos = this.crosshairs.get('position');
+    
+        // Keyboard controls
+        if(this.checkBinding('MOVE_LEFT') > KeyboardLayer.UP) {
+            var c = this.questionList[this.current];
+            var min_x = c.get('position').x + c.numberline.get('position').x;
+            pos.x = Math.max(pos.x - 5, min_x);
+        }
+        if(this.checkBinding('MOVE_RIGHT') > KeyboardLayer.UP) {
+            var c = this.questionList[this.current];
+            var max_x = c.get('position').x + c.numberline.get('position').x + c.numberline.length;
+            pos.x = Math.min(pos.x + 5, max_x);
+        }
+        if(this.checkBinding('ANSWER') == KeyboardLayer.PRESS) {
+            this.answerQuestion(pos.x);
+        }
 	},
 });
 
