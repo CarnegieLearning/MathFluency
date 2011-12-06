@@ -80,7 +80,6 @@ var HUD = cocos.nodes.Node.extend({
     onQuestionTimerStart: function(val) {
         this.qTime = val;
         this.qTimeMax = val;
-        console.log('onQuestionTimerStart received by HUD');
     },
     
     // Ends HUD actions after questions with a time limit
@@ -88,7 +87,6 @@ var HUD = cocos.nodes.Node.extend({
         if(this.qTime != null) {
             this.qTime = null;
             this.qTimeMax = null;
-            console.log('onBeforeNextQuestion processed by HUD');
         }
     },
     
