@@ -26,6 +26,7 @@ var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 // Static Imports
 var Content = require('Content').Content;
 var MOT = require('ModifyOverTime').ModifyOverTime;
+var NLC = require('NumberLineControl').NumberLineControl;
 var XML = require('XML').XML;
 
 // Project Imports
@@ -46,11 +47,14 @@ var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     gameID      : '',       // Unique ID for the game
     questionList: [],       // List of all question sets in the input
-	current		: -1,		// The index of the current QuestionSet
-	crosshairs	: null,		// The cursor location
+    current     : -1,       // The index of the current QuestionSet
+    crosshairs  : null,     // The cursor location
     hud         : null,     // Holds the player's heads up display
     ended       : false,    // If true, the gamew has ended
-    version     : 'v 0.0',  // The version number
+    version     : 'v 0.1',  // The version number
+    
+    min_x       : 0,        // Minimum x value of crosshair
+    max_x       : 0,        // Maximum x value of crosshair
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
@@ -59,8 +63,9 @@ var FluencyApp = KeyboardLayer.extend({
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
-		this.set('isMouseEnabled', true);
-		
+        // Allow this Layer to catch mouse events
+        this.set('isMouseEnabled', true);
+        
         // Set up basic audio
         var AM = AudioMixer.create();
         this.set('audioMixer', AM);
@@ -71,21 +76,28 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('gameID', app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
         
-		this.crosshairs = cocos.nodes.Sprite.create({file: '/resources/crosshairs.png'});
+        // Create the player's crosshairs
+        this.crosshairs = cocos.nodes.Sprite.create({file: '/resources/crosshairs.png'});
         this.crosshairs.set('scale', 0.25);
         
         // Set keyboard key bindings
         this.setBinding('MOVE_LEFT',    [65, 37]);  // [A, ARROW_LEFT]
         this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
         this.setBinding('ANSWER',       [32, 13]);  // [SPACE, ENTER]
-		
+        this.setBinding('ABORT',        [27]);      // [ESC]
+        
         // Create and add the HUD
         var h = HUD.create();
         this.set('hud', h);
         this.addChild({child: h});
         
+        // Display version number
+        this.versionLabel = cocos.nodes.Label.create({string: this.version});
+        this.versionLabel.set('position', new geo.Point(800, 500));
+        this.addChild({child: this.versionLabel});
+        
         // Set up remote resources, default value allows for running 'locally'
-        // TODO: Remove default in production, replace with error
+        // TODO: Remove default in production, replace with error message
         __remote_resources__["/resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "numberline.xml"};
         
         // Preload remote resources
@@ -93,49 +105,50 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(p, 'complete', this.runRemotely.bind(this));
         p.load();
     },
-	
+    
 //============ Event handlers ==================================================
-	
-	// Callback for when a QuestionSet ends
-	onEndOfSet: function() {
-		if(this.current < this.questionList.length - 1) {
+    
+    // Callback for when a QuestionSet ends
+    onEndOfSet: function() {
+        if(this.current < this.questionList.length - 1) {
             if(this.current > -1) {
                 this.removeChild({child: this.questionList[this.current]});
             }
-			this.current += 1;
-			this.addChild({child: this.questionList[this.current]});
-            this.questionList[this.current].nextQuestion();
-		}
-		else {
-			// End game
+            this.current += 1;
+            var c = this.questionList[this.current];
+            
+            this.addChild({child: c});
+            c.nextQuestion();
+            
+            this.min_x = c.get('position').x + c.numberline.get('position').x;
+            this.max_x = this.min_x + c.numberline.length;
+        }
+        else {
+            // End game
             this.endOfGame(true);
-		}
-	},
-	
-	// Callback for whenever the mouse is moved in canvas
-	mouseMoved: function(evt) {
+        }
+    },
+    
+    // Callback for whenever the mouse is moved in canvas
+    mouseMoved: function(evt) {
         if(this.current > -1 && !this.ended) {
             var pt = this.crosshairs.get('position');
-        
-            var c = this.questionList[this.current];
-            var min_x = c.get('position').x + c.numberline.get('position').x;
-            var max_x = min_x + c.numberline.length;
-            pt.x = Math.max(Math.min(evt.locationInCanvas.x, max_x), min_x);
+            pt.x = Math.max(Math.min(evt.locationInCanvas.x, this.max_x), this.min_x);
             
             this.crosshairs.set('position', pt);
         }
-	},
-	
-	// Callback for mouseDown events
-	mouseDown: function (evt) {
+    },
+    
+    // Callback for mouseDown events
+    mouseDown: function (evt) {
         if(!this.ended && this.current > -1) {
             this.answerQuestion(evt.locationInCanvas.x);
         }
-	},
-	
+    },
+    
 //============ Pre Game ========================================================
-	
-	// Remote resources loaded successfully, proceed as normal
+    
+    // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
         if(resource("/resources/testset.xml") !== undefined) {
             console.log(resource("/resources/testset.xml"));
@@ -146,30 +159,42 @@ var FluencyApp = KeyboardLayer.extend({
         }
     },
     
+    // Parses the XML file and builds objects depending on it
     loadXML: function(root) {
         console.log(root);
         
+        // Load time limits
         this.hud.setTimeLeft(XML.getDeepChildByName(root, 'TIME_LIMIT').value);
         
+        // Load global scoring values
+        var score = XML.getDeepChildByName(root, 'SCORING');
+        if(score != null) {
+            util.each('ptsCorrect ptsIncorrect ptsTimeout ptsQuestBonus'.w(), util.callback(this, function (name) {
+                if(score.attributes.hasOwnProperty(name)) {
+                    NLC[name] = node.attributes[name];
+                }
+            }));
+        }
+        
+        // Load the ProblemSet
         var set = XML.getDeepChildByName(root, 'PROBLEM_SET');
         for(var i=0; i<set.children.length; i++) {
+            // Loads a ProblemSubset
             this.questionList.push(QuestionSet.create(set.children[i]));
             events.addListener(this.questionList[i], 'endOfSet', this.onEndOfSet.bind(this));
             events.addListener(this.questionList[i], 'beforeNextQuestion', this.hud.onBeforeNextQuestion);
             events.addListener(this.questionList[i], 'questionTimerStart', this.hud.onQuestionTimerStart);
+            events.addListener(this.questionList[i], 'scoreChange', this.hud.modifyScore.bind(this.hud));
         }
         
-        this.preprocessingComplete();
+        // Loading completed
+        this.loadingComplete();
     },
     
-    // The 'real init()' called after all the preloading/parsing is completed
-    preprocessingComplete: function () {
+    // The 'real init' called after all the preloading/parsing is completed
+    loadingComplete: function () {
         this.background = Background.create();
         this.addChild({child: this.background});
-        
-        this.versionLabel = cocos.nodes.Label.create({string: this.version});
-        this.versionLabel.set('position', new geo.Point(800, 500));
-        this.addChild({child: this.versionLabel});
         
         events.addListener(this.hud, 'stageTimeExpired', this.endOfGame.bind(this));
     },
@@ -190,7 +215,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.onEndOfSet();
         
         this.addChild({child: this.crosshairs});
-        this.crosshairs.set('position', new geo.Point(400, 220));
+        this.crosshairs.set('position', new geo.Point((this.min_x + this.max_x) / 2, 220));
         this.crosshairs.set('zOrder', 10);
         
         this.hud.startGame();
@@ -201,31 +226,40 @@ var FluencyApp = KeyboardLayer.extend({
     // Called when game ends, should collect results, display them to the screen and output the result XML
     endOfGame: function(finished) {
         //$(window).unbind('unload')
-    
+        
+        // Stopping the game
         s = cocos.Scheduler.get('sharedScheduler')
         s.unscheduleUpdateForTarget(this);
         s.unscheduleUpdateForTarget(this.hud);
         
         this.ended = true;
         
+        // Removing any remaining visible content
         this.removeChild({child: this.crosshairs});
         this.removeChild({child: this.questionList[this.current]});
+    
+        // Bonus points for finishing quickly
+        if(finished) {
+            this.hud.modifyScore(Math.floor(this.hud.timeLeft) * NLC.ptsStageBonus)
+        }
     
         var ql = this.get('questionList')
         var i = 0, correct = 0, incorrect = 0, unanswered = 0;
         
         // Tally question results
-        while(i < ql.length) {
-            if(ql[i].get('answeredCorrectly')) {
-                correct += 1;
+        for(subset in ql) {
+            for(q in subset) {
+                if(q.isCorrect) {
+                    correct += 1;
+                }
+                else if(q.isTimeout) {
+                    unanswered += 1;
+                }
+                else if(!q.isCorrect){
+                    incorrect += 1;
+                }
+                //else question was not reached and thus is not counted
             }
-            else if(ql[i].get('answeredCorrectly') == false) {
-                incorrect += 1;
-            }
-            else {
-                unanswered += 1;
-            }
-            i += 1;
         }
         
         // Checks to see if abort was related to window.unload
@@ -242,9 +276,10 @@ var FluencyApp = KeyboardLayer.extend({
             }
         }
     },
-	
-	cleanup: function() {
-	},
+    
+    // Cleans up critical running code so subsequent games can be played
+    cleanup: function() {
+    },
 
     // Writes the output xml file as a string and returns it
     writeXML: function(correct, state) {
@@ -254,7 +289,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Handles answering the current question
     answerQuestion: function(ans) {
-		this.questionList[this.current].giveAnswer(ans);
+        this.questionList[this.current].giveAnswer(ans);
     },
     
     // Called every frame, manages keyboard input
@@ -262,20 +297,26 @@ var FluencyApp = KeyboardLayer.extend({
         var pos = this.crosshairs.get('position');
     
         // Keyboard controls
+        // Move the crosshairs to the left
         if(this.checkBinding('MOVE_LEFT') > KeyboardLayer.UP) {
-            var c = this.questionList[this.current];
-            var min_x = c.get('position').x + c.numberline.get('position').x;
-            pos.x = Math.max(pos.x - 5, min_x);
+            pos.x = Math.max(pos.x - 5, this.min_x);
         }
+        
+        // Move the crosshairs to the right
         if(this.checkBinding('MOVE_RIGHT') > KeyboardLayer.UP) {
-            var c = this.questionList[this.current];
-            var max_x = c.get('position').x + c.numberline.get('position').x + c.numberline.length;
-            pos.x = Math.min(pos.x + 5, max_x);
+            pos.x = Math.min(pos.x + 5, this.max_x);
         }
+        
+        // Select the current crosshair position as the answer
         if(this.checkBinding('ANSWER') == KeyboardLayer.PRESS) {
             this.answerQuestion(pos.x);
         }
-	},
+        
+        // Quit the game
+        if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
+            this.endOfGame(false);
+        }
+    },
 });
 
 var MenuLayer = cocos.nodes.Menu.extend({

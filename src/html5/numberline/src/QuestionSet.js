@@ -111,11 +111,13 @@ var QuestionSet = cocos.nodes.Node.extend({
         // Correct feedback
         if(this.questions[this.current].answerQuestion(ans)) {
             events.trigger(this, 'rightAnswer');
+            events.trigger(this, 'scoreChange', this.questions[this.current].pointsEarned);
             this.set('lineColor', '#22FF22');
         }
         // Incorrect feedback
         else {
             events.trigger(this, 'wrongAnswer');
+            events.trigger(this, 'scoreChange', this.questions[this.current].pointsEarned);
             this.set('lineColor', '#FF2222');
         }
         
@@ -128,6 +130,7 @@ var QuestionSet = cocos.nodes.Node.extend({
     // Handles questions timing out
     onQuestionTimeout: function () {
         events.trigger(this, 'questionTimeout');
+        events.trigger(this, 'scoreChange', this.questions[this.current].pointsEarned);
         this.set('lineColor', '#220000');
         
         var that = this;
