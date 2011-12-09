@@ -19,6 +19,7 @@ var cocos = require('cocos2d');
     
 // Handles reading keyboard input, allows us to ignore "Key Repeat" settings as the key is either down, or up
 var KeyboardLayer = cocos.nodes.Layer.extend({
+    anyKey      : false,// true if any key has been pressed since the last time it was checked
     keys        : null, // Holds the array of key statuses
     bindings    : {},   // Holds the application specific bindings
     init: function() {
@@ -37,6 +38,7 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
     
     // Sets key to true when pressed
     keyDown: function(evt) {
+        this.anyKey = true;
         this.keys[evt.keyCode] = KeyboardLayer.PRESS;
     },
     
@@ -60,6 +62,15 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
             return ret;
         }
         
+        return false;
+    },
+    
+    // Checks to see if any key has been pressed since it was last checked
+    checkAnyKey: function() {
+        if(this.anyKey) {
+            this.anyKey = false;
+            return true;
+        }
         return false;
     },
     
@@ -131,7 +142,7 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
             
             return ret;
         }
-    }
+    },
 });
 
 // Static constants
