@@ -72,24 +72,16 @@
         },
         "cond6": {
             "stages": [
-                "html5-test1",
-                "html5-test2",
-                "html5-test3",
-                "html5-test4",
-                "html5-test5",
-                "html5-test6",
-                "html5-test7",
-                "carlow_level03stage0",
-                "carlow_level03stage1",
-                "carlow_level03stage2",
-                "carlow_level03stage3",
-                "carlow_level03stage4",
-                "level05-stage1",
-                "level05-stage2",
-                "level05-stage3",
-                "level05-stage4",
-                "level05-stage5",
-                "level05-stage6"
+                "level03-stage0",
+                "level03-stage1",
+                "level03-stage2",
+                "level03-stage3",
+                "level03-stage4",
+                "level04-stage1",
+                "level04-stage2",
+                "level04-stage3",
+                "level04-stage4",
+                "level04-stage5"
             ]
         }
     },
@@ -249,31 +241,6 @@
             "displayName": "Scuba 3",
             "engine": "scuba",
             "cli_fluency_task": "scuba_mix_equivalent"
-        },
-        "carlow_level03stage0": {
-            "displayName": "Racecar 3-0",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage0"
-        },
-        "carlow_level03stage1": {
-            "displayName": "Racecar 3-1",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage1"
-        },
-        "carlow_level03stage2": {
-            "displayName": "Racecar 3-2",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage2"
-        },
-        "carlow_level03stage3": {
-            "displayName": "Racecar 3-3",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage3"
-        },
-        "carlow_level03stage4": {
-            "displayName": "Racecar 3-4",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "carlow_level03stage4"
         }
     },
     
