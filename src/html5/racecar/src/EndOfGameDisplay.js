@@ -41,6 +41,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
     totalLink       : 0,        // Holds the raw value of total
     
     step            : 0,        // Current animation step
+    playRate        : 1,        // Play duration of the animations (1 = 100% time, 0.1 = 10% time or 10x speed)
     
     timeAmt         : 0.0,      // Elapsed time to display
     numPenalty      : 0,        // Number of penalties incurred
@@ -205,24 +206,28 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         this.set('step', step + 1);
     },
     
+    skipAnimation: function () {
+        this.playRate = 0.1;
+    },
+    
     // Slides a label in from the right
     slideLabelIn: function (l, d) {
         this.addChild({child: l});
-        var a = cocos.actions.MoveTo.create({position: new geom.Point(10, l.get('position').y), duration: d});
+        var a = cocos.actions.MoveTo.create({position: new geom.Point(10, l.get('position').y), duration: d * this.playRate});
         a.startWithTarget(l);
         l.runAction(a);
         
         var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000);
+        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000 * this.playRate);
     },
     
     // Totals a label up over time
     totalLabelUp: function(label, link, value, duration) {
         this.addChild({child: label});
-        MOT.create(0, value, duration).bind(this, link);
+        MOT.create(0, value, duration * this.playRate).bind(this, link);
         
         var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, duration * 1000);
+        setTimeout(function() {events.trigger(that, 'actionComplete');}, duration * 1000 * this.playRate);
     },
     
     // Causes a label to appear
@@ -230,7 +235,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         this.addChild({child: l});
         
         var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000);
+        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000 * this.playRate);
     },
     
     // Helper function that gives area percentage for medal time ranges

@@ -61,11 +61,11 @@ var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     medalCars   : [],       // Contains the pace cars
     gameID      : '',       // Unique ID for the game
-	inters		: [],
+	inters		: [],       // Holds the list of checkpoints
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.2.0',// Current version number
+    version     : 'v 0.2.1',// Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -658,7 +658,6 @@ var FluencyApp = KeyboardLayer.extend({
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
         
         this.dash.pauseTimer();
         
@@ -706,7 +705,7 @@ var FluencyApp = KeyboardLayer.extend({
             var that = this;
             events.addListener(e, 'almostComplete', function () {that.get('menuLayer').addRetryButton();});
             events.addListener(e, 'complete', this.cleanup.bind(this));
-            this.set('eogd', e);
+            this.eogd = e;
             e.start();
         }
     
@@ -774,6 +773,8 @@ var FluencyApp = KeyboardLayer.extend({
     cleanup: function() {
         // Clear the bind
         $(window).unbind('unload');
+        
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
         
         var d = cocos.Director.get('sharedDirector');
         
@@ -855,9 +856,12 @@ var FluencyApp = KeyboardLayer.extend({
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
         
-        if(player.get('zCoordinate') > RC.finishLine) {
+        if(player.get('zCoordinate') > RC.finishLine && this.eogd == null) {
             this.endOfGame(true);
-            return;
+        }
+        
+        if(this.checkAnyKey() && this.eogd != null) {
+            this.eogd.skipAnimation();
         }
         
     // Move the player according to keyboard
