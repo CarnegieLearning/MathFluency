@@ -55,24 +55,26 @@ var HUD = cocos.nodes.Node.extend({
     // Called every frame
     update: function(dt) {
         // Runs stage timer
-        if(!this.paused && this.timeLeft != null) {
-            this.elapsed += dt;
-            this.timeLeft -= dt;
-            
-            // Checks to see if stage timer has run out
-            if(this.timeLeft < 0) {
-                this.timeLeft = 0;
+        if(!this.paused) {
+            if(this.timeLeft != null) {
+                this.elapsed += dt;
+                this.timeLeft -= dt;
+                
+                // Checks to see if stage timer has run out
+                if(this.timeLeft < 0) {
+                    this.timeLeft = 0;
+                    this.timeLabel.set('string', this.timeLeft.toFixed(1));
+                    this.paused = true;
+                    events.trigger(this, 'stageTimeExpired');
+                }
+                
                 this.timeLabel.set('string', this.timeLeft.toFixed(1));
-                this.paused = true;
-                events.trigger(this, 'stageTimeExpired');
             }
-            
-            this.timeLabel.set('string', this.timeLeft.toFixed(1));
-        }
         
-        // Runs question specific timer
-        if(this.qTime != null) {
-            this.qTime -= dt;
+            // Runs question specific timer
+            if(this.qTime != null) {
+                this.qTime -= dt;
+            }
         }
     },
     

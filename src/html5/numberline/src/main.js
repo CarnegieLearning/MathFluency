@@ -85,6 +85,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
         this.setBinding('ANSWER',       [32, 13]);  // [SPACE, ENTER]
         this.setBinding('ABORT',        [27]);      // [ESC]
+        this.setBinding('DEBUG_PAUSE',  [80]);      // [P]
         
         // Create and add the HUD
         var h = HUD.create();
@@ -141,7 +142,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Callback for mouseDown events
     mouseDown: function (evt) {
-        if(!this.ended && this.current > -1) {
+        if(!this.ended && this.current > -1 && !this.hud.paused) {
             this.answerQuestion(evt.locationInCanvas.x);
         }
     },
@@ -308,13 +309,22 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // Select the current crosshair position as the answer
-        if(this.checkBinding('ANSWER') == KeyboardLayer.PRESS) {
+        if(this.checkBinding('ANSWER') == KeyboardLayer.PRESS && !this.hud.paused) {
             this.answerQuestion(pos.x);
         }
         
         // Quit the game
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
             this.endOfGame(false);
+        }
+        
+        // Pause the game
+        if(this.checkBinding('DEBUG_PAUSE') == KeyboardLayer.PRESS) {
+            this.hud.paused = !this.hud.paused;
+            
+            if(this.questionList[this.current].current < this.questionList[this.current].questions.length) {
+                this.questionList[this.current].questions[this.questionList[this.current].current].paused = this.hud.paused;
+            }
         }
     },
 });

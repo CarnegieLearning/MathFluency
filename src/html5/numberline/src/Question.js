@@ -36,6 +36,7 @@ var Question = cocos.nodes.Node.extend({
     
     responseTime  : 0,        // Amount of time it took player to respond
     timeLimit     : null,     // Maximum amount of time allowed to answer this Question
+    paused        : false,    // Stores if the question timer is paused
     
     ptsCorrect    : null,     // Local override for points on correct answer
     ptsIncorrect  : null,     // Local override for points on incorrect answer
@@ -91,7 +92,7 @@ var Question = cocos.nodes.Node.extend({
     
     // Called every frame
     update: function(dt) {
-        if(this.playerValue == null) {
+        if(!this.paused && this.playerValue == null) {
             this.responseTime += dt;
             
             // Only worry about timeout if the question has a time limit
