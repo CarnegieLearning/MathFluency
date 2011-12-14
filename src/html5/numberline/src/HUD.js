@@ -129,6 +129,7 @@ var HUD = cocos.nodes.Node.extend({
         // Displays question specific timer (if applicable)
         if(this.qTimeMax != null) {
             p = (1 - this.qTime / this.qTimeMax) * 100;
+            p = Math.min(p, 100);
             ctx.fillStyle = '#AA3333';
             ctx.fillRect(600, p, 100, 100 - p);
         }
