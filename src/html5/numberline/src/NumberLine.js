@@ -14,6 +14,7 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Cocos2d imports
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
@@ -48,7 +49,6 @@ var NumberLine = cocos.nodes.Node.extend({
                 this.hashes.push(Hashmarks.create(ha[i].attributes['location'], null));
             }
             
-            this.hashes[i].set('anchorPoint', new geo.Point(0.5, 0));
             this.hashes[i].set('position', new geo.Point(this.length * this.hashes[i].location, 0));
             
             this.addChild({child: this.hashes[i]});

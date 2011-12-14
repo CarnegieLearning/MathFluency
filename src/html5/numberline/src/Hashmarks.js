@@ -14,9 +14,11 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Cocos2d imports
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
+// Class represents a single hashmark on a numberline
 var Hashmarks = cocos.nodes.Node.extend({
     location: 0,        // Percentage based location on the numberline
     content : null,     // Content label for the hashmark
@@ -29,12 +31,13 @@ var Hashmarks = cocos.nodes.Node.extend({
         // Add content if the hashmark is labeled
         if(cnt) {
             this.content = cnt;
-            this.content.set('anchorPoint', new geo.Point(0 , 0));
-            this.content.set('position', new geo.Point(0, 30));
+            this.content.set('anchorPoint', new geo.Point(0, -0.5));
+            this.content.set('position', new geo.Point(0, 20));
             this.addChild({child: this.content});
         }
     },
     
+    // Draws the hashmark on the line
     draw: function (ctx) {
         ctx.strokeStyle = '#FFFFFF';
         ctx.lineWidth = '4';
@@ -48,6 +51,7 @@ var Hashmarks = cocos.nodes.Node.extend({
 
 exports.Hashmarks = Hashmarks
 
+// Static helper for creating an array of hashmarks from an array of locations and an array of content
 Hashmarks.arrayCreate = function (locA, cntA) {
     var array = [];
     
