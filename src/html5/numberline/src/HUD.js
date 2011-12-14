@@ -19,6 +19,7 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
 
+// Static imports
 var NLC = require('NumberLineControl').NumberLineControl;
 
 var HUD = cocos.nodes.Node.extend({
@@ -135,15 +136,23 @@ var HUD = cocos.nodes.Node.extend({
         }
         
         // Draw medal meter
-        //TODO: Draw proportionally compared to medal ranges
-        ctx.fillStyle = NLC.noMedalColor;
-        ctx.fillRect(200, 72, 100, 28);
-        ctx.fillStyle = NLC.bronzeColor;
-        ctx.fillRect(200, 48, 100, 24);
-        ctx.fillStyle = NLC.silverColor;
-        ctx.fillRect(200, 24, 100, 24);
-        ctx.fillStyle = NLC.goldColor;
-        ctx.fillRect(200, 0,  100, 24);
+        if(NLC.proportions) {
+            var y = 0;
+            ctx.fillStyle = NLC.goldColor;
+            ctx.fillRect(200, y,  100, NLC.proportions[0] * 98);
+            y += NLC.proportions[0] * 98;
+            
+            ctx.fillStyle = NLC.silverColor;
+            ctx.fillRect(200, y, 100, NLC.proportions[1] * 98);
+            y += NLC.proportions[1] * 98;
+            
+            ctx.fillStyle = NLC.bronzeColor;
+            ctx.fillRect(200, y, 100, NLC.proportions[2] * 98);
+            y += NLC.proportions[2] * 98;
+            
+            ctx.fillStyle = NLC.noMedalColor;
+            ctx.fillRect(200, y, 100, NLC.proportions[3] * 98);
+        }
         
         // Draw medal marker
         ctx.strokeStyle = '#DD2222';

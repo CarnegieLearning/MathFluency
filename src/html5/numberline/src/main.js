@@ -194,6 +194,8 @@ var FluencyApp = KeyboardLayer.extend({
     
     // The 'real init' called after all the preloading/parsing is completed
     loadingComplete: function () {
+        NLC.calcProportions();
+    
         this.background = Background.create();
         this.addChild({child: this.background});
         
