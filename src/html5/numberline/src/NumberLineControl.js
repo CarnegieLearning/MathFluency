@@ -38,14 +38,4 @@ NumberLineControl.noMedalColor  = '#202020';    // Color for not getting a medal
 
 NumberLineControl.ptsStageBonus = 1;            // Points given per second left on the clock at the end of the stage
 
-// Defaults for Question values //////////////////
-NumberLineControl.ptsCorrect    = 10;           // Points given for correct answers
-NumberLineControl.ptsIncorrect  = -5;           // Points given for incorrect answers
-NumberLineControl.ptsTimeout    = -10;          // Points given for having a specific question time out
-NumberLineControl.ptsQuestBonus = 1;            // Points given per second left after answering a timed question correctly
-
-NumberLineControl.timeLimit     = null;         // Default time limit for individual questions
-NumberLineControl.tolerance     = 0.05;         // Default acceptable error tolerance for correct answers
-//////////////////////////////////////////////////
-
 exports.NumberLineControl = NumberLineControl

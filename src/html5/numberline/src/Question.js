@@ -21,7 +21,6 @@ var util = require('util');
 
 // Static Imports
 var Content = require('Content').Content;
-var NLC = require('NumberLineControl').NumberLineControl;
 var XML = require('XML').XML;
 
 // Represents a single question to be answered by the player
@@ -51,13 +50,13 @@ var Question = cocos.nodes.Node.extend({
 		this.displayValue = Content.buildFrom(XML.getChildByName(node, 'CONTENT'));
 		this.correctValue = XML.getChildByName(node, 'ANSWER').value;
         
-        // Load override values, if value is not overridden, use NLC default/global value
+        // Load override values, if value is not overridden, use static default value
         util.each('timeLimit tolerance ptsCorrect ptsIncorrect ptsTimeout ptsQuestBonus'.w(), util.callback(this, function (name) {
             if(node.attributes.hasOwnProperty(name)) {
                 this[name] = node.attributes[name];
             }
             else {
-                this[name] = NLC[name]
+                this[name] = Question[name]
             }
         }));
 		
@@ -101,13 +100,23 @@ var Question = cocos.nodes.Node.extend({
                     this.responseTime = this.timeLimit;
                     this.isCorrect = false;
                     this.isTimeout = true;
-                    this.pointsEarned = this.ptsTimeout != null ? this.ptsTimeout : NLC.ptsTimeout;
+                    this.pointsEarned = this.ptsTimeout != null ? this.ptsTimeout : Question.ptsTimeout;
                     events.trigger(this, 'questionTimeout');
                 }
             }
         }
     }
 });
+
+// Defaults for Question values /////////
+Question.ptsCorrect    = 10;           // Points given for correct answers
+Question.ptsIncorrect  = -5;           // Points given for incorrect answers
+Question.ptsTimeout    = -10;          // Points given for having a specific question time out
+Question.ptsQuestBonus = 1;            // Points given per second left after answering a timed question correctly
+
+Question.timeLimit     = null;         // Default time limit for individual questions
+Question.tolerance     = 0.05;         // Default acceptable error tolerance for correct answers
+/////////////////////////////////////////
 
 // TODO: Write static helper for building an options object to initialize a question
 
