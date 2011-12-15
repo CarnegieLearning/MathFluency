@@ -31,6 +31,7 @@ var XML = require('XML').XML;
 
 // Project Imports
 var Background = require('Background').Background;
+var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var HUD = require('HUD').HUD;
 var QuestionSet = require('QuestionSet').QuestionSet;
 
@@ -46,12 +47,16 @@ var QuestionSet = require('QuestionSet').QuestionSet;
 var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     gameID      : '',       // Unique ID for the game
+    version     : 'v 0.1',  // The version number
+    
     questionList: [],       // List of all question sets in the input
     current     : -1,       // The index of the current QuestionSet
+    
     crosshairs  : null,     // The cursor location
     hud         : null,     // Holds the player's heads up display
     ended       : false,    // If true, the gamew has ended
-    version     : 'v 0.1',  // The version number
+    
+    answerLock  : true,     // 
     
     min_x       : 0,        // Minimum x value of crosshair
     max_x       : 0,        // Maximum x value of crosshair
@@ -186,6 +191,7 @@ var FluencyApp = KeyboardLayer.extend({
             events.addListener(this.questionList[i], 'beforeNextQuestion', this.hud.onBeforeNextQuestion);
             events.addListener(this.questionList[i], 'questionTimerStart', this.hud.onQuestionTimerStart);
             events.addListener(this.questionList[i], 'scoreChange', this.hud.modifyScore.bind(this.hud));
+            events.addListener(this.questionList[i], 'nextQuestion', this.unlock.bind(this));
         }
         
         // Loading completed
@@ -306,7 +312,14 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Handles answering the current question
     answerQuestion: function(ans) {
-        this.questionList[this.current].giveAnswer(ans);
+        if(!this.answerLock)
+            if(this.questionList[this.current].giveAnswer(ans))
+                this.answerLock = true;
+    },
+    
+    // Removes the answer lock, allowing the player to answer the question
+    unlock: function() {
+        this.answerLock = false;
     },
     
     // Called every frame, manages keyboard input
