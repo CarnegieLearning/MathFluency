@@ -33,6 +33,7 @@ var HUD = cocos.nodes.Node.extend({
     
     qTime       : null,     // Time remaining for current question (null if N/A)
     qTimeMax    : null,     // Initial time for current question (null if N/A)
+    qTimePause  : false,    // Pauses the individual question timer
     
     // Constructor
     init: function () {
@@ -73,7 +74,7 @@ var HUD = cocos.nodes.Node.extend({
             }
         
             // Runs question specific timer
-            if(this.qTime != null) {
+            if(this.qTime != null && !this.qTimePause) {
                 this.qTime -= dt;
             }
         }
@@ -83,6 +84,7 @@ var HUD = cocos.nodes.Node.extend({
     onQuestionTimerStart: function(val) {
         this.qTime = val;
         this.qTimeMax = val;
+        this.qTimePause = false;
     },
     
     // Ends HUD actions after questions with a time limit
@@ -103,6 +105,9 @@ var HUD = cocos.nodes.Node.extend({
     modifyScore: function(val) {
         this.score += val;
         this.scoreLabel.set('string', this.score);
+    
+        //HACK: Kind of hacky way to stop question timer from continuing to count down
+        this.qTimePause = true;
     },
     
     // Setter function for timeLeft
