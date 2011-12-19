@@ -247,10 +247,19 @@ function makeStage(stageID, config, serverConfig)
                     parser.on('end', function (data)
                     {
                         var taskConfig = {};
-                        for (var i in data.datafile)
-                        {
-                            var xml = data.datafile[i]['@']['name'];
-                            var id = data.datafile[i]['@']['id'];
+                        if( data.datafile instanceof Array ){
+	                        for (var i in data.datafile)
+	                        {
+	                            var xml = data.datafile[i]['@']['name'];
+	                            var id = data.datafile[i]['@']['id'];
+	                            var qs = new QuestionHierarchy.QuestionSet(stage, id, id, {
+	                                input: stageConfig.cli_fluency_task + '/' + xml
+	                            });
+	                            taskConfig[id] = qs;
+	                        }
+                        } else {
+                            var xml = data.datafile['@']['name'];
+                            var id = data.datafile['@']['id'];
                             var qs = new QuestionHierarchy.QuestionSet(stage, id, id, {
                                 input: stageConfig.cli_fluency_task + '/' + xml
                             });
