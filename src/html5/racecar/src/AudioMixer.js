@@ -15,10 +15,14 @@ Copyright 2011, Carnegie Learning
 */
 
 // Cocos requires
-var cocos = require('cocos2d')
+var cocos = require('cocos2d');
+var events = require('events');
+
+// Static requires
+var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Project requires
-var AudioTrack = require('AudioTrack').AudioTrack
+var AudioTrack = require('AudioTrack').AudioTrack;
 
 // Only need a single Audio Mixer, so the class is static
 // Responsible for managing all the audio in the app
@@ -29,6 +33,7 @@ var AudioMixer = BObject.extend({
     mp3         : false,    // true is browser supports mp3 format
     muted       : false,    // Whether or not all audio should be muted
     volume      : 1,        // Master volume
+    
     init: function () {
         AudioMixer.superclass.init.call(this);
         
@@ -37,6 +42,8 @@ var AudioMixer = BObject.extend({
             console.log("AudioMixer is currently disabled");
             return;
         }
+        
+        this.crossFadeComplete = this.crossFadeComplete.bind(this);
 
         var a = document.createElement('audio');
         // Detect <audio> capability
@@ -161,6 +168,20 @@ var AudioMixer = BObject.extend({
             return this.get('sounds')[ref];
         }
         return null;
+    },
+    
+    // Cross fades from the specified track to the other specified track over the specified duration
+    crossFade: function(from, to, dur) {
+        var f = this.getSound(from);
+        var t = this.getSound(to);
+        MOT.create(1, -1, dur).bindFunc(f, f.setVolume);
+        MOT.create(0,  1, dur).bindFunc(t, t.setVolume);
+        
+        setTimeout(this.crossFadeComplete, dur * 1000);
+    },
+    
+    crossFadeComplete: function() {
+        events.trigger(this, 'crossFadeComplete');
     },
 
     // Checks to see if the reference has a valid entry in the dictionary
