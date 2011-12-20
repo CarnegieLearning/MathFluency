@@ -31,15 +31,13 @@ var Question = require('Question').Question;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var Preloader = require('Preloader').Preloader;
 
+var LabelBG = require('LabelBG').LabelBG;   //HACK
+
 // Static Imports
 var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
-
-// Content Imports
-var LabelBG = require('LabelBG').LabelBG;
-var PieChart = require('PieChart').PieChart;
-var FractionRenderer = require('FractionRenderer').FractionRenderer;
+var Content = require('Content').Content;
 
 // TODO: De-magic number these
 /* Zorder
@@ -68,7 +66,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.2.1',// Current version number
+    version     : 'v 0.3.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -84,6 +82,9 @@ var FluencyApp = KeyboardLayer.extend({
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
+        
+        Content.initialize();
+        Content.registerContent(LabelBG.identifier, LabelBG);   //HACK
         
         // Explicitly enable audio
         AudioMixer.enabled = true;
@@ -136,10 +137,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('gameID', app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
         
-        // Uncomment to run locally
-        //this.runLocally();
-        //return;
-        
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
         __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
@@ -152,46 +149,16 @@ var FluencyApp = KeyboardLayer.extend({
         events.trigger(this, 'loaded');
     },
     
-    // Remote resources failed to load, generate dummy data then proceed
-    // TODO: Determine what to do if we get 404s in production
-    // TODO: Bring this up to date with latest Question implementation
-    runLocally: function() {
-        console.log("Now running locally from this point forward");
-        
-        var list = [];
-        for(var i=0; i<6; i+=1) {
-            var inter = Intermission.create(20000+i, i*500+10);
-            inter.idle();
-            for(var j=1; j<4; j+=1) {
-                list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
-                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
-                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
-                list[list.length - 1].idle();
-            }
-        }
-        
-        this.set('questionList', list);
-        
-        this.preprocessingComplete();
-    },
-    
     // Parses the level xml file
-    // TODO: Decide on input file format and rewrite this as needed.
-    // TODO: Make the parser not expload on bad XML files
-    // TODO: Overhaul parser to generic pull, specific parse rather than semi-specific traverse
-    // TODO: Actually do some of the above TODOs
     parseXML: function(xmlDoc) {
-        // Parse medal information
-        var medals = XML.parseMedals(xmlDoc);
-        
-        // Parse and set player speed values
-        this.parseSpeed(xmlDoc);
-        
-        // Get the penalty time for incorrect answers
-        this.parsePenalty(xmlDoc);
+        var xml = XML.parser(xmlDoc.firstChild);
+    
+        var medals = this.parseMedals(xml); // Parse medal information
+        this.parseSpeed(xml);               // Parse and set player speed values
+        this.parsePenalty(xml);             // Get the penalty time for incorrect answers
     
         // Parse and process questions
-        RC.finishLine = this.parseProblemSet(xmlDoc) + RC.finishSpacing;
+        RC.finishLine = this.parseProblemSet(xml) + RC.finishSpacing;
         
         // Process medal information
         medals[0] = RC.finishLine / this.get('player').get('maxSpeed');
@@ -206,113 +173,95 @@ var FluencyApp = KeyboardLayer.extend({
         this.preprocessingComplete();
     },
     
-    // Parse the penalty settings
-    parsePenalty: function (root) {
-        var time, speed;
-        // Legacy support
-        var hurix = XML.getFirstByTag(root, 'DEFAULT_PENALTY');
-        if(hurix != null) {
-            time = XML.safeGetAttr(hurix, 'VALUE') / 1000;
-        }
-        else {
-            root = XML.getFirstByTag(root, 'PenaltySettings');
-            if(root != null) {
-                time = XML.safeComboGet(root, 'TimeLost', 'VALUE');
-                speed = XML.safeComboGet(root, 'SpeedLost', 'VALUE');
+    // Parse the medal values
+    parseMedals: function (root) {
+        var ret = [];
+        var node = XML.getDeepChildByName(root, 'MEDALS');
+        if(node != null) {
+            var id, val;
+            for(var i in node.children) {
+                id = node.children[i].attributes['Id'];
+                val = node.children[i].attributes['MEDAL_THRESHOLD'];
+                
+                if(id != null && val != null) {
+                    if(val > 1000) {
+                        val /= 1000;
+                    }
+                    
+                    ret[id] = val;
+                }
+                else {
+                    console.log('ERROR: Missing or corrupted medal data');
+                }
             }
         }
-        
-        // Cannot use nonNullSet on a static object
-        if(time != null) {
-            RC.penaltyTime = time;
+        else {
+            console.log('ERROR: No medal data found for stage');
         }
-        if(speed != null) {
-            RC.penaltySpeed = speed * -1;
+        
+        return ret;
+    },
+    
+    // Parse the penalty settings
+    parsePenalty: function (root) {
+        var node = XML.getDeepChildByName(root, 'PenaltySettings');
+        if(node != null) {
+            if(node.attributes['TimeLost'] != null) {
+                RC.penaltyTime = node.attributes['TimeLost'];
+            }
+            if(node.attributes['SpeedLost'] != null) {
+                RC.penaltySpeed = node.attributes['SpeedLost'] * -1;
+            }
         }
     },
     
     // Parse and set player speed values
     parseSpeed: function (root) {
-        var min, max, speed, accel, decel, turbo;
-        // Legacy support
-        var hurix = XML.getFirstByTag(root, 'MinTPQ');
-        if(hurix != null) {
-            // Get raw value and transform to seconds
-            max = XML.safeComboGet(root, 'MinTPQ', 'VALUE') / 1000;
-            min = XML.safeComboGet(root, 'MaxTPQ', 'VALUE') / 1000;
-            speed = XML.safeComboGet(root, 'DTPQ', 'VALUE') / 1000;
-            accel = XML.safeComboGet(root, 'SpeedImpact_Up', 'VALUE') / 250;
-            decel = XML.safeComboGet(root, 'SpeedImpact_Down', 'VALUE') / 250;
-            turbo = null;
-            
-            max = RC.questionSpacing / max
-            if(min != 0) {
-                min = RC.questionSpacing / min
-            }
-            else {
-                min = 0
-            }
-            speed = RC.questionSpacing / speed
-        }
-        else {
-            root = XML.getFirstByTag(root, 'SpeedSettings');
-            if(root != null) {
-                max = XML.safeComboGet(root, 'Max', 'VALUE');
-                min = XML.safeComboGet(root, 'Min', 'VALUE');
-                speed = XML.safeComboGet(root, 'Default', 'VALUE');
-                accel = XML.safeComboGet(root, 'Acceleration', 'VALUE');
-                decel = XML.safeComboGet(root, 'Deceleration', 'VALUE');
-                turbo = XML.safeComboGet(root, 'Turbo', 'VALUE');
+        var node = XML.getDeepChildByName(root, 'SpeedSettings');
+        
+        var max = node.attributes['Max'];
+        var min = node.attributes['Min'];
+        var speed = node.attributes['Default'];
+        var accel = node.attributes['Acceleration'];
+        var decel = node.attributes['Deceleration'];
+        var turbo = node.attributes['Turbo'];
+      
+        // Heper function for setting values without overwritting defaults
+        var helper = function(obj, key, val){
+            if(val != null) {
+                obj.set(key, val);
             }
         }
         
-        // Set the values on the player, avoiding overwriting default values with null
+        // Set the values on the player
         var p = this.get('player')
-        this.nonNullSet(p, 'maxSpeed', max);
-        this.nonNullSet(p, 'minSpeed', min);
-        this.nonNullSet(p, 'zVelocity', speed==null ? min : speed);
-        this.nonNullSet(p, 'acceleration', accel==null ? decel : accel);
-        this.nonNullSet(p, 'deceleration', decel==null ? accel : decel);
-        
-        this.nonNullSet(p, 'turboSpeed', turbo==null ? max : turbo);
-    },
-    
-    // Helper to avoid writing over default values
-    nonNullSet : function(obj, key, val){
-        if(val != null) {
-            obj.set(key, val);
-        }
+        helper(p, 'maxSpeed', max);
+        helper(p, 'minSpeed', min);
+        helper(p, 'zVelocity', speed==null ? min : speed);
+        helper(p, 'acceleration', accel);
+        helper(p, 'deceleration', decel);
+        helper(p, 'turboSpeed', turbo==null ? max : turbo);
     },
     
     // Parses the PROBLEM_SET
     parseProblemSet: function (root) {
-        var problemRoot = XML.getFirstByTag(root, 'PROBLEM_SET');
-        var subset = problemRoot.firstElementChild;
+        var problemRoot = XML.getDeepChildByName(root, 'PROBLEM_SET');
+        var subsets = problemRoot.children;
         var z = 0;
         var once = true;
         
-        while(subset != null) {
-            z = this.parseProblemSubset(subset, z, once);
+        for(var i in subsets) {
+            z = this.parseProblemSubset(subsets[i], z, once);
             once = false;
-            
-            subset = subset.nextElementSibling;
         }
         
-        return z
+        return z;
     },
     
     // Parses a subset within the PROBLEM_SET
     parseProblemSubset: function (subset, z, once) {
-        var node = subset.firstElementChild;
-        var interContent;
         
-        var hurix = XML.safeGetAttr(node, 'VALUE');
-        if(hurix) {
-            interContent = LabelBG.create(LabelBG.helper(hurix,'#000','#fff'));
-        }
-        else {
-            interContent = this.parseContent(node);
-        }
+        var interContent = Content.buildFrom(subset.children[0]);
         
         // Not the first subset
         if(!once) {
@@ -351,126 +300,19 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Interate over questions in subset
         var list = this.get('questionList');
-        node = node.nextElementSibling;
-        while(node != null) {
-            z += RC.questionSpacing
-            var q = this.parseProblem(node)
-            
+        for(var i=1; i<subset.children.length; i+=1) {
+            z += RC.questionSpacing;
+
             // Create a question
-            list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
+            list[list.length] = Question.create(subset.children[i], z);
             events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
             events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
             list[list.length - 1].idle();
-            
-            node = node.nextElementSibling;
         }
         
         this.set('questionList', list);
         
         return z;
-    },
-    
-	// Pauses the dashboard and medal cars
-    pause: function () {
-        this.get('dash').pauseTimer();
-        
-        var mc = this.get('medalCars');
-        
-        for(var i=0; i<3; i+=1) {
-            mc[i].prepause = mc[i].zVelocity;
-            mc[i].zVelocity = 0;
-        }
-        
-        this.set('medalCars', mc);
-    },
-    
-	// Unpauses the dashboard and medal cars
-    unpause: function () {
-        this.get('dash').unpauseTimer();
-        
-        var mc = this.get('medalCars');
-        
-        for(var i=0; i<3; i+=1) {
-            mc[i].zVelocity = mc[i].prepause;
-            mc[i].prepause = 0;
-        }
-        
-        this.set('medalCars', mc);
-    },
-    
-    // Parses a question within the subset
-    parseProblem: function (node) {
-        var ans, d1, d2, p1, p2;
-        
-        // Answer is the same in all formats (except for case, ugh...), so get it first
-        // TODO: Revise answer in new format
-        ans = XML.safeComboGet(node, 'Answer', 'VALUE');
-        if(!ans) {
-            ans = XML.safeComboGet(node, 'ANSWER', 'VALUE');
-        }
-        
-        // Legacy check
-        var hurix = node.getElementsByTagName('DELIMETERS_TEXT');
-        if(hurix.length > 0) {
-            var child = hurix[0].firstElementChild;
-            d1 = LabelBG.create(LabelBG.helper(child.getAttribute('VALUE'),'#000','#fff'));
-            
-            if(child.nextElementSibling != null) {
-                d2 = LabelBG.create(LabelBG.helper(child.nextElementSibling.getAttribute('VALUE'),'#000','#fff'));
-            }
-        }
-        else {
-            node = XML.getFirstByTag(node, 'Content');
-            d1 = this.parseContent(node);
-            p1 = this.parsePerspective(node);
-            
-            node = node.nextElementSibling;
-            d2 = this.parseContent(node);
-            p2 = this.parsePerspective(node);
-        }
-        
-        return [ans, d1, d2, p1, p2];
-    },
-    
-    // Parses a single piece of <CONTENT>
-    parseContent: function (node) {
-        var type = XML.safeGetAttr(node, 'TYPE');
-        var opts = XML.getFirstByTag(node, 'ContentSettings');
-        
-        var content = null;
-        
-        if(opts == null) {
-            console.log("ERROR: No <ContentSettings> in a content item.");
-            return null;
-        }
-        
-        if(type == 'String') {
-            content = LabelBG.create(LabelBG.helperXML(opts));
-        }
-        else if(type == 'Fraction') {
-            content = FractionRenderer.create(FractionRenderer.helperXML(opts));
-        }
-        else if(type == 'PieChart') {
-            content = PieChart.create(PieChart.helperXML(opts));
-        }
-        else {
-            console.log('ERROR: Unsupported <Content TYPE = "' + type + '">.');
-            return null;
-        }
-        
-        return content;
-    },
-    
-    // Parses the <PERSPECTIVE_SETTINGS> node
-    parsePerspective: function(node) {
-        var p = XML.getFirstByTag(node, 'PerspectiveSettings');
-        var opts = {};
-        
-        opts['visibility'] = XML.safeComboGet(p, 'Visibility', 'VALUE');
-        opts['minScale']   = XML.safeComboGet(p, 'MinScale', 'VALUE');
-        opts['maxScale']   = XML.safeComboGet(p, 'MaxScale', 'VALUE');
-        
-        return opts
     },
     
     // The 'real init()' called after all the preloading/parsing is completed
@@ -628,12 +470,12 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Starts the game
     startGame: function () {
-        // Schedule per frame update function
-        this.scheduleUpdate();
+        this.scheduleUpdate();          // Start keyboard input and fps tracking
         var p = this.get('player');
-        p.scheduleUpdate();
-        this.get('dash').start();
+        p.scheduleUpdate();             // Start the player
+        this.get('dash').start();       // Start timer and dash updates
         
+        // Accelerate the player to their default speed after starting
         var ds = p.get('zVelocity');
         p.set('zVelocity', 0);
         MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
@@ -645,9 +487,38 @@ var FluencyApp = KeyboardLayer.extend({
         this.medalCars[2].scheduleUpdate();
         this.addChild({child: this.medalCars[2]});
         
+        // Start background music
         this.audioMixer.loopSound('bg_slow');
         this.audioMixer.getSound('bg_fast').setVolume(0);
         this.audioMixer.loopSound('bg_fast');
+    },
+    
+	// Pauses the dashboard and medal cars
+    pause: function () {
+        this.get('dash').pauseTimer();
+        
+        var mc = this.get('medalCars');
+        
+        for(var i=0; i<3; i+=1) {
+            mc[i].prepause = mc[i].zVelocity;
+            mc[i].zVelocity = 0;
+        }
+        
+        this.set('medalCars', mc);
+    },
+    
+	// Unpauses the dashboard and medal cars
+    unpause: function () {
+        this.get('dash').unpauseTimer();
+        
+        var mc = this.get('medalCars');
+        
+        for(var i=0; i<3; i+=1) {
+            mc[i].zVelocity = mc[i].prepause;
+            mc[i].prepause = 0;
+        }
+        
+        this.set('medalCars', mc);
     },
     
     // Handles add requests from PerspectiveNodes
@@ -711,6 +582,7 @@ var FluencyApp = KeyboardLayer.extend({
             else {
                 unanswered += 1;
             }
+            
             i += 1;
         }
         
@@ -758,20 +630,16 @@ var FluencyApp = KeyboardLayer.extend({
         var d = this.get('dash');
         var e = d.get('elapsedTime');
         var p = d.get('pTime');
-        var m;
+        var m ' - ';
         
         // Determine medal string
-        if(e + p < RC.times[1] && state == 'FINISH') {
-            m = "Gold";
-        }
-        else if(e + p < RC.times[2] && state == 'FINISH') {
-            m = "Silver";
-        }
-        else if(e + p < RC.times[3] && state == 'FINISH') {
-            m = "Bronze";
-        }
-        else {
-            m = " - ";
+        if(state == 'FINISH') {
+            if(e + p < RC.times[1])
+                m = "Gold";
+            else if(e + p < RC.times[2])
+                m = "Silver";
+            else if(e + p < RC.times[3])
+                m = "Bronze";
         }
         
         // Convert times to milliseconds for reporting
@@ -854,11 +722,11 @@ var FluencyApp = KeyboardLayer.extend({
             var t = dash.elapsedTime + dash.pTime + parseFloat(RC.penaltyTime);
         
             player.wipeout(1);
-            this.get('audioMixer').playSound('wipeout', true);
             dash.modifyPenaltyTime(RC.penaltyTime);
             
             this.audioMixer.playSound('screech', true);
             
+            // Update medal car velocities to account for penalty time
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
                 var rd = RC.finishLine - c[i].get('zCoordinate');
@@ -922,14 +790,14 @@ var FluencyApp = KeyboardLayer.extend({
             player.decelerate(dt);
             this.audioMixer.loopSound('decel')
         
-            //TODO: Crossfade
-            if(this.bgHigh && !this.bgFade && player.zVelocity < 30) {
+            // Cross fade tracks if needed and able
+            if(this.bgHigh && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
                 this.audioMixer.crossFade('bg_fast', 'bg_slow', 2);
                 this.bgHigh = false;
                 this.bgFade = true;
             }
             
-            // Prevents triggeringboth acceleration and deceleration
+            // Prevents triggering both acceleration and deceleration
             decel_lock = true;
         }
         // 'W' / 'UP' Speed up, press
@@ -940,8 +808,8 @@ var FluencyApp = KeyboardLayer.extend({
             player.accelerate(dt);
             this.audioMixer.loopSound('accel')
             
-            //TODO: Crossfade
-            if(!this.bgHigh && !this.bgFade && player.zVelocity > 30) {
+            // Cross fade tracks if needed and able
+            if(!this.bgHigh && !this.bgFade && player.zVelocity > RC.crossFadeSpeed) {
                 this.audioMixer.crossFade('bg_slow', 'bg_fast', 2);
                 this.bgHigh = true;
                 this.bgFade = true;
@@ -961,13 +829,11 @@ var FluencyApp = KeyboardLayer.extend({
             this.endOfGame(false);
         }
         
-        // FPS calculations and display
-        var sub = parseFloat(0);
-        var cur = 1 / dt;
+        var sub = parseFloat(0);    // Zero the subtotal
+        var cur = 1 / dt;           // Store the current frame's fps
         
-        // Get rid of oldest frame, add this frame
-        this.fpsTracker.shift();
-        this.fpsTracker.push(cur);
+        this.fpsTracker.shift();    // Get rid of oldest frame
+        this.fpsTracker.push(cur);  // Add this frame
         
         // Log spikes to console if FPS tracker is enabled
         if(this.fpsToggle) {
@@ -1012,8 +878,6 @@ var MenuLayer = cocos.nodes.Menu.extend({
     muted       : false,    // State of the volume mute button
     init: function() {
         MenuLayer.superclass.init.call(this, {});
-        
-        var that = this;
     },
     
     createMenu: function() {
@@ -1100,7 +964,6 @@ var MenuLayer = cocos.nodes.Menu.extend({
 
 // Initialise application
 exports.main = function() {
-
     // From: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
     // This defines function.bind for web browsers that have not implemented it:
     // Firefox < 4 ; Chrome < 7 ; IE < 9 ; Safari (all) ; Opera (all)
@@ -1125,17 +988,12 @@ exports.main = function() {
         };
     }
     
-    // Get director
+    // Setup the director
     var director = cocos.Director.get('sharedDirector');
-
-    // Attach director to our <div> element
     director.attachInView(document.getElementById('cocos_test_app'));
     
-    // Create a scene
-    var scene = cocos.nodes.Scene.create();
-
-    // Create our layers
-    var app = FluencyApp.create();
+    var scene = cocos.nodes.Scene.create();     // Create a scene
+    var app = FluencyApp.create();              // Create the layers
     var menu = MenuLayer.create();
     
     // Set up inter-layer events

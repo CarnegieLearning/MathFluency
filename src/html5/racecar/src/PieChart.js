@@ -18,8 +18,6 @@ var cocos = require('cocos2d');
 var geom = require('geometry');
 var util = require('util');
 
-var XML = require('XML').XML;
-
 // Draws a pie chart
 var PieChart = cocos.nodes.Node.extend({
     numSections :2,         // Total number of pie slices
@@ -30,7 +28,7 @@ var PieChart = cocos.nodes.Node.extend({
     radius      :10,        // Size of the chart
     init: function(opts) {
         PieChart.superclass.init.call(this);
-        
+        console.log(opts);
         //Set properties from the option object
         util.each('numSections numFilled bgColor lineColor fillColor radius'.w(), util.callback(this, function (name) {
             if (opts[name]) {
@@ -90,26 +88,6 @@ PieChart.helper = function(Sections, Filled, BgColor, LineColor, FillColor, Radi
         fillColor   : FillColor,
         radius      : Radius
     };
-}
-
-// Static XML parser to build options from a <CONTENT_SETTINGS> node
-PieChart.helperXML = function(node) {
-    var n = XML.safeComboGet(node, 'Numerator', 'VALUE');
-    var d = XML.safeComboGet(node, 'Denominator', 'VALUE');
-    var bg = XML.safeComboGet(node, 'BackgroundColor', 'VALUE');
-    var fc = XML.safeComboGet(node, 'FillColor', 'VALUE');
-    var lc = XML.safeComboGet(node, 'LineColor', 'VALUE');
-    var r = XML.safeComboGet(node, 'Radius', 'VALUE');
-    
-    var opts = {}
-    opts['numSections'] = d   == null ? 2       : d;
-    opts['numFilled']   = n   == null ? 1       : n;
-    opts['bgColor']     = bg  == null ? '#fff'  : bg;
-    opts['lineColor' ]  = lc  == null ? '#000'  : lc;
-    opts['fillColor']   = fc  == null ? '#0aa'  : fc;
-    opts['radius']      = r   == null ? '10'    : r;
-    
-    return opts;
 }
 
 exports.PieChart = PieChart

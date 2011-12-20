@@ -17,26 +17,32 @@ Copyright 2011, Carnegie Learning
 // Import the cocos2d module
 var cocos = require('cocos2d');
 
-var XML = require('XML').XML;
+// Global imports
+var Content = require('Content').Content;
 
 var LabelBG = cocos.nodes.Node.extend({
     label  : null,      //The label that the class wraps
     bgColor: '#FFFFFF', //The color of the background that will be behind the label
+    
     init: function(opts) {
         // You must always call the super class version of init
         LabelBG.superclass.init.call(this, opts);
+        
+        opts['string']    = this.defaulter(opts, 'string',    '');
+        opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
+        opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
+        opts['fontSize']  = this.defaulter(opts, 'fontSize',  '16');
         
         var label = cocos.nodes.Label.create(opts)
         label.bindTo('opacity', this, 'opacity');
         this.set('label', label);
         this.addChild({child: label});
         
-        if(opts.hasOwnProperty('bgColor')) {
-            this.set('bgColor', opts['bgColor']);
-        }
+        this.set('bgColor', this.defaulter(opts, 'bgColor', '#FFFFFF'));
 
         this.set('contentSize', this.get('label').get('contentSize'));
     },
+    
     // Draws the background for the label
     draw: function(context) {
         var size = this.get('contentSize');
@@ -44,6 +50,11 @@ var LabelBG = cocos.nodes.Node.extend({
         context.fillStyle = this.get('bgColor');
         context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
     },
+    
+    //TODO: Put into a utility script/class
+    defaulter: function(obj, prop, def) {
+        return obj.hasOwnProperty(prop) ? obj[prop] : def;
+    }
 });
 
 // Static helper function to build the creation options object
@@ -57,20 +68,6 @@ LabelBG.helper = function(String, FontColor, BgColor, FontSize, FontName) {
     };
 }
 
-// Static XML parser to build options from a <CONTENT_SETTINGS> node
-LabelBG.helperXML = function (node) {
-    var str = XML.safeComboGet(node, 'String', 'VALUE');
-    var bg = XML.safeComboGet(node, 'BackgroundColor', 'VALUE');
-    var f = XML.parseFont(XML.getFirstByTag(node, 'FontSettings'));
-    
-    var opts = {}
-    opts['string']      = str          == null ? ''          : str;
-    opts['bgColor']     = bg           == null ? '#fff'      : bg;
-    opts['fontName' ]   = f.font       == null ? 'Helvetica' : f.font;
-    opts['fontColor']   = f.fontColor  == null ? '#000'      : f.fontColor;
-    opts['fontSize']    = f.fontSize   == null ? '16'        : f.fontSize;
-    
-    return opts;
-}
+LabelBG.identifier = 'String';
 
 exports.LabelBG = LabelBG
