@@ -63,6 +63,9 @@ var FluencyApp = KeyboardLayer.extend({
     gameID      : '',       // Unique ID for the game
 	inters		: [],       // Holds the list of checkpoints
     
+    bgFade      : false,    // True when crossfading between bg tracks
+    bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
+    
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
     version     : 'v 0.2.1',// Current version number
@@ -81,6 +84,22 @@ var FluencyApp = KeyboardLayer.extend({
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
+        
+        // Explicitly enable audio
+        AudioMixer.enabled = true;
+        // Set up basic audio
+        var AM = AudioMixer.create();
+        AM.loadSound('screech', "sound/CarScreech2");
+        AM.loadSound('bg_slow', "sound/race bg slow");
+        AM.loadSound('bg_fast', "sound/race bg fast2");
+        AM.loadSound('decel', "sound/SlowDown");
+        AM.loadSound('accel', "sound/SpeedUp");
+        AM.loadSound('turbo', "sound/Turboboost");
+        AM.loadSound('start', "sound/EngineStart");
+        AM.loadSound('hum', "sound/Engine Hum");
+        this.set('audioMixer', AM);
+        
+        events.addListener(AM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
         
         var preloader = Preloader.create();
         this.addChild({child: preloader});
@@ -101,12 +120,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.answerQuestion = this.answerQuestion.bind(this)
         this.removeMeHandler = this.removeMeHandler.bind(this)
         
-        // Set up basic audio
-        var AM = AudioMixer.create();
-        AM.loadSound('bg', "sound/01 Yellow Line");
-        AM.loadSound('wipeout', "sound/Carscreech");
-        this.set('audioMixer', AM);
-        
         // Create player
         var player = Player.create();
         player.set('position', new geo.Point(400, 450));
@@ -124,7 +137,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('endOfGameCallback', app_div.attr('callback'));
         
         // Uncomment to run locally
-        //this.runLocally();
         //this.runLocally();
         //return;
         
@@ -607,6 +619,9 @@ var FluencyApp = KeyboardLayer.extend({
         setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
         setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
         
+        this.audioMixer.playSound('start');
+        this.audioMixer.loopSound('hum');
+        
         // Catch window unloads at this point as aborts
         $(window).unload(this.endOfGame.bind(this, null));
     },
@@ -629,6 +644,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: this.medalCars[1]});
         this.medalCars[2].scheduleUpdate();
         this.addChild({child: this.medalCars[2]});
+        
+        this.audioMixer.loopSound('bg_slow');
+        this.audioMixer.getSound('bg_fast').setVolume(0);
+        this.audioMixer.loopSound('bg_fast');
     },
     
     // Handles add requests from PerspectiveNodes
@@ -645,6 +664,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.removeChild(toRemove);
     },
     
+    onCrossFadeComplete: function () {
+        this.bgFade = false;
+    },
+    
     // Called when game ends, should collect results, display them to the screen and output the result XML
     // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
@@ -655,6 +678,13 @@ var FluencyApp = KeyboardLayer.extend({
         else {
             this.cleanup();
         }
+        
+        // Fade out background music tracks at the end of the game
+        var s;
+        s = this.audioMixer.getSound('bg_fast');
+        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        s = this.audioMixer.getSound('bg_slow');
+        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
@@ -827,6 +857,8 @@ var FluencyApp = KeyboardLayer.extend({
             this.get('audioMixer').playSound('wipeout', true);
             dash.modifyPenaltyTime(RC.penaltyTime);
             
+            this.audioMixer.playSound('screech', true);
+            
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
                 var rd = RC.finishLine - c[i].get('zCoordinate');
@@ -839,6 +871,7 @@ var FluencyApp = KeyboardLayer.extend({
                     c[i].set('zVelocity', rd / 0.1);
                 }
             }
+            
             this.set('medalCars', c);
         }
         
@@ -882,18 +915,45 @@ var FluencyApp = KeyboardLayer.extend({
             player.set('xCoordinate', playerX);
         }
         
+        var decel_lock = false;
+        
         // 'S' / 'DOWN' Slow down, press
         if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
             player.decelerate(dt);
+            this.audioMixer.loopSound('decel')
+        
+            //TODO: Crossfade
+            if(this.bgHigh && !this.bgFade && player.zVelocity < 30) {
+                this.audioMixer.crossFade('bg_fast', 'bg_slow', 2);
+                this.bgHigh = false;
+                this.bgFade = true;
+            }
+            
+            // Prevents triggeringboth acceleration and deceleration
+            decel_lock = true;
         }
         // 'W' / 'UP' Speed up, press
-        else if(this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
+        else
+            this.audioMixer.stopSound('decel');
+            
+        if(!decel_lock && this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
             player.accelerate(dt);
+            this.audioMixer.loopSound('accel')
+            
+            //TODO: Crossfade
+            if(!this.bgHigh && !this.bgFade && player.zVelocity > 30) {
+                this.audioMixer.crossFade('bg_slow', 'bg_fast', 2);
+                this.bgHigh = true;
+                this.bgFade = true;
+            }
         }
+        else
+            this.audioMixer.stopSound('accel');
         
         // 'SPACE' turbo boost, discreet
         if(this.checkBinding('TURBO') == KeyboardLayer.PRESS) {
-            player.startTurboBoost();
+            if(player.startTurboBoost())
+                this.audioMixer.playSound('turbo');
         }
         
         // 'ESC' Abort game, discreet
@@ -954,7 +1014,6 @@ var MenuLayer = cocos.nodes.Menu.extend({
         MenuLayer.superclass.init.call(this, {});
         
         var that = this;
-        //setTimeout(function () {that.createMenu();}, 3300)
     },
     
     createMenu: function() {
@@ -1019,6 +1078,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('muted', !m);
     },
     
+    // Adds the retry button to the MenuLayer
     addRetryButton: function() {
         var opts = Object();
         opts['normalImage'] = '/resources/retry.png';

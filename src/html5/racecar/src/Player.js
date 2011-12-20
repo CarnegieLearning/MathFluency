@@ -220,7 +220,11 @@ var Player = PNode.extend({
             var tm = this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
             this.set('turboMOT', tm);
             events.addListener(tm, 'Completed', this.turboCompleted);
+            
+            return true;
         }
+        
+        return false;
     },
     
     // STATIC BIND
