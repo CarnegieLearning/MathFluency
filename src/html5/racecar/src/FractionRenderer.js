@@ -29,7 +29,7 @@ var FractionRenderer = cocos.nodes.Node.extend({
     lineColor   : '#a22',       // Color of the fraction bar between the numerator and denominator
     init: function(opts) {
         FractionRenderer.superclass.init.call(this);
-        console.log(opts);
+        
         // Set properties from the option object
         util.each('numerator denominator bgColor fontColor seperatorColor fontName fontColor fontSize'.w(), util.callback(this, function (name) {
             if (opts[name]) {

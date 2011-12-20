@@ -28,7 +28,7 @@ var PieChart = cocos.nodes.Node.extend({
     radius      :10,        // Size of the chart
     init: function(opts) {
         PieChart.superclass.init.call(this);
-        console.log(opts);
+        
         //Set properties from the option object
         util.each('numSections numFilled bgColor lineColor fillColor radius'.w(), util.callback(this, function (name) {
             if (opts[name]) {

@@ -630,7 +630,7 @@ var FluencyApp = KeyboardLayer.extend({
         var d = this.get('dash');
         var e = d.get('elapsedTime');
         var p = d.get('pTime');
-        var m ' - ';
+        var m = ' - ';
         
         // Determine medal string
         if(state == 'FINISH') {
