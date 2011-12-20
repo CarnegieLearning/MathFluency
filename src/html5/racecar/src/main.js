@@ -154,6 +154,7 @@ var FluencyApp = KeyboardLayer.extend({
         var xml = XML.parser(xmlDoc.firstChild);
     
         var medals = this.parseMedals(xml); // Parse medal information
+        this.parseAudio(xml);               // Parse the audio information
         this.parseSpeed(xml);               // Parse and set player speed values
         this.parsePenalty(xml);             // Get the penalty time for incorrect answers
     
@@ -174,9 +175,9 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Parse the medal values
-    parseMedals: function (root) {
+    parseMedals: function (xml) {
         var ret = [];
-        var node = XML.getDeepChildByName(root, 'MEDALS');
+        var node = XML.getDeepChildByName(xml, 'MEDALS');
         if(node != null) {
             var id, val;
             for(var i in node.children) {
@@ -202,9 +203,17 @@ var FluencyApp = KeyboardLayer.extend({
         return ret;
     },
     
+    // Parse the audio information
+    parseAudio: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'AudioSettings');
+        if(node) {
+            RC.crossFadeSpeed = node['crossFadeSpeed'] == null ? RC.crossFadeSpeed : node['crossFadeSpeed'];
+        }
+    },
+    
     // Parse the penalty settings
-    parsePenalty: function (root) {
-        var node = XML.getDeepChildByName(root, 'PenaltySettings');
+    parsePenalty: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'PenaltySettings');
         if(node != null) {
             if(node.attributes['TimeLost'] != null) {
                 RC.penaltyTime = node.attributes['TimeLost'];
@@ -216,8 +225,8 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Parse and set player speed values
-    parseSpeed: function (root) {
-        var node = XML.getDeepChildByName(root, 'SpeedSettings');
+    parseSpeed: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'SpeedSettings');
         
         var max = node.attributes['Max'];
         var min = node.attributes['Min'];
@@ -244,8 +253,8 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Parses the PROBLEM_SET
-    parseProblemSet: function (root) {
-        var problemRoot = XML.getDeepChildByName(root, 'PROBLEM_SET');
+    parseProblemSet: function (xml) {
+        var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
         var subsets = problemRoot.children;
         var z = 0;
         var once = true;
@@ -273,6 +282,7 @@ var FluencyApp = KeyboardLayer.extend({
             events.addListener(inter, 'changeSelector', this.pause.bind(this));
             inter.idle();
 			
+            // Append the intermission to the list of intermissions
 			var temp = this.get('inters');
 			temp.push(z);
 			this.set('inters', temp);
