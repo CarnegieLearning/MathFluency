@@ -27,7 +27,7 @@ var AudioTrack = BObject.extend({
     init: function(file) {
         this.audio = document.createElement('audio');
         this.audio.setAttribute('src', file);
-        this.audio.onended = this.endCallback.bind(this);
+        this.audio.addEventListener('ended', this.endCallback.bind(this));
         this.set('isPlaying', false);
     },
     

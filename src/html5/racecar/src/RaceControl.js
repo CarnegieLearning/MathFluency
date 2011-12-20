@@ -25,6 +25,9 @@ var RaceControl = BObject.extend({
 RaceControl.finishLine          = 3200;                     // Holds the z value of the finish line
 RaceControl.initialCountdown    = 3000;                     // Initial countdown time in milliseconds
 
+// <AudioSettings>
+RaceControl.crossFadeSpeed = 30;
+
 // <MEDALS>
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
 RaceControl.medalNames          = ['Ludicrous Speed', 'Gold', 'Silver', 'Bronze', ' - '];

@@ -821,7 +821,7 @@ var FluencyApp = KeyboardLayer.extend({
         // 'SPACE' turbo boost, discreet
         if(this.checkBinding('TURBO') == KeyboardLayer.PRESS) {
             if(player.startTurboBoost())
-                this.audioMixer.playSound('turbo');
+                this.audioMixer.playSound('turbo', true);
         }
         
         // 'ESC' Abort game, discreet
