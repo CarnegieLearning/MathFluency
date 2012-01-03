@@ -191,8 +191,8 @@ var PerspectiveNode = cocos.nodes.Node.extend({
 });
 
 // Static constants
-PerspectiveNode.horizonStart    = 150;      // From top of screen to start of horizon in pixels
-PerspectiveNode.horizonHeight   = 450;      // From horizonStart to the bottom of the screen in pixels
+PerspectiveNode.horizonStart    = 70;       // From top of screen to start of horizon in pixels
+PerspectiveNode.horizonHeight   = 530;      // From horizonStart to the bottom of the screen in pixels
 PerspectiveNode.horizonDistance = 100;      // In meters from the camera
 PerspectiveNode.horizonScale    = 0.05;     // Scale of objects on the horizon
 PerspectiveNode.roadWidth       = 9.0;      // Width of road at bottom of the screen in meters

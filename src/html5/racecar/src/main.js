@@ -395,17 +395,18 @@ var FluencyApp = KeyboardLayer.extend({
         RC.maxTimeWindow = m / player.get('maxSpeed') * 0.9;
         
         // Generate things to the side of the road
-        var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
+        var sprite_l = [cocos.nodes.Sprite.create({file: '/resources/snow_tree_l.png',}), cocos.nodes.Sprite.create({file: '/resources/snow_sign_l.png',})];
+        var sprite_r = [cocos.nodes.Sprite.create({file: '/resources/snow_tree_r.png',}), cocos.nodes.Sprite.create({file: '/resources/snow_sign_r.png',})];
         
         for(var t=10; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6+4)) {
             if(Math.random() < 0.25) {
-                var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite_r[Math.floor(Math.random()*2)], alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
                 events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
             }
             if(Math.random() < 0.25) {
-                var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
+                var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite_l[Math.floor(Math.random()*2)], alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
                 events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
@@ -893,14 +894,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
     createMenu: function() {
         // Create the button
         var opts = Object();
-        opts['normalImage'] = '/resources/start-button.png';
-        opts['selectedImage'] = '/resources/start-button.png';
-        opts['disabledImage'] = '/resources/start-button.png';
+        opts['normalImage'] = '/resources/snow_start.png';
+        opts['selectedImage'] = '/resources/snow_start.png';
+        opts['disabledImage'] = '/resources/snow_start.png';
         // We use this callback so we can do cleanup before handing everything over to the main game
         opts['callback'] = this.startButtonCallback.bind(this);
         
         var sb = cocos.nodes.MenuItemImage.create(opts);
-        sb.set('position', new geo.Point(0, 0));
+        sb.set('position', new geo.Point(-50, 0));
         sb.set('scaleX', 0.5);
         sb.set('scaleY', 0.5);
         this.set('startButton', sb);

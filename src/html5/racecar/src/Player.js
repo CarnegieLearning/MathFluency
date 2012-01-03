@@ -62,7 +62,7 @@ var Player = PNode.extend({
         this.startAnimationCallback = this.startAnimationCallback.bind(this)
         
         // Load the car sprite for the player
-        var sprite = cocos.nodes.Sprite.create({file: '/resources/car_white.png',});
+        var sprite = cocos.nodes.Sprite.create({file: '/resources/snow_car.png',});
         sprite.set('scaleX', 0.5);
         sprite.set('scaleY', 0.5);
         this.addChild({child: sprite});
