@@ -171,7 +171,7 @@ def create_datasetxml(directory, filelist, engine):
 def build_datasetxml(directory, filelist, engine):
     root = Element('dataset')
     root.setAttribute('id', directory[0:-1])
-    root.setAttribute('gameid', engine)
+    root.setAttribute('game_id', engine)
     
     for file in filelist:
         node = Element('datafile')
