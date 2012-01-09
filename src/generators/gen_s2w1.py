@@ -25,7 +25,7 @@ def runBatch(prefix, v):
         towrite = toXMLLegacy(dataset).toprettyxml()
         
         #Prepare to write to the XML file
-        filelist.append(prefix + str(i).zfill(3) + ".xml")
+        filelist.append(prefix + "_" + str(i).zfill(3) + ".xml")
         
         if(not os.path.exists("private/" + prefix)):
             os.mkdir("private/" + prefix)
@@ -41,6 +41,8 @@ def runBatch(prefix, v):
             f.close()
         
         i += 1
+        
+        create_datasetxml("private/" + prefix + "/", filelist, "scuba");
 
     #Generates a single dataset
 def generateDataSet(mult):
@@ -154,8 +156,31 @@ def getHeader(filename):
         f.close()
         return header
     else:
-        logfile.write("Error opening xml header file\n")
         return [""]
+        
+#Outputs the dataset.xml file which functions as an index for the GameController in the output directory
+def create_datasetxml(directory, filelist, engine):
+    datasetxml = build_datasetxml(directory, filelist, engine)
+    towrite = datasetxml.toprettyxml()
+    f = open(directory + "dataset.xml", 'w')
+    if(f):
+        f.write(towrite)
+        f.close()
+
+#Builds the XML index for the datasets that were already created and outputted
+def build_datasetxml(directory, filelist, engine):
+    root = Element('dataset')
+    root.setAttribute('id', directory[0:-1])
+    root.setAttribute('gameid', engine)
+    
+    for file in filelist:
+        node = Element('datafile')
+        node.setAttribute('id', file[0:-4])
+        node.setAttribute('name', file)
+        root.appendChild(node)
+        
+    return root
+
 ###################################################################################################
 
 variations = []
