@@ -1,277 +1,197 @@
-<?xml version = "1.0" encoding = "UTF-8"?>
+<?xml version="1.0" ?>
 <INPUT>
-<MEDALS>
-    <MEDAL Id="1" MEDAL_THRESHOLD="45000" TYPE="Gold"/>
-    <MEDAL Id="2" MEDAL_THRESHOLD="69000" TYPE="Silver"/>
-    <MEDAL Id="3" MEDAL_THRESHOLD="89000" TYPE="Bronze"/>
-</MEDALS>
-<SpeedSettings>
-    <Min VALUE="0"/>
-    <Max VALUE="150"/>
-    <Default VALUE="18"/>
-</SpeedSettings>
-<PenaltySettings>
-    <TimeLost VALUE="15"/>
-    <SpeedLost VALUE="0.1"/>
-</PenaltySettings>
-<PROBLEM_SET>
-	<PROBLEM_SUBSET>
-		<TARGET TYPE="Fraction">
-			<ContentSettings>
-				<Numerator VALUE="85"/>
-				<Denominator VALUE="100"/>
-			</ContentSettings>
-		</TARGET>
-		<QUESTION INDEX="1">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.88"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.01"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="0"/>
-		</QUESTION>
-		<QUESTION INDEX="2">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.23"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.86"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="3">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.41"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.79"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="4">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.89"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.94"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="0"/>
-		</QUESTION>
-		<QUESTION INDEX="5">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.41"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.97"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="6">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.14"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.46"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-	<PROBLEM_SUBSET>
-		<TARGET TYPE="Fraction">
-			<ContentSettings>
-				<Numerator VALUE="179"/>
-				<Denominator VALUE="100"/>
-			</ContentSettings>
-		</TARGET>
-		<QUESTION INDEX="7">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.91"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.92"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="8">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.32"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.02"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="9">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.52"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.94"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="10">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.59"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.36"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="11">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.97"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.89"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="12">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.26"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.76"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-	<PROBLEM_SUBSET>
-		<TARGET TYPE="Fraction">
-			<ContentSettings>
-				<Numerator VALUE="1938"/>
-				<Denominator VALUE="1000"/>
-			</ContentSettings>
-		</TARGET>
-		<QUESTION INDEX="13">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.765"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.975"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="14">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.958"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.994"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="0"/>
-		</QUESTION>
-		<QUESTION INDEX="15">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.289"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.137"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="16">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.5"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.785"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="17">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.948"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.987"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="0"/>
-		</QUESTION>
-		<QUESTION INDEX="18">
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="0.092"/>
-				</ContentSettings>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings>
-					<String VALUE="1.325"/>
-				</ContentSettings>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-</PROBLEM_SET>
+
+	<MEDALS>
+		<MEDAL Id="1" MEDAL_THRESHOLD="45000" TYPE="Gold"/>
+		<MEDAL Id="2" MEDAL_THRESHOLD="69000" TYPE="Silver"/>
+		<MEDAL Id="3" MEDAL_THRESHOLD="89000" TYPE="Bronze"/>
+
+	</MEDALS>
+
+	<SpeedSettings Default="18" Max="150" Min="0"/>
+
+	<PenaltySettings SpeedLost="0.1" TimeLost="15"/>
+
+	<PROBLEM_SET>
+		<PROBLEM_SUBSET>
+			<TARGET TYPE="Fraction">
+				<ContentSettings denominator="100" numerator="85"/>
+			</TARGET>
+			<QUESTION INDEX="1">
+				<Content TYPE="String">
+					<ContentSettings string="0.88"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.01"/>
+				</Content>
+				<Answer VALUE="0"/>
+			</QUESTION>
+			<QUESTION INDEX="2">
+				<Content TYPE="String">
+					<ContentSettings string="0.23"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="0.86"/>
+				</Content>
+				<Answer VALUE="1"/>
+			</QUESTION>
+			<QUESTION INDEX="3">
+				<Content TYPE="String">
+					<ContentSettings string="0.41"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="0.79"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+			<QUESTION INDEX="4">
+				<Content TYPE="String">
+					<ContentSettings string="0.89"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="0.94"/>
+				</Content>
+				<Answer VALUE="0"/>
+			</QUESTION>
+			<QUESTION INDEX="5">
+				<Content TYPE="String">
+					<ContentSettings string="0.41"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="0.97"/>
+				</Content>
+				<Answer VALUE="1"/>
+			</QUESTION>
+			<QUESTION INDEX="6">
+				<Content TYPE="String">
+					<ContentSettings string="0.14"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="0.46"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET>
+			<TARGET TYPE="Fraction">
+				<ContentSettings denominator="100" numerator="179"/>
+			</TARGET>
+			<QUESTION INDEX="7">
+				<Content TYPE="String">
+					<ContentSettings string="0.91"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.92"/>
+				</Content>
+				<Answer VALUE="1"/>
+			</QUESTION>
+			<QUESTION INDEX="8">
+				<Content TYPE="String">
+					<ContentSettings string="0.32"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.02"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+			<QUESTION INDEX="9">
+				<Content TYPE="String">
+					<ContentSettings string="1.52"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.94"/>
+				</Content>
+				<Answer VALUE="1"/>
+			</QUESTION>
+			<QUESTION INDEX="10">
+				<Content TYPE="String">
+					<ContentSettings string="0.59"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.36"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+			<QUESTION INDEX="11">
+				<Content TYPE="String">
+					<ContentSettings string="0.97"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.89"/>
+				</Content>
+				<Answer VALUE="1"/>
+			</QUESTION>
+			<QUESTION INDEX="12">
+				<Content TYPE="String">
+					<ContentSettings string="0.26"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.76"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+		<PROBLEM_SUBSET>
+			<TARGET TYPE="Fraction">
+				<ContentSettings denominator="1000" numerator="1938"/>
+			</TARGET>
+			<QUESTION INDEX="13">
+				<Content TYPE="String">
+					<ContentSettings string="0.765"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.975"/>
+				</Content>
+				<Answer VALUE="1"/>
+			</QUESTION>
+			<QUESTION INDEX="14">
+				<Content TYPE="String">
+					<ContentSettings string="1.958"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.994"/>
+				</Content>
+				<Answer VALUE="0"/>
+			</QUESTION>
+			<QUESTION INDEX="15">
+				<Content TYPE="String">
+					<ContentSettings string="0.289"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.137"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+			<QUESTION INDEX="16">
+				<Content TYPE="String">
+					<ContentSettings string="0.5"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.785"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+			<QUESTION INDEX="17">
+				<Content TYPE="String">
+					<ContentSettings string="1.948"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.987"/>
+				</Content>
+				<Answer VALUE="0"/>
+			</QUESTION>
+			<QUESTION INDEX="18">
+				<Content TYPE="String">
+					<ContentSettings string="0.092"/>
+				</Content>
+				<Content TYPE="String">
+					<ContentSettings string="1.325"/>
+				</Content>
+				<Answer VALUE="2"/>
+			</QUESTION>
+		</PROBLEM_SUBSET>
+
+	</PROBLEM_SET>
+
 </INPUT>
+
