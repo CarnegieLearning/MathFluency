@@ -64,6 +64,9 @@ var FluencyApp = KeyboardLayer.extend({
     bgFade      : false,    // True when crossfading between bg tracks
     bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
     
+    lanePosX    : {2: [-2, 2], 3:[-3, 0, 3]},
+    lane        : 1,
+    
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
     version     : 'v 0.3.0',    // Current version number
@@ -139,7 +142,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
-        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
+        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002_2l.xml"};
         
         // Preload remote resources
         var p = cocos.Preloader.create();
@@ -343,6 +346,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: bg});
         
         var player = this.get('player');
+        player.set('xCoordinate', this.lanePosX[RC.curNumLanes][1]);
         
         // Add the right hand side dash
         var dash = this.get('dash');
@@ -707,21 +711,9 @@ var FluencyApp = KeyboardLayer.extend({
     // Handles answering the current question when time expires
     // STATIC BIND
     answerQuestion: function(question) {
-        var result;
-        
+        var result = question.answerQuestion(this.lane);
+
         var player = this.get('player');
-        var playerX = player.get('xCoordinate');
-        
-        // Determine answer based on the lane
-        if(playerX < PNode.roadWidth / -6) {
-            result = question.answerQuestion(0);
-        }
-        else if(playerX < PNode.roadWidth / 6) {
-            result = question.answerQuestion(1);
-        }
-        else {
-            result = question.answerQuestion(2);
-        }
         
         // Handle correct / incorrect feedback
         if(result) {
@@ -778,19 +770,17 @@ var FluencyApp = KeyboardLayer.extend({
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
         if(this.checkBinding('MOVE_LEFT') == KeyboardLayer.PRESS) {
-            playerX -= 3
-            if(playerX < -3) {
-                playerX = -3
+            if(this.lane > 0) {
+                this.lane -= 1;
+                player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
             }
-            player.set('xCoordinate', playerX);
         }
         // 'D' / 'RIGHT' Move right, discreet
         else if(this.checkBinding('MOVE_RIGHT') == KeyboardLayer.PRESS) {
-            playerX += 3
-            if(playerX > 3) {
-                playerX = 3
+            if(this.lane < RC.curNumLanes-1) {
+                this.lane += 1;
+                player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
             }
-            player.set('xCoordinate', playerX);
         }
         
         var decel_lock = false;

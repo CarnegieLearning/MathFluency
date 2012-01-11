@@ -25,6 +25,8 @@ var RaceControl = BObject.extend({
 RaceControl.finishLine          = 3200;                     // Holds the z value of the finish line
 RaceControl.initialCountdown    = 3000;                     // Initial countdown time in milliseconds
 
+RaceControl.curNumLanes = 3;
+
 // <AudioSettings>
 RaceControl.crossFadeSpeed = 30;
 
@@ -41,6 +43,8 @@ RaceControl.noMedal = '#202020';        // Color for no medal
 RaceControl.intermissionSpacing = 110;                      // Distance in meters from previous object to intermission
 RaceControl.questionSpacing     = 150;                      // Distance in meters from previous object to question
 RaceControl.finishSpacing       = 110;                      // Distance in meters after the last question to the finish line
+
+RaceControl.delimiterSpacing    = {2: [0], 3: [-1.5, 1.5], 4: [-3, 0, 3]};
 
 // <PenaltySettings>
 RaceControl.penaltyTime         = 15;                       // Time in seconds lost for a incorrect answer
