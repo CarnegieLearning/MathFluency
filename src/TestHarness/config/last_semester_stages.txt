@@ -1,0 +1,155 @@
+        "test-1": {
+            "displayName": "Week 1: Dec to Pct, Level 1",
+            "engine": "racecar",
+            "cli_fluency_task": "test1"
+        },
+        "test-2": {
+            "displayName": "Week 1: Dec to Pct, Level 2",
+            "engine": "racecar",
+            "cli_fluency_task": "test2"
+        },
+        "test-3": {
+            "displayName": "Week 1: Dec to Pct, Level 3",
+            "engine": "racecar",
+            "cli_fluency_task": "test3"
+        },
+        "html5-test1": {
+            "displayName": "Racecar 1-1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test1b"
+        },
+        "html5-test2": {
+            "displayName": "Racecar 1-2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test2b"
+        },
+        "html5-test3": {
+            "displayName": "Racecar 1-3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test3b"
+        },
+        "test-4": {
+            "displayName": "Lvl 2: Flash 1",
+            "engine": "racecar",
+            "cli_fluency_task": "test4"
+        },
+        "test-5": {
+            "displayName": "Lvl 2: Flash 2",
+            "engine": "racecar",
+            "cli_fluency_task": "test5"
+        },
+        "test-6": {
+            "displayName": "Lvl 2: Flash 3",
+            "engine": "racecar",
+            "cli_fluency_task": "test6"
+        },
+        "test-7": {
+            "displayName": "Lvl 2: Flash 4",
+            "engine": "racecar",
+            "cli_fluency_task": "test7"
+        },
+        "html5-test4": {
+            "displayName": "Racecar 2-1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test4b"
+        },
+        "html5-test5": {
+            "displayName": "Racecar 2-2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test5b"
+        },
+        "html5-test6": {
+            "displayName": "Racecar 2-3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test6b"
+        },
+        "html5-test7": {
+            "displayName": "Racecar 2-4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test7b"
+        },
+        "debug1": {
+            "displayName": "Racecar DEBUG Mode",
+            "engine": "racecar_debug",
+            "cli_fluency_task": "test1b"
+        },
+        "level03-stage0": {
+            "displayName": "Lvl 3: HTML 0",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage0"
+        },
+        "level03-stage1": {
+            "displayName": "Lvl 3: HTML 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage1"
+        },
+        "level03-stage2": {
+            "displayName": "Lvl 3: HTML 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage2"
+        },
+        "level03-stage3": {
+            "displayName": "Lvl 3: HTML 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage3"
+        },
+        "level03-stage4": {
+            "displayName": "Lvl 3: HTML 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage4"
+        },
+        "level04-stage1": {
+            "displayName": "Lvl 4: HTML 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage1"
+        },
+        "level04-stage2": {
+            "displayName": "Lvl 4: HTML 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage2"
+        },
+        "level04-stage3": {
+            "displayName": "Lvl 4: HTML 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage3"
+        },
+        "level04-stage4": {
+            "displayName": "Lvl 4: HTML 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage4"
+        },
+        "level04-stage5": {
+            "displayName": "Lvl 4: HTML 5",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level04stage5"
+        },
+        "level05-stage1": {
+            "displayName": "Jungle 1",
+            "engine": "jungle",
+            "cli_fluency_task": "jungle_mono_equivalent"
+        },
+        "level05-stage2": {
+            "displayName": "Scuba 2",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_bi_equivalent"
+        },
+        "level05-stage3": {
+            "displayName": "Jungle 3",
+            "engine": "jungle",
+            "cli_fluency_task": "jungle_mix_equivalent"
+        },
+        "level05-stage4": {
+            "displayName": "Scuba 1",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_mono_equivalent"
+        },
+        "level05-stage5": {
+            "displayName": "Jungle 2",
+            "engine": "jungle",
+            "cli_fluency_task": "jungle_bi_equivalent"
+        },
+        "level05-stage6": {
+            "displayName": "Scuba 3",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_mix_equivalent"
+        }
