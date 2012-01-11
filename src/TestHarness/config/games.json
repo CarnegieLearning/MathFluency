@@ -62,6 +62,11 @@
             "displayName": "Whole Multiples",
             "engine": "scuba",
             "cli_fluency_task": "scuba_3876"
+        },
+        "level03-stage0": {
+            "displayName": "Racecar",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "level03stage0"
         }
     },
     
