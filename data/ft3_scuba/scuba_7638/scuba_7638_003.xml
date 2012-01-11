@@ -1,9 +1,9 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <INPUT>
 <MEDALS>
-    <MEDAL Id="gold" MEDAL_THRESHOLD="40500"><![CDATA[Gold]]></MEDAL>
-	<MEDAL Id="silver" MEDAL_THRESHOLD="24000"><![CDATA[Silver]]></MEDAL>
-	<MEDAL Id="bronze" MEDAL_THRESHOLD="21000"><![CDATA[Bronze]]></MEDAL>
+    <MEDAL Id="gold" MEDAL_THRESHOLD="60000"><![CDATA[Gold]]></MEDAL>
+	<MEDAL Id="silver" MEDAL_THRESHOLD="52000"><![CDATA[Silver]]></MEDAL>
+	<MEDAL Id="bronze" MEDAL_THRESHOLD="37000"><![CDATA[Bronze]]></MEDAL>
 </MEDALS>
 <GAME_DATA>
 <MESSAGES>
@@ -107,52 +107,52 @@
 			
 		</TARGET>
 		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="48">
+			<QUESTION Lane="0" Type="Text" Value="28">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-30">
+			<QUESTION Lane="0" Type="Text" Value="-63">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="35">
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-42">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-28">
+			<QUESTION Lane="1" Type="Text" Value="-15">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-63">
+			<QUESTION Lane="1" Type="Text" Value="14">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="10">
+			<QUESTION Lane="1" Type="Text" Value="-23">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-11">
+		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-1">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="42">
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-63">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="26">
+			<QUESTION Lane="0" Type="Text" Value="-51">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="18">
+			<QUESTION Lane="0" Type="Text" Value="-7">
 				
 			</QUESTION>
 		</QUESTION>
@@ -161,53 +161,53 @@
 		<TARGET ID="2" Type="Text" Value="Multiple of 6x">
 			
 		</TARGET>
-		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="24">
+		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-11">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-17">
+			<QUESTION Lane="1" Type="Text" Value="29">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-32">
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-29">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="46">
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-30">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="36">
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-39">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="17">
+		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-40">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-46">
+			<QUESTION Lane="1" Type="Text" Value="42">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-19">
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="46">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="48">
+			<QUESTION Lane="1" Type="Text" Value="-2">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="52">
+			<QUESTION Lane="1" Type="Text" Value="29">
 				
 			</QUESTION>
 		</QUESTION>
@@ -217,52 +217,52 @@
 			
 		</TARGET>
 		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="21">
+			<QUESTION Lane="0" Type="Text" Value="-21">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-2">
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="6">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-26">
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-25">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-23">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
 			<QUESTION Lane="0" Type="Text" Value="12">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="8">
+		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-22">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="21">
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="5">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-25">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-26">
+			<QUESTION Lane="0" Type="Text" Value="27">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-18">
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-27">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="13">
+			<QUESTION Lane="0" Type="Text" Value="21">
 				
 			</QUESTION>
 		</QUESTION>
@@ -272,52 +272,52 @@
 			
 		</TARGET>
 		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-34">
+			<QUESTION Lane="0" Type="Text" Value="-1">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="64">
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-24">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="61">
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-16">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="56">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="-32">
-				
-			</QUESTION>
-		</QUESTION>
-		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
 			<QUESTION Lane="1" Type="Text" Value="-48">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="25">
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="43">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="40">
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="65">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="48">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-13">
 				
 			</QUESTION>
 		</QUESTION>
 		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
-			<QUESTION Lane="1" Type="Text" Value="40">
+			<QUESTION Lane="0" Type="Text" Value="20">
 				
 			</QUESTION>
 		</QUESTION>
-		<QUESTION ANSWER="1" ID="10" PLATFORM="true">
-			<QUESTION Lane="0" Type="Text" Value="-57">
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-24">
 				
 			</QUESTION>
 		</QUESTION>

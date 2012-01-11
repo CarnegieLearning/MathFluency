@@ -1,4 +1,4 @@
-<dataset gameid="scuba" id="private/scuba_6387">
+<dataset game_id="ft3_scuba" id="scuba_6387">
 	<datafile id="scuba_6387_001" name="scuba_6387_001.xml"/>
 	<datafile id="scuba_6387_002" name="scuba_6387_002.xml"/>
 	<datafile id="scuba_6387_003" name="scuba_6387_003.xml"/>

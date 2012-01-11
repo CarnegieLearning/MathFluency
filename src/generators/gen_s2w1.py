@@ -42,7 +42,7 @@ def runBatch(prefix, v):
         
         i += 1
         
-        create_datasetxml("private/" + prefix + "/", filelist, "scuba");
+        create_datasetxml(prefix + "/", filelist, "scuba");
 
     #Generates a single dataset
 def generateDataSet(mult):
@@ -160,9 +160,9 @@ def getHeader(filename):
         
 #Outputs the dataset.xml file which functions as an index for the GameController in the output directory
 def create_datasetxml(directory, filelist, engine):
-    datasetxml = build_datasetxml(directory, filelist, engine)
+    datasetxml = build_datasetxml(directory, filelist, "ft3_scuba")
     towrite = datasetxml.toprettyxml()
-    f = open(directory + "dataset.xml", 'w')
+    f = open("private/" + directory + "dataset.xml", 'w')
     if(f):
         f.write(towrite)
         f.close()
@@ -207,83 +207,4 @@ rHelp([], [3, 6, 7, 8])
 while(len(variations) > 0):
     runBatch("scuba", variations[0])
     variations.pop(0)
-
-###################################################################################################
-
-def runBatchBSNL(prefix, v):
-    i = 1
-    filelist = []       #Keeps tracks of files written so far
-    
-    mult = v[0:4]
-    prefix += "_" + v[4]
-
-    #Since the top half of xml files for a specific fluency app are identical, just copy that for use laer
-    header = getHeader("scuba_header.xml")
-    
-    #Generate the data
-    while(i <= 10):
-        dataset = generateDataSet(mult)
-        towrite = toXMLLegacy(dataset).toprettyxml()
-        
-        #Prepare to write to the XML file
-        filelist.append(prefix + str(i).zfill(3) + ".xml")
-        
-        if(not os.path.exists("private/" + prefix)):
-            os.mkdir("private/" + prefix)
-        f = open("private/" + prefix + "/" + prefix + "_" + str(i).zfill(3) + ".xml", 'w')
-        
-        #Actually write to the XML file
-        if(f):
-            for line in header:
-                f.write(line)       #Header
-            f.write(towrite)        #Body (what we generated)
-            f.write("</level>")     #Closes first tag that envelopes the entire XML
-            f.close()
-        
-        i += 1
-
-    #Generates a single dataset
-def generateDataSetBSNL(mult):
-    i = 0
-    list = []
-    
-    while(i < 4):
-        temp = generateBSNL()
-        
-        if(temp != None):
-            list.append(temp)
-            i += 1
-
-    return list
-
-# Generates a subset
-def generateBSNL(m):
-    while(i < 10):
-        ol = str(random.randint(0, 1))
-        ans = str(random.randint(0, 1))
-    
-        set.append((ol, s, ans))
-    
-        i += 1
-        
-    return (sub, set)
-    
-def toXMLBSNL(dataset):
-    allQuestions = Element("questions")
-    
-    for q in dataset:
-        allQuestions.appendChild(XMLSubsetBSNL(q))
-        
-    return allQuestions
-
-def XMLQuestionBSNL(q):
-    question = Element("question")
-    question.setAttribute("startPoint", "-10")
-    question.setAttribute("endPoint", "10")
-    question.setAttribute("flagPos", "1")
-    question.setAttribute("answer", str(q))
-    
-    return question
-    
-###################################################################################################
 
