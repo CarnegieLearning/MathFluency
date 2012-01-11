@@ -27,7 +27,7 @@ var AudioTrack = require('AudioTrack').AudioTrack;
 // Only need a single Audio Mixer, so the class is static
 // Responsible for managing all the audio in the app
 var AudioMixer = BObject.extend({
-    sounds      : {},       // Dictionary of AudioTracks
+    sounds      : null,     // Dictionary of AudioTracks
     availible   : false,    // true if browser supports <audio>
     ogg         : false,    // true if browser supports ogg/oga format
     mp3         : false,    // true is browser supports mp3 format
@@ -36,6 +36,8 @@ var AudioMixer = BObject.extend({
     
     init: function () {
         AudioMixer.superclass.init.call(this);
+        
+        this.sounds = {};
         
         // If AudioMixer is disabled, do not do anything else
         if(!AudioMixer.enabled) {
@@ -194,6 +196,6 @@ var AudioMixer = BObject.extend({
 });
 
 // Static constants
-AudioMixer.enabled = false;     // Setting to false disables constructor, preventing audio from playing
+AudioMixer.enabled = true;     // Setting to false disables constructor, preventing audio from playing
 
 exports.AudioMixer = AudioMixer

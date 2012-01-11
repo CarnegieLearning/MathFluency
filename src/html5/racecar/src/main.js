@@ -56,7 +56,8 @@ var FluencyApp = KeyboardLayer.extend({
     background  : null,     // Holds the the background object
     dash        : null,     // Holds the right hand side dashboard
     questionList: [],       // List of all questions in the input
-    audioMixer  : null,     // AudioMixer
+    audioMixer  : null,     // AudioMixer for sound effects
+    musicMixer  : null,     // AudioMixer for music
     medalCars   : [],       // Contains the pace cars
     gameID      : '',       // Unique ID for the game
 	inters		: [],       // Holds the list of checkpoints
@@ -94,14 +95,17 @@ var FluencyApp = KeyboardLayer.extend({
         // Set up basic audio
         var AM = AudioMixer.create();
         AM.loadSound('screech', "sound/CarScreech2");
-        AM.loadSound('bg_slow', "sound/race bg slow");
-        AM.loadSound('bg_fast', "sound/race bg fast2");
         AM.loadSound('decel', "sound/SlowDown");
         AM.loadSound('accel', "sound/SpeedUp");
         AM.loadSound('turbo', "sound/Turboboost");
         AM.loadSound('start', "sound/EngineStart");
         AM.loadSound('hum', "sound/Engine Hum");
         this.set('audioMixer', AM);
+        
+        var MM = AudioMixer.create();
+        MM.loadSound('bg_slow', "sound/race bg slow");
+        MM.loadSound('bg_fast', "sound/race bg fast2");
+        this.set('musicMixer', MM);
         
         events.addListener(AM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
         
@@ -502,9 +506,9 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: this.medalCars[2]});
         
         // Start background music
-        this.audioMixer.loopSound('bg_slow');
-        this.audioMixer.getSound('bg_fast').setVolume(0);
-        this.audioMixer.loopSound('bg_fast');
+        this.musicMixer.loopSound('bg_slow');
+        this.musicMixer.getSound('bg_fast').setVolume(0);
+        this.musicMixer.loopSound('bg_fast');
     },
     
 	// Pauses the dashboard and medal cars
@@ -566,9 +570,9 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Fade out background music tracks at the end of the game
         var s;
-        s = this.audioMixer.getSound('bg_fast');
+        s = this.musicMixer.getSound('bg_fast');
         MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
-        s = this.audioMixer.getSound('bg_slow');
+        s = this.musicMixer.getSound('bg_slow');
         MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
     
         // Stop the player from moving further and the dash from increasing the elapsed time
@@ -754,6 +758,11 @@ var FluencyApp = KeyboardLayer.extend({
         AM.setMute(!AM.get('muted'));
     },
     
+    muteMusicHandler: function() {
+        var AM = this.get('musicMixer');
+        AM.setMute(!AM.get('muted'));
+    },
+    
     // Called every frame, manages keyboard input
     update: function(dt) {
         var player = this.get('player');
@@ -792,7 +801,7 @@ var FluencyApp = KeyboardLayer.extend({
         
             // Cross fade tracks if needed and able
             if(this.bgHigh && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
-                this.audioMixer.crossFade('bg_fast', 'bg_slow', 2);
+                this.musicMixer.crossFade('bg_fast', 'bg_slow', 2);
                 this.bgHigh = false;
                 this.bgFade = true;
             }
@@ -876,6 +885,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
     muted       : false,    // State of the volume mute button
+    mutedMusic  : false,    // State of the volume mute button
     init: function() {
         MenuLayer.superclass.init.call(this, {});
     },
@@ -904,8 +914,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['callback'] = this.volumeCallback.bind(this);
         
         var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(400, 250));
+        vc.set('position', new geo.Point(425, 250));
         this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOn', vc);
         this.addChild({child: vc});
         
         opts['normalImage'] = '/resources/volume-control-off.png';
@@ -913,9 +929,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['disabledImage'] = '/resources/volume-control-off.png';
         opts['callback'] = this.volumeCallback.bind(this);
         
-        var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(400, 250));
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 250));
         this.set('volumeButtonOff', vc);
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOff', vc);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -940,6 +961,21 @@ var MenuLayer = cocos.nodes.Menu.extend({
             this.addChild({child: this.get('volumeButtonOn')});
         }
         this.set('muted', !m);
+    },
+    
+    musicCallback: function() {
+        events.trigger(this, "muteMusicEvent");
+        
+        var m = this.get('mutedMusic')
+        if(!m) {
+            this.removeChild(this.get('musicButtonOn'));
+            this.addChild({child: this.get('musicButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('musicButtonOff'));
+            this.addChild({child: this.get('musicButtonOn')});
+        }
+        this.set('mutedMusic', !m);
     },
     
     // Adds the retry button to the MenuLayer
@@ -1001,6 +1037,7 @@ exports.main = function() {
     
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
     events.addListener(menu, 'muteEvent', app.muteHandler.bind(app));
+    events.addListener(menu, 'muteMusicEvent', app.muteMusicHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
