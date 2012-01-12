@@ -160,7 +160,7 @@ var AudioMixer = BObject.extend({
         this.volume = v;
         
         for(snd in this.sounds) {
-            this.sounds[snd].setMasterVolume(v);
+            this.sounds[snd].updateMasterVolume(v);
         }
     },
     
