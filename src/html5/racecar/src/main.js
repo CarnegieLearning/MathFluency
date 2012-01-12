@@ -100,6 +100,10 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('turbo', "sound/Turboboost");
         AM.loadSound('start', "sound/EngineStart");
         AM.loadSound('hum', "sound/Engine Hum");
+        AM.loadSound('correct', "sound/Correct v1");
+        AM.loadSound('wrong', "sound/Incorrect v1");
+        AM.loadSound('finish', "sound/FinishLine v1");
+        AM.loadSound('intermission', "sound/Numberchange v1");
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
@@ -107,7 +111,7 @@ var FluencyApp = KeyboardLayer.extend({
         MM.loadSound('bg_fast', "sound/race bg fast2");
         this.set('musicMixer', MM);
         
-        events.addListener(AM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
+        events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
         
         var preloader = Preloader.create();
         this.addChild({child: preloader});
@@ -146,7 +150,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
-        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002_2l.xml"};
+        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
         
         // Preload remote resources
         var p = cocos.Preloader.create();
@@ -453,6 +457,13 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         this.set('medalCars', medalCars);
+        
+        // Set audio levels
+        this.musicMixer.setMasterVolume(0.35);
+        this.musicMixer.getSound('bg_fast').setVolume(0.8);
+
+        this.audioMixer.getSound('accel').setVolume(0.8);
+        this.audioMixer.getSound('screech').setVolume(0.5);
     
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
@@ -515,6 +526,8 @@ var FluencyApp = KeyboardLayer.extend({
     pause: function () {
         this.get('dash').pauseTimer();
         
+        this.audioMixer.playSound('intermission');
+        
         var mc = this.get('medalCars');
         
         for(var i=0; i<3; i+=1) {
@@ -574,6 +587,8 @@ var FluencyApp = KeyboardLayer.extend({
         MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
         s = this.musicMixer.getSound('bg_slow');
         MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        
+        this.audioMixer.playSound('finish');
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
@@ -721,7 +736,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Handle correct / incorrect feedback
         if(result) {
-            // TODO: correct sounds effects
+            this.audioMixer.playSound('correct', true);
         }
         else {
             var dash = this.get('dash');
@@ -730,7 +745,7 @@ var FluencyApp = KeyboardLayer.extend({
             player.wipeout(1);
             dash.modifyPenaltyTime(RC.penaltyTime);
             
-            this.audioMixer.playSound('screech', true);
+            this.audioMixer.playSound('wrong', true);
             
             // Update medal car velocities to account for penalty time
             var c = this.get('medalCars')
@@ -782,6 +797,7 @@ var FluencyApp = KeyboardLayer.extend({
             if(this.lane > 0) {
                 this.lane -= 1;
                 player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('screech', true);
             }
         }
         // 'D' / 'RIGHT' Move right, discreet
@@ -789,6 +805,7 @@ var FluencyApp = KeyboardLayer.extend({
             if(this.lane < RC.curNumLanes-1) {
                 this.lane += 1;
                 player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('screech', true);
             }
         }
         
@@ -800,9 +817,9 @@ var FluencyApp = KeyboardLayer.extend({
             this.audioMixer.loopSound('decel')
         
             // Cross fade tracks if needed and able
-            if(this.bgHigh && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
+            if(this.bgFast && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
                 this.musicMixer.crossFade('bg_fast', 'bg_slow', 2);
-                this.bgHigh = false;
+                this.bgFast = false;
                 this.bgFade = true;
             }
             
@@ -818,9 +835,9 @@ var FluencyApp = KeyboardLayer.extend({
             this.audioMixer.loopSound('accel')
             
             // Cross fade tracks if needed and able
-            if(!this.bgHigh && !this.bgFade && player.zVelocity > RC.crossFadeSpeed) {
-                this.audioMixer.crossFade('bg_slow', 'bg_fast', 2);
-                this.bgHigh = true;
+            if(!this.bgFast && !this.bgFade && player.zVelocity > RC.crossFadeSpeed) {
+                this.musicMixer.crossFade('bg_slow', 'bg_fast', 2);
+                this.bgFast = true;
                 this.bgFade = true;
             }
         }
