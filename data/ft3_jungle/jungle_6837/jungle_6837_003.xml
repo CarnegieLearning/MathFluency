@@ -99,7 +99,7 @@
 	<RANDOM_SEED VALUE="158"/>
 <PROBLEM_SET>
 	<PROBLEM_SUBSET TIME_PER_QUESTION="3500">
-		<TARGET ID="1" Type="Text" Value="Multiple of 6x">
+		<TARGET ID="1" Type="Text" Value="Multiple of 6">
 			
 		</TARGET>
 		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
@@ -154,7 +154,7 @@
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET TIME_PER_QUESTION="3000">
-		<TARGET ID="2" Type="Text" Value="Multiple of 8x">
+		<TARGET ID="2" Type="Text" Value="Multiple of 8">
 			
 		</TARGET>
 		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
@@ -209,7 +209,7 @@
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
-		<TARGET ID="3" Type="Text" Value="Multiple of 3x">
+		<TARGET ID="3" Type="Text" Value="Multiple of 3">
 			
 		</TARGET>
 		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
@@ -264,7 +264,7 @@
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
-		<TARGET ID="4" Type="Text" Value="Multiple of 7x">
+		<TARGET ID="4" Type="Text" Value="Multiple of 7">
 			
 		</TARGET>
 		<QUESTION ANSWER="1" ID="1" PLATFORM="true">

@@ -60,7 +60,7 @@ def generateDataSet(mult):
 
 # Generates a subset
 def generate(m):
-    sub = 'Multiple of ' + str(m) + 'x'
+    sub = 'Multiple of ' + str(m)
         
     set = []
     i = 0
