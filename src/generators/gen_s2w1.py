@@ -17,7 +17,7 @@ def runBatch(prefix, v):
     prefix += "_" + v[4]
 
     #Since the top half of xml files for a specific fluency app are identical, just copy that for use laer
-    header = getHeader("scuba_header.xml")
+    header = getHeader("jungle_header.xml")
     
     #Generate the data
     while(i <= 10):
@@ -42,7 +42,7 @@ def runBatch(prefix, v):
         
         i += 1
         
-        create_datasetxml(prefix + "/", filelist, "scuba");
+        create_datasetxml(prefix + "/", filelist, "ft3_jungle");
 
     #Generates a single dataset
 def generateDataSet(mult):
@@ -160,7 +160,7 @@ def getHeader(filename):
         
 #Outputs the dataset.xml file which functions as an index for the GameController in the output directory
 def create_datasetxml(directory, filelist, engine):
-    datasetxml = build_datasetxml(directory, filelist, "ft3_scuba")
+    datasetxml = build_datasetxml(directory, filelist, engine)
     towrite = datasetxml.toprettyxml()
     f = open("private/" + directory + "dataset.xml", 'w')
     if(f):
@@ -205,6 +205,6 @@ def rHelp(set, m):
 rHelp([], [3, 6, 7, 8])
 
 while(len(variations) > 0):
-    runBatch("scuba", variations[0])
+    runBatch("jungle", variations[0])
     variations.pop(0)
 
