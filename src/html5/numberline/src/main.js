@@ -271,14 +271,14 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Tally question results
         for(subset in ql) {
-            for(q in subset) {
-                if(q.isCorrect) {
+            for(i in ql[subset].questions) {
+                if(ql[subset].questions[i].isCorrect) {
                     correct += 1;
                 }
-                else if(q.isTimeout) {
+                else if(ql[subset].questions[i].isTimeout) {
                     unanswered += 1;
                 }
-                else if(!q.isCorrect){
+                else if(!ql[subset].questions[i].isCorrect){
                     incorrect += 1;
                 }
                 //else question was not reached and thus is not counted
@@ -287,6 +287,10 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Checks to see if abort was related to window.unload
         if(finished != null) {
+            var e = EOGD.create(this.hud.elapsed, !finished, [correct, 0, (unanswered + incorrect)]);
+            e.set('position', new geo.Point(250, 75));
+            this.addChild({child: e});
+            e.start();
         }
     
         // If the 'command line' specified a call back, feed the callback the xml
