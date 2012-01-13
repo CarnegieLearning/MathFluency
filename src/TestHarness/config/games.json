@@ -97,7 +97,7 @@
         "s2w01_jungle3876": {
             "displayName": "Whole Multiples (Jungle)",
             "engine": "scuba",
-            "cli_fluency_task": "scuba_3876"
+            "cli_fluency_task": "jungle_3876"
         },
         "level03-stage0": {
             "displayName": "Racecar",
