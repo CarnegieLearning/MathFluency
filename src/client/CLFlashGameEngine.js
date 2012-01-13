@@ -26,7 +26,7 @@ exports.CLFlashGameEngine = function CLFlashGameEngine(json)
         $('#game-container').height('570px');
         $(div).empty().append($('<div>').attr('id', flashID));
         swfobject.embedSWF(
-            self.swfPath + '/Shell.swf',
+            self.swfPath + '/Shell.swf', //
             flashID,
             props.width || 974,
             props.height || 570,

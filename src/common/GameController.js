@@ -43,6 +43,21 @@ GameController.prototype.savePlayerState = function (playerState, callback)
 };
 
 /*
+    Method: getAvailableSequencesForPlayer
+    
+    Calls callback with the sequences from which the player can choose.
+    
+    Parameters:
+        playerState - The current player state.
+        callback - This gets called with an array of objects with keys:
+                   'id', 'label', 'transitionFn', 'stages', 'locked'
+*/
+GameController.prototype.getAvailableSequencesForPlayer = function (playerState, callback)
+{
+    setTimeout(callback, 0, []);
+};
+
+/*
     Method: getAvailableStagesForPlayer
     
     Calls callback with the stages from which the player can choose.
@@ -55,6 +70,16 @@ GameController.prototype.getAvailableStagesForPlayer = function (playerState, ca
 {
     setTimeout(callback, 0, []);
 };
+
+
+/*
+    Method: getSequence
+*/
+GameController.prototype.getSequence = function (seqID, callback)
+{
+    setTimeout(callback, 0);
+};
+
 
 /*
     Method: getStage
@@ -85,6 +110,20 @@ GameController.prototype.getGameEngineForQuestionSet = function (questionSet, ca
 };
 
 /*
+    Method: getQuestionSetTransition
+    
+    Figures out whether the game should progress to the next question set in sequence
+    Parameters: 
+        questionSet - the question set just finished
+        results - the xml output of the game engine
+        callback - this gets called to launch the next question set in sequence
+*/
+GameController.prototype.getQuestionSetTransition = function (questionSet, results, callback)
+{
+    setTimeout(callback, 0);
+};
+
+/*
     Method: saveQuestionSetResults
     
     Stores the results for the given <PlayerState> and <QuestionSet>. The format of the results is TBD.
@@ -95,7 +134,7 @@ GameController.prototype.getGameEngineForQuestionSet = function (questionSet, ca
         results - TBD. Probably a string, dict, or a custom object.
         callback - The arguments to callback are TBD.
 */
-GameController.prototype.saveQuestionSetResults = function (playerState, questionSet, results, callback)
+GameController.prototype.saveQuestionSetResults = function (playerState, sequence, questionSet, results, callback)
 {
     setTimeout(callback, 0);
 };

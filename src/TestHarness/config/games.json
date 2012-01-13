@@ -1,89 +1,27 @@
 {
     "conditions": {
         "cond1": {
-            "stages": [
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond2": {
-            "stages": [
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond3": {
-            "stages": [
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond4": {
-            "stages": [
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond5": {
-            "stages": [
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        },
-        "cond6": {
-            "stages": [
-                "level03-stage0",
-                "level03-stage1",
-                "level03-stage2",
-                "level03-stage3",
-                "level03-stage4",
-                "level04-stage1",
-                "level04-stage2",
-                "level04-stage3",
-                "level04-stage4",
-                "level04-stage5"
-            ]
-        }
+            "c1s1": {   
+                "displayName": "Condition 1, Sequence 1",
+                "stages": [
+                    "level03-stage0",
+                    "level03-stage1",
+                    "level03-stage2",
+                    "level03-stage3",
+                    "level03-stage4"
+                ]
+            },
+            "c1s2": { 
+                "displayName": "Condition 1, Sequence 2",
+                "stages": [
+                    "level04-stage1",
+                    "level04-stage2",
+                    "level04-stage3",
+                    "level04-stage4",
+                    "level04-stage5"
+                ]
+            }
+        }    
     },
     
     "stages": {
@@ -241,6 +179,36 @@
             "displayName": "Scuba 3",
             "engine": "scuba",
             "cli_fluency_task": "scuba_mix_equivalent"
+        },
+        "carlow_level03stage0": {
+            "displayName": "Racecar 3-0",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage0"
+        },
+        "carlow_level03stage1": {
+            "displayName": "Racecar 3-1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage1"
+        },
+        "carlow_level03stage2": {
+            "displayName": "Racecar 3-2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage2"
+        },
+        "carlow_level03stage3": {
+            "displayName": "Racecar 3-3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage3"
+        },
+        "carlow_level03stage4": {
+            "displayName": "Racecar 3-4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage4"
+        },
+        "battleship_test": {
+            "displayName": "Battleship Numberline Test",
+            "engine": "battleship",
+            "cli_fluency_task": "test"
         }
     },
     
@@ -268,6 +236,10 @@
         "pie": {
             "type": "CLFlashGameEngine",
             "cli_task_id": "ft2_pie"
+        },
+        "battleship": {
+            "type": "CLFlashGameEngine",
+            "cli_task_id": "ft2_battleship"
         },
         "jungle": {
             "type": "CLFlashGameEngine",

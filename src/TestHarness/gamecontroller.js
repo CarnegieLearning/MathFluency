@@ -42,21 +42,62 @@ exports.gameController = function (serverConfig, model)
         return conditions;
     };
     
-    gc.getAvailableStagesForPlayer = function (playerState, callback)
+    gc.getAvailableSequencesForPlayer = function (playerState, callback)
     {
         var conf = config();
-        var allStages = conf.stages;
-        var stageIDs = (playerState ?
-                        conf.conditions[playerState.condition].stages :
-                        util.allDictKeys(allStages).sort());
-        var stages = stageIDs.map(function (id)
+        // if we have no player, then we return a sequences with all stages
+        if( ! playerState ){
+            var allStages = conf.stages;
+            var stageIDs = util.allDictKeys(allStages).sort();
+            var sequences = { "Default": makeSequence( "Default", 
+                                                       { label : "Default",
+                                                         transitionFn: defaultTFn,
+                                                         stages : stageIDs } ) };
+            return callback(sequences);
+        }
+        // need to fetch any unlocked stages from the DB, using a serial (blocking) process
+        var sequences = conf.conditions[playerState.condition];
+        var fetchSeq = {};
+        for( var seqID in sequences ){
+            fetchSeq[seqID] = sequences[seqID].makeAvailableStagesFn(playerState);
+        }
+        async.series( fetchSeq, function(error, results)
         {
-            return {
-                id: id,
-                displayName: allStages[id].displayName
-            };
+            if( error ){
+                console.log('ERROR fetching stages serially: '+ error );
+                return callback(null);
+            }
+            for( var seqID in results ){
+                sequences[seqID].stages = results[seqID];
+            }
+            callback(sequences);
         });
-        callback(stages);
+    };
+    
+    gc.getAvailableStagesForPlayer = function (playerState, callback)
+    {
+        gc.getAvailableSequencesForPlayer( playerState, function(sequences)
+        {
+            var availStages = new Array();
+            for( var seqID in sequences ){
+                sequences[seqID].stages.map( function(stage)
+                {
+                    availStages.push( stage );
+                } );
+            }
+            callback(availStages);
+        } );
+    };
+    
+    gc.getSequence = function (seqID, callback)
+    {
+        var conf = config();
+        for( var cndID in conf.conditions ){
+            if( conf.conditions[cndID][seqID] ){
+                return callback(conf.conditions[cndID][seqID]);
+            }
+        }
+        callback(null);
     };
     
     gc.getStage = function (stageID, callback)
@@ -91,10 +132,10 @@ exports.gameController = function (serverConfig, model)
     
     gc.getGameEngineForQuestionSet = function (questionSet, callback)
     {
-        callback(config().engines[questionSet.parent.engineID]);
+        callback( config().engines[questionSet.parent.engineID] );
     };
     
-    gc.saveQuestionSetResults = function (playerState, questionSet, text, callback)
+    gc.saveQuestionSetResults = function (playerState, sequence, questionSet, text, callback)
     {
         // No longer abort on playerState == null
         if (!playerState)
@@ -166,14 +207,41 @@ exports.gameController = function (serverConfig, model)
                         }
                     })
                     .on('error', callback);
+                },
+                function (callback)
+                {
+                    var transitionFn = eval(sequence.transitionFn);
+                    if( transitionFn( qsOutcomeAttributes ) ){
+                        console.log('Unlocking next stage…');
+                        sequence.getNextStage( playerState, function(stage)
+                        {
+                            console.log('… stage '+ stage.id );
+                            stage.locked = false;
+                            playerState.addOrUpdateSA( stage.id, qsOutcomeAttributes.medal, false );
+                        });
+//                        process.exit(1);
+                    }
+                    playerState.lastSequence = sequence.id;
+                    playerState.lastStage = qsOutcomeAttributes.stageID;
+//                    gc.savePlayerState( playerState, function(ps)
+//                    {
+//                        console.log('saved player state '+ ps.playerID );
+//                    });
+                    callback();
                 }
             ], callback);
-        })
-        .parseString(text);
+        }).parseString(text);
     };
     
     return gc;
 };
+
+function defaultTransition( outcomeAttrs )
+{
+    console.log('Won medal: '+ outcomeAttrs.medal );   
+    return outcomeAttrs.medal != 0;
+}
+
 
 function populateConfig(config, serverConfig)
 {
@@ -189,6 +257,15 @@ function populateConfig(config, serverConfig)
     for (var stageID in config.stages)
     {
         config.stages[stageID] = makeStage(stageID, config, serverConfig);
+    }
+    
+    // Populate conditions & sequences
+    for( var cndID in config.conditions )
+    {
+        for( var seqID in config.conditions[cndID] )
+        {
+            config.conditions[cndID][seqID] = makeSequence(seqID, config.conditions[cndID][seqID], config );
+        }
     }
 }
 
@@ -212,6 +289,76 @@ function makeEngine(engineConfig)
     return engineConfig;
 }
 
+
+function makeSequence( seqID, seqConfig, gameConfig )
+{
+    var defaultTFn = "defaultTransition";
+    var sequence = new QuestionHierarchy.Sequence(seqID, seqConfig.displayName, seqConfig.gameProperties);
+    if( ! sequence.transitionFn )
+        sequence.transitionFn = defaultTFn;
+    for( var i in seqConfig.stages ){
+        var stageID = seqConfig.stages[i];
+        if( gameConfig ){
+            sequence.stages[i] = gameConfig.stages[stageID];
+            if( i == 0 )
+                sequence.stages[i].locked = false;
+        } else {
+            sequence.stages[i] = stageID;
+        }
+    }
+    
+    sequence.makeAvailableStagesFn = function(playerState)
+    {
+        return function(callback)
+        {
+//            console.log('fetching available stages from db…');
+            playerState.getStageAvailabilities().on('success', function(stageAvailabilities)
+            {
+//                console.log('player '+ playerState.loginID +' has '+ stageAvailabilities.length +' SAs');
+                for( var i in stageAvailabilities ){
+                    var stageID = stageAvailabilities[i].stageID;
+                    var isLocked = stageAvailabilities[i].isLocked; 
+                    for( var n in sequence.stages ){
+                        if( sequence.stages[n].id == stageID ){
+//                            console.log('sequence: '+ sequence.id +' stage: '+ stageID +' isLocked: '+ isLocked );
+                            sequence.stages[n].locked = ( isLocked ? true : false );
+                            break;
+                        }
+                    }
+                }
+                // the first stage is always available
+                sequence.stages[0].locked = false;
+//                console.log('passing on available stages');
+                callback(null,sequence.stages);
+            }).on('error', function(error){
+                callback(error,null);
+            });
+        };
+    }
+    
+    sequence.getNextStage = function(playerState, callback)
+    {
+        // get the next stage in this sequence
+        if( playerState.lastSequence == sequence.id )
+            for( var i in sequence.stages )
+                if( sequence.stages[i].id == playerState.lastStage && sequence.stages[i+1] )
+                    return callback( sequence.stages[i+1] );        
+        // otherwise we find the first locked one
+        for( var i in sequence.stages )
+            if( sequence.stages[i].locked )
+                return callback( sequence.stages[i] );
+    }
+    
+    sequence.toJSON = function()
+    {
+        var json = QuestionHierarchy.QuestionEntity.prototype.toJSON.call( this );
+        json.transitionFn = sequence.transitionFn;
+        return json;
+    }
+    
+    return sequence;
+}
+
 function makeStage(stageID, config, serverConfig)
 {
     var stageConfig = config.stages[stageID];
@@ -219,6 +366,7 @@ function makeStage(stageID, config, serverConfig)
     
     var stage = new QuestionHierarchy.Stage(stageID, stageConfig.displayName, stageConfig.gameProperties);
     stage.engineID = stageConfig.engine;
+    stage.locked = true;
 
     if (stageConfig.cli_fluency_task)
     {
@@ -340,6 +488,13 @@ function makeStage(stageID, config, serverConfig)
             stage.getQuestionSet(ids && util.randomItem(ids), callback);
         });
     };
+    
+    stage.toJSON = function()
+    {
+        var json = QuestionHierarchy.QuestionEntity.prototype.toJSON.call( this );
+        json.locked = stage.locked;
+        return json;
+    }
     
     return stage;
 }

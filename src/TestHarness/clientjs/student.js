@@ -2,7 +2,7 @@ var GameControllerClient = require('./client/GameControllerClient').GameControll
 var CLFlashGameEngine = require('./client/CLFlashGameEngine').CLFlashGameEngine;
 var CLHTML5GameEngine = require('./client/CLHTML5GameEngine').CLHTML5GameEngine;
 
-var gc = new GameControllerClient('api');
+var gc = new GameControllerClient('/api');
 gc.registerEngineConstructor('CLFlashGameEngine', CLFlashGameEngine);
 gc.registerEngineConstructor('CLHTML5GameEngine', CLHTML5GameEngine);
 
@@ -12,9 +12,12 @@ $(document).ready(function ()
 {
     $('#stage-list li button').button().click(function ()
     {
-        var stageID = $(this).val();
+        var bvals = $(this).val().split('/',2);
+        var seqID = bvals[0];
+        var stageID = bvals[1];
+        
         //HACK: Putting things on the window level is bad...
-        window.runStage(stageID);
+        window.runStage(seqID, stageID);
         window.currentStage = stageID;
     });
     
@@ -26,21 +29,50 @@ $(document).ready(function ()
     $('#instructor-dashboard-link').button();
 });
 
-//HACK: Putting things on the window level is bad...
-window.runStage = function runStage(stageID)
+window.quickpost = function quickpost()
 {
-    lock('Loading level ' + stageID + '...');
-    gc.getStage(stageID, function (stage)
+    var xml = '<OUTPUT><GAME_REFERENCE_NUMBER ID="foo"/><SCORE_SUMMARY><Score CorrectAnswers="6" ElapsedTime="26862" PenaltyTime="176520" TotalScore="203382" Medal="Bronze"/></SCORE_SUMMARY><SCORE_DETAILS><SCORE QuestionIndex="1" AnswerValue="0" TimeTaken="1886" LaneChosen="1"/></SCORE_DETAILS><END_STATE STATE="FINISH"/></OUTPUT>';
+  
+    gc.getSequence( 'c1s1', function(seq)
     {
-        // Don't need to pass playerState since the server stores this in the session.
-        stage.getNextQuestionSet(null, function (questionSet)
+        gc.getStage( 'level03-stage0', function (stg)
         {
-            runQuestionSet(questionSet);
+            stg.getNextQuestionSet(null, function (qs)
+            {
+                gc.saveQuestionSetResults(null, seq, qs, xml, function (error)
+                {
+                    if (error)
+                    {
+                        alert('Error saving data: ' + error);
+                    }
+                });
+            });
         });
     });
 }
 
-function runQuestionSet(questionSet)
+//HACK: Putting things on the window level is bad...
+window.runStage = function runStage( seqID, stageID )
+{
+    lock('Loading level ' + stageID + '...');
+    gc.getStage( stageID, function (stage)
+    {   
+        var sequence = null;
+        gc.getSequence( seqID, function(seq)
+        {
+            sequence = seq;
+        });
+        alert('getting next qs in stage '+ stage.id);
+        // Don't need to pass playerState since the server stores this in the session.
+        stage.getNextQuestionSet(null, function (questionSet)
+        {
+            alert('running qs '+ questionSet.id +' with parent '+ questionSet.parent.id +' in sequence '+ sequence.id );
+            runQuestionSet(sequence, questionSet);
+        });
+    });
+}
+
+function runQuestionSet( sequence, questionSet )
 {
     if (!questionSet)
     {
@@ -56,8 +88,8 @@ function runQuestionSet(questionSet)
         
         engine.run(questionSet, $('#game-container'), function (xml)
         {
-            statusMessage('Sending game data...');
-            gc.saveQuestionSetResults(null, questionSet, xml, function (error)
+            statusMessage('Sending game data…');
+            gc.saveQuestionSetResults(null, sequence, questionSet, xml, function (error)
             {
                 if (error)
                 {
