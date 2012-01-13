@@ -370,16 +370,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         
         // Create the button
         var opts = Object();
-        opts['normalImage'] = '/resources/start-button.png';
-        opts['selectedImage'] = '/resources/start-button.png';
-        opts['disabledImage'] = '/resources/start-button.png';
+        opts['normalImage'] = '/resources/Start_Up.png';
+        opts['selectedImage'] = '/resources/Start_Down.png';
+        opts['disabledImage'] = '/resources/Start_Up.png';
         // We use this callback so we can do cleanup before handing everything over to the main game
         opts['callback'] = this.startButtonCallback.bind(this);
         
         var sb = cocos.nodes.MenuItemImage.create(opts);
         sb.set('position', new geo.Point(0, 0));
-        sb.set('scaleX', 0.5);
-        sb.set('scaleY', 0.5);
         this.set('startButton', sb);
         this.addChild({child: sb});
         
