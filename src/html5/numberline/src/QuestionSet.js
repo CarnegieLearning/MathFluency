@@ -150,6 +150,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         this.numberline.lineColor = c;
     },
     
+    // Drawing arrows here to help with coordinate calculations for the numberline
     draw: function (context) {
         context.strokeStyle = this.get('lineColor');
         context.lineWidth = 6;
@@ -168,14 +169,14 @@ var QuestionSet = cocos.nodes.Node.extend({
         context.stroke();
         
         // Right side arrow
-        context.moveTo(540,  0);
-        context.lineTo(560, 20);
-        context.lineTo(540, 40);
+        context.moveTo(this.numberline.length + 40,  0);
+        context.lineTo(this.numberline.length + 60, 20);
+        context.lineTo(this.numberline.length + 40, 40);
         context.stroke();
         
         context.beginPath();
-        context.moveTo(560, 20);
-        context.lineTo(530, 20);
+        context.moveTo(this.numberline.length + 60, 20);
+        context.lineTo(this.numberline.length + 30, 20);
         context.closePath();
         context.stroke();
     }

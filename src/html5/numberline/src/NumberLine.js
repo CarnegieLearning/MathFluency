@@ -29,7 +29,7 @@ var Hashmarks = require('Hashmarks').Hashmarks;
 var NumberLine = cocos.nodes.Node.extend({
 	hashes		: null,		    // Percentage based locations of hash marks
 	contents	: null,		    // Holds Content under hash marks
-    length      : 500,          // Length, in pixels, of this numberline
+    length      : 600,          // Length, in pixels, of this numberline
     lineColor   : '#FFFFFF',    // Color of the number line
     
 	init: function (node) {
