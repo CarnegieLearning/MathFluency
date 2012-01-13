@@ -19,5 +19,9 @@ server {
 	location /fluency/data/ {
 	   alias /var/www/testharness/data/;
 	}
+    
+    location /sound/ {
+        alias /var/www/sound/;
+    }
 }
 

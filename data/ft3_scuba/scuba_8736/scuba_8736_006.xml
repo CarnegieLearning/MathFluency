@@ -1,0 +1,327 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="gold" MEDAL_THRESHOLD="60000"><![CDATA[Gold]]></MEDAL>
+	<MEDAL Id="silver" MEDAL_THRESHOLD="52000"><![CDATA[Silver]]></MEDAL>
+	<MEDAL Id="bronze" MEDAL_THRESHOLD="37000"><![CDATA[Bronze]]></MEDAL>
+</MEDALS>
+<GAME_DATA>
+<MESSAGES>
+		<MESSAGES_EVENT type="start">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Start1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/start.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="jump">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Jump1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[All right!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/correct_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+			<MESSAGE id="2">
+				<TEXT_MSG><![CDATA[Cha-ching!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/correct_accum2.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="correct_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Good choice!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/correct_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_accum">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Uh!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/incorrect_accum1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+			<MESSAGE id="2">
+				<TEXT_MSG><![CDATA[Bad move!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/incorrect_accum2.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="incorrect_avoid">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You missed a good one!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/incorrect_avoid1.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="background">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[background1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/background.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="interlude">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Interlude1]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/interlude.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+	</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="medal">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[You earned a medal!]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/medal.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="end">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[Game over.]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/end.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+		<MESSAGES_EVENT type="new">
+			<MESSAGE id="1">
+				<TEXT_MSG><![CDATA[new]]></TEXT_MSG>
+				<AUDIO_MSG><![CDATA[fluency/games/ft3_scuba/assets/audio/No_sound.mp3]]></AUDIO_MSG>
+			</MESSAGE>
+
+		</MESSAGES_EVENT>
+</MESSAGES>
+	<CORRECT ACCUMULATE="1500" AVOID="1500"/> 
+	<INCORRECT ACCUMULATE="-100" AVOID="-100"/> 
+	<BONUS_REMAINING_LIFE VALUE="5000"/>
+	<LIVES TOTAL="3" ACCUM_IMPACT="-1" AVOID_IMPACT="-1"/>
+	<GRAVITY VALUE="true"/>
+	<BASE_LANE VALUE="1"/>
+	<COMMIT_AREA VALUE="50"/>
+	<RANDOM_SEED VALUE="966"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="3500">
+		<TARGET ID="1" Type="Text" Value="Multiple of 8">
+			
+		</TARGET>
+		<QUESTION ANSWER="0" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="32">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="66">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-68">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="64">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="5" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="44">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="72">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-71">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-58">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="56">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="32">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="3000">
+		<TARGET ID="2" Type="Text" Value="Multiple of 7">
+			
+		</TARGET>
+		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-21">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-42">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="21">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-50">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="51">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="63">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="42">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="8" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-1">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="49">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-14">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="2500">
+		<TARGET ID="3" Type="Text" Value="Multiple of 3">
+			
+		</TARGET>
+		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="7">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="4">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-24">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="4" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="20">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-26">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="7">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="7" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="22">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-12">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="26">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="10">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET TIME_PER_QUESTION="2000">
+		<TARGET ID="4" Type="Text" Value="Multiple of 6">
+			
+		</TARGET>
+		<QUESTION ANSWER="1" ID="1" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="45">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="2" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="17">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="3" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="50">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="4" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="18">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="5" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="31">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="6" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-8">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="1" ID="7" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-14">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="8" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-53">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="9" PLATFORM="true">
+			<QUESTION Lane="0" Type="Text" Value="-12">
+				
+			</QUESTION>
+		</QUESTION>
+		<QUESTION ANSWER="0" ID="10" PLATFORM="true">
+			<QUESTION Lane="1" Type="Text" Value="-7">
+				
+			</QUESTION>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</GAME_DATA>
+</INPUT>

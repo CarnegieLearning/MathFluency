@@ -1,9 +1,9 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <INPUT>
 <MEDALS>
-    <MEDAL Id="gold" MEDAL_THRESHOLD="40500"><![CDATA[Gold]]></MEDAL>
-	<MEDAL Id="silver" MEDAL_THRESHOLD="24000"><![CDATA[Silver]]></MEDAL>
-	<MEDAL Id="bronze" MEDAL_THRESHOLD="21000"><![CDATA[Bronze]]></MEDAL>
+    <MEDAL Id="gold" MEDAL_THRESHOLD="60000"><![CDATA[Gold]]></MEDAL>
+	<MEDAL Id="silver" MEDAL_THRESHOLD="52000"><![CDATA[Silver]]></MEDAL>
+	<MEDAL Id="bronze" MEDAL_THRESHOLD="37000"><![CDATA[Bronze]]></MEDAL>
 </MEDALS>
 <GAME_DATA>
 <MESSAGES>
