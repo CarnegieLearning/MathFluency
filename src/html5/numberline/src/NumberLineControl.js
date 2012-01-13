@@ -35,7 +35,8 @@ NumberLineControl.goldColor     = '#CC9900';    // Color of gold medal
 NumberLineControl.silverColor   = '#C0C0C0';    // Color of silver medal
 NumberLineControl.bronzeColor   = '#A67D3D';    // Color of bronze medal
 NumberLineControl.noMedalColor  = '#202020';    // Color for not getting a medal
+NumberLineControl.colors = [NumberLineControl.goldColor, NumberLineControl.silverColor, NumberLineControl.bronzeColor, NumberLineControl.noMedalColor];
 
-NumberLineControl.ptsStageBonus = 1;            // Points given per second left on the clock at the end of the stage
+NumberLineControl.ptsStageBonus = 0;            // Points given per second left on the clock at the end of the stage
 
 exports.NumberLineControl = NumberLineControl
