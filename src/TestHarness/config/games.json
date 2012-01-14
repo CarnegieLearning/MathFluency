@@ -7,6 +7,13 @@
                     "s2w01_scuba3678",
                     "s2w01_jungle3678"
                 ]
+            },
+            "c1s2": {
+                "displayName": "Condition 1, Sequence 2",
+                "stages": [
+                    "level03-stage0",
+                    "s2w01_jungle3687"
+                ]
             }
         },
         "cond2": {

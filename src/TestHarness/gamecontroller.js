@@ -143,6 +143,13 @@ exports.gameController = function (serverConfig, model)
             console.log('Saving question set results while playerState is null (this is probably instructor preview).');
         }
         
+        console.log('playerState: {');
+        for( var pvar in playerState ){
+            if( typeof( playerState[pvar] ) != 'function' )
+                console.log('    '+ pvar +': '+ playerState[pvar] +',');
+        }
+        console.log('}');
+        
         var timestamp = Date.now();
         
         // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
@@ -217,20 +224,72 @@ exports.gameController = function (serverConfig, model)
                         {
                             console.log('… stage '+ stage.id );
                             stage.locked = false;
-                            playerState.addOrUpdateSA( stage.id, qsOutcomeAttributes.medal, false );
+                            gc.addOrUpdateSA( playerState, stage, qsOutcomeAttributes.medal, function()
+                            {   
+                                playerState.lastSequence = sequence.id;
+                                playerState.lastStage = qsOutcomeAttributes.stageID;
+                                gc.savePlayerState( playerState, function(ps)
+                                {
+                                    console.log('saved player state '+ ps.playerID );
+                                    callback();
+                                });
+                            });
                         });
-//                        process.exit(1);
                     }
-                    playerState.lastSequence = sequence.id;
-                    playerState.lastStage = qsOutcomeAttributes.stageID;
-//                    gc.savePlayerState( playerState, function(ps)
-//                    {
-//                        console.log('saved player state '+ ps.playerID );
-//                    });
-                    callback();
                 }
             ], callback);
         }).parseString(text);
+    };
+    
+    gc.addOrUpdateSA = function( playerState, stage, medal, callback )
+    {
+        playerState.getStageAvailabilities().on('success', function(stageAvailabilities)
+        {
+            // update if we have the entry already
+            for( var i in stageAvailabilities ){
+                var sa = stageAvailabilities[i];
+                if( stage.id == sa.stageID ){
+                    sa.medal = medal;
+                    sa.isLocked = stage.locked;
+                    
+                    sa.save().on('success', function()
+                    {
+                        console.log('updated sa!');
+                        return callback();
+                    }).on('error', function(error)
+                    {
+                        console.log('error saving sa '+ sa.stageID +' for student '+ playerState.loginID +':'+ error );
+                        return callback();
+                    });
+                }
+            }
+            // otherwise we add a new one
+            var sa = model.StageAvailability.build({
+                'stageID' : stage.id,
+                'medal': medal,
+                'isLocked' : stage.locked
+            });
+            sa.setStudent( playerState ).on('success', function(sa)
+            {
+                sa.save().on('success', function()
+                {
+                    console.log('created new sa!');
+                    callback();
+                }).on('error', function(error)
+                {
+                    console.log('error saving sa '+ sa.stageID +' for student '+ playerState.loginID +':'+ error );
+                    callback();
+                });                
+            }).on('error', function(error)
+            {
+                console.log('unable to set student '+ playerState.loginID +' on sa '+ sa.stageID +':'+ error  );
+                callback();
+            });
+        }).on('error', function(error)
+        {
+            console.log('unable to retrieve StageAvailabilities for student '+ playerState.loginID +':'+ error );
+            callback();
+        });
     };
     
     return gc;

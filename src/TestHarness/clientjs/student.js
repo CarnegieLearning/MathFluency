@@ -19,6 +19,7 @@ $(document).ready(function ()
         //HACK: Putting things on the window level is bad...
         window.runStage(seqID, stageID);
         window.currentStage = stageID;
+        window.currentSequence = seqID;
     });
     
     $('#instructions-link').button().click(function ()
@@ -33,7 +34,7 @@ window.quickpost = function quickpost()
 {
     var xml = '<OUTPUT><GAME_REFERENCE_NUMBER ID="foo"/><SCORE_SUMMARY><Score CorrectAnswers="6" ElapsedTime="26862" PenaltyTime="176520" TotalScore="203382" Medal="Bronze"/></SCORE_SUMMARY><SCORE_DETAILS><SCORE QuestionIndex="1" AnswerValue="0" TimeTaken="1886" LaneChosen="1"/></SCORE_DETAILS><END_STATE STATE="FINISH"/></OUTPUT>';
   
-    gc.getSequence( 'c1s1', function(seq)
+    gc.getSequence( 'c1s2', function(seq)
     {
         gc.getStage( 'level03-stage0', function (stg)
         {
@@ -62,11 +63,9 @@ window.runStage = function runStage( seqID, stageID )
         {
             sequence = seq;
         });
-        alert('getting next qs in stage '+ stage.id);
         // Don't need to pass playerState since the server stores this in the session.
         stage.getNextQuestionSet(null, function (questionSet)
         {
-            alert('running qs '+ questionSet.id +' with parent '+ questionSet.parent.id +' in sequence '+ sequence.id );
             runQuestionSet(sequence, questionSet);
         });
     });

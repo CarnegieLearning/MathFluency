@@ -1011,7 +1011,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     },
     
     retryButtonCallback: function() {
-        window.runStage(window.currentStage);
+        window.runStage(window.currentSequence, window.currentStage);
     }
 });
 

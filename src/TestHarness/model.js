@@ -73,53 +73,6 @@ module.exports = function model(db, user, password, options, callback)
             toJSON: function ()
             {
                 return util.dictWithKeys(this, ['loginID', 'rosterID', 'lastName', 'firstName', 'password', 'condition']);
-            },
-            addOrUpdateSA: function( stageID, medal, locked )
-            {
-                console.log('addOrUpdateSA( '+ stageID +', '+ medal +', '+ locked +' )');
-                this.getStageAvailabilities().on('success', function(stageAvailabilities)
-                {
-                    var blocked = (locked ? true : false);
-                    // update if we have the entry already
-                    for( var i in stageAvailabilities ){
-                        var sa = stageAvailabilities[i];
-                        if( stageID == sa.stageID ){
-                            sa.medal = medal;
-                            sa.isLocked = blocked;
-                            console.log('trying to update sa '+ sa );
-                            sa.save().on('success', function()
-                            {
-                                console.log('updated sa!');
-                            }).on('error', function(error)
-                            {
-                                console.log('error saving sa '+ sa.stageID +' for student '+ this.loginID +':'+ error );
-                            });
-                            return;
-                        }
-                    }
-                    var sa = model.StageAvailability.build({
-                        'stageID' : stageID,
-                        'medal': medal,
-                        'isLocked' : blocked
-                    });
-                    console.log('trying to create new sa '+ sa );
-                    sa.setStudent( this ).on('success', function(sa)
-                    {
-                        sa.save().on('success', function()
-                        {
-                            console.log('created new sa!');
-                        }).on('error', function(error)
-                        {
-                            console.log('error saving sa '+ sa.stageID +' for student '+ this.loginID +':'+ error );
-                        });
-                    }).on('error', function(error)
-                    {
-                        console.log('unable to set student '+ this.loginID +' on sa '+ sa.stageID +':'+ error  );
-                    });
-                }).on('error', function(error)
-                {
-                    console.log('unable to retrieve StageAvailabilities for student '+ this.loginID +':'+ error );
-                });
             }
         }
     });
