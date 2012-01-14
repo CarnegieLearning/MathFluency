@@ -42,6 +42,11 @@ var ModifyOverTime = BObject.extend({
     bind: function (obj, str) {
         this.bindTo('value', obj, str);
     },
+    
+    bindFunc: function (obj, func) {
+        this.obj = obj;
+        this.func = func;
+    },
 
     // Changes value over time
     update: function (dt) {
@@ -55,6 +60,10 @@ var ModifyOverTime = BObject.extend({
             
             var rate = this.get('rate');
             this.set('value', this.get('value') + rate * edt);
+            
+            if(this.func) {
+                this.func.apply(this.obj, [this.get('value') + rate * edt]);
+            }
         }
         
         // Otherwise change is complete

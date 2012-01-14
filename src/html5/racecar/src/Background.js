@@ -17,6 +17,7 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 
 var PNode = require('PerspectiveNode').PerspectiveNode;
+var RC = require('RaceControl').RaceControl;
 
 var Background = cocos.nodes.Node.extend({
     init: function(lanes) {
@@ -26,23 +27,11 @@ var Background = cocos.nodes.Node.extend({
     draw: function(context) {
         // Ground
         context.fillStyle = "#44AA22";
-        context.beginPath();
-        context.moveTo(-10, PNode.horizonStart);
-        context.lineTo(-10, 610);
-        context.lineTo(810, 610);
-        context.lineTo(810, PNode.horizonStart);
-        context.closePath();
-        context.fill();
+        context.fillRect(-10, -10, 820, 620);
         
         // Sky
         context.fillStyle = "#1122BB";
-        context.beginPath();
-        context.moveTo(-10,-10);
-        context.lineTo(-10, PNode.horizonStart);
-        context.lineTo(810, PNode.horizonStart);
-        context.lineTo(810,-10);
-        context.closePath();
-        context.fill();
+        context.fillRect(-10, -10, 820, PNode.horizonStart + 10);
         
         // Road
         context.fillStyle = "#808080";
@@ -55,25 +44,37 @@ var Background = cocos.nodes.Node.extend({
         context.fill();
         
         // Lanes
-        var x = 400 - PNode.roadWidthPix / 9 * 1.5;
         context.fillStyle = "#FFFF00";
         context.lineWidth = 4
-        context.beginPath();
-        context.moveTo(395,   PNode.horizonStart);
-        context.lineTo(x - 4, 610);
-        context.lineTo(x + 4, 610);
-        context.lineTo(395,   PNode.horizonStart);
-        context.fill();
-        context.closePath();
         
-        x = 400 + PNode.roadWidthPix / 9 * 1.5;
-        context.beginPath();
-        context.moveTo(405,   PNode.horizonStart);
-        context.lineTo(x - 4, 610);
-        context.lineTo(x + 4, 610);
-        context.lineTo(405,   PNode.horizonStart);
-        context.fill();
-        context.closePath();
+        if(RC.curNumLanes == 2) {
+            context.beginPath();
+            context.moveTo(400, PNode.horizonStart);
+            context.lineTo(396, 610);
+            context.lineTo(404, 610);
+            context.lineTo(400, PNode.horizonStart);
+            context.closePath();
+            context.fill();
+        }
+        else if(RC.curNumLanes == 3) {
+            var x = 400 - PNode.roadWidthPix / 9 * 1.5;
+            
+            context.beginPath();
+            context.moveTo(395,   PNode.horizonStart);
+            context.lineTo(x - 4, 610);
+            context.lineTo(x + 4, 610);
+            context.lineTo(395,   PNode.horizonStart);
+            context.closePath();
+            context.fill();
+            
+            x = 400 + PNode.roadWidthPix / 9 * 1.5;
+            context.beginPath();
+            context.moveTo(405,   PNode.horizonStart);
+            context.lineTo(x - 4, 610);
+            context.lineTo(x + 4, 610);
+            context.lineTo(405,   PNode.horizonStart);
+            context.fill();
+        }
     },
 });
 

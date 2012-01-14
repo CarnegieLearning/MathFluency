@@ -19,6 +19,8 @@ var geom = require('geometry');
 var events = require('events');
 var util = require('util');
 
+var RC = require('RaceControl').RaceControl;
+
 // Base class for rending objects in perspective view
 var PerspectiveNode = cocos.nodes.Node.extend({
     visibility  : 1,        // Content scale multiplier, used BEFORE clamping
@@ -44,7 +46,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         this.set('anchorPoint', new geom.Point(0, 0));
         
         //Set properties from the option object
-        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity content'.w(), util.callback(this, function (name) {
+        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity content delOnDrop'.w(), util.callback(this, function (name) {
             if (opts[name]) {
                 this.set(name, opts[name]);
             }
@@ -55,11 +57,8 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             this.addChild({child: this.get('content')});
             this.set('contentSize', this.get('content').get('contentSize'));
         }
-    },
-    
-    // Explicitly start update, even if not in scene
-    kickstart: function () {
-         cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+        
+        this.idle = this.idle.bind(this);
     },
     
     // Explicitly unschedules and unsubscribes this node
@@ -89,89 +88,103 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     
     // Applies visibility modifier and clamps to scale, then returns the augmented value
     scale: function (s) {
-        s *= this.get('visibility');
+        s *= this.visibility;
     
         // Apply clamps to scale as needed
-        if(this.get('minScale') != null) {
-            s = Math.max(this.get('minScale'), s);
+        if(this.minScale != null) {
+            s = Math.max(this.minScale, s);
         }
-        if(this.get('maxScale') != null) {
-            s = Math.min(this.get('maxScale'), s);
+        if(this.maxScale != null) {
+            s = Math.min(this.maxScale, s);
         }
         
         // Set scale
-        this.set('scaleX', s);
-        this.set('scaleY', s);
+        this.scaleX = s;
+        this.scaleY = s;
         
         return s;
     },
     
+    // Helper function for determining node width
     getContentWidth: function() {
-        if(this.get('content')) {
-            return this.get('contentSize').width * this.get('content').get('scaleX');
+        if(this.content) {
+            return this.contentSize.width * this.content.scaleX;
         }
-        return this.get('contentSize').width;
+        return this.contentSize.width;
     },
     
+    // Helper function for determining node height
     getContentHeight: function() {
-        if(this.get('content')) {
-            return this.get('contentSize').height * this.get('content').get('scaleY');
+        if(this.content) {
+            return this.contentSize.height * this.content.scaleY;
         }
-        return this.get('contentSize').height;
+        return this.contentSize.height;
+    },
+    
+    // Called once per second until node is 'just over the horizon' at which point, it starts running update() every frame instead
+    // NOTE: This only works with stationary nodes
+    idle: function () {
+        var distance = this.zCoordinate - PerspectiveNode.cameraZ;
+        
+        if(distance <= PerspectiveNode.horizonDistance + RC.maxDistWindow) {
+            cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+        }
+        else {
+            setTimeout(this.idle, 1000);
+        }
     },
     
     // Called every frame for distance checking and rendering
     update: function (dt) {
         // Update current position based on velocity
-        this.set('zCoordinate', this.get('zCoordinate') + this.get('zVelocity') * dt);
-        this.set('xCoordinate', this.get('xCoordinate') + this.get('xVelocity') * dt);
+        this.zCoordinate = this.zCoordinate + this.zVelocity * dt;
+        this.xCoordinate = this.xCoordinate + this.xVelocity * dt;
         
-        var distance = this.get('zCoordinate') - PerspectiveNode.cameraZ;
+        var distance = this.zCoordinate - PerspectiveNode.cameraZ;
     
         // Only worry about drawing once node is on our side of the horizon
         if(distance > PerspectiveNode.horizonDistance) {
-            if(this.get('added') && !this.get('silent')) {
+            if(this.added && !this.silent) {
                 events.trigger(this, 'removeMe', this);
             }
         }
-        else if(distance <= PerspectiveNode.horizonDistance && distance > this.get('dropoffDist')) {
+        else if(distance <= PerspectiveNode.horizonDistance && distance > this.dropoffDist) {
             // Make sure that the node gets added to the scene graph once it should be visible
-            if(!this.get('added') && !this.get('silent')) {
+            if(!this.added && !this.silent) {
                 events.trigger(this, 'addMe', this);
             }
         
             // Perspective transform
             var scale = PerspectiveNode.horizonDistance * PerspectiveNode.horizonScale / distance;
             var screenX, screenY;
-            var lockX = this.get('lockX'), lockY = this.get('lockY');
             
             // Apply scaling
             var displayScale = this.scale(scale);
             
             // Check to see if X axis is locked
-            if(!lockX) {
-                screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.get('xCoordinate') / PerspectiveNode.roadWidth));
-                screenX -= this.get('alignH') * this.getContentWidth() * displayScale;
+            if(!this.lockX) {
+                screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.xCoordinate / PerspectiveNode.roadWidth));
+                screenX -= this.alignH * this.getContentWidth() * displayScale;
             }
             else {
-                screenX = this.get('alignH') * this.getContentWidth() * displayScale;
+                screenX = this.alignH * this.getContentWidth() * displayScale;
             }
             
             // Check to see if Y axis is locked
-            if(!lockY) {
+            if(!this.lockY) {
                 var yScale = (1.0 / (1.0 - PerspectiveNode.horizonScale)) * (scale - PerspectiveNode.horizonScale);
                 screenY = PerspectiveNode.horizonStart + PerspectiveNode.horizonHeight * (yScale);
-                screenY -= this.get('alignV') * this.getContentHeight() * displayScale;
+                screenY -= this.alignV * this.getContentHeight() * displayScale;
             }
             else {
-                screenY = -1 * this.get('alignV') * this.getContentHeight() * displayScale;
+                screenY = -1 * this.alignV * this.getContentHeight() * displayScale;
             }
 
             // Set position
             this.set('position', new geom.Point(screenX, screenY));
         }
         // Once the node drops too far back, notify for removal
-        else if (!this.get('silent')) {
+        else if (!this.silent) {
             events.trigger(this, 'removeMe', this);
         }
     }

@@ -41,6 +41,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
     totalLink       : 0,        // Holds the raw value of total
     
     step            : 0,        // Current animation step
+    playRate        : 1,        // Play duration of the animations (1 = 100% time, 0.1 = 10% time or 10x speed)
     
     timeAmt         : 0.0,      // Elapsed time to display
     numPenalty      : 0,        // Number of penalties incurred
@@ -190,36 +191,43 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
                 x = 290 * (tt - RC.times[0]) / (RC.times[3] - RC.times[0]);
             
             MOT.create(this.get('sliderX'), x, 1.0).bind(this, 'sliderX');
-            
         }
         else if(step == 10) {
             // "Stamp" the medal on the score sheet here
+            var that = this;
+            events.trigger(this, 'almostComplete');
+            setTimeout(function() {events.trigger(that, 'actionComplete');}, 1000);
         }
         else if(step == 11) {
             // Motivational message / tip / advice popup
+            events.trigger(this, 'complete');
         }
             
         this.set('step', step + 1);
     },
     
+    skipAnimation: function () {
+        this.playRate = 0.1;
+    },
+    
     // Slides a label in from the right
     slideLabelIn: function (l, d) {
         this.addChild({child: l});
-        var a = cocos.actions.MoveTo.create({position: new geom.Point(10, l.get('position').y), duration: d});
+        var a = cocos.actions.MoveTo.create({position: new geom.Point(10, l.get('position').y), duration: d * this.playRate});
         a.startWithTarget(l);
         l.runAction(a);
         
         var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000);
+        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000 * this.playRate);
     },
     
     // Totals a label up over time
     totalLabelUp: function(label, link, value, duration) {
         this.addChild({child: label});
-        MOT.create(0, value, duration).bind(this, link);
+        MOT.create(0, value, duration * this.playRate).bind(this, link);
         
         var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, duration * 1000);
+        setTimeout(function() {events.trigger(that, 'actionComplete');}, duration * 1000 * this.playRate);
     },
     
     // Causes a label to appear
@@ -227,7 +235,7 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         this.addChild({child: l});
         
         var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000);
+        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000 * this.playRate);
     },
     
     // Helper function that gives area percentage for medal time ranges
@@ -246,21 +254,21 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         var offset = 10;
         
         var run = this.proportions(1) * 290;
-        ctx.fillStyle = '#CC9900';
+        ctx.fillStyle = RC.gold;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
         run = this.proportions(2) * 290;
-        ctx.fillStyle = '#C0C0C0';
+        ctx.fillStyle = RC.silver;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
         run = this.proportions(3) * 290;
-        ctx.fillStyle = '#A67D3D';
+        ctx.fillStyle = RC.bronze;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
-        ctx.fillStyle = '#202020';
+        ctx.fillStyle = RC.noMedal;
         ctx.fillRect(offset, 160, 390 - offset, 20);
         
         // Draw the indicator for the medal meter line
@@ -277,13 +285,13 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
             // Draw the medal
             var t = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;
             if(this.get('abort') || t > RC.times[3])
-                ctx.fillStyle = '#202020';
+                ctx.fillStyle = RC.noMedal;
             else if(t < RC.times[1])
-                ctx.fillStyle = '#CC9900';
+                ctx.fillStyle = RC.gold;
             else if(t < RC.times[2])
-                ctx.fillStyle = '#C0C0C0';
+                ctx.fillStyle = RC.silver;
             else
-                ctx.fillStyle = '#A67D3D';
+                ctx.fillStyle = RC.bronze;
             ctx.beginPath();
             ctx.arc(300, 300, 80, 0, Math.PI * 2);
             ctx.closePath();

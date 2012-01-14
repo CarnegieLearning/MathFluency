@@ -29,22 +29,22 @@ var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var Question = require('Question').Question;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
+var Preloader = require('Preloader').Preloader;
+
+var LabelBG = require('LabelBG').LabelBG;   //HACK
 
 // Static Imports
 var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
-
-// Content Imports
-var LabelBG = require('LabelBG').LabelBG;
-var PieChart = require('PieChart').PieChart;
-var FractionRenderer = require('FractionRenderer').FractionRenderer;
+var Content = require('Content').Content;
 
 // TODO: De-magic number these
 /* Zorder
 -10 Background
 -5  Finish Line
 -4  Trees
+-1  Dashboard
 0   Anything not mentioned
 100 Question Delimiters
 */
@@ -56,11 +56,21 @@ var FluencyApp = KeyboardLayer.extend({
     background  : null,     // Holds the the background object
     dash        : null,     // Holds the right hand side dashboard
     questionList: [],       // List of all questions in the input
-    audioMixer  : null,     // AudioMixer
+    audioMixer  : null,     // AudioMixer for sound effects
+    musicMixer  : null,     // AudioMixer for music
     medalCars   : [],       // Contains the pace cars
     gameID      : '',       // Unique ID for the game
+	inters		: [],       // Holds the list of checkpoints
+    
+    bgFade      : false,    // True when crossfading between bg tracks
+    bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
+    
+    lanePosX    : {2: [-2, 2], 3:[-3, 0, 3]},
+    lane        : 1,
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
+    
+    version     : 'v 0.3.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -71,16 +81,56 @@ var FluencyApp = KeyboardLayer.extend({
             console.log("ERROR: No remote XML found to parse.");
         }
     },
+    
     // Not the 'real init', sets up and starts preloading
     init: function() {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
+        Content.initialize();
+        Content.registerContent(LabelBG.identifier, LabelBG);   //HACK
+        
+        // Explicitly enable audio
+        AudioMixer.enabled = true;
         // Set up basic audio
         var AM = AudioMixer.create();
-        AM.loadSound('bg', "sound/01 Yellow Line");
-        AM.loadSound('wipeout', "sound/Carscreech");
+        AM.loadSound('screech', "sound/CarScreech2");
+        AM.loadSound('decel', "sound/SlowDown");
+        AM.loadSound('accel', "sound/SpeedUp");
+        AM.loadSound('turbo', "sound/Turboboost");
+        AM.loadSound('start', "sound/EngineStart");
+        AM.loadSound('hum', "sound/Engine Hum");
+        AM.loadSound('correct', "sound/Correct v1");
+        AM.loadSound('wrong', "sound/Incorrect v1");
+        AM.loadSound('finish', "sound/FinishLine v1");
+        AM.loadSound('intermission', "sound/Numberchange v1");
         this.set('audioMixer', AM);
+        
+        var MM = AudioMixer.create();
+        MM.loadSound('bg_slow', "sound/race bg slow");
+        MM.loadSound('bg_fast', "sound/race bg fast2");
+        this.set('musicMixer', MM);
+        
+        events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
+        
+        var preloader = Preloader.create();
+        this.addChild({child: preloader});
+        this.set('preloader', preloader);
+        
+        events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
+    },
+    
+    delayedInit: function() {
+        // Remove the 'preloader'
+        var preloader = this.get('preloader')
+        this.removeChild({child: preloader});
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(preloader);
+        this.set('preloader', null);
+    
+        // Static binds
+        this.addMeHandler = this.addMeHandler.bind(this)
+        this.answerQuestion = this.answerQuestion.bind(this)
+        this.removeMeHandler = this.removeMeHandler.bind(this)
         
         // Create player
         var player = Player.create();
@@ -98,10 +148,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('gameID', app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
         
-        // Uncomment to run locally
-        //this.runLocally();
-        //return;
-        
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
         __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
@@ -110,49 +156,21 @@ var FluencyApp = KeyboardLayer.extend({
         var p = cocos.Preloader.create();
         events.addListener(p, 'complete', this.runRemotely.bind(this));
         p.load();
-    },
-    
-    // Remote resources failed to load, generate dummy data then proceed
-    // TODO: Determine what to do if we get 404s in production
-    // TODO: Bring this up to date with latest Question implementation
-    runLocally: function() {
-        console.log("Now running locally from this point forward");
         
-        var list = [];
-        for(var i=0; i<6; i+=1) {
-            var inter = Intermission.create(20000+i, i*500+10);
-            events.addListener(inter, 'changeSelector', this.intermissionHandler.bind(this));
-            inter.kickstart();
-            for(var j=1; j<4; j+=1) {
-                list[list.length] = Question.create(1, 10000+i, 30000+i, i*500 + j*150 + 10);
-                events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
-                events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
-                list[list.length - 1].kickstart();
-            }
-        }
-        
-        this.set('questionList', list);
-        
-        this.preprocessingComplete();
+        events.trigger(this, 'loaded');
     },
     
     // Parses the level xml file
-    // TODO: Decide on input file format and rewrite this as needed.
-    // TODO: Make the parser not expload on bad XML files
-    // TODO: Overhaul parser to generic pull, specific parse rather than semi-specific traverse
-    // TODO: Actually do some of the above TODOs
     parseXML: function(xmlDoc) {
-        // Parse medal information
-        var medals = XML.parseMedals(xmlDoc);
-        
-        // Parse and set player speed values
-        this.parseSpeed(xmlDoc);
-        
-        // Get the penalty time for incorrect answers
-        this.parsePenalty(xmlDoc);
+        var xml = XML.parser(xmlDoc.firstChild);
+    
+        var medals = this.parseMedals(xml); // Parse medal information
+        this.parseAudio(xml);               // Parse the audio information
+        this.parseSpeed(xml);               // Parse and set player speed values
+        this.parsePenalty(xml);             // Get the penalty time for incorrect answers
     
         // Parse and process questions
-        RC.finishLine = this.parseProblemSet(xmlDoc) + RC.finishSpacing;
+        RC.finishLine = this.parseProblemSet(xml) + RC.finishSpacing;
         
         // Process medal information
         medals[0] = RC.finishLine / this.get('player').get('maxSpeed');
@@ -167,213 +185,155 @@ var FluencyApp = KeyboardLayer.extend({
         this.preprocessingComplete();
     },
     
-    parsePenalty: function (root) {
-        var time, speed;
-        // Legacy support
-        var hurix = XML.getFirstByTag(root, 'DEFAULT_PENALTY');
-        if(hurix != null) {
-            time = XML.safeGetAttr(hurix, 'VALUE') / 1000;
-        }
-        else {
-            root = XML.getFirstByTag(root, 'PenaltySettings');
-            if(root != null) {
-                time = XML.safeComboGet(root, 'TimeLost', 'VALUE');
-                speed = XML.safeComboGet(root, 'SpeedLost', 'VALUE');
+    // Parse the medal values
+    parseMedals: function (xml) {
+        var ret = [];
+        var node = XML.getDeepChildByName(xml, 'MEDALS');
+        if(node != null) {
+            var id, val;
+            for(var i in node.children) {
+                id = node.children[i].attributes['Id'];
+                val = node.children[i].attributes['MEDAL_THRESHOLD'];
+                
+                if(id != null && val != null) {
+                    if(val > 1000) {
+                        val /= 1000;
+                    }
+                    
+                    ret[id] = val;
+                }
+                else {
+                    console.log('ERROR: Missing or corrupted medal data');
+                }
             }
         }
-        
-        // Cannot use nonNullSet on a static object
-        if(time != null) {
-            RC.penaltyTime = time;
+        else {
+            console.log('ERROR: No medal data found for stage');
         }
-        if(speed != null) {
-            RC.penaltySpeed = speed * -1;
+        
+        return ret;
+    },
+    
+    // Parse the audio information
+    parseAudio: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'AudioSettings');
+        if(node) {
+            RC.crossFadeSpeed = node['crossFadeSpeed'] == null ? RC.crossFadeSpeed : node['crossFadeSpeed'];
+        }
+    },
+    
+    // Parse the penalty settings
+    parsePenalty: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'PenaltySettings');
+        if(node != null) {
+            if(node.attributes['TimeLost'] != null) {
+                RC.penaltyTime = node.attributes['TimeLost'];
+            }
+            if(node.attributes['SpeedLost'] != null) {
+                RC.penaltySpeed = node.attributes['SpeedLost'] * -1;
+            }
         }
     },
     
     // Parse and set player speed values
-    parseSpeed: function (root) {
-        var min, max, speed, accel, decel, turbo;
-        // Legacy support
-        var hurix = XML.getFirstByTag(root, 'MinTPQ');
-        if(hurix != null) {
-            // Get raw value and transform to seconds
-            max = XML.safeComboGet(root, 'MinTPQ', 'VALUE') / 1000;
-            min = XML.safeComboGet(root, 'MaxTPQ', 'VALUE') / 1000;
-            speed = XML.safeComboGet(root, 'DTPQ', 'VALUE') / 1000;
-            accel = XML.safeComboGet(root, 'SpeedImpact_Up', 'VALUE') / 250;
-            decel = XML.safeComboGet(root, 'SpeedImpact_Down', 'VALUE') / 250;
-            turbo = null;
-            
-            max = RC.questionSpacing / max
-            if(min != 0) {
-                min = RC.questionSpacing / min
-            }
-            else {
-                min = 0
-            }
-            speed = RC.questionSpacing / speed
-        }
-        else {
-            root = XML.getFirstByTag(root, 'SpeedSettings');
-            if(root != null) {
-                max = XML.safeComboGet(root, 'Max', 'VALUE');
-                min = XML.safeComboGet(root, 'Min', 'VALUE');
-                speed = XML.safeComboGet(root, 'Default', 'VALUE');
-                accel = XML.safeComboGet(root, 'Acceleration', 'VALUE');
-                decel = XML.safeComboGet(root, 'Deceleration', 'VALUE');
-                turbo = XML.safeComboGet(root, 'Turbo', 'VALUE');
+    parseSpeed: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'SpeedSettings');
+        
+        var max = node.attributes['Max'];
+        var min = node.attributes['Min'];
+        var speed = node.attributes['Default'];
+        var accel = node.attributes['Acceleration'];
+        var decel = node.attributes['Deceleration'];
+        var turbo = node.attributes['Turbo'];
+      
+        // Heper function for setting values without overwritting defaults
+        var helper = function(obj, key, val){
+            if(val != null) {
+                obj.set(key, val);
             }
         }
         
-        // Set the values on the player, avoiding overwriting default values with null
+        // Set the values on the player
         var p = this.get('player')
-        this.nonNullSet(p, 'maxSpeed', max);
-        this.nonNullSet(p, 'minSpeed', min);
-        this.nonNullSet(p, 'zVelocity', speed==null ? min : speed);
-        this.nonNullSet(p, 'acceleration', accel==null ? decel : accel);
-        this.nonNullSet(p, 'deceleration', decel==null ? accel : decel);
-        
-        this.nonNullSet(p, 'turboSpeed', turbo==null ? max : turbo);
-    },
-    
-    // Helper to avoid writing over default values
-    nonNullSet : function(obj, key, val){
-        if(val != null) {
-            obj.set(key, val);
-        }
+        helper(p, 'maxSpeed', max);
+        helper(p, 'minSpeed', min);
+        helper(p, 'zVelocity', speed==null ? min : speed);
+        helper(p, 'acceleration', accel);
+        helper(p, 'deceleration', decel);
+        helper(p, 'turboSpeed', turbo==null ? max : turbo);
     },
     
     // Parses the PROBLEM_SET
-    parseProblemSet: function (root) {
-        var problemRoot = XML.getFirstByTag(root, 'PROBLEM_SET');
-        var subset = problemRoot.firstElementChild;
+    parseProblemSet: function (xml) {
+        var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
+        var subsets = problemRoot.children;
         var z = 0;
+        var once = true;
         
-        while(subset != null) {
-            z = this.parseProblemSubset(subset, z);
-            
-            subset = subset.nextElementSibling;
+        for(var i in subsets) {
+            z = this.parseProblemSubset(subsets[i], z, once);
+            once = false;
         }
         
-        return z
+        return z;
     },
     
     // Parses a subset within the PROBLEM_SET
-    parseProblemSubset: function (subset, z) {
-        z += RC.intermissionSpacing;
-        // Gets the intermission value
-        var node = subset.firstElementChild;
-        var interContent;
+    parseProblemSubset: function (subset, z, once) {
         
-        var hurix = XML.safeGetAttr(node, 'VALUE');
-        if(hurix) {
-            interContent = LabelBG.create(LabelBG.helper(hurix,'#000','#fff'));
+        var interContent = Content.buildFrom(subset.children[0]);
+        
+        // Not the first subset
+        if(!once) {
+            z += RC.intermissionSpacing;
+            // Gets the intermission value
+            
+            var inter = Intermission.create(interContent, z);
+            events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
+            events.addListener(inter, 'changeSelector', this.pause.bind(this));
+            inter.idle();
+			
+            // Append the intermission to the list of intermissions
+			var temp = this.get('inters');
+			temp.push(z);
+			this.set('inters', temp);
+			
+			// Add checkpoint marker to the race track
+			var opts = {
+				maxScale    : 1.00,
+				alignH      : 0.5,
+				alignV      : 0,
+				visibility  : 1,
+				xCoordinate : 0,
+				zCoordinate : z,
+				dropoffDist : -10,
+			}
+			opts['content'] = cocos.nodes.Sprite.create({file: '/resources/checkpoint_p.png',});
+			
+			var fl = PNode.create(opts);
+			events.addListener(fl, 'addMe', this.addMeHandler);
+			fl.idle();
+			fl.set('zOrder', -5);
         }
         else {
-            interContent = this.parseContent(node);
+            this.set('startSelector', interContent);
         }
-        
-        var inter = Intermission.create(interContent, z);
-        events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
-        events.addListener(inter, 'changeSelector', this.get('dash').pauseTimer.bind(this.get('dash')));
-        inter.kickstart();
         
         // Interate over questions in subset
         var list = this.get('questionList');
-        node = node.nextElementSibling;
-        while(node != null) {
-            z += RC.questionSpacing
-            var q = this.parseProblem(node)
-            
-            
+        for(var i=1; i<subset.children.length; i+=1) {
+            z += RC.questionSpacing;
+
             // Create a question
-            list[list.length] = Question.create(q[0], q[1], q[2], z, q[3], q[4]);
-            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion.bind(this));
-            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler.bind(this));
-            list[list.length - 1].kickstart();
-            
-            node = node.nextElementSibling;
+            list[list.length] = Question.create(subset.children[i], z);
+            events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
+            events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
+            list[list.length - 1].idle();
         }
         
         this.set('questionList', list);
         
         return z;
-    },
-    
-    // Parses a question within the subset
-    parseProblem: function (node) {
-        var ans, d1, d2, p1, p2;
-        
-        // Answer is the same in all formats (except for case, ugh...), so get it first
-        // TODO: Revise answer in new format
-        ans = XML.safeComboGet(node, 'Answer', 'VALUE');
-        if(!ans) {
-            ans = XML.safeComboGet(node, 'ANSWER', 'VALUE');
-        }
-        
-        // Legacy check
-        var hurix = node.getElementsByTagName('DELIMETERS_TEXT');
-        if(hurix.length > 0) {
-            var child = hurix[0].firstElementChild;
-            d1 = LabelBG.create(LabelBG.helper(child.getAttribute('VALUE'),'#000','#fff'));
-            
-            if(child.nextElementSibling != null) {
-                d2 = LabelBG.create(LabelBG.helper(child.nextElementSibling.getAttribute('VALUE'),'#000','#fff'));
-            }
-        }
-        else {
-            node = XML.getFirstByTag(node, 'Content');
-            d1 = this.parseContent(node);
-            p1 = this.parsePerspective(node);
-            
-            node = node.nextElementSibling;
-            d2 = this.parseContent(node);
-            p2 = this.parsePerspective(node);
-        }
-        
-        return [ans, d1, d2, p1, p2];
-    },
-    
-    // Parses a single piece of <CONTENT>
-    parseContent: function (node) {
-        var type = XML.safeGetAttr(node, 'TYPE');
-        var opts = XML.getFirstByTag(node, 'ContentSettings');
-        
-        var content = null;
-        
-        if(opts == null) {
-            console.log("ERROR: No <ContentSettings> in a content item.");
-            return null;
-        }
-        
-        if(type == 'String') {
-            content = LabelBG.create(LabelBG.helperXML(opts));
-        }
-        else if(type == 'Fraction') {
-            content = FractionRenderer.create(FractionRenderer.helperXML(opts));
-        }
-        else if(type == 'PieChart') {
-            content = PieChart.create(PieChart.helperXML(opts));
-        }
-        else {
-            console.log('ERROR: Unsupported <Content TYPE = "' + type + '">.');
-            return null;
-        }
-        
-        return content;
-    },
-    
-    // Parses the <PERSPECTIVE_SETTINGS> node
-    parsePerspective: function(node) {
-        var p = XML.getFirstByTag(node, 'PerspectiveSettings');
-        var opts = {};
-        
-        opts['visibility'] = XML.safeComboGet(p, 'Visibility', 'VALUE');
-        opts['minScale']   = XML.safeComboGet(p, 'MinScale', 'VALUE');
-        opts['maxScale']   = XML.safeComboGet(p, 'MaxScale', 'VALUE');
-        
-        return opts
     },
     
     // The 'real init()' called after all the preloading/parsing is completed
@@ -385,6 +345,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('SPEED_DOWN',   [83, 40]);  // [S, ARROW_DOWN]
         this.setBinding('TURBO',        [32]);      // [SPACE]
         this.setBinding('ABORT',        [27]);      // [ESC]
+        this.setBinding('SHOW_FPS',     [80]);      // [P]
         
         // Draw background
         var bg = Background.create();
@@ -393,13 +354,16 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: bg});
         
         var player = this.get('player');
+        player.set('xCoordinate', this.lanePosX[RC.curNumLanes][1]);
         
         // Add the right hand side dash
         var dash = this.get('dash');
         dash.set('maxSpeed', player.get('maxSpeed'));
         this.addChild({child: dash});
+        dash.set('zOrder', -1);
+		dash.set('checkpoints', this.get('inters'));
         
-        events.addListener(player, 'IntermissionComplete', dash.unpauseTimer.bind(dash));
+        events.addListener(player, 'IntermissionComplete', this.unpause.bind(this));
         
         // Add player
         this.addChild({child: player});
@@ -419,9 +383,22 @@ var FluencyApp = KeyboardLayer.extend({
         opts['content'].set('scaleY', 0.5);
         
         var fl = PNode.create(opts);
-        events.addListener(fl, 'addMe', this.addMeHandler.bind(this));
-        fl.kickstart();
+        events.addListener(fl, 'addMe', this.addMeHandler);
+        fl.idle();
         fl.set('zOrder', -5);
+        
+        // Add version number
+        var vtag = cocos.nodes.Label.create({string: this.get('version')})
+        vtag.set('anchor-point', new geo.Point(0.5, 0.5));
+        vtag.set('position', new geo.Point(850, 590));
+        this.addChild({child: vtag});
+        
+        // Create FPS meter
+        var fps = cocos.nodes.Label.create({string: '0 FPS'})
+        fps.set('position', new geo.Point(20, 20));
+        this.fps = fps;
+        this.fpsTracker = [30, 30, 30, 30, 30];
+        this.fpsToggle = false;
         
         // Calculate new min safe time
         var m = Math.min(RC.questionSpacing, RC.intermissionSpacing);
@@ -436,14 +413,14 @@ var FluencyApp = KeyboardLayer.extend({
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
+                events.addListener(p, 'addMe', this.addMeHandler);
+                p.idle();
             }
             if(Math.random() < 0.25) {
                 var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
                 p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler.bind(this));
-                p.kickstart();
+                events.addListener(p, 'addMe', this.addMeHandler);
+                p.idle();
             }
         }
     },
@@ -451,25 +428,6 @@ var FluencyApp = KeyboardLayer.extend({
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
-        this.get('dash').start(RC.initialCountdown / 1000);
-        this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
-        setTimeout(this.startGame.bind(this), RC.initialCountdown);
-        this.get('audioMixer').playSound('bg');
-        
-        $(window).unload(this.endOfGame.bind(this, null));
-    },
-    
-    // Starts the game
-    startGame: function () {
-        // Schedule per frame update function
-        this.scheduleUpdate();
-        var p = this.get('player');
-        p.scheduleUpdate();
-        
-        var ds = p.get('zVelocity');
-        p.set('zVelocity', 0);
-        MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
-        
         var medalCars = []
         
         var opts = {
@@ -492,36 +450,150 @@ var FluencyApp = KeyboardLayer.extend({
             opts['content'] = car
             medalCars[i] = PNode.create(opts)
             medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
-            medalCars[i].scheduleUpdate();
-            this.addChild({child: medalCars[i]});
             
-            events.addListener(medalCars[i], 'addMe', this.addMeHandler.bind(this));
-            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler.bind(this));
+            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
+            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
+            medalCars[i].delOnDrop = false;
         }
         
         this.set('medalCars', medalCars);
+        
+        // Set audio levels
+        this.musicMixer.setMasterVolume(0.35);
+        this.musicMixer.getSound('bg_fast').setVolume(0.8);
+
+        this.audioMixer.getSound('accel').setVolume(0.8);
+        this.audioMixer.getSound('screech').setVolume(0.5);
+    
+        this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
+        this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
+        this.get('dash').bindTo('goldZ', this.medalCars[0], 'zCoordinate');
+        this.get('dash').bindTo('silverZ', this.medalCars[1], 'zCoordinate');
+        this.get('dash').bindTo('bronzeZ', this.medalCars[2], 'zCoordinate');
+        setTimeout(this.startGame.bind(this), RC.initialCountdown);
+        this.get('audioMixer').playSound('bg');
+        
+        var cd = cocos.nodes.Label.create({string: '3', textColor: '#000000'});
+        cd.set('scaleX', 10);
+        cd.set('scaleY', 10);
+        cd.set('position', new geo.Point(400, 300));
+        
+        this.set('cdt', cd);
+        this.addChild({child: cd});
+        
+        // Set the starting value on the player's car
+        this.get('player').changeSelectorByForce(this.get('startSelector'));
+        
+        var that = this;
+        setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
+        setTimeout(function () { that.get('cdt').set('string', '1'); }, 2000)
+        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
+        setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
+        
+        this.audioMixer.playSound('start');
+        this.audioMixer.loopSound('hum');
+        
+        // Catch window unloads at this point as aborts
+        $(window).unload(this.endOfGame.bind(this, null));
+    },
+    
+    // Starts the game
+    startGame: function () {
+        this.scheduleUpdate();          // Start keyboard input and fps tracking
+        var p = this.get('player');
+        p.scheduleUpdate();             // Start the player
+        this.get('dash').start();       // Start timer and dash updates
+        
+        // Accelerate the player to their default speed after starting
+        var ds = p.get('zVelocity');
+        p.set('zVelocity', 0);
+        MOT.create(0, ds, 0.2).bind(p, 'zVelocity');
+        
+        this.medalCars[0].scheduleUpdate();
+        this.addChild({child: this.medalCars[0]});
+        this.medalCars[1].scheduleUpdate();
+        this.addChild({child: this.medalCars[1]});
+        this.medalCars[2].scheduleUpdate();
+        this.addChild({child: this.medalCars[2]});
+        
+        // Start background music
+        this.musicMixer.loopSound('bg_slow');
+        this.musicMixer.getSound('bg_fast').setVolume(0);
+        this.musicMixer.loopSound('bg_fast');
+    },
+    
+	// Pauses the dashboard and medal cars
+    pause: function () {
+        this.get('dash').pauseTimer();
+        
+        this.audioMixer.playSound('intermission');
+        
+        var mc = this.get('medalCars');
+        
+        for(var i=0; i<3; i+=1) {
+            mc[i].prepause = mc[i].zVelocity;
+            mc[i].zVelocity = 0;
+        }
+        
+        this.set('medalCars', mc);
+    },
+    
+	// Unpauses the dashboard and medal cars
+    unpause: function () {
+        this.get('dash').unpauseTimer();
+        
+        var mc = this.get('medalCars');
+        
+        for(var i=0; i<3; i+=1) {
+            mc[i].zVelocity = mc[i].prepause;
+            mc[i].prepause = 0;
+        }
+        
+        this.set('medalCars', mc);
     },
     
     // Handles add requests from PerspectiveNodes
     // TODO: Make a PerspectiveView class to handle these functions?
+    // STATIC BIND
     addMeHandler: function (toAdd) {
         this.addChild({child: toAdd});
-        events.addListener(toAdd, 'removeMe', this.removeMeHandler.bind(this));
+        events.addListener(toAdd, 'removeMe', this.removeMeHandler);
     },
     
     // Handles removal requests from PerspectiveNodes
+    // STATIC BIND
     removeMeHandler: function (toRemove) {
         this.removeChild(toRemove);
     },
     
+    onCrossFadeComplete: function () {
+        this.bgFade = false;
+    },
+    
     // Called when game ends, should collect results, display them to the screen and output the result XML
+    // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
-        $(window).unbind('unload')
+        if(finished != null) {
+            $(window).unbind('unload')
+            $(window).unload(this.cleanup.bind(this, null));
+        }
+        else {
+            this.cleanup();
+        }
+        
+        // Fade out background music tracks at the end of the game
+        var s;
+        s = this.musicMixer.getSound('bg_fast');
+        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        s = this.musicMixer.getSound('bg_slow');
+        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        
+        this.audioMixer.playSound('finish');
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('dash'));
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        this.dash.pauseTimer();
         
         // Stops the medal pace cars
         var mc = this.get('medalCars');
@@ -543,6 +615,7 @@ var FluencyApp = KeyboardLayer.extend({
             else {
                 unanswered += 1;
             }
+            
             i += 1;
         }
         
@@ -564,6 +637,10 @@ var FluencyApp = KeyboardLayer.extend({
             var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
             e.set('position', new geo.Point(200, 50));
             this.addChild({child: e});
+            var that = this;
+            events.addListener(e, 'almostComplete', function () {that.get('menuLayer').addRetryButton();});
+            events.addListener(e, 'complete', this.cleanup.bind(this));
+            this.eogd = e;
             e.start();
         }
     
@@ -586,20 +663,16 @@ var FluencyApp = KeyboardLayer.extend({
         var d = this.get('dash');
         var e = d.get('elapsedTime');
         var p = d.get('pTime');
-        var m;
+        var m = ' - ';
         
         // Determine medal string
-        if(e + p < RC.times[1] && state == 'FINISH') {
-            m = "Gold";
-        }
-        else if(e + p < RC.times[2] && state == 'FINISH') {
-            m = "Silver";
-        }
-        else if(e + p < RC.times[3] && state == 'FINISH') {
-            m = "Bronze";
-        }
-        else {
-            m = " - ";
+        if(state == 'FINISH') {
+            if(e + p < RC.times[1])
+                m = "Gold";
+            else if(e + p < RC.times[2])
+                m = "Silver";
+            else if(e + p < RC.times[3])
+                m = "Bronze";
         }
         
         // Convert times to milliseconds for reporting
@@ -627,46 +700,67 @@ var FluencyApp = KeyboardLayer.extend({
         return x;
     },
     
-    //Handles answering the current question when time expires
+    // Code to be run when the game is finished
+    cleanup: function() {
+        // Clear the bind
+        $(window).unbind('unload');
+        
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        var d = cocos.Director.get('sharedDirector');
+        
+        // Stop the main loop and clear the scenes
+        d.stopAnimation();
+        delete d.sceneStack.pop();
+        delete d.sceneStack.pop();
+        
+        // Clear the setup functions
+        d.attachInView = null;
+        d.runWithScene = null;
+        
+        // Clear the animating functions
+        d.startAnimation = null;
+        d.animate = null;
+        d.drawScene = null;
+        
+        // Clear the instance
+        d._instance = null;
+    },
+    
+    // Handles answering the current question when time expires
+    // STATIC BIND
     answerQuestion: function(question) {
-        var result;
-        
+        var result = question.answerQuestion(this.lane);
+
         var player = this.get('player');
-        var playerX = player.get('xCoordinate');
-        
-        // Determine answer based on the lane
-        if(playerX < PNode.roadWidth / -6) {
-            result = question.answerQuestion(0);
-        }
-        else if(playerX < PNode.roadWidth / 6) {
-            result = question.answerQuestion(1);
-        }
-        else {
-            result = question.answerQuestion(2);
-        }
         
         // Handle correct / incorrect feedback
         if(result) {
-            // TODO: correct sounds effects
+            this.audioMixer.playSound('correct', true);
         }
         else {
-            var t = this.get('dash').get('pTime') + RC.penaltyTime + this.get('dash').get('elapsedTime')
+            var dash = this.get('dash');
+            var t = dash.elapsedTime + dash.pTime + parseFloat(RC.penaltyTime);
         
             player.wipeout(1);
-            this.get('audioMixer').playSound('wipeout', true);
-            this.get('dash').modifyPenaltyTime(RC.penaltyTime);
+            dash.modifyPenaltyTime(RC.penaltyTime);
             
+            this.audioMixer.playSound('wrong', true);
+            
+            // Update medal car velocities to account for penalty time
             var c = this.get('medalCars')
             for(var i=0; i<3; i+=1) {
                 var rd = RC.finishLine - c[i].get('zCoordinate');
                 var rt = RC.times[i+1] - t;
-                if(rt > 0 && rd > 0) {
+                
+                if(rt > 0.1 && rd > 0) {
                     c[i].set('zVelocity', rd / rt);
                 }
                 else if (rd > 0) {
-                    c[i].set('zVelocity', rd / 1);
+                    c[i].set('zVelocity', rd / 0.1);
                 }
             }
+            
             this.set('medalCars', c);
         }
         
@@ -679,51 +773,125 @@ var FluencyApp = KeyboardLayer.extend({
         AM.setMute(!AM.get('muted'));
     },
     
+    muteMusicHandler: function() {
+        var AM = this.get('musicMixer');
+        AM.setMute(!AM.get('muted'));
+    },
+    
     // Called every frame, manages keyboard input
     update: function(dt) {
-        if(this.get('player').get('zCoordinate') > RC.finishLine) {
-            this.endOfGame(true);
-            return;
-        }
-    
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
+        
+        if(player.get('zCoordinate') > RC.finishLine && this.eogd == null) {
+            this.endOfGame(true);
+        }
+        
+        if(this.checkAnyKey() && this.eogd != null) {
+            this.eogd.skipAnimation();
+        }
         
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
         if(this.checkBinding('MOVE_LEFT') == KeyboardLayer.PRESS) {
-            playerX -= 3
-            if(playerX < -3) {
-                playerX = -3
+            if(this.lane > 0) {
+                this.lane -= 1;
+                player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('screech', true);
             }
-            player.set('xCoordinate', playerX);
         }
         // 'D' / 'RIGHT' Move right, discreet
         else if(this.checkBinding('MOVE_RIGHT') == KeyboardLayer.PRESS) {
-            playerX += 3
-            if(playerX > 3) {
-                playerX = 3
+            if(this.lane < RC.curNumLanes-1) {
+                this.lane += 1;
+                player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('screech', true);
             }
-            player.set('xCoordinate', playerX);
         }
+        
+        var decel_lock = false;
         
         // 'S' / 'DOWN' Slow down, press
         if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
             player.decelerate(dt);
+            this.audioMixer.loopSound('decel')
+        
+            // Cross fade tracks if needed and able
+            if(this.bgFast && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
+                this.musicMixer.crossFade('bg_fast', 'bg_slow', 2);
+                this.bgFast = false;
+                this.bgFade = true;
+            }
+            
+            // Prevents triggering both acceleration and deceleration
+            decel_lock = true;
         }
         // 'W' / 'UP' Speed up, press
-        else if(this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
+        else
+            this.audioMixer.stopSound('decel');
+            
+        if(!decel_lock && this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
             player.accelerate(dt);
+            this.audioMixer.loopSound('accel')
+            
+            // Cross fade tracks if needed and able
+            if(!this.bgFast && !this.bgFade && player.zVelocity > RC.crossFadeSpeed) {
+                this.musicMixer.crossFade('bg_slow', 'bg_fast', 2);
+                this.bgFast = true;
+                this.bgFade = true;
+            }
         }
+        else
+            this.audioMixer.stopSound('accel');
         
-        // 'SPACE' turbo boost, press
-        if(this.checkBinding('TURBO') > KeyboardLayer.UP) {
-            player.startTurboBoost();
+        // 'SPACE' turbo boost, discreet
+        if(this.checkBinding('TURBO') == KeyboardLayer.PRESS) {
+            if(player.startTurboBoost())
+                this.audioMixer.playSound('turbo', true);
         }
         
         // 'ESC' Abort game, discreet
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
             this.endOfGame(false);
+        }
+        
+        var sub = parseFloat(0);    // Zero the subtotal
+        var cur = 1 / dt;           // Store the current frame's fps
+        
+        this.fpsTracker.shift();    // Get rid of oldest frame
+        this.fpsTracker.push(cur);  // Add this frame
+        
+        // Log spikes to console if FPS tracker is enabled
+        if(this.fpsToggle) {
+            if(1 / dt < 20) {
+                console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
+            }
+        }
+        
+        // Smooth over multiple frames
+        this.fps.set('fontColor', '#FFFFFF');
+        for(t in this.fpsTracker){
+            sub += this.fpsTracker[t];
+            
+            // Flash red on low framerate spikes
+            if(this.fpsTracker[t] < 20) {
+                this.fps.set('fontColor', '#DD2222');
+            }
+        }
+        
+        // Update the FPS tracker label
+        this.fps.set('string', (sub / this.fpsTracker.length).toFixed(1) + ' FPS');
+        
+        // 'P' Toggle showing FPS tracker, discreet
+        if(this.checkBinding('SHOW_FPS') == KeyboardLayer.PRESS) {
+            if(!this.get('fpsToggle')) {
+                this.addChild({child: this.fps});
+                this.fpsToggle = true;
+            }
+            else {
+                this.removeChild({child: this.fps});
+                this.fpsToggle = false;
+            }
         }
     },
 });
@@ -734,9 +902,12 @@ var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
     muted       : false,    // State of the volume mute button
-    init: function(hook) {
+    mutedMusic  : false,    // State of the volume mute button
+    init: function() {
         MenuLayer.superclass.init.call(this, {});
-        
+    },
+    
+    createMenu: function() {
         // Create the button
         var opts = Object();
         opts['normalImage'] = '/resources/start-button.png';
@@ -760,8 +931,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['callback'] = this.volumeCallback.bind(this);
         
         var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(400, 250));
+        vc.set('position', new geo.Point(425, 250));
         this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOn', vc);
         this.addChild({child: vc});
         
         opts['normalImage'] = '/resources/volume-control-off.png';
@@ -769,12 +946,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['disabledImage'] = '/resources/volume-control-off.png';
         opts['callback'] = this.volumeCallback.bind(this);
         
-        var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(400, 250));
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 250));
         this.set('volumeButtonOff', vc);
         
-        // Store the function to call when pressing the button
-        this.set('startGame', hook);
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOff', vc);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -799,57 +978,91 @@ var MenuLayer = cocos.nodes.Menu.extend({
             this.addChild({child: this.get('volumeButtonOn')});
         }
         this.set('muted', !m);
+    },
+    
+    musicCallback: function() {
+        events.trigger(this, "muteMusicEvent");
+        
+        var m = this.get('mutedMusic')
+        if(!m) {
+            this.removeChild(this.get('musicButtonOn'));
+            this.addChild({child: this.get('musicButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('musicButtonOff'));
+            this.addChild({child: this.get('musicButtonOn')});
+        }
+        this.set('mutedMusic', !m);
+    },
+    
+    // Adds the retry button to the MenuLayer
+    addRetryButton: function() {
+        var opts = Object();
+        opts['normalImage'] = '/resources/retry.png';
+        opts['selectedImage'] = '/resources/retry-selected.png';
+        opts['disabledImage'] = '/resources/retry.png';
+        opts['callback'] = this.retryButtonCallback.bind(this);
+        
+        var rb = cocos.nodes.MenuItemImage.create(opts);
+        rb.set('position', new geo.Point(10-450+200, 230-300+50));
+        rb.set('anchorPoint', new geo.Point(0, 0));
+        this.set('retryButton', rb);
+        this.addChild({child: rb});
+    },
+    
+    retryButtonCallback: function() {
+        window.runStage(window.currentStage);
     }
 });
 
 // Initialise application
 exports.main = function() {
-
     // From: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
     // This defines function.bind for web browsers that have not implemented it:
     // Firefox < 4 ; Chrome < 7 ; IE < 9 ; Safari (all) ; Opera (all)
     if (!Function.prototype.bind) {  
         Function.prototype.bind = function (oThis) {  
-      
-        if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
-            throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
-        }
+        
+            if (typeof this !== "function") { // closest thing possible to the ECMAScript 5 internal IsCallable function  
+                throw new TypeError("Function.prototype.bind - what is trying to be fBound is not callable");  
+            }
 
-        var aArgs = Array.prototype.slice.call(arguments, 1),   
-            fToBind = this,   
-            fNOP = function () {},  
-            fBound = function () {  
-              return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));      
-            };  
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof fNOP ? this : oThis || window, aArgs.concat(Array.prototype.slice.call(arguments)));
+                };  
 
-        fNOP.prototype = this.prototype;  
-        fBound.prototype = new fNOP();  
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
 
-        return fBound;  
-      };  
-    }  
+            return fBound;
+        };
+    }
     
-    // Get director
+    // Setup the director
     var director = cocos.Director.get('sharedDirector');
-
-    // Attach director to our <div> element
     director.attachInView(document.getElementById('cocos_test_app'));
     
-    // Create a scene
-    var scene = cocos.nodes.Scene.create();
-
-    // Create our layers
-    var app = FluencyApp.create();
+    var scene = cocos.nodes.Scene.create();     // Create a scene
+    var app = FluencyApp.create();              // Create the layers
     var menu = MenuLayer.create();
     
     // Set up inter-layer events
-    events.addListener(menu, "startGameEvent", app.countdown.bind(app));
-    events.addListener(menu, "muteEvent", app.muteHandler.bind(app));
+    events.addListener(app, 'loaded', menu.createMenu.bind(menu));
+    
+    events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
+    events.addListener(menu, 'muteEvent', app.muteHandler.bind(app));
+    events.addListener(menu, 'muteMusicEvent', app.muteMusicHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
     scene.addChild({child: menu});
-
+    
+    // Allow the App layer to directly access the UI layer
+    app.set('menuLayer', menu);
+    
     // Run the scene
     director.runWithScene(scene);
 };

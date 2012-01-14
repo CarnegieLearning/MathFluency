@@ -18,8 +18,6 @@ var cocos = require('cocos2d');
 var geom = require('geometry');
 var util = require('util');
 
-var XML = require('XML').XML;
-
 // TODO: Subclass this off a Value/Expression class or have it pulled in when needed by such a class
 var FractionRenderer = cocos.nodes.Node.extend({
     numerator   : 1,           // The numerator of the fraction
@@ -89,27 +87,6 @@ FractionRenderer.helper = function(n, d, b, t, s) {
     opts['bgColor'] = b;
     opts['fontColor' ] = t;
     opts['lineColor'] = s;
-    
-    return opts;
-}
-
-// Static XML parser to build options from a <CONTENT_SETTINGS> node
-FractionRenderer.helperXML = function(node) {
-    var n = XML.safeComboGet(node, 'Numerator', 'VALUE');
-    var d = XML.safeComboGet(node, 'Denominator', 'VALUE');
-    var bg = XML.safeComboGet(node, 'BackgroundColor', 'VALUE');
-    var lc = XML.safeComboGet(node, 'LineColor', 'VALUE');
-    var f = XML.parseFont(XML.getFirstByTag(node, 'FontSettings'));
-    
-    var opts = {}
-    opts['numerator']   = n   == null ? 2       : n;
-    opts['denominator'] = d   == null ? 1       : d;
-    opts['bgColor']     = bg  == null ? '#fff'  : bg;
-    opts['lineColor']   = lc  == null ? '#000'  : lc;
-    
-    opts['fontName']    = f.font       == null ? 'Helvetica' : f.font;
-    opts['fontColor']   = f.fontColor  == null ? '#000'      : f.fontColor;
-    opts['fontSize']    = f.fontSize   == null ? '16'        : f.fontSize;
     
     return opts;
 }

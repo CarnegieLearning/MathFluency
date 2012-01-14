@@ -18,18 +18,19 @@ var cocos = require('cocos2d');
 var events = require('events');
 var geom = require('geometry');
 
-var LabelBG = require('LabelBG').LabelBG;
+var Content = require('Content').Content;
 var PNode = require('PerspectiveNode').PerspectiveNode;
+var RC = require('RaceControl').RaceControl;
+var XML = require('XML').XML;
 
 // Represents a single question to be answered by the player
 var Question = PNode.extend({
     correctAnswer    : null,    // The correct response
     answer           : null,    // The answer provided by the player
     answeredCorrectly: null,    // Stores if question has been correctly/incorrectly (null=not answered)
-    coneL            : null,    // Holds the left delimiter
-    coneR            : null,    // Holds the left delimiter
+    delimiters       : null,    // Holds the delimiters
     timeElapsed      : 0.0,     // Real time elapsed since start of question (including delimeterStaticTime)
-    init: function(ans, d1, d2, z, o1, o2) {
+    init: function(node, z) {
         var superOpts = {
             xCoordinate : 0,
             zCoordinate : z,
@@ -39,50 +40,47 @@ var Question = PNode.extend({
         }
         Question.superclass.init.call(this, superOpts);
         
-        // Initialize all variables
-        this.set('correctAnswer', ans);
+        // Build delimiters for question
+        this.delimiters = [];
+        for(var i=0; i<node.children.length-1; i+=1) {
+            this.buildDelim(node.children[i], z);
+            this.delimiters[i].xCoordinate = RC.delimiterSpacing[node.children.length][i];
+        }
         
-        d1.set('position', new geom.Point(d1.get('contentSize').width / 2, 0))
-        d2.set('position', new geom.Point(d2.get('contentSize').width / 2, 0))
+        //HACK: need better way of determining/setting this
+        RC.curNumLanes = node.children.length;
+
+        this.set('correctAnswer', node.children[i].attributes['VALUE']);
         
-        //Use defaults if opts are null
-        o1 = o1 == null ? {} : o1;
-        o2 = o2 == null ? {} : o2;
+        return this
+    },
+    
+    buildDelim: function(node, z) {
+        var c = Content.buildFrom(node);
+        c.set('position', new geom.Point(c.get('contentSize').width / 2, 0))
         
-        var v   = o1['visibility'] == null ? 5 : o1['visibility'];
-        var max = o1['maxScale']   == null ? 4 : o1['maxScale'];
-        var min = o1['minScale']   == null ? 1 : o1['minScale'];
+        var pSet = XML.getChildByName(node, 'PerspectiveSettings');
+        pSet = pSet == null ? {attributes:{}} : pSet;
         
-        // Create and display the question content
+        // Create option settings
         var opts = {
             lockY       : true,
             silent      : true,
-            minScale    : min,
-            maxScale    : max,
-            alignH      : 1,
+            minScale    : pSet.attributes['minScale']   == null ? 1 : pSet.attributes['minScale'],
+            maxScale    : pSet.attributes['maxScale']   == null ? 4 : pSet.attributes['maxScale'],
+            alignH      : 0.5,
             alignV      : 1,
-            visibility  : v,
-            xCoordinate : -1.5,
+            visibility  : pSet.attributes['visibility'] == null ? 5 : pSet.attributes['visibility'],
+            xCoordinate : 0,
             zCoordinate : z,
-            content     : d1
+            content     : c
         }
-        
+    
+        // Create the first delimiter
         var delim = PNode.create(opts);
         delim.scheduleUpdate();
         this.addChild({child: delim});
-        this.set('coneL', delim);
-        
-        opts['xCoordinate'] = 1.5;
-        opts['alignH']      = 0;
-        opts['content']     = d2;
-        opts['visibility']  = o2['visibility'] == null ? 5 : o2['visibility'];
-        opts['maxScale']    = o2['maxScale']   == null ? 4 : o2['maxScale'];
-        opts['minScale']    = o2['minScale']   == null ? 1 : o2['minScale'];
-        
-        delim = PNode.create(opts);
-        delim.scheduleUpdate();
-        this.addChild({child: delim});
-        this.set('coneR', delim);
+        this.delimiters.push(delim);
     },
     
     // Called when the question is answered, sets and returns the result
@@ -104,26 +102,33 @@ var Question = PNode.extend({
     update: function(dt) {
         Question.superclass.update.call(this, dt);
         
-        if(this.get('added')) {
-            if(this.get('answeredCorrectly') == null) {
-                var te = this.get('timeElapsed') + dt;
-                this.set('timeElapsed', te);
+        if(this.added) {
+            if(this.answeredCorrectly == null) {
+                this.set('timeElapsed', this.timeElapsed + dt);
                 
                 // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
-                if(PNode.cameraZ + 6 >= this.get('zCoordinate')) {
+                if(PNode.cameraZ + 6 >= this.zCoordinate) {
                     events.trigger(this, "questionTimeExpired", this);
                 }
             }
             
             // Pulls the delimiters more onto the lane lines as they progress down the screen
-            var shift = (this.get('position').y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
+            var shift = (this.position.y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
             
-            this.get('coneL').set('alignH', 1 - shift);
-            this.get('coneR').set('alignH', 0 + shift);
+            if(this.delimiters.length > 1) {
+                this.delimiters[0].set('alignH', 1 - shift);
+                this.delimiters[this.delimiters.length-1].set('alignH', 0 + shift);
+            }
         }
     },
+	
+	// Should prevent race condition of being removed before being answered
+	onExit: function () {
+		if(this.answeredCorrectly == null) {
+			events.trigger(this, "questionTimeExpired", this);
+		}
+        Question.superclass.onExit.call(this);
+    },
 });
-
-// TODO: Write static helper for building an options object to initialize a question
 
 exports.Question = Question

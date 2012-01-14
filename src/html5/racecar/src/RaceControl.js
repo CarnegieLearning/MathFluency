@@ -25,19 +25,32 @@ var RaceControl = BObject.extend({
 RaceControl.finishLine          = 3200;                     // Holds the z value of the finish line
 RaceControl.initialCountdown    = 3000;                     // Initial countdown time in milliseconds
 
+RaceControl.curNumLanes = 3;
+
+// <AudioSettings>
+RaceControl.crossFadeSpeed = 30;
+
 // <MEDALS>
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
 RaceControl.medalNames          = ['Ludicrous Speed', 'Gold', 'Silver', 'Bronze', ' - '];
+
+RaceControl.gold    = '#CC9900';        // Color for gold medals
+RaceControl.silver  = '#C0C0C0';        // Color for silver medals
+RaceControl.bronze  = '#E26B10';        // Color for bronze medals
+RaceControl.noMedal = '#202020';        // Color for no medal
 
 // <GlobalSpacing>
 RaceControl.intermissionSpacing = 110;                      // Distance in meters from previous object to intermission
 RaceControl.questionSpacing     = 150;                      // Distance in meters from previous object to question
 RaceControl.finishSpacing       = 110;                      // Distance in meters after the last question to the finish line
 
+RaceControl.delimiterSpacing    = {2: [0], 3: [-1.5, 1.5], 4: [-3, 0, 3]};
+
 // <PenaltySettings>
-RaceControl.penaltyTime         = 8;                        // Time in seconds lost for a incorrect answer
+RaceControl.penaltyTime         = 15;                       // Time in seconds lost for a incorrect answer
 RaceControl.penaltySpeed        = -0.1;                     // Percentage speed LOST for an incorrect answer
 
 RaceControl.maxTimeWindow       = 110 / 200.0 * 0.9;        // Maximum time between two important z values: min z spacing / max speed * 90%
+RaceControl.maxDistWindow       = 300;                      // Maximum distance coverable in 2 seconds
 
 exports.RaceControl = RaceControl
