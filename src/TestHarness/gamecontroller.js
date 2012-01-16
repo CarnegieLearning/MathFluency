@@ -143,13 +143,6 @@ exports.gameController = function (serverConfig, model)
             console.log('Saving question set results while playerState is null (this is probably instructor preview).');
         }
         
-        console.log('playerState: {');
-        for( var pvar in playerState ){
-            if( typeof( playerState[pvar] ) != 'function' )
-                console.log('    '+ pvar +': '+ playerState[pvar] +',');
-        }
-        console.log('}');
-        
         var timestamp = Date.now();
         
         // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
@@ -217,8 +210,15 @@ exports.gameController = function (serverConfig, model)
                 },
                 function (callback)
                 {
-                    var transitionFn = eval(sequence.transitionFn);
-                    if( transitionFn( qsOutcomeAttributes ) ){
+                    playerState.lastSequence = sequence.id;
+                    playerState.lastStage = qsOutcomeAttributes.stageID;
+                    gc.savePlayerState( playerState, function(ps)
+                    {
+                        console.log('saved player state '+ ps.playerID );
+                        var transitionFn = eval(sequence.transitionFn);
+                        if( ! transitionFn( qsOutcomeAttributes ) ){
+                            return callback();
+                        }
                         console.log('Unlocking next stage…');
                         sequence.getNextStage( playerState, function(stage)
                         {
@@ -226,16 +226,10 @@ exports.gameController = function (serverConfig, model)
                             stage.locked = false;
                             gc.addOrUpdateSA( playerState, stage, qsOutcomeAttributes.medal, function()
                             {   
-                                playerState.lastSequence = sequence.id;
-                                playerState.lastStage = qsOutcomeAttributes.stageID;
-                                gc.savePlayerState( playerState, function(ps)
-                                {
-                                    console.log('saved player state '+ ps.playerID );
-                                    callback();
-                                });
+                                callback();
                             });
                         });
-                    }
+                    });
                 }
             ], callback);
         }).parseString(text);
@@ -400,12 +394,15 @@ function makeSequence( seqID, seqConfig, gameConfig )
         // get the next stage in this sequence
         if( playerState.lastSequence == sequence.id )
             for( var i in sequence.stages )
-                if( sequence.stages[i].id == playerState.lastStage && sequence.stages[i+1] )
-                    return callback( sequence.stages[i+1] );        
+                if( sequence.stages[i].id == playerState.lastStage )
+                    if( sequence.stages[i+1] )
+                        return callback( sequence.stages[i+1] );
         // otherwise we find the first locked one
         for( var i in sequence.stages )
             if( sequence.stages[i].locked )
                 return callback( sequence.stages[i] );
+        // otherwise we return the last stage in the sequence
+        callback( sequence.stages[ sequence.stages.length - 1 ] );
     }
     
     sequence.toJSON = function()

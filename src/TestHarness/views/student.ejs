@@ -6,8 +6,6 @@
 
 <div id="bug-notice"><h4>If the game fails to load properly, please reload this page.</h4></div>
 
-<button class="quickpost" onClick="window.quickpost();">QuickPost</button>
-
 <div id="stage-list">
     <center>
         <h3>Levels</h3><br>
@@ -17,9 +15,10 @@
             <td valign="top">
             <h2><%= seq.displayName %></h2><br>
             <ol>
-                <% for (var j in seq.stages) { var stage = seq.stages[j]; %>
+                <% for (var j in seq.stages) { 
+                       var stage = seq.stages[j]; %>
                 <li>
-                    <button class="level" type="button" value="<%= seq.id +'/'+ stage.id %>" <% if (stage.locked){ %>disabled<% } %>>
+                    <button class="level" type="button" id="<%= stage.id %>" value="<%=  seq.id +'/'+ stage.id %>" <% if (stage.locked){ %>disabled<% } %>>
                         <%= stage.displayName %>
                     </button>
                 </li>

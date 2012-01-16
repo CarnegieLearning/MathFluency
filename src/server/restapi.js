@@ -226,7 +226,11 @@ module.exports = function restapi(gameController)
             }
             else
             {
-                res.send({});
+                gc.getAvailableStagesForPlayer(req.playerState, function (stages)
+                {
+                    console.log('sending '+ stages.length +' available stages');
+                    res.send({'stages': stages});
+                });
             }
         });
     });
