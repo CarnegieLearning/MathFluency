@@ -1,10 +1,12 @@
 var GameControllerClient = require('./client/GameControllerClient').GameControllerClient;
 var CLFlashGameEngine = require('./client/CLFlashGameEngine').CLFlashGameEngine;
 var CLHTML5GameEngine = require('./client/CLHTML5GameEngine').CLHTML5GameEngine;
+var ExtFlashGameEngine = require('./client/ExtFlashGameEngine').ExtFlashGameEngine;
 
 var gc = new GameControllerClient('/api');
 gc.registerEngineConstructor('CLFlashGameEngine', CLFlashGameEngine);
 gc.registerEngineConstructor('CLHTML5GameEngine', CLHTML5GameEngine);
+gc.registerEngineConstructor('ExtFlashGameEngine', ExtFlashGameEngine);
 
 var instructionsURL;
 
@@ -76,8 +78,9 @@ function runQuestionSet( sequence, questionSet )
     }
     
     statusMessage('Loading game engine for question set ' + questionSet.id + '...');
-    gc.getGameEngineForQuestionSet(questionSet, function (engine)
+    gc.getGameEngineForQuestionSet(questionSet, null, function (engine)
     {
+        alert('have engine '+ engine );
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
         instructionsURL = 'instructions/' + questionSet.parent.id;
         

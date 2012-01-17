@@ -104,7 +104,7 @@ GameController.prototype.getStage = function (stageID, callback)
         questionSet - The question set that needs to be run.
         callback - This gets called with the appropriate game engine.
 */
-GameController.prototype.getGameEngineForQuestionSet = function (questionSet, callback)
+GameController.prototype.getGameEngineForQuestionSet = function (questionSet, playerState, callback)
 {
     setTimeout(callback, 0);
 };

@@ -130,9 +130,18 @@ exports.gameController = function (serverConfig, model)
         });
     };
     
-    gc.getGameEngineForQuestionSet = function (questionSet, callback)
+    gc.getGameEngineForQuestionSet = function (questionSet, playerState, callback)
     {
-        callback( config().engines[questionSet.parent.engineID] );
+        var engine = config().engines[questionSet.parent.engineID];
+        if( questionSet.getFlashParams ){
+            console.log('setting flash params…');
+            questionSet.getFlashParams( playerState, function( params )
+            {
+                console.log('flash params are '+ params );
+                engine.params = params;
+            });
+        }
+        callback( engine );
     };
     
     gc.saveQuestionSetResults = function (playerState, sequence, questionSet, text, callback)
@@ -324,14 +333,16 @@ function populateConfig(config, serverConfig)
 
 function makeEngine(engineConfig)
 {
-    if (engineConfig.type == 'CLFlashGameEngine')
-    {
+    if (engineConfig.type == 'CLFlashGameEngine'){
         engineConfig.swfPath = '/fluency/games/' + engineConfig.cli_task_id;
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
     }
     else if (engineConfig.type == 'CLHTML5GameEngine') {
         engineConfig.scriptPath = '/fluency/games/' + engineConfig.cli_task_id;
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
+    }
+    else if( engineConfig.type == 'ExtFlashGameEngine'){
+        engineConfig.swfPath = engineConfig.swfPath;
     }
     
     engineConfig.toJSON = function ()
@@ -422,6 +433,7 @@ function makeStage(stageID, config, serverConfig)
     
     var stage = new QuestionHierarchy.Stage(stageID, stageConfig.displayName, stageConfig.gameProperties);
     stage.engineID = stageConfig.engine;
+    stage.engineType = engineConfig.type;
     stage.locked = true;
 
     if (stageConfig.cli_fluency_task)
@@ -530,6 +542,29 @@ function makeStage(stageID, config, serverConfig)
                     callback(null, html);
                 });
         };
+    }
+    else if( stage.engineType == 'ExtFlashGameEngine' )
+    {   
+        stage.getAllQuestionSetIDs = function (callback)
+        {
+            callback( [ stage.id ] );
+        }
+        
+        stage.getQuestionSet = function (questionSetID, callback)
+        {
+            if( questionSetID != stage.id ){
+                console.log('no such question set as '+ questionSetID +' for stage '+ stage.id);
+                return callback(null);
+            }
+            var qs = new QuestionHierarchy.QuestionSet(stage, stage.id, stage.displayName, {} );
+            
+            qs.getFlashParams = function( playerState, callback )
+            {
+                callback( { 'lname': qs.id, 'uid': playerState.playerID } );
+            }
+            
+            callback( qs );
+        }
     }
     else
     {

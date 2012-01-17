@@ -64,7 +64,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
         });
     };
     
-    this.getGameEngineForQuestionSet = function (questionSet, callback)
+    this.getGameEngineForQuestionSet = function (questionSet, playerState, callback)
     {
         $.getJSON(this.baseURL + '/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/engine', function (data)
         {
