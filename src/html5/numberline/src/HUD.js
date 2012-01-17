@@ -54,6 +54,31 @@ var HUD = cocos.nodes.Node.extend({
         this.onBeforeNextQuestion = this.onBeforeNextQuestion.bind(this);
     },
     
+    delayedInit: function() {
+        this.metalTextures = [
+            cocos.nodes.Sprite.create({file:'/resources/Score_Gold.png'}),
+            cocos.nodes.Sprite.create({file:'/resources/Score_Silver.png'}),
+            cocos.nodes.Sprite.create({file:'/resources/Score_Bronze.png'}),
+            cocos.nodes.Sprite.create({file:'/resources/Score_None.png'}),
+        ]
+        
+        var y = 0;
+        for(i=0; i<4; i+=1) {
+            this.scaleTo(this.metalTextures[i], 100, NLC.proportions[i] * 98)
+            this.metalTextures[i].set('position', new geo.Point(200, y));
+            this.metalTextures[i].set('anchorPoint', new geo.Point(0, 0));
+            this.addChild({child: this.metalTextures[i]});
+            
+            y += NLC.proportions[i] * 98;
+        }
+    },
+    
+    scaleTo: function(s, x, y) {
+        var c = s.get('contentSize');
+        s.set('scaleX', x / c.width);
+        s.set('scaleY', y / c.height);
+    },
+    
     // Called every frame
     update: function(dt) {
         // Runs stage timer
@@ -138,25 +163,6 @@ var HUD = cocos.nodes.Node.extend({
             p = Math.min(p, 100);
             ctx.fillStyle = '#AA3333';
             ctx.fillRect(600, p, 100, 100 - p);
-        }
-        
-        // Draw medal meter
-        if(NLC.proportions) {
-            var y = 0;
-            ctx.fillStyle = NLC.goldColor;
-            ctx.fillRect(200, y,  100, NLC.proportions[0] * 98);
-            y += NLC.proportions[0] * 98;
-            
-            ctx.fillStyle = NLC.silverColor;
-            ctx.fillRect(200, y, 100, NLC.proportions[1] * 98);
-            y += NLC.proportions[1] * 98;
-            
-            ctx.fillStyle = NLC.bronzeColor;
-            ctx.fillRect(200, y, 100, NLC.proportions[2] * 98);
-            y += NLC.proportions[2] * 98;
-            
-            ctx.fillStyle = NLC.noMedalColor;
-            ctx.fillRect(200, y, 100, NLC.proportions[3] * 98);
         }
         
         // Draw medal marker

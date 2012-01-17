@@ -64,9 +64,12 @@ var FluencyApp = KeyboardLayer.extend({
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
     // Not the 'real init', sets up and starts preloading
-    init: function() {
+    init: function(menu) {
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
+        
+        // Keep a reference to the menu layer
+        this.menu = menu;
         
         // Allow this Layer to catch mouse events
         this.set('isMouseEnabled', true);
@@ -201,6 +204,8 @@ var FluencyApp = KeyboardLayer.extend({
     // The 'real init' called after all the preloading/parsing is completed
     loadingComplete: function () {
         NLC.calcProportions();
+        
+        this.hud.delayedInit();
     
         this.background = Background.create();
         this.addChild({child: this.background});
@@ -290,6 +295,7 @@ var FluencyApp = KeyboardLayer.extend({
             var e = EOGD.create(this.hud.elapsed, !finished, [correct, 0, (unanswered + incorrect)]);
             e.set('position', new geo.Point(250, 75));
             this.addChild({child: e});
+            events.addListener(e, 'animationCompleted', this.menu.endGameButtons.bind(this.menu));
             e.start();
         }
     
@@ -386,11 +392,44 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('volumeButtonOff', vc);
     },
     
+    endGameButtons: function() {
+        var opts = Object();
+        opts['normalImage'] = '/resources/Retry_Up.png';
+        opts['selectedImage'] = '/resources/Retry_Down.png';
+        opts['disabledImage'] = '/resources/Retry_Up.png';
+        opts['callback'] = this.retryButtonCallback.bind(this);
+        
+        var b = cocos.nodes.MenuItemImage.create(opts);
+        b.set('position', new geo.Point(-25, 150));
+        b.set('scaleX', 0.8);
+        b.set('scaleY', 0.8);
+        this.addChild({child: b});
+        
+        opts['normalImage'] = '/resources/Next_Up.png';
+        opts['selectedImage'] = '/resources/Next_Down.png';
+        opts['disabledImage'] = '/resources/Next_Up.png';
+        opts['callback'] = this.nextButtonCallback.bind(this);
+        
+        b = cocos.nodes.MenuItemImage.create(opts);
+        b.set('scaleX', 0.8);
+        b.set('scaleY', 0.8);
+        b.set('position', new geo.Point(-150, 150));
+        this.addChild({child: b});
+    },
+    
     // Called when the button is pressed, clears the button, then hands control over to the main game
     startButtonCallback: function() {
         this.removeChild(this.get('startButton'));
         events.trigger(this, 'startGameEvent');
     },
+    
+    retryButtonCallback: function() {
+        events.trigger(this, 'retryGameEvent');
+    },
+    
+    nextButtonCallback: function() {
+        events.trigger(this, 'nextGameEvent');
+    }
 });
 
 //========== Main program body ================================================
@@ -429,8 +468,8 @@ exports.main = function() {
     
     // Create a scene and layers
     var scene = cocos.nodes.Scene.create();
-    var app = FluencyApp.create();
     var menu = MenuLayer.create();
+    var app = FluencyApp.create(menu);
     
     // Set up inter-layer events
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));

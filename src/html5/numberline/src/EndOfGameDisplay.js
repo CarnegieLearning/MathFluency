@@ -199,6 +199,29 @@ EndOfGameDisplay = GuiNode.extend({
         lbl.set('position', new geom.Point(350, 200));
         lbl.set('anchorPoint', new geom.Point(1, 0.5));
         this.set('totalLabel', lbl);
+        
+        this.metalTextures = [
+            cocos.nodes.Sprite.create({file:'/resources/Score_Gold.png'}),
+            cocos.nodes.Sprite.create({file:'/resources/Score_Silver.png'}),
+            cocos.nodes.Sprite.create({file:'/resources/Score_Bronze.png'}),
+            cocos.nodes.Sprite.create({file:'/resources/Score_None.png'}),
+        ]
+        
+        var x = 10;
+        for(i=0; i<4; i+=1) {
+            this.scaleTo(this.metalTextures[i], NLC.proportions[i] * 380, 20)
+            this.metalTextures[i].set('position', new geom.Point(x, 260));
+            this.metalTextures[i].set('anchorPoint', new geom.Point(0, 0));
+            this.addChild({child: this.metalTextures[i]});
+            
+            x += NLC.proportions[i] * 380;
+        }
+    },
+    
+    scaleTo: function(s, x, y) {
+        var c = s.get('contentSize');
+        s.set('scaleX', x / c.width);
+        s.set('scaleY', y / c.height);
     },
     
     // Called every frame
@@ -273,7 +296,11 @@ EndOfGameDisplay = GuiNode.extend({
             this.medal.set('scaleX', 0.5);
             this.medal.set('scaleY', 0.5);
             this.addChild({child: this.medal});
+            
+            setTimeout(this.next.bind(this), 250);
         }
+        else
+            events.trigger(this, 'animationCompleted');
         
         this.set('step', step + 1);
     },
@@ -284,17 +311,6 @@ EndOfGameDisplay = GuiNode.extend({
         // Draws the background of the window
         ctx.fillStyle = "#8B7765";
         ctx.fillRect(0, 0, 400, 450);
-        
-        // Draw the medal meter line
-        var offset = 10;
-        var run;
-        
-        for(var i=0; i<4; i+=1) {
-            run = NLC.proportions[i] * 380;
-            ctx.fillStyle = NLC.colors[i];
-            ctx.fillRect(offset, 260, run, 20);
-            offset += run;
-        }
         
         // Draw the indicator for the medal meter line
         var x = this.get('sliderX');
