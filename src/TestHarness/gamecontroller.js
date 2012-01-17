@@ -130,9 +130,16 @@ exports.gameController = function (serverConfig, model)
         });
     };
     
-    gc.getGameEngineForQuestionSet = function (questionSet, callback)
+    gc.getGameEngineForQuestionSet = function (questionSet, playerState, callback)
     {
-        callback( config().engines[questionSet.parent.engineID] );
+        var engine = config().engines[questionSet.parent.engineID];
+        if( questionSet.getFlashParams ){
+            questionSet.getFlashParams( playerState, function( params )
+            {
+                engine.params = params;
+            });
+        }
+        callback( engine );
     };
     
     gc.saveQuestionSetResults = function (playerState, sequence, questionSet, text, callback)
@@ -210,27 +217,80 @@ exports.gameController = function (serverConfig, model)
                 },
                 function (callback)
                 {
-                    var transitionFn = eval(sequence.transitionFn);
-                    if( transitionFn( qsOutcomeAttributes ) ){
+                    playerState.lastSequence = sequence.id;
+                    playerState.lastStage = qsOutcomeAttributes.stageID;
+                    gc.savePlayerState( playerState, function(ps)
+                    {
+                        console.log('saved player state '+ ps.playerID );
+                        var transitionFn = eval(sequence.transitionFn);
+                        if( ! transitionFn( qsOutcomeAttributes ) ){
+                            return callback();
+                        }
                         console.log('Unlocking next stage…');
                         sequence.getNextStage( playerState, function(stage)
                         {
                             console.log('… stage '+ stage.id );
                             stage.locked = false;
-                            playerState.addOrUpdateSA( stage.id, qsOutcomeAttributes.medal, false );
+                            gc.addOrUpdateSA( playerState, stage, qsOutcomeAttributes.medal, function()
+                            {   
+                                callback();
+                            });
                         });
-//                        process.exit(1);
-                    }
-                    playerState.lastSequence = sequence.id;
-                    playerState.lastStage = qsOutcomeAttributes.stageID;
-//                    gc.savePlayerState( playerState, function(ps)
-//                    {
-//                        console.log('saved player state '+ ps.playerID );
-//                    });
-                    callback();
+                    });
                 }
             ], callback);
         }).parseString(text);
+    };
+    
+    gc.addOrUpdateSA = function( playerState, stage, medal, callback )
+    {
+        playerState.getStageAvailabilities().on('success', function(stageAvailabilities)
+        {
+            // update if we have the entry already
+            for( var i in stageAvailabilities ){
+                var sa = stageAvailabilities[i];
+                if( stage.id == sa.stageID ){
+                    sa.medal = medal;
+                    sa.isLocked = stage.locked;
+                    
+                    sa.save().on('success', function()
+                    {
+                        console.log('updated sa!');
+                        return callback();
+                    }).on('error', function(error)
+                    {
+                        console.log('error saving sa '+ sa.stageID +' for student '+ playerState.loginID +':'+ error );
+                        return callback();
+                    });
+                }
+            }
+            // otherwise we add a new one
+            var sa = model.StageAvailability.build({
+                'stageID' : stage.id,
+                'medal': medal,
+                'isLocked' : stage.locked
+            });
+            sa.setStudent( playerState ).on('success', function(sa)
+            {
+                sa.save().on('success', function()
+                {
+                    console.log('created new sa!');
+                    callback();
+                }).on('error', function(error)
+                {
+                    console.log('error saving sa '+ sa.stageID +' for student '+ playerState.loginID +':'+ error );
+                    callback();
+                });                
+            }).on('error', function(error)
+            {
+                console.log('unable to set student '+ playerState.loginID +' on sa '+ sa.stageID +':'+ error  );
+                callback();
+            });
+        }).on('error', function(error)
+        {
+            console.log('unable to retrieve StageAvailabilities for student '+ playerState.loginID +':'+ error );
+            callback();
+        });
     };
     
     return gc;
@@ -271,14 +331,16 @@ function populateConfig(config, serverConfig)
 
 function makeEngine(engineConfig)
 {
-    if (engineConfig.type == 'CLFlashGameEngine')
-    {
+    if (engineConfig.type == 'CLFlashGameEngine'){
         engineConfig.swfPath = '/fluency/games/' + engineConfig.cli_task_id;
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
     }
     else if (engineConfig.type == 'CLHTML5GameEngine') {
         engineConfig.scriptPath = '/fluency/games/' + engineConfig.cli_task_id;
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
+    }
+    else if( engineConfig.type == 'ExtFlashGameEngine'){
+        engineConfig.swfPath = engineConfig.swfPath;
     }
     
     engineConfig.toJSON = function ()
@@ -341,12 +403,15 @@ function makeSequence( seqID, seqConfig, gameConfig )
         // get the next stage in this sequence
         if( playerState.lastSequence == sequence.id )
             for( var i in sequence.stages )
-                if( sequence.stages[i].id == playerState.lastStage && sequence.stages[i+1] )
-                    return callback( sequence.stages[i+1] );        
+                if( sequence.stages[i].id == playerState.lastStage )
+                    if( sequence.stages[i+1] )
+                        return callback( sequence.stages[i+1] );
         // otherwise we find the first locked one
         for( var i in sequence.stages )
             if( sequence.stages[i].locked )
                 return callback( sequence.stages[i] );
+        // otherwise we return the last stage in the sequence
+        callback( sequence.stages[ sequence.stages.length - 1 ] );
     }
     
     sequence.toJSON = function()
@@ -366,6 +431,7 @@ function makeStage(stageID, config, serverConfig)
     
     var stage = new QuestionHierarchy.Stage(stageID, stageConfig.displayName, stageConfig.gameProperties);
     stage.engineID = stageConfig.engine;
+    stage.engineType = engineConfig.type;
     stage.locked = true;
 
     if (stageConfig.cli_fluency_task)
@@ -474,6 +540,29 @@ function makeStage(stageID, config, serverConfig)
                     callback(null, html);
                 });
         };
+    }
+    else if( stage.engineType == 'ExtFlashGameEngine' )
+    {   
+        stage.getAllQuestionSetIDs = function (callback)
+        {
+            callback( [ stage.id ] );
+        }
+        
+        stage.getQuestionSet = function (questionSetID, callback)
+        {
+            if( questionSetID != stage.id ){
+                console.log('no such question set as '+ questionSetID +' for stage '+ stage.id);
+                return callback(null);
+            }
+            var qs = new QuestionHierarchy.QuestionSet(stage, stage.id, stage.displayName, {} );
+            
+            qs.getFlashParams = function( playerState, callback )
+            {
+                callback( { 'lname': qs.id, 'uid': playerState.playerID } );
+            }
+            
+            callback( qs );
+        }
     }
     else
     {

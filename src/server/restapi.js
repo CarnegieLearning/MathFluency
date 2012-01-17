@@ -85,7 +85,6 @@ module.exports = function restapi(gameController)
     {
         if (questionSetID == 'next')
         {
-            console.log('req.stage = '+ req.stage );
             req.stage.getNextQuestionSet(req.playerState, function (questionSet)
             {
                 req.questionSet = questionSet;
@@ -193,7 +192,7 @@ module.exports = function restapi(gameController)
     */
     app.get('/stage/:stageID/questionSet/:questionSetID/engine', function (req, res, next)
     {
-        gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
+        gc.getGameEngineForQuestionSet(req.questionSet, req.playerState, function (engine)
         {
             if (!engine) return next(new Error('Cannot find engine for question set ' + req.questionSet.id));
             
@@ -226,7 +225,11 @@ module.exports = function restapi(gameController)
             }
             else
             {
-                res.send({});
+                gc.getAvailableStagesForPlayer(req.playerState, function (stages)
+                {
+                    console.log('sending '+ stages.length +' available stages');
+                    res.send({'stages': stages});
+                });
             }
         });
     });

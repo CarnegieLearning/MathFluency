@@ -1,10 +1,12 @@
 var GameControllerClient = require('./client/GameControllerClient').GameControllerClient;
 var CLFlashGameEngine = require('./client/CLFlashGameEngine').CLFlashGameEngine;
 var CLHTML5GameEngine = require('./client/CLHTML5GameEngine').CLHTML5GameEngine;
+var ExtFlashGameEngine = require('./client/ExtFlashGameEngine').ExtFlashGameEngine;
 
 var gc = new GameControllerClient('/api');
 gc.registerEngineConstructor('CLFlashGameEngine', CLFlashGameEngine);
 gc.registerEngineConstructor('CLHTML5GameEngine', CLHTML5GameEngine);
+gc.registerEngineConstructor('ExtFlashGameEngine', ExtFlashGameEngine);
 
 var instructionsURL;
 
@@ -19,6 +21,7 @@ $(document).ready(function ()
         //HACK: Putting things on the window level is bad...
         window.runStage(seqID, stageID);
         window.currentStage = stageID;
+        window.currentSequence = seqID;
     });
     
     $('#instructions-link').button().click(function ()
@@ -28,28 +31,6 @@ $(document).ready(function ()
     
     $('#instructor-dashboard-link').button();
 });
-
-window.quickpost = function quickpost()
-{
-    var xml = '<OUTPUT><GAME_REFERENCE_NUMBER ID="foo"/><SCORE_SUMMARY><Score CorrectAnswers="6" ElapsedTime="26862" PenaltyTime="176520" TotalScore="203382" Medal="Bronze"/></SCORE_SUMMARY><SCORE_DETAILS><SCORE QuestionIndex="1" AnswerValue="0" TimeTaken="1886" LaneChosen="1"/></SCORE_DETAILS><END_STATE STATE="FINISH"/></OUTPUT>';
-  
-    gc.getSequence( 'c1s1', function(seq)
-    {
-        gc.getStage( 'level03-stage0', function (stg)
-        {
-            stg.getNextQuestionSet(null, function (qs)
-            {
-                gc.saveQuestionSetResults(null, seq, qs, xml, function (error)
-                {
-                    if (error)
-                    {
-                        alert('Error saving data: ' + error);
-                    }
-                });
-            });
-        });
-    });
-}
 
 //HACK: Putting things on the window level is bad...
 window.runStage = function runStage( seqID, stageID )
@@ -62,14 +43,30 @@ window.runStage = function runStage( seqID, stageID )
         {
             sequence = seq;
         });
-        alert('getting next qs in stage '+ stage.id);
         // Don't need to pass playerState since the server stores this in the session.
         stage.getNextQuestionSet(null, function (questionSet)
         {
-            alert('running qs '+ questionSet.id +' with parent '+ questionSet.parent.id +' in sequence '+ sequence.id );
             runQuestionSet(sequence, questionSet);
         });
     });
+}
+
+function updateStageLocking( stages )
+{
+//    alert('looking at '+ stages.length +' stages');
+    var buttons = $('#stage-list li button');
+    for( var i in stages ){
+        for( var j in buttons ){
+            var bvals = buttons[j].value.split('/',2);
+            var seqID = bvals[0];
+            var stageID = bvals[1];
+            if( stageID == stages[i].id ){
+//                alert('setting stage '+ stageID +' disabled? '+ stages[i].locked );
+                $('#'+ stageID).button('option','disabled', stages[i].locked );
+                break;
+            }
+        }
+    }
 }
 
 function runQuestionSet( sequence, questionSet )
@@ -81,7 +78,7 @@ function runQuestionSet( sequence, questionSet )
     }
     
     statusMessage('Loading game engine for question set ' + questionSet.id + '...');
-    gc.getGameEngineForQuestionSet(questionSet, function (engine)
+    gc.getGameEngineForQuestionSet(questionSet, null, function (engine)
     {
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
         instructionsURL = 'instructions/' + questionSet.parent.id;
@@ -89,13 +86,15 @@ function runQuestionSet( sequence, questionSet )
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data…');
-            gc.saveQuestionSetResults(null, sequence, questionSet, xml, function (error)
+            gc.saveQuestionSetResults(null, sequence, questionSet, xml, function (error,stages)
             {
+                unlock();
                 if (error)
                 {
                     alert('Error saving data: ' + error);
+                    return;
                 }
-                unlock();
+                updateStageLocking(stages);
             });
         });
     });
