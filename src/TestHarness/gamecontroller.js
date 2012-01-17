@@ -49,10 +49,16 @@ exports.gameController = function (serverConfig, model)
         if( ! playerState ){
             var allStages = conf.stages;
             var stageIDs = util.allDictKeys(allStages).sort();
+            var defaultTFn = defaultTransition;
             var sequences = { "Default": makeSequence( "Default", 
-                                                       { label : "Default",
+                                                       { displayName : "Default",
                                                          transitionFn: defaultTFn,
-                                                         stages : stageIDs } ) };
+                                                         stages : stageIDs },
+                                                       conf ) };
+            //this is the instructor view: unlock all stages
+            for( var i in sequences["Default"].stages ){
+                sequences["Default"].stages[i].locked = false;
+            }
             return callback(sequences);
         }
         // need to fetch any unlocked stages from the DB, using a serial (blocking) process
@@ -217,6 +223,8 @@ exports.gameController = function (serverConfig, model)
                 },
                 function (callback)
                 {
+                    if( ! playerState )
+                        return callback();
                     playerState.lastSequence = sequence.id;
                     playerState.lastStage = qsOutcomeAttributes.stageID;
                     gc.savePlayerState( playerState, function(ps)
@@ -558,7 +566,10 @@ function makeStage(stageID, config, serverConfig)
             
             qs.getFlashParams = function( playerState, callback )
             {
-                callback( { 'lname': qs.id, 'uid': playerState.playerID } );
+                var params = { 'lname': qs.id };
+                if( playerState )
+                    params.uid = playerState.playerID;
+                callback( params );
             }
             
             callback( qs );
