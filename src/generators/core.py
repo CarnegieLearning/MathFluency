@@ -55,7 +55,7 @@ class frtContent(content):
         if(self.w != None):
             s += self.w + ' '
             
-        s += self.n + ' / ' + self.d
+        s += str(self.n) + ' / ' + str(self.d)
         
         return s
     
@@ -64,18 +64,12 @@ class frtContent(content):
         node.setAttribute("TYPE", "Fraction")
         
         settings = Element("ContentSettings")
-        temp = Element("Numerator")
-        temp.setAttribute("VALUE", self.n)
-        settings.appendChild(temp)
-        temp = Element("Denominator")
-        temp.setAttribute("VALUE", self.d)
-        settings.appendChild(temp)
+        settings.setAttribute("numerator", str(self.n))
+        settings.setAttribute("denominator", str(self.d))
         
         #Only add <Whole> if there is a value to display (as zero will be displayed)
         if(self.w != None):
-            temp = Element("Whole")
-            temp.setAttribute("VALUE", self.w)
-            settings.appendChild(temp)
+            settings.setAttribute("whole", str(self.w))
     
         node.appendChild(settings)
         
@@ -97,9 +91,7 @@ class strContent(content):
         node.setAttribute("TYPE", "String")
         
         settings = Element("ContentSettings")
-        temp = Element("String")
-        temp.setAttribute("VALUE", self.s)
-        settings.appendChild(temp)
+        settings.setAttribute("string", self.s)
         
         node.appendChild(settings)
         
@@ -262,6 +254,7 @@ def generateDataSet(configList):
         
         if(temp != None):
             list.append(temp)
+            #list = temp
             i += 1
             none_counter = 0
         else:
