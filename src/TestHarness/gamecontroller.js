@@ -223,6 +223,8 @@ exports.gameController = function (serverConfig, model)
                 },
                 function (callback)
                 {
+                    if( ! playerState )
+                        return callback();
                     playerState.lastSequence = sequence.id;
                     playerState.lastStage = qsOutcomeAttributes.stageID;
                     gc.savePlayerState( playerState, function(ps)
