@@ -2,38 +2,32 @@
     "conditions": {
         "cond1": {
             "stages": [
-                "s2w01_scuba3678",
-                "s2w01_jungle3678"
+                "s2w01_scuba3678"
             ]
         },
         "cond2": {
             "stages": [
-                "s2w01_scuba3687",
-                "s2w01_jungle3687"
+                "s2w01_scuba3687"
             ]
         },
         "cond3": {
             "stages": [
-                "s2w01_scuba3768",
-                "s2w01_jungle3768"
+                "s2w01_scuba3768"
             ]
         },
         "cond4": {
             "stages": [
-                "s2w01_scuba3786",
-                "s2w01_jungle3786"
+                "s2w01_scuba3786"
             ]
         },
         "cond5": {
             "stages": [
-                "s2w01_scuba3867",
-                "s2w01_jungle3867"
+                "s2w01_scuba3867"
             ]
         },
         "cond6": {
             "stages": [
-                "s2w01_scuba3876",
-                "s2w01_jungle3876"
+                "s2w01_scuba3876"
             ]
         }
     },
@@ -68,36 +62,6 @@
             "displayName": "Whole Multiples (Scuba)",
             "engine": "scuba",
             "cli_fluency_task": "scuba_3876"
-        },
-        "s2w01_jungle3678": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3678"
-        },
-        "s2w01_jungle3687": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3687"
-        },
-        "s2w01_jungle3768": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3768"
-        },
-        "s2w01_jungle3786": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3786"
-        },
-        "s2w01_jungle3867": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3867"
-        },
-        "s2w01_jungle3876": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3876"
         },
         "level03-stage0": {
             "displayName": "Racecar",
