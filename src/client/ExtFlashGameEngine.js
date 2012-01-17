@@ -11,7 +11,6 @@ var swfobject = require('./lib/swfobject').swfobject,
 */
 exports.ExtFlashGameEngine = function ExtFlashGameEngine(json)
 {
-    alert('ExtFlashGame with params '+ json.params );
     this.params = json.params;
     this.swfPath = json.swfPath;
     var self = this;

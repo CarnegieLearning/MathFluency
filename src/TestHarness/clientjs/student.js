@@ -80,7 +80,6 @@ function runQuestionSet( sequence, questionSet )
     statusMessage('Loading game engine for question set ' + questionSet.id + '...');
     gc.getGameEngineForQuestionSet(questionSet, null, function (engine)
     {
-        alert('have engine '+ engine );
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
         instructionsURL = 'instructions/' + questionSet.parent.id;
         
