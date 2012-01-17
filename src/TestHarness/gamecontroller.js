@@ -566,7 +566,10 @@ function makeStage(stageID, config, serverConfig)
             
             qs.getFlashParams = function( playerState, callback )
             {
-                callback( { 'lname': qs.id, 'uid': playerState.playerID } );
+                var params = { 'lname': qs.id };
+                if( playerState )
+                    params.uid = playerState.playerID;
+                callback( params );
             }
             
             callback( qs );
