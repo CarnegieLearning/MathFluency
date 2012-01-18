@@ -104,6 +104,7 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('wrong', "sound/Incorrect v1");
         AM.loadSound('finish', "sound/FinishLine v1");
         AM.loadSound('intermission', "sound/Numberchange v1");
+        AM.loadSound('countdown', "sound/countdown");
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
@@ -460,10 +461,11 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
-        this.musicMixer.getSound('bg_fast').setVolume(0.8);
 
         this.audioMixer.getSound('accel').setVolume(0.8);
         this.audioMixer.getSound('screech').setVolume(0.5);
+        
+        this.audioMixer.playSound('countdown');
     
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
@@ -485,10 +487,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.get('player').changeSelectorByForce(this.get('startSelector'));
         
         var that = this;
-        setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
-        setTimeout(function () { that.get('cdt').set('string', '1'); }, 2000)
-        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
-        setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
+        setTimeout(function () { that.get('cdt').set('string', '2'); }, 750)
+        setTimeout(function () { that.get('cdt').set('string', '1'); }, 1500)
+        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 2250)
+        setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
         
         this.audioMixer.playSound('start');
         this.audioMixer.loopSound('hum');
@@ -584,10 +586,11 @@ var FluencyApp = KeyboardLayer.extend({
         // Fade out background music tracks at the end of the game
         var s;
         s = this.musicMixer.getSound('bg_fast');
-        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
         s = this.musicMixer.getSound('bg_slow');
-        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
         
+        this.audioMixer.stopSound('hum');
         this.audioMixer.playSound('finish');
     
         // Stop the player from moving further and the dash from increasing the elapsed time
