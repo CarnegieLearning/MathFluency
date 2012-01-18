@@ -86,6 +86,7 @@ function runQuestionSet( sequence, questionSet )
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data…');
+            $('#game-container').empty();
             gc.saveQuestionSetResults(null, sequence, questionSet, xml, function (error,stages)
             {
                 unlock();
