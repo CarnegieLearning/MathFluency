@@ -12,6 +12,7 @@ var swfobject = require('./lib/swfobject').swfobject,
 exports.ExtFlashGameEngine = function ExtFlashGameEngine(json)
 {
     this.params = json.params;
+    this.params.callback = 'ExtFLashGameEngineDoneCallback';
     this.swfPath = json.swfPath;
     var self = this;
     this.run = function (questionSet, div, callback)
@@ -28,7 +29,10 @@ exports.ExtFlashGameEngine = function ExtFlashGameEngine(json)
             props.height || 570,
             props.flashVersion || "10.0.0",
             false,
-            self.params );
+            self.params,
+            {
+                'AllowScriptAccess': 'always'
+            } );
     };
 };
 
@@ -40,7 +44,7 @@ function registerDoneCallback(callback)
     currentDoneCallback = callback;
 }
 
-window.ExtFLashGameEngineDoneCallback = function ExtFLashGameEngineDoneCallback(xml)
+window.ExtFLashGameEngineDoneCallback = function ExtFLashGameEngineDoneCallback(results)
 {
     // When a game is aborted, a finish callback and an abort callback happen in quick succession. This can lead to duplicate data on the server. To work around this issue, we delay calling the real callback, only letting the last one through.
     if (currentDoneCallbackTimeout)
@@ -49,6 +53,6 @@ window.ExtFLashGameEngineDoneCallback = function ExtFLashGameEngineDoneCallback(
     }
     currentDoneCallbackTimeout = setTimeout(function ()
     {
-        currentDoneCallback(xml);
+        currentDoneCallback(results);
     }, 100);
 };

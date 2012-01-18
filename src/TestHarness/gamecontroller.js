@@ -158,97 +158,115 @@ exports.gameController = function (serverConfig, model)
         
         var timestamp = Date.now();
         
-        // TODO: need to handle different game engines differently. This currently only works with the CL flash games.
-        var parser = new xml2js.Parser()
-        parser.on('end', function (data)
-        {
-            var refNode = data.GAME_REFERENCE_NUMBER,
-                refID = refNode ? refNode['@'].ID.split('::') : [uuid()],
-                UUID = refID.length == 0 ? uuid() : refID[0],
-                filename = UUID + '.xml',
-                filepath = outputPath + '/' + filename,
-                scoreNode = data.SCORE_SUMMARY.Score,
-                scoreAttr = (scoreNode ? scoreNode['@'] : {}),
-                endNode = data.END_STATE,
-                endAttr = (endNode ? endNode['@'] : {}),
-                qsOutcomeAttributes = {
-                    dataFile: filename,
-                    condition: playerState ? playerState.condition : null,
-                    stageID: questionSet.parent.id,
-                    questionSetID: questionSet.id,
-                    endTime: Math.round(timestamp / 1000),
-                    elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
-                    score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0,
-                    endState: constants.endState.stringToCode(endAttr.STATE),
-                    medal: constants.medal.stringToCode(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none')
-                };
-            
-            async.parallel([
-                function (callback)
-                {
-                    // Catch the null playerState safely
-                    console.log('Writing data file for ' + (playerState ? playerState.loginID : 'null') + ' to ' + filepath);
-                    fs.writeFile(filepath, text, callback);
-                },
-                function (callback)
-                {
-                    // Do not write null playerState data to the SQL server
-                    if (!playerState)
+        var isCLGame = questionSet.parent.engineType == 'CLFlashGameEngine' 
+                       || questionSet.parent.engineType == 'CLHTML5GameEngine';
+        // We parse the results from CL games
+        if( isCLGame ){
+            var parser = new xml2js.Parser()
+            parser.on('end', function (data)
+            {
+                var refNode = data.GAME_REFERENCE_NUMBER,
+                    refID = refNode ? refNode['@'].ID.split('::') : [uuid()],
+                    UUID = refID.length == 0 ? uuid() : refID[0],
+                    filename = UUID + '.xml',
+                    filepath = outputPath + '/' + filename,
+                    scoreNode = data.SCORE_SUMMARY.Score,
+                    scoreAttr = (scoreNode ? scoreNode['@'] : {}),
+                    endNode = data.END_STATE,
+                    endAttr = (endNode ? endNode['@'] : {}),
+                    qsOutcomeAttributes = {
+                        dataFile: filename,
+                        condition: playerState ? playerState.condition : null,
+                        stageID: questionSet.parent.id,
+                        questionSetID: questionSet.id,
+                        endTime: Math.round(timestamp / 1000),
+                        elapsedMS: scoreAttr.ElapsedTime || scoreAttr.TOTAL_ELAPSED_TIME || 0,
+                        score: scoreAttr.TotalScore || scoreAttr.TOTAL_SCORE || 0,
+                        endState: constants.endState.stringToCode(endAttr.STATE),
+                        medal: constants.medal.stringToCode(scoreAttr.Medal || scoreAttr.MEDAL_EARNED || 'none')
+                    };
+                var saveResultsTasks = [];
+                // save the text of the results to a file
+                saveResultsTasks.push( 
+                    function (callback)
                     {
-                        console.log('Not pushing question set results to SQL as playerState is null (this is probably instructor preview).');
-                        return callback();
-                    }
-                
-                    model.QuestionSetOutcome.find({where: {dataFile: filename}})
-                    .on('success', function (existingRecord)
+                        // Catch the null playerState safely
+                        console.log('Writing data file for ' + (playerState ? playerState.loginID : 'null') + ' to ' + filepath);
+                        fs.writeFile(filepath, text, callback);
+                    } );
+                // mark the results in the database
+                saveResultsTasks.push(
+                    function (callback)
                     {
-                        if (existingRecord)
+                        // Do not write null playerState data to the SQL server
+                        if (!playerState)
                         {
-                            console.log('Updating existing QuestionSetOutcome record for ' + filename);
-                            existingRecord.updateAttributes(qsOutcomeAttributes)
-                            .on('success', function () {callback();})
-                            .on('failure', callback);
-                        }
-                        else
-                        {
-                            console.log('Creating QuestionSetOutcome for ' + filename);
-                            var qsOutcome = model.QuestionSetOutcome.build(qsOutcomeAttributes);                            
-                            // Setting a relation implicitly does a save().
-                            qsOutcome.setStudent(playerState)
-                            .on('success', function () {callback();})
-                            .on('failure', callback);
-                        }
-                    })
-                    .on('error', callback);
-                },
-                function (callback)
-                {
-                    if( ! playerState )
-                        return callback();
-                    playerState.lastSequence = sequence.id;
-                    playerState.lastStage = qsOutcomeAttributes.stageID;
-                    gc.savePlayerState( playerState, function(ps)
-                    {
-                        console.log('saved player state '+ ps.playerID );
-                        var transitionFn = eval(sequence.transitionFn);
-                        if( ! transitionFn( qsOutcomeAttributes ) ){
+                            console.log('Not pushing question set results to SQL as playerState is null (this is probably instructor preview).');
                             return callback();
                         }
-                        console.log('Unlocking next stage…');
-                        sequence.getNextStage( playerState, function(stage)
+                    
+                        model.QuestionSetOutcome.find({where: {dataFile: filename}})
+                        .on('success', function (existingRecord)
                         {
-                            console.log('… stage '+ stage.id );
-                            stage.locked = false;
-                            gc.addOrUpdateSA( playerState, stage, qsOutcomeAttributes.medal, function()
-                            {   
-                                callback();
-                            });
-                        });
-                    });
-                }
-            ], callback);
-        }).parseString(text);
+                            if (existingRecord)
+                            {
+                                console.log('Updating existing QuestionSetOutcome record for ' + filename);
+                                existingRecord.updateAttributes(qsOutcomeAttributes)
+                                .on('success', function () {callback();})
+                                .on('failure', callback);
+                            }
+                            else
+                            {
+                                console.log('Creating QuestionSetOutcome for ' + filename);
+                                var qsOutcome = model.QuestionSetOutcome.build(qsOutcomeAttributes);                            
+                                // Setting a relation implicitly does a save().
+                                qsOutcome.setStudent(playerState)
+                                .on('success', function () {callback();})
+                                .on('failure', callback);
+                            }
+                        })
+                        .on('error', callback);
+                    } );
+                // unlock the next stage
+                saveResultsTasks.push( function(callback)
+                {
+                    unlockNextStage(playerState, sequence, questionSet, qsOutcomeAttributes, callback);
+                });
+                // run the tasks in parallel
+                async.parallel( saveResultsTasks, callback );
+            }).parseString(text);
+            return;
+        }
+        // otherwise we just unlock the next stage
+        unlockNextStage(playerState, sequence, questionSet, null, callback);
     };
+    
+    function unlockNextStage(playerState, sequence, questionSet, outcome, callback)
+    {
+        if( ! playerState )
+            return callback();
+        playerState.lastSequence = sequence.id;
+        playerState.lastStage = questionSet.parent.id;
+        gc.savePlayerState( playerState, function(ps)
+        {
+            console.log('saved player state '+ ps.playerID );
+            var transitionFn = eval(sequence.transitionFn);
+            if( ! transitionFn( outcome ) ){
+                return callback();
+            }
+            console.log('Unlocking next stage…');
+            sequence.getNextStage( playerState, function(stage)
+            {
+                console.log('… stage '+ stage.id );
+                stage.locked = false;
+                var medal = outcome ? outcome.medal : 0;
+                gc.addOrUpdateSA( playerState, stage, medal, function()
+                {   
+                    callback();
+                });
+            });
+        });
+    }
     
     gc.addOrUpdateSA = function( playerState, stage, medal, callback )
     {
@@ -305,9 +323,8 @@ exports.gameController = function (serverConfig, model)
 };
 
 function defaultTransition( outcomeAttrs )
-{
-    console.log('Won medal: '+ outcomeAttrs.medal );   
-    return outcomeAttrs.medal != 0;
+{  
+    return ! outcomeAttrs || outcomeAttrs.medal != 0;
 }
 
 
