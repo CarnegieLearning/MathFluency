@@ -222,11 +222,19 @@ function runServer(config, model)
             res.redirect('home');
             return;
         }
-        gc.getAvailableStagesForPlayer(req.student, function (stages)
+        gc.getAvailableSequencesForPlayer(req.student, function (sequences)
         {
+//            for( var seqID in sequences ){
+//                var seq = sequences[seqID];
+//                console.log("sequence "+ seq.id +" named "+ seq.displayName +" with transition function "+ seq.transitionFn +" has "+ typeof( seq.stages ) +" stages" );
+//                for( var stageID in seq.stages ){
+//                    var stage = seq.stages[stageID];
+//                    console.log('stage id '+ stage.id +' display '+ stage.displayName +' locked '+ stage.locked +' transition function '+ stage.transitionFn );
+//                }
+//            }
             res.render('student', {
                 mainjs: 'student',
-                levels: stages
+                sequences: sequences
             });
         });
     });

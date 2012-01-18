@@ -12,7 +12,7 @@ var PlayerState = exports.PlayerState = function PlayerState(playerID)
     this.loginDate = new Date();
 }
 
-var stateKeys = ['playerID', 'nickname', 'loginDate', 'stageID', 'questionSetID', 'questionSubsetID', 'questionID'];
+var stateKeys = ['playerID', 'nickname', 'loginDate', 'seqID', 'stageID', 'questionSetID', 'questionSubsetID', 'questionID'];
 
 PlayerState.prototype.updateWithJSON = function (json)
 {

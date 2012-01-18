@@ -1,0 +1,54 @@
+<level>
+								<title>Measurement</title>
+								<theme>BSNL</theme>
+							   
+								<levelName>measurement_preset</levelName>
+								<creatorsName>Kishan Patel</creatorsName>
+							   
+								<startPoint>0</startPoint>
+								<endPoint>1</endPoint>
+							   
+								<totalTrials>6</totalTrials>
+								<questionSequence>randomOnce</questionSequence>
+							   
+								<perfectHitPercent>97</perfectHitPercent>
+								<partialHitPercent>95</partialHitPercent>
+								<nearMissHitPercent>92</nearMissHitPercent>
+							   
+								<questionType>measurement</questionType>
+								<numberType>whole</numberType>
+								<mode>ship</mode>
+							   
+								<guidesEnabled>false</guidesEnabled>
+								<guidesMode>normal</guidesMode>
+								<guidesType>2</guidesType>
+
+								<timeLimit>15</timeLimit>
+							   
+								<questions>
+								   <question>
+										<startPoint>50</startPoint>
+										<endPoint>100</endPoint>
+										<flagPos>.5</flagPos>
+										<answer>130</answer>
+								   </question>
+								   <question>
+										<startPoint>0</startPoint>
+										<endPoint>5</endPoint>
+										<flagPos>.4</flagPos>
+										<answer>8</answer>
+								   </question>
+								   <question>
+										<startPoint>0</startPoint>
+										<endPoint>5</endPoint>
+										<flagPos>.7</flagPos>
+										<answer>3</answer>
+								   </question>
+								   <question>
+										<startPoint>5</startPoint>
+										<endPoint>15</endPoint>
+										<flagPos>.5</flagPos>
+										<answer>20</answer>
+								   </question>
+								</questions>
+							</level>

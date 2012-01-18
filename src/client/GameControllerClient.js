@@ -30,6 +30,14 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
         self.engineConstructors[type] = constructor;
     };
     
+    this.getAvailableSequencesForPlayer = function (playerState, callback)
+    {
+        $.getJSON(this.baseURL + '/sequence', function (data)
+        {
+            callback(data.sequences);
+        });
+    };
+    
     this.getAvailableStagesForPlayer = function (playerState, callback)
     {
         $.getJSON(this.baseURL + '/stage', function (data)
@@ -40,13 +48,23 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     
     this.getStage = function (stageID, callback)
     {
-        $.getJSON(this.baseURL + '/stage/' + stageID, function (data)
+        var url = this.baseURL + '/stage/' + stageID;
+        $.getJSON( url, function (data)
         {
             callback(new Stage(self.baseURL, data));
         });
     };
     
-    this.getGameEngineForQuestionSet = function (questionSet, callback)
+    this.getSequence = function (seqID, callback)
+    {
+        var url = this.baseURL + '/sequence/' + seqID;
+        $.getJSON( url, function (data)
+        {
+            callback(new Sequence(self.baseURL, data));
+        });
+    };
+    
+    this.getGameEngineForQuestionSet = function (questionSet, playerState, callback)
     {
         $.getJSON(this.baseURL + '/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/engine', function (data)
         {
@@ -55,16 +73,16 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
         });
     };
     
-    this.saveQuestionSetResults = function (playerState, questionSet, results, callback)
+    this.saveQuestionSetResults = function (playerState, sequence, questionSet, results, callback)
     {
-        $.post(this.baseURL + '/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/results', results)
-        .success(function ()
+        $.post(this.baseURL + '/sequence/'+ sequence.id +'/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/results', 'results='+ results)
+        .success(function (data)
         {
-            callback();
+            callback(null, data.stages);
         })
         .error(function (jqXHR, textStatus, errorThrown)
         {
-            callback(errorThrown);
+            callback(errorThrown, null);
         });
     };
 };
@@ -100,3 +118,11 @@ function Stage(baseURL, json)
     };
 }
 util.extend(Stage, QuestionHierarchy.Stage);
+
+function Sequence(baseURL, json)
+{
+    Sequence.superConstructor.call(this, json);
+    this.transitionFn = json.transitionFn;
+    var self = this;
+}
+util.extend(Sequence, QuestionHierarchy.Sequence);

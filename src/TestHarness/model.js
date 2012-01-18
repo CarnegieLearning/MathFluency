@@ -53,7 +53,9 @@ module.exports = function model(db, user, password, options, callback)
         lastName: Sequelize.STRING,
         firstName: Sequelize.STRING,
         password: Sequelize.STRING,
-        condition: Sequelize.STRING
+        condition: Sequelize.STRING,
+        lastSequence: Sequelize.STRING,
+        lastStage: Sequelize.STRING
     },
     {
         classMethods: {
@@ -78,6 +80,22 @@ module.exports = function model(db, user, password, options, callback)
     model.Instructor.hasMany(model.Student);
     model.Student.belongsTo(model.Instructor);
     
+    model.StageAvailability = sequelize.define('StageAvailability', {
+        stageID: Sequelize.STRING,
+        medal: Sequelize.INTEGER,
+        isLocked: Sequelize.BOOLEAN
+    },
+    {
+        instanceMethods: {
+            toString: function()
+            {
+                return '{ stageID: '+ this.stageID +', medal: '+ this.medal +', isLocked: '+ this.isLocked +'}';
+            }
+        }
+    });
+    
+    model.Student.hasMany(model.StageAvailability);
+    model.StageAvailability.belongsTo(model.Student);
     
     model.QuestionSetOutcome = sequelize.define('QuestionSetOutcome', {
         elapsedMS: Sequelize.INTEGER,

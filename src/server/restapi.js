@@ -37,16 +37,49 @@ module.exports = function restapi(gameController)
         });
     });
     
-    // Parse and load stageID and questionSetID params if they are present in the URL.
-    app.param('stageID', function (req, res, next, stageID)
+    // Parse and load seqID, stageID and questionSetID params if they are present in the URL.
+    app.param('seqID', function( req, res, next, seqID )
     {
-        gc.getStage(stageID, function (stage)
+        gc.getAvailableSequencesForPlayer( req.playerState, function(sequences)
         {
-            if (!stage) return next(new Error('Cannot find stage with ID ' + stageID));
-            
-            req.stage = stage;
+            req.sequence = sequences[seqID];
             next();
         });
+    });
+    app.param('stageID', function (req, res, next, stageID)
+    {
+        // maybe we should find the next stage in sequence
+        if( stageID == 'next' && req.sequence && req.playerState ){
+            req.sequence.getNextStage( req.playerState, function (stg)
+            {
+                req.stage = stg;
+            });
+            return next();
+        }
+        if( req.playerState ){
+            console.log("fetching stages for player…");
+            gc.getAvailableStagesForPlayer( req.playerState, function(stages)
+            {
+                console.log("searching "+ stages.length +" stages");
+                stages.map( function(stage)
+                {
+                    if( stage.id == stageID ){
+                        console.log("found stage "+ stageID);
+                        req.stage = stage;
+                        return;
+                    }
+                } );
+                next();
+            } );
+        } else {
+            gc.getStage(stageID, function (stage)
+            {
+                if (!stage) return next(new Error('Cannot find stage with ID ' + stageID));
+                
+                req.stage = stage;
+                next();
+            });
+        }
     });
     app.param('questionSetID', function (req, res, next, questionSetID)
     {
@@ -71,6 +104,45 @@ module.exports = function restapi(gameController)
     });
     
     // REST API endpoints that call out to the game controller.
+    
+    /*
+        Method: GET /sequence/:seqID?
+        
+        If  seqID is specified, and the player has such a sequences, then we send it,
+        otherwise we send all available sequences for the player        
+    */
+    app.get('/sequence/:seqID?', function (req, res, next)
+    {
+        if (req.sequence)
+        {
+            res.send(req.sequence.toJSON());
+        }
+        else
+        {
+            gc.getAvailableSequencesForPlayer(req.playerState, function (sequences)
+            {
+                res.send({'sequences': sequences});
+            });
+        }
+    });
+    
+    /*
+        Method: GET /sequence/:seqID/stage/:stageID?
+        
+        If stageID is specified, then we send the results of GameController.getStage, otherwise
+        we send all stages in the specified sequence.
+    */
+    app.get('/sequence/:seqID/stage/:stageID?', function (req, res, next)
+    {
+        if( req.stage ){
+            res.send( req.stage.toJSON() );
+        } else {
+            req.sequence.getAvailableStages( req.playerState, function(availStages)
+            {
+                res.send({'stages': availStages });
+            });
+        }
+    });
     
     /*
         Method: GET /stage/:stageID?
@@ -120,7 +192,7 @@ module.exports = function restapi(gameController)
     */
     app.get('/stage/:stageID/questionSet/:questionSetID/engine', function (req, res, next)
     {
-        gc.getGameEngineForQuestionSet(req.questionSet, function (engine)
+        gc.getGameEngineForQuestionSet(req.questionSet, req.playerState, function (engine)
         {
             if (!engine) return next(new Error('Cannot find engine for question set ' + req.questionSet.id));
             
@@ -129,13 +201,21 @@ module.exports = function restapi(gameController)
     });
     
     /*
-        Method: POST /stage/:stageID/questionSet/:questionSetID/results
+        Method: POST /sequence/:seqID/stage/:stageID/questionSet/:questionSetID/results
         
         Saves the body of the request as the results for the given question set by calling <GameController.saveQuestionSetResults>.  Sends an empty object on success, or an error object with status 500 on failure.
     */
-    app.post('/stage/:stageID/questionSet/:questionSetID/results', function (req, res, next)
+    app.post('/sequence/:seqID/stage/:stageID/questionSet/:questionSetID/results', function (req, res, next)
     {
-        gc.saveQuestionSetResults(req.playerState, req.questionSet, req.rawBody, function (error)
+//        for( var p in req ){
+//            if( typeof(req[p]) != 'function' )
+//                console.log('req.'+ p +' ('+ typeof(req[p]) +') = '+ req[p] );
+//        }
+//        for( var p in req.body ){
+//           console.log('req.body.'+ p +' ('+ typeof(req.body[p]) +') = '+ req.body[p] );
+//        }
+//        console.log('body is '+ typeof( req.body ) +' content '+ req.body.results );
+        gc.saveQuestionSetResults(req.playerState, req.sequence, req.questionSet, req.body.results, function (error)
         {
             if (error)
             {
@@ -145,7 +225,11 @@ module.exports = function restapi(gameController)
             }
             else
             {
-                res.send({});
+                gc.getAvailableStagesForPlayer(req.playerState, function (stages)
+                {
+                    console.log('sending '+ stages.length +' available stages');
+                    res.send({'stages': stages});
+                });
             }
         });
     });

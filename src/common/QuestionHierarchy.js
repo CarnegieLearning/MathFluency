@@ -66,7 +66,31 @@ QuestionEntity.prototype.toJSON = function toJSON()
     return {id: this.id, displayName: this.displayName, myGameProperties: this.myGameProperties};
 };
 
+/*
+    Class: Sequence
+*/
+var Sequence = exports.Sequence = function(id, displayName, gameProperties)
+{
+    Sequence.superConstructor.call(this, 'Sequence', undefined, id, displayName, gameProperties);
+    this.stages = [];
+};
+util.extend(Sequence, QuestionEntity);
 
+/*
+    Method: getAvailableStages
+*/
+Sequence.prototype.makeAvailableStagesFn = function(playerState)
+{
+    setTimeout(callback, 0, [] );
+};
+
+/*
+    Method: getNextStage
+*/
+Sequence.prototype.getNextStage = function(playerState, callback)
+{
+    setTimeout(callback, 0);
+};
 
 /*
     Class: Stage

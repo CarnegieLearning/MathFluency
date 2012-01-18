@@ -1,0 +1,60 @@
+<level>
+    <title>50 Type</title>
+    <theme>BSNL</theme>
+   
+    <levelName>Battle_50Type</levelName>
+    <creatorsName>John Conomikes</creatorsName>
+   
+    <startPoint>0</startPoint>
+    <endPoint>50</endPoint>
+   
+    <totalTrials>10</totalTrials>
+    <questionSequence>randomOnce</questionSequence>
+   
+    <perfectHitPercent>97</perfectHitPercent>
+    <partialHitPercent>95</partialHitPercent>
+    <nearMissHitPercent>92</nearMissHitPercent>
+   
+    <questionType>normal</questionType>
+    <numberType>whole</numberType>
+    <mode>ship</mode>
+   
+    <guidesEnabled>true</guidesEnabled>
+    <guidesMode>normal</guidesMode>
+    <guidesType>1</guidesType>
+
+    <timeLimit>7</timeLimit>
+   
+    <questions>
+        <question>
+            <answer>13</answer>
+        </question>
+        <question>
+            <answer>41</answer>
+        </question>
+        <question>
+            <answer>24</answer>
+        </question>
+        <question>
+            <answer>48</answer>
+        </question>
+        <question>
+            <answer>29</answer>
+        </question>
+        <question>
+            <answer>7</answer>
+        </question>
+        <question>
+            <answer>28</answer>
+        </question>
+        <question>
+            <answer>34</answer>
+        </question>
+        <question>
+            <answer>4</answer>
+        </question>
+        <question>
+            <answer>17</answer>
+        </question>
+    </questions>
+</level>
