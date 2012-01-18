@@ -1,0 +1,152 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="45000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="70000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="95000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+			<ContentSettings denominator="10" numerator="8"/>
+		</TARGET>
+		<QUESTION INDEX="1">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="1"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="3"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="3">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="5"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="4">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="4"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="5">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="1"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+			<ContentSettings denominator="5" numerator="1"/>
+		</TARGET>
+		<QUESTION INDEX="6">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="1"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="7">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="1"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="8">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="2" numerator="1"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="9">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="8" numerator="1"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="10">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="1"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+			<ContentSettings denominator="4" numerator="1"/>
+		</TARGET>
+		<QUESTION INDEX="11">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="3"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="5"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="13">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="4"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="14">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="1"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="15">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="3"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+			<ContentSettings denominator="4" numerator="3"/>
+		</TARGET>
+		<QUESTION INDEX="16">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="8" numerator="7"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="17">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="4"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="18">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="4" numerator="2"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="19">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="2" numerator="1"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="20">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="4"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>
