@@ -41,7 +41,8 @@ class configR2(core.config):
     
     #generates a question subset
     def generate(self):
-        return self.generateTraining()
+        #return [self.genCommonD(0), self.genCommonN(0), self.genBench(0), self.generateProper()]
+        return [self.genCommonD(1), self.genCommonN(1), self.genBench(1), self.generateImproper()]
         
     def generateProper(self):
         ss = []
@@ -94,17 +95,17 @@ class configR2(core.config):
                 i += 1
             
         return (core.frtContent(sel[0], sel[1]), ss)
-    
-    def generateTraining(self):
-        #return [self.genCommonN(), self.genCommonD(), self.genBench()]
-        return self.generateImproper()
             
-    def genCommonN(self):
+    def genCommonN(self, imp=0):
         ss = []
-        
         v = [2, 3, 4, 5, 8, 10, 12]
-        commonN = RI(1, 4)
-        v = v[commonN-1:]
+        
+        if(imp):
+            commonN = RI(1, 20)
+        else:
+            commonN = RI(1, 4)
+            v = v[commonN-1:]
+            
         selD = RC(v)
         v.remove(selD)
         
@@ -120,11 +121,15 @@ class configR2(core.config):
             
         return (core.frtContent(commonN, selD), ss)
 
-    def genCommonD(self):
+    def genCommonD(self, imp=0):
         ss = []
         
-        commonD = RC([5, 8, 10, 12])
-        selN = RI(2, commonD-1)
+        if(imp):
+            commonD = RC([2, 3, 4, 5, 8, 10, 12])
+            selN = RI(2, min(commonD*10, 36))
+        else:
+            commonD = RC([5, 8, 10, 12])
+            selN = RI(2, commonD-1)
         
         i=0
         while(i<5):
@@ -132,7 +137,10 @@ class configR2(core.config):
             
             n = selN
             while(n==selN):
-                n = RI(1, commonD)
+                if(imp):
+                    n = RI(1, min(commonD*10, 36))
+                else:
+                    n = RI(1, commonD)
                 
             ans = 0
             if(n < selN):
@@ -142,7 +150,7 @@ class configR2(core.config):
             
         return (core.frtContent(selN, commonD), ss)
     
-    def genBench(self):
+    def genBench(self, imp=0):
         ss = []
         
         v = [2, 3, 4, 5, 8, 10, 12]
@@ -158,7 +166,10 @@ class configR2(core.config):
             d = bd
             while(n == 1 and d == bd):
                 d = RC(v)
-                n = RI(1, d)
+                if(imp):
+                    n = RI(1, min(d*10, 36))
+                else:
+                    n = RI(1, d)
             
             ans = 0
             if(F(n, d) < val):
@@ -171,7 +182,7 @@ class configR2(core.config):
 ###############################################################################
 
 #generate/build/load needed configs here
-configs = [configR2('ft1_racecar_html5', 'f1header_s2w2.xml', 'private/s2w2_fract_imp/', 's2w2fi_set')]
+configs = [configR2('ft1_racecar_html5', 'f1header_s2w2.xml', 'private/s2w2_fract_2/', 's2w2f2_set')]
 configs[0].subsets_per_set = 3
 configs[0].datasets_per_run = 40
 configs[0].outputCSV = 0
