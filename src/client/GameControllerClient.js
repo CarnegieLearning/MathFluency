@@ -92,6 +92,7 @@ util.extend(exports.GameControllerClient, GameControllerBase);
 function Stage(baseURL, json)
 {
     Stage.superConstructor.call(this, json);
+    this.isCLGame = json.isCLGame;
     var self = this;
     
     this.getAllQuestionSetIDs = function (callback)
