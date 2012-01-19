@@ -86,7 +86,9 @@ function runQuestionSet( sequence, questionSet )
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data…');
-            $('#game-container').empty();
+            // clear the game container if not a CL game
+            if( ! questionSet.parent.isCLGame )
+                $('#game-container').empty();
             gc.saveQuestionSetResults(null, sequence, questionSet, xml, function (error,stages)
             {
                 unlock();

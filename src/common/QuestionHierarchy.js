@@ -107,6 +107,7 @@ Sequence.prototype.getNextStage = function(playerState, callback)
 var Stage = exports.Stage = function Stage(id, displayName, gameProperties)
 {
     Stage.superConstructor.call(this, 'Stage', undefined, id, displayName, gameProperties);
+    this.isCLGame = true;
 };
 util.extend(Stage, QuestionEntity);
 
