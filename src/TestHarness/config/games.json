@@ -2,66 +2,708 @@
     "conditions": {
         "cond1": {
             "c1s1": {
-                "displayName": "Condition 1, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "Battle_10Click",
-                    "s2w01_scuba3678",
-                    "s2w01_jungle3678"
-                ]
-            },
-            "c1s2": {
-                "displayName": "Condition 1, Sequence 2",
-                "stages": [
-                    "level03stage1",
-                    "s2w01_jungle3687"
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
         "cond2": {
             "c2s1": {
-                "displayName": "Condition 2, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3687",
-                    "s2w01_jungle3687"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
         "cond3": {
             "c3s1": {
-                "displayName": "Condition 3, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3768",
-                    "s2w01_jungle3768"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
         "cond4": {
             "c4s1": {
-                "displayName": "Condition 4, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3786",
-                    "s2w01_jungle3786"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
         "cond5": {
             "c5s1": {
-                "displayName": "Condition 5, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3867",
-                    "s2w01_jungle3867"
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
         "cond6": {
             "c6s1": {
-                "displayName": "Condition 6, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3876",
-                    "s2w01_jungle3876"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
-        }
+        },
+        "cond7": {
+            "c7s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond8": {
+            "c8s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond9": {
+            "c9s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond10": {
+            "c10s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond11": {
+            "c11s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond12": {
+            "c12s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond13": {
+            "c13s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond14": {
+            "c14s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond15": {
+            "c15s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond16": {
+            "c16s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond17": {
+            "c17s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond18": {
+            "c18s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond19": {
+            "c19s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond20": {
+            "c20s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond21": {
+            "c21s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond22": {
+            "c22s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond23": {
+            "c23s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond24": {
+            "c24s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        }, 
+        "cond25": {
+            "c25s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond26": {
+            "c26s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond27": {
+            "c27s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond28": {
+            "c28s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond29": {
+            "c29s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond30": {
+            "c30s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond31": {
+            "c31s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond32": {
+            "c32s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond33": {
+            "c33s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond34": {
+            "c34s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond35": {
+            "c35s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond36": {
+            "c36s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond37": {
+            "c37s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond38": {
+            "c38s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond39": {
+            "c39s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond40": {
+            "c40s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond41": {
+            "c41s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond42": {
+            "c42s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond43": {
+            "c43s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond44": {
+            "c44s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond45": {
+            "c45s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond46": {
+            "c46s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond47": {
+            "c47s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond48": {
+            "c48s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond49": {
+            "c49s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond50": {
+            "c50s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond51": {
+            "c51s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond52": {
+            "c52s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond53": {
+            "c53s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond54": {
+            "c54s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond55": {
+            "c55s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond56": {
+            "c56s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond57": {
+            "c57s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond58": {
+            "c58s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond59": {
+            "c59s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond60": {
+            "c12s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond61": {
+            "c61s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond62": {
+            "c62s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
+                ]
+            }
+        },
+        "cond63": {
+            "c63s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
+                ]
+            }
+        },
+        "cond64": {
+            "c64s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
+                ]
+            }
+        }  
     },
     
     "stages": {
@@ -95,44 +737,137 @@
             "engine": "scuba",
             "cli_fluency_task": "scuba_3876"
         },
-        "s2w01_jungle3678": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3678"
+        "s2w01_scuba_6378": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6378"
+        },   
+        "s2w01_scuba_6387": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6387"
         },
-        "s2w01_jungle3687": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3687"
+        "s2w01_scuba_6738": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6738"
         },
-        "s2w01_jungle3768": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3768"
+        "s2w01_scuba_6783": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6783"
         },
-        "s2w01_jungle3786": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3786"
+        "s2w01_scuba_6837": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6837"
         },
-        "s2w01_jungle3867": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3867"
+        "s2w01_scuba_6873": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6873"
         },
-        "s2w01_jungle3876": {
-            "displayName": "Whole Multiples (Jungle)",
-            "engine": "jungle",
-            "cli_fluency_task": "jungle_3876"
+        "s2w01_scuba_7368": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7368"
         },
-        "level03stage1": {
-            "displayName": "Racecar",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "level03stage1"
+        "s2w01_scuba_7386": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7386"
         },
+        "s2w01_scuba_7638": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7638"
+        },
+        "s2w01_scuba_7683": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7683"
+        },
+        "s2w01_scuba_7836": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7836"
+        },
+        "s2w01_scuba_7863": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7863"
+        },
+        "s2w01_scuba_8367": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8367"
+        },
+        "s2w01_scuba_8376": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8376"
+        },
+        "s2w01_scuba_8637": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8637"
+        },
+        "s2w01_scuba_8673": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8673"
+        },
+        "s2w01_scuba_8736": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8736"
+        },
+        "s2w01_scuba_8763": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8763"
+        }, 
         "Battle_10Click": {
             "displayName": "Battleship Numberline",
             "engine": "battleship"
+        },
+        "Battle_10Type": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_50Click": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_50Type": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_100Click": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_100Type": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_1Fract": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_10Fract": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Race_1": {
+            "displayName": "Fractions (Racecar)",
+            "engine": "racecar",
+            "cli_fluency_task": "s2w2_Race_1"
+        },
+        "Race_10": {
+            "displayName": "Fractions (Racecar)",
+            "engine": "racecar",
+            "cli_fluency_task": "s2w2_Race_10"
         }
     },
     
