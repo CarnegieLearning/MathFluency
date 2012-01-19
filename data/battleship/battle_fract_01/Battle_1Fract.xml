@@ -1,0 +1,67 @@
+<level>
+    <title>1 Fract</title>
+    <theme>BSNL</theme>
+   
+    <levelName>Battle_1Fract</levelName>
+    <creatorsName>John Conomikes</creatorsName>
+   
+    <startPoint>0</startPoint>
+    <endPoint>1</endPoint>
+   
+    <totalTrials>37</totalTrials>
+    <questionSequence>randomOnce</questionSequence>
+   
+    <perfectHitPercent>97</perfectHitPercent>
+    <partialHitPercent>95</partialHitPercent>
+    <nearMissHitPercent>92</nearMissHitPercent>
+   
+    <questionType>normal</questionType>
+    <numberType>fraction</numberType>
+    <mode>submarine</mode>
+   
+    <guidesEnabled>true</guidesEnabled>
+    <guidesMode>custom</guidesMode>
+    <guidesType>4</guidesType>
+
+    <timeLimit>5</timeLimit>
+   
+    <questions>
+        <question><answer>1/2</answer></question>
+        <question><answer>1/3</answer></question>
+        <question><answer>2/3</answer></question>
+        <question><answer>1/4</answer></question>
+        <question><answer>2/4</answer></question>
+        <question><answer>3/4</answer></question>
+        <question><answer>1/5</answer></question>
+        <question><answer>2/5</answer></question>
+        <question><answer>3/5</answer></question>
+        <question><answer>4/5</answer></question>
+        <question><answer>1/8</answer></question>
+        <question><answer>2/8</answer></question>
+        <question><answer>3/8</answer></question>
+        <question><answer>4/8</answer></question>
+        <question><answer>5/8</answer></question>
+        <question><answer>6/8</answer></question>
+        <question><answer>7/8</answer></question>
+        <question><answer>1/10</answer></question>
+        <question><answer>2/10</answer></question>
+        <question><answer>3/10</answer></question>
+        <question><answer>4/10</answer></question>
+        <question><answer>5/10</answer></question>
+        <question><answer>6/10</answer></question>
+        <question><answer>7/10</answer></question>
+        <question><answer>8/10</answer></question>
+        <question><answer>9/10</answer></question>
+        <question><answer>1/12</answer></question>
+        <question><answer>2/12</answer></question>
+        <question><answer>3/12</answer></question>
+        <question><answer>4/12</answer></question>
+        <question><answer>5/12</answer></question>
+        <question><answer>6/12</answer></question>
+        <question><answer>7/12</answer></question>
+        <question><answer>8/12</answer></question>
+        <question><answer>9/12</answer></question>
+        <question><answer>10/12</answer></question>
+        <question><answer>11/12</answer></question>
+    </questions>
+</level>
