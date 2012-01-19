@@ -158,10 +158,8 @@ exports.gameController = function (serverConfig, model)
         
         var timestamp = Date.now();
         
-        var isCLGame = questionSet.parent.engineType == 'CLFlashGameEngine' 
-                       || questionSet.parent.engineType == 'CLHTML5GameEngine';
         // We parse the results from CL games
-        if( isCLGame ){
+        if( questionSet.parent.isCLGame ){
             var parser = new xml2js.Parser()
             parser.on('end', function (data)
             {
@@ -456,6 +454,7 @@ function makeStage(stageID, config, serverConfig)
     
     var stage = new QuestionHierarchy.Stage(stageID, stageConfig.displayName, stageConfig.gameProperties);
     stage.engineID = stageConfig.engine;
+    stage.isCLGame = engineConfig.type == 'CLFlashGameEngine' || engineConfig.type == 'CLHTML5GameEngine';
     stage.engineType = engineConfig.type;
     stage.locked = true;
 
@@ -609,6 +608,7 @@ function makeStage(stageID, config, serverConfig)
     stage.toJSON = function()
     {
         var json = QuestionHierarchy.QuestionEntity.prototype.toJSON.call( this );
+        json.isCLGame = stage.isCLGame;
         json.locked = stage.locked;
         return json;
     }
