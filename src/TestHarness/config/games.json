@@ -2,66 +2,900 @@
     "conditions": {
         "cond1": {
             "c1s1": {
-                "displayName": "Condition 1, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
-                    "Battle_10Click",
                     "s2w01_scuba3678",
-                    "s2w01_jungle3678"
-                ]
-            },
-            "c1s2": {
-                "displayName": "Condition 1, Sequence 2",
-                "stages": [
-                    "level03stage1",
-                    "s2w01_jungle3687"
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"                    
                 ]
             }
         },
         "cond2": {
             "c2s1": {
-                "displayName": "Condition 2, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
                     "s2w01_scuba3687",
-                    "s2w01_jungle3687"
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
                 ]
             }
         },
         "cond3": {
             "c3s1": {
-                "displayName": "Condition 3, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
                     "s2w01_scuba3768",
-                    "s2w01_jungle3768"
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
                 ]
             }
         },
         "cond4": {
             "c4s1": {
-                "displayName": "Condition 4, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
                     "s2w01_scuba3786",
-                    "s2w01_jungle3786"
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
                 ]
             }
         },
         "cond5": {
             "c5s1": {
-                "displayName": "Condition 5, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
                     "s2w01_scuba3867",
-                    "s2w01_jungle3867"
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
                 ]
             }
         },
         "cond6": {
             "c6s1": {
-                "displayName": "Condition 6, Sequence 1",
+                "displayName": "Available Games",
                 "stages": [
                     "s2w01_scuba3876",
-                    "s2w01_jungle3876"
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
                 ]
             }
-        }
+        },
+        "cond7": {
+            "c7s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6378",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond8": {
+            "c8s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6387",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond9": {
+            "c9s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6738",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond10": {
+            "c10s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6783",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond11": {
+            "c11s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6837",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond12": {
+            "c12s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6873",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond13": {
+            "c13s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7368",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond14": {
+            "c14s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7386",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond15": {
+            "c15s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7638",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond16": {
+            "c16s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7683",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond17": {
+            "c17s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7836",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond18": {
+            "c18s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7863",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond19": {
+            "c19s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8367",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond20": {
+            "c20s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8376",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond21": {
+            "c21s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8637",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond22": {
+            "c22s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8673",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond23": {
+            "c23s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8736",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond24": {
+            "c24s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8763",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        }, 
+        "cond25": {
+            "c25s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3678",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"                    
+                ]
+            }
+        },
+        "cond26": {
+            "c26s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3687",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond27": {
+            "c27s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3768",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond28": {
+            "c28s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3786",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond29": {
+            "c29s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3867",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond30": {
+            "c30s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3876",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond31": {
+            "c31s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6378",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond32": {
+            "c32s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6387",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond33": {
+            "c33s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6738",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond34": {
+            "c34s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6783",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond35": {
+            "c35s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6837",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond36": {
+            "c36s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6873",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond37": {
+            "c37s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7368",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond38": {
+            "c38s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7386",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond39": {
+            "c39s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7638",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond40": {
+            "c40s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7683",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond41": {
+            "c41s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7836",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond42": {
+            "c42s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7863",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond43": {
+            "c43s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8367",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond44": {
+            "c44s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8376",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond45": {
+            "c45s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8637",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond46": {
+            "c46s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8673",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond47": {
+            "c47s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8736",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond48": {
+            "c48s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_8763",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond49": {
+            "c49s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3678",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"                    
+                ]
+            }
+        },
+        "cond50": {
+            "c50s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3687",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond51": {
+            "c51s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3768",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond52": {
+            "c52s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3786",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond53": {
+            "c53s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3867",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond54": {
+            "c54s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba3876",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond55": {
+            "c55s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6378",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond56": {
+            "c56s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6387",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond57": {
+            "c57s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6738",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond58": {
+            "c58s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6783",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond59": {
+            "c59s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6837",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond60": {
+            "c12s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_6873",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        },
+        "cond61": {
+            "c61s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7368",
+                    "Battle_50Click",
+                    "Battle_50Type",  
+                    "Battle_10Click",
+                    "Battle_10Type",  
+                    "Battle_100Click",
+                    "Battle_100Type"  
+                ]
+            }
+        },
+        "cond62": {
+            "c62s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7386",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_10Click",
+                    "Battle_100Type",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond63": {
+            "c63s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7638",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Type", 
+                    "Battle_100Type",
+                    "Battle_10Click",   
+                    "Battle_100Click"
+                ]
+            }
+        },
+        "cond64": {
+            "c64s1": {
+                "displayName": "Available Games",
+                "stages": [
+                    "s2w01_scuba_7683",
+                    "Battle_50Click",
+                    "Battle_50Type", 
+                    "Battle_10Click",   
+                    "Battle_100Click",
+                    "Battle_10Type", 
+                    "Battle_100Type"
+                ]
+            }
+        }  
     },
     
     "stages": {
@@ -95,12 +929,117 @@
             "engine": "scuba",
             "cli_fluency_task": "scuba_3876"
         },
-        "level03stage1": {
-            "displayName": "Racecar",
-            "engine": "racecar_html5",
-            "cli_fluency_task": "level03stage1"
+        "s2w01_scuba_6378": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6378"
+        },   
+        "s2w01_scuba_6387": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6387"
         },
+        "s2w01_scuba_6738": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6738"
+        },
+        "s2w01_scuba_6783": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6783"
+        },
+        "s2w01_scuba_6837": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6837"
+        },
+        "s2w01_scuba_6873": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_6873"
+        },
+        "s2w01_scuba_7368": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7368"
+        },
+        "s2w01_scuba_7386": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7386"
+        },
+        "s2w01_scuba_7638": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7638"
+        },
+        "s2w01_scuba_7683": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7683"
+        },
+        "s2w01_scuba_7836": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7836"
+        },
+        "s2w01_scuba_7863": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_7863"
+        },
+        "s2w01_scuba_8367": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8367"
+        },
+        "s2w01_scuba_8376": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8376"
+        },
+        "s2w01_scuba_8637": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8637"
+        },
+        "s2w01_scuba_8673": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8673"
+        },
+        "s2w01_scuba_8736": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8736"
+        },
+        "s2w01_scuba_8763": {
+            "displayName": "Whole Multiples (Scuba)",
+            "engine": "scuba",
+            "cli_fluency_task": "scuba_8763"
+        }, 
         "Battle_10Click": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_10Type": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_50Click": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_50Type": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_100Click": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_100Type": {
             "displayName": "Battleship Numberline",
             "engine": "battleship"
         }
