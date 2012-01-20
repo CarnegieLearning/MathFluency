@@ -18,6 +18,7 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
+var util = require('util');
 
 // Global Imports
 var AudioMixer = require('AudioMixer').AudioMixer;
@@ -34,6 +35,7 @@ var Background = require('Background').Background;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var HUD = require('HUD').HUD;
 var QuestionSet = require('QuestionSet').QuestionSet;
+var Question = require('Question').Question;
 
 // TODO: De-magic number these
 /* Zorder
@@ -180,12 +182,22 @@ var FluencyApp = KeyboardLayer.extend({
         if(score != null) {
             util.each('ptsCorrect ptsIncorrect ptsTimeout ptsQuestBonus'.w(), util.callback(this, function (name) {
                 if(score.attributes.hasOwnProperty(name)) {
-                    NLC[name] = node.attributes[name];
+                    Question[name] = score.attributes[name];
                 }
             }));
         }
         
+        var medals = XML.getDeepChildByName(root, 'MEDALS');
+        if(medals != null) {
+            for(var i=0; i<medals.children.length; i++) {
+                var m = medals.children[i]
+                if(m.attributes.hasOwnProperty('Id') && m.attributes.hasOwnProperty('Score'))
+                    NLC.medalScores[m.attributes['Id']] = m.attributes['Score'];
+            }
+        }
+        
         // Load the ProblemSet
+        var qCount = 0
         var set = XML.getDeepChildByName(root, 'PROBLEM_SET');
         for(var i=0; i<set.children.length; i++) {
             // Loads a ProblemSubset
@@ -195,7 +207,11 @@ var FluencyApp = KeyboardLayer.extend({
             events.addListener(this.questionList[i], 'questionTimerStart', this.hud.onQuestionTimerStart);
             events.addListener(this.questionList[i], 'scoreChange', this.hud.modifyScore.bind(this.hud));
             events.addListener(this.questionList[i], 'nextQuestion', this.unlock.bind(this));
+            
+            qCount += this.questionList[0].questions.length;
         }
+        
+        NLC.medalScores[0] = qCount * Question.ptsCorrect;
         
         // Loading completed
         this.loadingComplete();
