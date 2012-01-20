@@ -1001,20 +1001,20 @@ var MenuLayer = cocos.nodes.Menu.extend({
     // Adds the retry button to the MenuLayer
     addRetryButton: function() {
         var opts = Object();
-        opts['normalImage'] = '/resources/retry.png';
-        opts['selectedImage'] = '/resources/retry-selected.png';
-        opts['disabledImage'] = '/resources/retry.png';
+        opts['normalImage'] = '/resources/Retry_Up.png';
+        opts['selectedImage'] = '/resources/Retry_Down.png';
+        opts['disabledImage'] = '/resources/Retry_Up.png';
         opts['callback'] = this.retryButtonCallback.bind(this);
         
-        var rb = cocos.nodes.MenuItemImage.create(opts);
-        rb.set('position', new geo.Point(10-450+200, 230-300+50));
-        rb.set('anchorPoint', new geo.Point(0, 0));
-        this.set('retryButton', rb);
-        this.addChild({child: rb});
+        var b = cocos.nodes.MenuItemImage.create(opts);
+        b.set('position', new geo.Point(10-450+300, 230-300+125));
+        b.set('scaleX', 0.8);
+        b.set('scaleY', 0.8);
+        this.addChild({child: b});
     },
     
     retryButtonCallback: function() {
-        window.runStage(window.currentStage);
+        window.runStage(window.currentSequence, window.currentStage);
     }
 });
 
