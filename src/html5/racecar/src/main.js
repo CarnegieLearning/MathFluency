@@ -56,13 +56,17 @@ var FluencyApp = KeyboardLayer.extend({
     background  : null,     // Holds the the background object
     dash        : null,     // Holds the right hand side dashboard
     questionList: [],       // List of all questions in the input
-    audioMixer  : null,     // AudioMixer
+    audioMixer  : null,     // AudioMixer for sound effects
+    musicMixer  : null,     // AudioMixer for music
     medalCars   : [],       // Contains the pace cars
     gameID      : '',       // Unique ID for the game
 	inters		: [],       // Holds the list of checkpoints
     
     bgFade      : false,    // True when crossfading between bg tracks
     bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
+    
+    lanePosX    : {2: [-2, 2], 3:[-3, 0, 3]},
+    lane        : 1,
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
@@ -91,16 +95,24 @@ var FluencyApp = KeyboardLayer.extend({
         // Set up basic audio
         var AM = AudioMixer.create();
         AM.loadSound('screech', "sound/CarScreech2");
-        AM.loadSound('bg_slow', "sound/race bg slow");
-        AM.loadSound('bg_fast', "sound/race bg fast2");
         AM.loadSound('decel', "sound/SlowDown");
         AM.loadSound('accel', "sound/SpeedUp");
         AM.loadSound('turbo', "sound/Turboboost");
         AM.loadSound('start', "sound/EngineStart");
         AM.loadSound('hum', "sound/Engine Hum");
+        AM.loadSound('correct', "sound/Correct v1");
+        AM.loadSound('wrong', "sound/Incorrect v1");
+        AM.loadSound('finish', "sound/FinishLine v1");
+        AM.loadSound('intermission', "sound/Numberchange v1");
+        AM.loadSound('countdown', "sound/countdown");
         this.set('audioMixer', AM);
         
-        events.addListener(AM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
+        var MM = AudioMixer.create();
+        MM.loadSound('bg_slow', "sound/race bg slow");
+        MM.loadSound('bg_fast', "sound/race bg fast2");
+        this.set('musicMixer', MM);
+        
+        events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
         
         var preloader = Preloader.create();
         this.addChild({child: preloader});
@@ -343,6 +355,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: bg});
         
         var player = this.get('player');
+        player.set('xCoordinate', this.lanePosX[RC.curNumLanes][1]);
         
         // Add the right hand side dash
         var dash = this.get('dash');
@@ -446,6 +459,14 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         this.set('medalCars', medalCars);
+        
+        // Set audio levels
+        this.musicMixer.setMasterVolume(0.35);
+
+        this.audioMixer.getSound('accel').setVolume(0.8);
+        this.audioMixer.getSound('screech').setVolume(0.5);
+        
+        this.audioMixer.playSound('countdown');
     
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
@@ -467,10 +488,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.get('player').changeSelectorByForce(this.get('startSelector'));
         
         var that = this;
-        setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
-        setTimeout(function () { that.get('cdt').set('string', '1'); }, 2000)
-        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
-        setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
+        setTimeout(function () { that.get('cdt').set('string', '2'); }, 750)
+        setTimeout(function () { that.get('cdt').set('string', '1'); }, 1500)
+        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 2250)
+        setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
         
         this.audioMixer.playSound('start');
         this.audioMixer.loopSound('hum');
@@ -499,14 +520,16 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: this.medalCars[2]});
         
         // Start background music
-        this.audioMixer.loopSound('bg_slow');
-        this.audioMixer.getSound('bg_fast').setVolume(0);
-        this.audioMixer.loopSound('bg_fast');
+        this.musicMixer.loopSound('bg_slow');
+        this.musicMixer.getSound('bg_fast').setVolume(0);
+        this.musicMixer.loopSound('bg_fast');
     },
     
 	// Pauses the dashboard and medal cars
     pause: function () {
         this.get('dash').pauseTimer();
+        
+        this.audioMixer.playSound('intermission');
         
         var mc = this.get('medalCars');
         
@@ -563,10 +586,13 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Fade out background music tracks at the end of the game
         var s;
-        s = this.audioMixer.getSound('bg_fast');
-        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
-        s = this.audioMixer.getSound('bg_slow');
-        MOT.create(s.volume, -1, 0.5).bindFunc(s, s.setVolume);
+        s = this.musicMixer.getSound('bg_fast');
+        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        s = this.musicMixer.getSound('bg_slow');
+        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        
+        this.audioMixer.stopSound('hum');
+        this.audioMixer.playSound('finish');
     
         // Stop the player from moving further and the dash from increasing the elapsed time
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.get('player'));
@@ -708,25 +734,13 @@ var FluencyApp = KeyboardLayer.extend({
     // Handles answering the current question when time expires
     // STATIC BIND
     answerQuestion: function(question) {
-        var result;
-        
+        var result = question.answerQuestion(this.lane);
+
         var player = this.get('player');
-        var playerX = player.get('xCoordinate');
-        
-        // Determine answer based on the lane
-        if(playerX < PNode.roadWidth / -6) {
-            result = question.answerQuestion(0);
-        }
-        else if(playerX < PNode.roadWidth / 6) {
-            result = question.answerQuestion(1);
-        }
-        else {
-            result = question.answerQuestion(2);
-        }
         
         // Handle correct / incorrect feedback
         if(result) {
-            // TODO: correct sounds effects
+            this.audioMixer.playSound('correct', true);
         }
         else {
             var dash = this.get('dash');
@@ -735,7 +749,7 @@ var FluencyApp = KeyboardLayer.extend({
             player.wipeout(1);
             dash.modifyPenaltyTime(RC.penaltyTime);
             
-            this.audioMixer.playSound('screech', true);
+            this.audioMixer.playSound('wrong', true);
             
             // Update medal car velocities to account for penalty time
             var c = this.get('medalCars')
@@ -763,6 +777,11 @@ var FluencyApp = KeyboardLayer.extend({
         AM.setMute(!AM.get('muted'));
     },
     
+    muteMusicHandler: function() {
+        var AM = this.get('musicMixer');
+        AM.setMute(!AM.get('muted'));
+    },
+    
     // Called every frame, manages keyboard input
     update: function(dt) {
         var player = this.get('player');
@@ -779,19 +798,19 @@ var FluencyApp = KeyboardLayer.extend({
     // Move the player according to keyboard
         // 'A' / 'LEFT' Move left, discreet
         if(this.checkBinding('MOVE_LEFT') == KeyboardLayer.PRESS) {
-            playerX -= 3
-            if(playerX < -3) {
-                playerX = -3
+            if(this.lane > 0) {
+                this.lane -= 1;
+                player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('screech', true);
             }
-            player.set('xCoordinate', playerX);
         }
         // 'D' / 'RIGHT' Move right, discreet
         else if(this.checkBinding('MOVE_RIGHT') == KeyboardLayer.PRESS) {
-            playerX += 3
-            if(playerX > 3) {
-                playerX = 3
+            if(this.lane < RC.curNumLanes-1) {
+                this.lane += 1;
+                player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('screech', true);
             }
-            player.set('xCoordinate', playerX);
         }
         
         var decel_lock = false;
@@ -802,9 +821,9 @@ var FluencyApp = KeyboardLayer.extend({
             this.audioMixer.loopSound('decel')
         
             // Cross fade tracks if needed and able
-            if(this.bgHigh && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
-                this.audioMixer.crossFade('bg_fast', 'bg_slow', 2);
-                this.bgHigh = false;
+            if(this.bgFast && !this.bgFade && player.zVelocity < RC.crossFadeSpeed) {
+                this.musicMixer.crossFade('bg_fast', 'bg_slow', 2);
+                this.bgFast = false;
                 this.bgFade = true;
             }
             
@@ -820,9 +839,9 @@ var FluencyApp = KeyboardLayer.extend({
             this.audioMixer.loopSound('accel')
             
             // Cross fade tracks if needed and able
-            if(!this.bgHigh && !this.bgFade && player.zVelocity > RC.crossFadeSpeed) {
-                this.audioMixer.crossFade('bg_slow', 'bg_fast', 2);
-                this.bgHigh = true;
+            if(!this.bgFast && !this.bgFade && player.zVelocity > RC.crossFadeSpeed) {
+                this.musicMixer.crossFade('bg_slow', 'bg_fast', 2);
+                this.bgFast = true;
                 this.bgFade = true;
             }
         }
@@ -887,6 +906,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
     muted       : false,    // State of the volume mute button
+    mutedMusic  : false,    // State of the volume mute button
     init: function() {
         MenuLayer.superclass.init.call(this, {});
     },
@@ -915,8 +935,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['callback'] = this.volumeCallback.bind(this);
         
         var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(400, 250));
+        vc.set('position', new geo.Point(425, 250));
         this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOn', vc);
         this.addChild({child: vc});
         
         opts['normalImage'] = '/resources/volume-control-off.png';
@@ -924,9 +950,14 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['disabledImage'] = '/resources/volume-control-off.png';
         opts['callback'] = this.volumeCallback.bind(this);
         
-        var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(400, 250));
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 250));
         this.set('volumeButtonOff', vc);
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOff', vc);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -953,23 +984,38 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('muted', !m);
     },
     
+    musicCallback: function() {
+        events.trigger(this, "muteMusicEvent");
+        
+        var m = this.get('mutedMusic')
+        if(!m) {
+            this.removeChild(this.get('musicButtonOn'));
+            this.addChild({child: this.get('musicButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('musicButtonOff'));
+            this.addChild({child: this.get('musicButtonOn')});
+        }
+        this.set('mutedMusic', !m);
+    },
+    
     // Adds the retry button to the MenuLayer
     addRetryButton: function() {
         var opts = Object();
-        opts['normalImage'] = '/resources/retry.png';
-        opts['selectedImage'] = '/resources/retry-selected.png';
-        opts['disabledImage'] = '/resources/retry.png';
+        opts['normalImage'] = '/resources/Retry_Up.png';
+        opts['selectedImage'] = '/resources/Retry_Down.png';
+        opts['disabledImage'] = '/resources/Retry_Up.png';
         opts['callback'] = this.retryButtonCallback.bind(this);
         
-        var rb = cocos.nodes.MenuItemImage.create(opts);
-        rb.set('position', new geo.Point(10-450+200, 230-300+50));
-        rb.set('anchorPoint', new geo.Point(0, 0));
-        this.set('retryButton', rb);
-        this.addChild({child: rb});
+        var b = cocos.nodes.MenuItemImage.create(opts);
+        b.set('position', new geo.Point(10-450+300, 230-300+125));
+        b.set('scaleX', 0.8);
+        b.set('scaleY', 0.8);
+        this.addChild({child: b});
     },
     
     retryButtonCallback: function() {
-        window.runStage(window.currentStage);
+        window.runStage(window.currentSequence, window.currentStage);
     }
 });
 
@@ -1012,6 +1058,7 @@ exports.main = function() {
     
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
     events.addListener(menu, 'muteEvent', app.muteHandler.bind(app));
+    events.addListener(menu, 'muteMusicEvent', app.muteMusicHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});

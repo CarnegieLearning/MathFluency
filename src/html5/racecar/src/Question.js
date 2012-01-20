@@ -20,6 +20,7 @@ var geom = require('geometry');
 
 var Content = require('Content').Content;
 var PNode = require('PerspectiveNode').PerspectiveNode;
+var RC = require('RaceControl').RaceControl;
 var XML = require('XML').XML;
 
 // Represents a single question to be answered by the player
@@ -27,8 +28,7 @@ var Question = PNode.extend({
     correctAnswer    : null,    // The correct response
     answer           : null,    // The answer provided by the player
     answeredCorrectly: null,    // Stores if question has been correctly/incorrectly (null=not answered)
-    coneL            : null,    // Holds the left delimiter
-    coneR            : null,    // Holds the left delimiter
+    delimiters       : null,    // Holds the delimiters
     timeElapsed      : 0.0,     // Real time elapsed since start of question (including delimeterStaticTime)
     init: function(node, z) {
         var superOpts = {
@@ -40,74 +40,47 @@ var Question = PNode.extend({
         }
         Question.superclass.init.call(this, superOpts);
         
-        // Two lane case
-        if(node.children.length == 2) {
+        // Build delimiters for question
+        this.delimiters = [];
+        for(var i=0; i<node.children.length-1; i+=1) {
+            this.buildDelim(node.children[i], z);
+            this.delimiters[i].xCoordinate = RC.delimiterSpacing[node.children.length][i];
         }
-        // Three lane case
-        else if(node.children.length == 3) {
         
-            // Parse the first delimiter
-            var cNode = node.children[0];
-            var c = Content.buildFrom(cNode);
-            c.set('position', new geom.Point(c.get('contentSize').width / 2, 0))
-            
-            var pSet = XML.getChildByName(cNode, 'PerspectiveSettings');
-            pSet = pSet == null ? {attributes:{}} : pSet;
-            
-            var v   = pSet.attributes['visibility'] == null ? 5 : pSet.attributes['visibility'];
-            var max = pSet.attributes['maxScale']   == null ? 4 : pSet.attributes['maxScale'];
-            var min = pSet.attributes['minScale']   == null ? 1 : pSet.attributes['minScale'];
-        
-            // Create option settings
-            var opts = {
-                lockY       : true,
-                silent      : true,
-                minScale    : min,
-                maxScale    : max,
-                alignH      : 1,
-                alignV      : 1,
-                visibility  : v,
-                xCoordinate : -1.5,
-                zCoordinate : z,
-                content     : c
-            }
-        
-            // Create the first delimiter
-            var delim = PNode.create(opts);
-            delim.scheduleUpdate();
-            this.addChild({child: delim});
-            this.set('coneL', delim);
-        
-            // Parse the second delimiter
-            cNode = node.children[1];
-            c = Content.buildFrom(cNode);
-            c.set('position', new geom.Point(c.get('contentSize').width / 2, 0))
-            
-            var pSet = XML.getChildByName(cNode, 'PerspectiveSettings');
-            pSet = pSet == null ? {attributes:{}} : pSet;
-        
-            // Reconfigure settings for second delimiter
-            opts['xCoordinate'] = 1.5;
-            opts['alignH']      = 0;
-            opts['content']     = c;
-            opts['visibility']  = pSet.attributes['visibility'] == null ? 5 : pSet.attributes['visibility'];
-            opts['maxScale']    = pSet.attributes['maxScale']   == null ? 4 : pSet.attributes['maxScale'];
-            opts['minScale']    = pSet.attributes['minScale']   == null ? 1 : pSet.attributes['minScale'];
-        
-            // Create the second delimiter
-            delim = PNode.create(opts);
-            delim.scheduleUpdate();
-            this.addChild({child: delim});
-            this.set('coneR', delim);
-            
-            // Set the answer lane
-            this.set('correctAnswer', node.children[2].attributes['VALUE']);
-        }
-        else {
-            console.log('ERROR: Incorrect number of child nodes for Question');
-        }
+        //HACK: need better way of determining/setting this
+        RC.curNumLanes = node.children.length;
+
+        this.set('correctAnswer', node.children[i].attributes['VALUE']);
         
         return this
+    },
+    
+    buildDelim: function(node, z) {
+        var c = Content.buildFrom(node);
+        c.set('position', new geom.Point(c.get('contentSize').width / 2, 0))
+        
+        var pSet = XML.getChildByName(node, 'PerspectiveSettings');
+        pSet = pSet == null ? {attributes:{}} : pSet;
+        
+        // Create option settings
+        var opts = {
+            lockY       : true,
+            silent      : true,
+            minScale    : pSet.attributes['minScale']   == null ? 1 : pSet.attributes['minScale'],
+            maxScale    : pSet.attributes['maxScale']   == null ? 4 : pSet.attributes['maxScale'],
+            alignH      : 0.5,
+            alignV      : 1,
+            visibility  : pSet.attributes['visibility'] == null ? 5 : pSet.attributes['visibility'],
+            xCoordinate : 0,
+            zCoordinate : z,
+            content     : c
+        }
+    
+        // Create the first delimiter
+        var delim = PNode.create(opts);
+        delim.scheduleUpdate();
+        this.addChild({child: delim});
+        this.delimiters.push(delim);
     },
     
     // Called when the question is answered, sets and returns the result
@@ -142,8 +115,10 @@ var Question = PNode.extend({
             // Pulls the delimiters more onto the lane lines as they progress down the screen
             var shift = (this.position.y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
             
-            this.coneL.set('alignH', 1 - shift);
-            this.coneR.set('alignH', 0 + shift);
+            if(this.delimiters.length > 1) {
+                this.delimiters[0].set('alignH', 1 - shift);
+                this.delimiters[this.delimiters.length-1].set('alignH', 0 + shift);
+            }
         }
     },
 	
@@ -155,7 +130,5 @@ var Question = PNode.extend({
         Question.superclass.onExit.call(this);
     },
 });
-
-// TODO: Write static helper for building an options object to initialize a question
 
 exports.Question = Question

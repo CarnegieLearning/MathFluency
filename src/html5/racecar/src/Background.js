@@ -18,6 +18,7 @@ var cocos = require('cocos2d');
 var geom = require('geometry');
 
 var PNode = require('PerspectiveNode').PerspectiveNode;
+var RC = require('RaceControl').RaceControl;
 
 var Background = cocos.nodes.Node.extend({
     init: function(lanes) {
