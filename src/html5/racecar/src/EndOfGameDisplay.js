@@ -184,11 +184,11 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
             
             var x;
             if(this.get('abort'))
-                x = 380;
+                x = 0;
             else if(tt > RC.times[3])
-                x = 290 + 90 * Math.min(1, tt / RC.times[4]);
+                x = 90 - 90 * Math.min(1, tt / RC.times[4]);
             else
-                x = 290 * (tt - RC.times[0]) / (RC.times[3] - RC.times[0]);
+                x = 380 - 290 * (tt - RC.times[0]) / (RC.times[3] - RC.times[0]);
             
             MOT.create(this.get('sliderX'), x, 1.0).bind(this, 'sliderX');
         }
@@ -251,10 +251,13 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         ctx.fillRect(0, 0, 400, 450);
         
         // Draw the medal meter line
-        var offset = 10;
+        var offset = 100;
         
-        var run = this.proportions(1) * 290;
-        ctx.fillStyle = RC.gold;
+        ctx.fillStyle = RC.noMedal;
+        ctx.fillRect(10, 160, 90, 20);
+        
+        run = this.proportions(3) * 290;
+        ctx.fillStyle = RC.bronze;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
@@ -263,13 +266,10 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
         
-        run = this.proportions(3) * 290;
-        ctx.fillStyle = RC.bronze;
+        var run = this.proportions(1) * 290;
+        ctx.fillStyle = RC.gold;
         ctx.fillRect(offset, 160, run, 20);
         offset += run;
-        
-        ctx.fillStyle = RC.noMedal;
-        ctx.fillRect(offset, 160, 390 - offset, 20);
         
         // Draw the indicator for the medal meter line
         var x = this.get('sliderX');

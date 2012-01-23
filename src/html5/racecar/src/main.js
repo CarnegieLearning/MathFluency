@@ -70,7 +70,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.4.0',    // Current version number
+    version     : 'v 0.4.1',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -441,7 +441,7 @@ var FluencyApp = KeyboardLayer.extend({
             dropoffDist : -10,
             delOnDrop   : false,
         }
-        
+
         // Ghost cars representing medal cutoffs
         // TODO: Make seperate class, support lines in addition to cars
         for(var i=0; i<3; i+= 1) {
@@ -449,7 +449,7 @@ var FluencyApp = KeyboardLayer.extend({
             car.set('opacity', 192);
         
             opts['content'] = car
-            medalCars[i] = PNode.create(opts)
+            medalCars[i] = PNode.create({})
             medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
             
             events.addListener(medalCars[i], 'addMe', this.addMeHandler);
@@ -491,8 +491,6 @@ var FluencyApp = KeyboardLayer.extend({
         setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 2250)
         setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
         
-        this.audioMixer.playSound('start');
-        
         // Catch window unloads at this point as aborts
         $(window).unload(this.endOfGame.bind(this, null));
     },
@@ -520,6 +518,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.musicMixer.loopSound('bg_slow');
         this.musicMixer.getSound('bg_fast').setVolume(0);
         this.musicMixer.loopSound('bg_fast');
+        
+        this.audioMixer.playSound('start');
     },
     
 	// Pauses the dashboard and medal cars
@@ -530,7 +530,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         var mc = this.get('medalCars');
         
-        for(var i=0; i<3; i+=1) {
+        for(var i=0; i<mc.length; i+=1) {
             mc[i].prepause = mc[i].zVelocity;
             mc[i].zVelocity = 0;
         }
@@ -749,7 +749,7 @@ var FluencyApp = KeyboardLayer.extend({
             
             // Update medal car velocities to account for penalty time
             var c = this.get('medalCars')
-            for(var i=0; i<3; i+=1) {
+            for(var i=0; i<c.length; i+=1) {
                 var rd = RC.finishLine - c[i].get('zCoordinate');
                 var rt = RC.times[i+1] - t;
                 
