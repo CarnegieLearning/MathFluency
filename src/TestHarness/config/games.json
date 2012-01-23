@@ -861,13 +861,23 @@
         },
         "Race_1": {
             "displayName": "Fractions (Racecar)",
-            "engine": "racecar",
+            "engine": "racecar_html5",
             "cli_fluency_task": "s2w2_Race_1"
         },
         "Race_10": {
             "displayName": "Fractions (Racecar)",
-            "engine": "racecar",
+            "engine": "racecar_html5",
             "cli_fluency_task": "s2w2_Race_10"
+        },
+        "Snow_1": {
+            "displayName": "Conversions 1 (Snowboard)",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w4r1"
+        },
+        "Snow_2": {
+            "displayName": "Conversions 2 (Snowboard)",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w4r2"
         }
     },
     
@@ -875,6 +885,10 @@
         "snowboard": {
             "type": "CLFlashGameEngine",
             "cli_task_id": "ft1_snow"
+        },
+        "snowboard_html5": {
+            "type": "CLFlashGameEngine",
+            "cli_task_id": "ft1_snow_html5"
         },
         "racecar": {
             "type": "CLFlashGameEngine",
