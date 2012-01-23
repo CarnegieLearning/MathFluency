@@ -70,7 +70,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.3.0',    // Current version number
+    version     : 'v 0.4.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -94,22 +94,21 @@ var FluencyApp = KeyboardLayer.extend({
         AudioMixer.enabled = true;
         // Set up basic audio
         var AM = AudioMixer.create();
-        AM.loadSound('screech', "sound/CarScreech2");
-        AM.loadSound('decel', "sound/SlowDown");
-        AM.loadSound('accel', "sound/SpeedUp");
-        AM.loadSound('turbo', "sound/Turboboost");
-        AM.loadSound('start', "sound/EngineStart");
-        AM.loadSound('hum', "sound/Engine Hum");
-        AM.loadSound('correct', "sound/Correct v1");
-        AM.loadSound('wrong', "sound/Incorrect v1");
-        AM.loadSound('finish', "sound/FinishLine v1");
-        AM.loadSound('intermission', "sound/Numberchange v1");
-        AM.loadSound('countdown', "sound/countdown");
+        var dir = "sound/snowboard/";
+        AM.loadSound('correct',      dir + "Correct v1");
+        AM.loadSound('countdown',    dir + "Countdown v1");
+        AM.loadSound('finish',       dir + "FinishLine v1");
+        AM.loadSound('wrong',        dir + "Incorrect v1");
+        AM.loadSound('intermission', dir + "Numberchange v1");
+        AM.loadSound('decel',        dir + "Slowdown v1");
+        AM.loadSound('accel',        dir + "SpeedUp v1");
+        AM.loadSound('start',        dir + "Start v1");
+        AM.loadSound('turbo',        dir + "Turboboost v1");
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
-        MM.loadSound('bg_slow', "sound/race bg slow");
-        MM.loadSound('bg_fast', "sound/race bg fast2");
+        MM.loadSound('bg_slow', dir + "NormalLoop v1");
+        MM.loadSound('bg_fast', dir + "FastLoop v1");
         this.set('musicMixer', MM);
         
         events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
@@ -464,7 +463,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.musicMixer.setMasterVolume(0.35);
 
         this.audioMixer.getSound('accel').setVolume(0.8);
-        this.audioMixer.getSound('screech').setVolume(0.5);
         
         this.audioMixer.playSound('countdown');
     
@@ -494,7 +492,6 @@ var FluencyApp = KeyboardLayer.extend({
         setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
         
         this.audioMixer.playSound('start');
-        this.audioMixer.loopSound('hum');
         
         // Catch window unloads at this point as aborts
         $(window).unload(this.endOfGame.bind(this, null));
@@ -591,7 +588,6 @@ var FluencyApp = KeyboardLayer.extend({
         s = this.musicMixer.getSound('bg_slow');
         MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
         
-        this.audioMixer.stopSound('hum');
         this.audioMixer.playSound('finish');
     
         // Stop the player from moving further and the dash from increasing the elapsed time
@@ -801,7 +797,6 @@ var FluencyApp = KeyboardLayer.extend({
             if(this.lane > 0) {
                 this.lane -= 1;
                 player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
-                this.audioMixer.playSound('screech', true);
             }
         }
         // 'D' / 'RIGHT' Move right, discreet
@@ -809,7 +804,6 @@ var FluencyApp = KeyboardLayer.extend({
             if(this.lane < RC.curNumLanes-1) {
                 this.lane += 1;
                 player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
-                this.audioMixer.playSound('screech', true);
             }
         }
         
