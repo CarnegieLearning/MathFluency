@@ -887,7 +887,7 @@
             "cli_task_id": "ft1_snow"
         },
         "snowboard_html5": {
-            "type": "CLFlashGameEngine",
+            "type": "CLHTML5GameEngine",
             "cli_task_id": "ft1_snow_html5"
         },
         "racecar": {
