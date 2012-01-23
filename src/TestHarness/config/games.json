@@ -862,12 +862,12 @@
         "Race_1": {
             "displayName": "Fractions (Racecar)",
             "engine": "racecar_html5",
-            "cli_fluency_task": "s2w2_Race_1"
+            "cli_fluency_task": "s2w2_fract_1"
         },
         "Race_10": {
             "displayName": "Fractions (Racecar)",
             "engine": "racecar_html5",
-            "cli_fluency_task": "s2w2_Race_10"
+            "cli_fluency_task": "s2w2_fract_2"
         },
         "Snow_1": {
             "displayName": "Conversions 1 (Snowboard)",
