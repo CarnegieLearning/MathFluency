@@ -1,0 +1,213 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<INPUT_MODE>Click</INPUT_MODE>
+<TIME_MODE>Level</TIME_MODE>
+<TIME_LIMIT>60</TIME_LIMIT>
+<MEDALS>
+    <MEDAL Id="1" Score="1500">Gold</MEDAL>
+    <MEDAL Id="2" Score="1000">Silver</MEDAL>
+    <MEDAL Id="3" Score="700">Bronze</MEDAL>
+</MEDALS>
+<SCORING ptsCorrect="100" ptsIncorrect="-25" ptsTimeout="-25"/>
+<ANSWER_BANDS>
+    <BAND>Perfect</BAND>
+    <BAND>Almost</BAND>
+    <BAND>Miss</BAND>
+</ANSWER_BANDS>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<NUMBER_LINE>
+			<HASH location="0">
+				<Content TYPE="String">
+					<ContentSettings string="0"/>
+				</Content>
+			</HASH>
+			<HASH location="1">
+				<Content TYPE="String">
+					<ContentSettings string="1"/>
+				</Content>
+			</HASH>
+		</NUMBER_LINE>
+		<QUESTION INDEX="1">
+			<Content TYPE="String">
+				<ContentSettings string="25%"/>
+			</Content>
+			<Answer VALUE="0.25"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="String">
+				<ContentSettings string="40%"/>
+			</Content>
+			<Answer VALUE="0.4"/>
+		</QUESTION>
+		<QUESTION INDEX="3">
+			<Content TYPE="String">
+				<ContentSettings string="55%"/>
+			</Content>
+			<Answer VALUE="0.55"/>
+		</QUESTION>
+		<QUESTION INDEX="4">
+			<Content TYPE="String">
+				<ContentSettings string="70%"/>
+			</Content>
+			<Answer VALUE="0.7"/>
+		</QUESTION>
+		<QUESTION INDEX="5">
+			<Content TYPE="String">
+				<ContentSettings string="85%"/>
+			</Content>
+			<Answer VALUE="0.85"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="String">
+				<ContentSettings string="95%"/>
+			</Content>
+			<Answer VALUE="0.95"/>
+		</QUESTION>
+		<QUESTION INDEX="7">
+			<Content TYPE="String">
+				<ContentSettings string="20%"/>
+			</Content>
+			<Answer VALUE="0.2"/>
+		</QUESTION>
+		<QUESTION INDEX="8">
+			<Content TYPE="String">
+				<ContentSettings string="40%"/>
+			</Content>
+			<Answer VALUE="0.4"/>
+		</QUESTION>
+		<QUESTION INDEX="9">
+			<Content TYPE="String">
+				<ContentSettings string="90%"/>
+			</Content>
+			<Answer VALUE="0.9"/>
+		</QUESTION>
+		<QUESTION INDEX="10">
+			<Content TYPE="String">
+				<ContentSettings string="50%"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="11">
+			<Content TYPE="String">
+				<ContentSettings string="25%"/>
+			</Content>
+			<Answer VALUE="0.25"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="String">
+				<ContentSettings string="45%"/>
+			</Content>
+			<Answer VALUE="0.45"/>
+		</QUESTION>
+		<QUESTION INDEX="13">
+			<Content TYPE="String">
+				<ContentSettings string="70%"/>
+			</Content>
+			<Answer VALUE="0.7"/>
+		</QUESTION>
+		<QUESTION INDEX="14">
+			<Content TYPE="String">
+				<ContentSettings string="50%"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="15">
+			<Content TYPE="String">
+				<ContentSettings string="15%"/>
+			</Content>
+			<Answer VALUE="0.15"/>
+		</QUESTION>
+		<QUESTION INDEX="16">
+			<Content TYPE="String">
+				<ContentSettings string="20%"/>
+			</Content>
+			<Answer VALUE="0.2"/>
+		</QUESTION>
+		<QUESTION INDEX="17">
+			<Content TYPE="String">
+				<ContentSettings string="25%"/>
+			</Content>
+			<Answer VALUE="0.25"/>
+		</QUESTION>
+		<QUESTION INDEX="18">
+			<Content TYPE="String">
+				<ContentSettings string="60%"/>
+			</Content>
+			<Answer VALUE="0.6"/>
+		</QUESTION>
+		<QUESTION INDEX="19">
+			<Content TYPE="String">
+				<ContentSettings string="55%"/>
+			</Content>
+			<Answer VALUE="0.55"/>
+		</QUESTION>
+		<QUESTION INDEX="20">
+			<Content TYPE="String">
+				<ContentSettings string="15%"/>
+			</Content>
+			<Answer VALUE="0.15"/>
+		</QUESTION>
+		<QUESTION INDEX="21">
+			<Content TYPE="String">
+				<ContentSettings string="25%"/>
+			</Content>
+			<Answer VALUE="0.25"/>
+		</QUESTION>
+		<QUESTION INDEX="22">
+			<Content TYPE="String">
+				<ContentSettings string="10%"/>
+			</Content>
+			<Answer VALUE="0.1"/>
+		</QUESTION>
+		<QUESTION INDEX="23">
+			<Content TYPE="String">
+				<ContentSettings string="55%"/>
+			</Content>
+			<Answer VALUE="0.55"/>
+		</QUESTION>
+		<QUESTION INDEX="24">
+			<Content TYPE="String">
+				<ContentSettings string="35%"/>
+			</Content>
+			<Answer VALUE="0.35"/>
+		</QUESTION>
+		<QUESTION INDEX="25">
+			<Content TYPE="String">
+				<ContentSettings string="50%"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="26">
+			<Content TYPE="String">
+				<ContentSettings string="85%"/>
+			</Content>
+			<Answer VALUE="0.85"/>
+		</QUESTION>
+		<QUESTION INDEX="27">
+			<Content TYPE="String">
+				<ContentSettings string="70%"/>
+			</Content>
+			<Answer VALUE="0.7"/>
+		</QUESTION>
+		<QUESTION INDEX="28">
+			<Content TYPE="String">
+				<ContentSettings string="60%"/>
+			</Content>
+			<Answer VALUE="0.6"/>
+		</QUESTION>
+		<QUESTION INDEX="29">
+			<Content TYPE="String">
+				<ContentSettings string="85%"/>
+			</Content>
+			<Answer VALUE="0.85"/>
+		</QUESTION>
+		<QUESTION INDEX="30">
+			<Content TYPE="String">
+				<ContentSettings string="75%"/>
+			</Content>
+			<Answer VALUE="0.75"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>
