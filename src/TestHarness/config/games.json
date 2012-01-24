@@ -921,6 +921,10 @@
         "scuba": {
             "type": "CLFlashGameEngine",
             "cli_task_id": "ft3_scuba"
+        },
+        "claw_html5": {
+            "type": "CLHTML5GameEngine",
+            "cli_task_id": "ft2_claw_html5"
         }
     }
 }
