@@ -269,6 +269,9 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
     endOfGame: function(finished) {
+        if(this.ended)
+            return;
+    
         //$(window).unbind('unload')
         
         // Stopping the game
