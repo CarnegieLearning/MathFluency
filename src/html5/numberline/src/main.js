@@ -182,7 +182,7 @@ var FluencyApp = KeyboardLayer.extend({
         if(score != null) {
             util.each('ptsCorrect ptsIncorrect ptsTimeout ptsQuestBonus'.w(), util.callback(this, function (name) {
                 if(score.attributes.hasOwnProperty(name)) {
-                    Question[name] = score.attributes[name];
+                    Question[name] = parseInt(score.attributes[name]);
                 }
             }));
         }
@@ -192,7 +192,7 @@ var FluencyApp = KeyboardLayer.extend({
             for(var i=0; i<medals.children.length; i++) {
                 var m = medals.children[i]
                 if(m.attributes.hasOwnProperty('Id') && m.attributes.hasOwnProperty('Score'))
-                    NLC.medalScores[m.attributes['Id']] = m.attributes['Score'];
+                    NLC.medalScores[m.attributes['Id']] = parseInt(m.attributes['Score']);
             }
         }
         
