@@ -219,7 +219,7 @@ var FluencyApp = KeyboardLayer.extend({
             events.addListener(this.questionList[i], 'scoreChange', this.hud.modifyScore.bind(this.hud));
             events.addListener(this.questionList[i], 'nextQuestion', this.unlock.bind(this));
             
-            qCount += this.questionList[0].questions.length;
+            qCount += this.questionList[i].questions.length;
         }
         
         NLC.medalScores[0] = qCount * Question.ptsCorrect;
