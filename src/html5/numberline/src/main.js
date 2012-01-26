@@ -26,7 +26,6 @@ var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 
 // Static Imports
 var Content = require('Content').Content;
-var MOT = require('ModifyOverTime').ModifyOverTime;
 var NLC = require('NumberLineControl').NumberLineControl;
 var XML = require('XML').XML;
 
@@ -36,6 +35,7 @@ var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var HUD = require('HUD').HUD;
 var QuestionSet = require('QuestionSet').QuestionSet;
 var Question = require('Question').Question;
+var Claw = require('Claw').Claw;
 
 // TODO: De-magic number these
 /* Zorder
@@ -106,6 +106,17 @@ var FluencyApp = KeyboardLayer.extend({
         this.versionLabel = cocos.nodes.Label.create({string: this.version});
         this.versionLabel.set('position', new geo.Point(800, 500));
         this.addChild({child: this.versionLabel});
+        
+        this.claw = Claw.create();
+        this.claw.set('position', new geo.Point(100, 150));
+        this.claw.set('anchorPoint', new geo.Point(0.5, 0));
+        this.addChild({child: this.claw});
+        
+        this.bin = cocos.nodes.Sprite.create({file: '/resources/bin.png'});
+        this.bin.set('position', new geo.Point(0, 420));
+        this.bin.set('anchorPoint', new geo.Point(0, 0));
+        this.bin.set('zOrder', -1);
+        this.addChild(this.bin);
         
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error message
@@ -259,7 +270,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.onEndOfSet();
         
         this.addChild({child: this.crosshairs});
-        this.crosshairs.set('position', new geo.Point((this.min_x + this.max_x) / 2, 220));
+        this.crosshairs.set('position', new geo.Point((this.min_x + this.max_x) / 2, 200 + QuestionSet.NumberLineY));
         this.crosshairs.set('zOrder', 10);
         
         this.hud.startGame();
@@ -335,6 +346,7 @@ var FluencyApp = KeyboardLayer.extend({
 
     // Writes the output xml file as a string and returns it
     writeXML: function(correct, state) {
+        
     },
 
 //============ In Game =========================================================
@@ -342,8 +354,10 @@ var FluencyApp = KeyboardLayer.extend({
     // Handles answering the current question
     answerQuestion: function(ans) {
         if(!this.answerLock)
-            if(this.questionList[this.current].giveAnswer(ans))
+            if(this.questionList[this.current].giveAnswer(ans)) {
                 this.answerLock = true;
+                this.claw.grabAt(ans);
+            }
     },
     
     // Removes the answer lock, allowing the player to answer the question

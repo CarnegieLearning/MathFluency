@@ -40,7 +40,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         this.resetColor = this.resetColor.bind(this);
         this.onQuestionTimeout = this.onQuestionTimeout.bind(this)
         
-        this.set('position', new geo.Point(100, 200));
+        this.set('position', new geo.Point(150, 200));
         this.numberline = NumberLine.create(XML.getChildByName(node, 'NUMBER_LINE'));
         
         // Get XML representation
@@ -54,7 +54,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         }
         
         this.addChild({child: this.numberline});
-        this.numberline.set('position', new geo.Point(30, 20));
+        this.numberline.set('position', new geo.Point(QuestionSet.NumberLineX, QuestionSet.NumberLineY));
     },
     
     // Advance to the next question
@@ -69,11 +69,11 @@ var QuestionSet = cocos.nodes.Node.extend({
             }
             this.current += 1;
             
-            setTimeout(this.nextQuestionCallback.bind(this), 1000);
+            setTimeout(this.nextQuestionCallback.bind(this), 3000);
         }
         else {
             var that = this;
-            setTimeout(function() {events.trigger(that, 'endOfSet')}, 1000);
+            setTimeout(function() {events.trigger(that, 'endOfSet')}, 3000);
         }
     },
     
@@ -122,7 +122,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         }
         
         var that = this;
-        setTimeout(this.resetColor, 1000);
+        setTimeout(this.resetColor, 3000);
         
         this.nextQuestion();
         
@@ -136,7 +136,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         this.set('lineColor', '#220000');
         
         var that = this;
-        setTimeout(this.resetColor, 1000);
+        setTimeout(this.resetColor, 3000);
         
         this.nextQuestion();
     },
@@ -157,29 +157,32 @@ var QuestionSet = cocos.nodes.Node.extend({
         
         // Left side arrow
         context.beginPath();
-        context.moveTo(20,  0);
-        context.lineTo( 0, 20);
-        context.lineTo(20, 40);
+        context.moveTo(QuestionSet.NumberLineX - 10, QuestionSet.NumberLineY - 20);
+        context.lineTo(QuestionSet.NumberLineX - 30, QuestionSet.NumberLineY     );
+        context.lineTo(QuestionSet.NumberLineX - 10, QuestionSet.NumberLineY + 20);
         context.stroke();
         
         context.beginPath();
-        context.moveTo( 0, 20);
-        context.lineTo(30, 20);
+        context.moveTo(QuestionSet.NumberLineX - 30, QuestionSet.NumberLineY);
+        context.lineTo(QuestionSet.NumberLineX     , QuestionSet.NumberLineY);
         context.closePath();
         context.stroke();
         
         // Right side arrow
-        context.moveTo(this.numberline.length + 40,  0);
-        context.lineTo(this.numberline.length + 60, 20);
-        context.lineTo(this.numberline.length + 40, 40);
+        context.moveTo(QuestionSet.NumberLineX + this.numberline.length + 10, QuestionSet.NumberLineY - 20);
+        context.lineTo(QuestionSet.NumberLineX + this.numberline.length + 30, QuestionSet.NumberLineY     );
+        context.lineTo(QuestionSet.NumberLineX + this.numberline.length + 10, QuestionSet.NumberLineY + 20);
         context.stroke();
         
         context.beginPath();
-        context.moveTo(this.numberline.length + 60, 20);
-        context.lineTo(this.numberline.length + 30, 20);
+        context.moveTo(QuestionSet.NumberLineX + this.numberline.length + 30, QuestionSet.NumberLineY);
+        context.lineTo(QuestionSet.NumberLineX + this.numberline.length     , QuestionSet.NumberLineY);
         context.closePath();
         context.stroke();
     }
 });
+
+QuestionSet.NumberLineX = 55;
+QuestionSet.NumberLineY = 220;
 
 exports.QuestionSet = QuestionSet;
