@@ -335,6 +335,7 @@ var FluencyApp = KeyboardLayer.extend({
     
         var ql = this.get('questionList')
         var correct = 0, almost = 0, incorrect = 0, unanswered = 0;
+        var summary = [];
         
         // Tally question results
         for(var i=0; i<ql.length; i+=1) {
@@ -345,12 +346,13 @@ var FluencyApp = KeyboardLayer.extend({
                 else if(ql[i].questions[j].correctness == 1) {
                     almost += 1;
                 }
-                else if(ql[i].questions[j].correctness == 2){
+                else if(!ql[i].questions[j].correctness == 2){
                     incorrect += 1;
                 }
                 else if(ql[i].questions[j].isTimeout) {
                     unanswered += 1;
                 }
+                summary.push([ql[i].questions[j].correctValue, ql[i].questions[j].playerValue]);
                 //else question was not reached and thus is not counted
             }
         }
@@ -368,10 +370,10 @@ var FluencyApp = KeyboardLayer.extend({
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
             if(finished) {
-                window[this.get('endOfGameCallback')](this.writeXML(correct, 'FINISH'));
+                window[this.get('endOfGameCallback')](this.writeXML(summary, correct, almost, incorrect, 'FINISH'));
             }
             else {
-                window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
+                window[this.get('endOfGameCallback')](this.writeXML(summary, correct, almost, incorrect, 'ABORT'));
             }
         }
     },
@@ -381,44 +383,37 @@ var FluencyApp = KeyboardLayer.extend({
     },
 
     // Writes the output xml file as a string and returns it
-    writeXML: function(correct, state) {
+    writeXML: function(summary, correct, almost, incorrect, state) {
         // Get needed values
         var ref = this.get('gameID');
-        var d = this.get('dash');
-        var e = d.get('elapsedTime');
-        var p = d.get('pTime');
+        
         var m;
         
         // Determine medal string
-        if(e + p < RC.times[1] && state == 'FINISH') {
+        if(this.hud.score > NLC.medalScores[1] && state == 'FINISH') {
             m = "Gold";
         }
-        else if(e + p < RC.times[2] && state == 'FINISH') {
+        else if(this.hud.score > NLC.medalScores[2] && state == 'FINISH') {
             m = "Silver";
         }
-        else if(e + p < RC.times[3] && state == 'FINISH') {
+        else if(this.hud.score > NLC.medalScores[3] && state == 'FINISH') {
             m = "Bronze";
         }
         else {
             m = " - ";
         }
         
-        // Convert times to milliseconds for reporting
-        e = Math.round(e * 1000)
-        p = Math.round(p * 1000)
-        
         // Build the XML string
         var x =
         '<OUTPUT>\n' + 
         '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
         '    <SCORE_SUMMARY>\n' + 
-        '        <Score CorrectAnswers="' + correct +'" ElapsedTime="' + e + '" PenaltyTime="' + p + '" TotalScore="' + (e + p) +'" Medal="' + m + '"/>\n' + 
+        '        <Score Correct="' + correct +'" Almost="' + almost + '" Incorrect="' + incorrect + '" TotalScore="' + this.hud.score +'" Medal="' + m + '"/>\n' + 
         '    </SCORE_SUMMARY>\n' +
         '    <SCORE_DETAILS>\n';
                 var i = 0;
-                var ql = this.get('questionList');
-                while(i < ql.length) {
-                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
+                while(i < summary.length) {
+                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  summary[i][0] + '" AnswerGiven="' + summary[i][1] + '"/>\n';
                 i += 1;
                 }
             x += '    </SCORE_DETAILS>\n' + 
