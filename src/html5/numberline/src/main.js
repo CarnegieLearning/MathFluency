@@ -437,6 +437,7 @@ var FluencyApp = KeyboardLayer.extend({
             if(retVal >= 0 && retVal <= 2) {
                 this.answerLock = true;
                 this.claw.grabAt(ans, retVal);
+                this.hud.modifyItemCount();
             }
     },
     

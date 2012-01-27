@@ -36,7 +36,7 @@ var HUD = cocos.nodes.Node.extend({
     qTimeMax    : null,     // Initial time for current question (null if N/A)
     qTimePause  : false,    // Pauses the individual question timer
     
-    itemsCount  : 0,        // 
+    itemCount   : 0,        // 
     
     textG       : null,     // Holds green numbers
     textR       : null,     // Holds red numbers
@@ -102,6 +102,12 @@ var HUD = cocos.nodes.Node.extend({
         this.itemsLWindow.set('position', new geo.Point(5, 5));
         this.itemsLWindow.set('anchorPoint', new geo.Point(0, 0));
         this.itemsLWindow.set('scaleY', 0.9);
+        
+        this.itemsNumber = SpriteNumber.create(3);
+        this.itemsNumber.set('position', new geo.Point(40, 40));
+        this.itemsNumber.set('znchorPoint', new geo.Point(0, 0));
+        this.itemsNumber.set('zOrder', 4);
+        this.addChild({child: this.itemsNumber});
         
         // Time remaining frame (digital format)
         this.timerWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Time/Window_Time_Digital.png'});
@@ -201,7 +207,7 @@ var HUD = cocos.nodes.Node.extend({
     // Changes the score value by the specified amount and updates the displayed score accordingly
     modifyScore: function(val) {
         this.score += val;
-        this.scoreNumber.setVal('string', this.score);
+        this.scoreNumber.setVal(this.score);
     
         //HACK: Kind of hacky way to stop question timer from continuing to count down
         this.qTimePause = true;
@@ -217,6 +223,11 @@ var HUD = cocos.nodes.Node.extend({
         if(this.timeLeft != null) {
             this.timeNumber.setVal(Math.ceil(this.timeLeft));
         }
+    },
+    
+    modifyItemCount: function() {
+        this.itemCount += 1;
+        this.itemsNumber.setVal(this.itemCount);
     }
 });
 
