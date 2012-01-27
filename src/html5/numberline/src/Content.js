@@ -44,7 +44,7 @@ Content.initialize = function () {
 }
 
 Content._validateNode = function (xmlNode) {
-    if(xmlNode.name == 'CONTENT') {
+    if(xmlNode.name == 'Content') {
         if(xmlNode.attributes.hasOwnProperty('TYPE')) {
             if(Content.registeredContent.hasOwnProperty(xmlNode.attributes.TYPE)) {
                 return true;

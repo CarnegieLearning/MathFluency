@@ -45,8 +45,8 @@ var Question = cocos.nodes.Node.extend({
     init: function(node) {
         Question.superclass.init.call(this);
         
-		this.displayValue = Content.buildFrom(XML.getChildByName(node, 'CONTENT'));
-		this.correctValue = XML.getChildByName(node, 'ANSWER').value;
+		this.displayValue = Content.buildFrom(XML.getChildByName(node, 'Content'));
+		this.correctValue = XML.getChildByName(node, 'Answer').attributes['VALUE'];
         
         // Load override values, if value is not overridden, use static default value
         util.each('timeLimit ptsTimeout bandRanges bandPts'.w(), util.callback(this, function (name) {
