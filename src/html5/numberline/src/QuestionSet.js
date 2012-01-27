@@ -79,6 +79,17 @@ var QuestionSet = cocos.nodes.Node.extend({
         }
     },
     
+    nextQuestionForced: function() {
+        events.trigger(this, 'beforeNextQuestion');
+        
+        if(this.current > -1) {
+            this.removeChild({child: this.questions[this.current]});
+        }
+        this.current += 1;
+        
+        this.nextQuestionCallback()
+    },
+    
     // Finish advancing to the next question
     nextQuestionCallback: function() {
         this.questions[this.current].set('position', new geo.Point(250, -125));

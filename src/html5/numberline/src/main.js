@@ -159,7 +159,14 @@ var FluencyApp = KeyboardLayer.extend({
             var c = this.questionList[this.current];
             
             this.addChild({child: c});
-            c.nextQuestion();
+            
+            if(this.current != 0) {
+                c.nextQuestion();
+            }
+            // Special case, first set
+            else {
+                c.nextQuestionForced();
+            }
             
             this.min_x = c.get('position').x + c.numberline.get('position').x;
             this.max_x = this.min_x + c.numberline.length;
