@@ -22,14 +22,15 @@ var events = require('events');
 // Static imports
 var NLC = require('NumberLineControl').NumberLineControl;
 
+// Project imports
+var SpriteNumber = require('SpriteNumber').SpriteNumber;
+
 var HUD = cocos.nodes.Node.extend({
     elapsed     : 0,        // Amount of time elapsed
     paused      : true,     // Stores if the countdown timer is paused
     timeLeft    : null,     // Amount of time remaining in the stage (null if N/A)
-    timeLabel   : null,     // Stores the Label responsible for showing time remaining
     
     score       : 0,        // The player's current score
-    scoreLabel  : null,     // Stores the Label responsible for showing score
     
     qTime       : null,     // Time remaining for current question (null if N/A)
     qTimeMax    : null,     // Initial time for current question (null if N/A)
@@ -45,17 +46,18 @@ var HUD = cocos.nodes.Node.extend({
         // Always call the superclass constructor
         HUD.superclass.init.call(this);
         
-        // Set up the time remaining label
-        this.timeLabel = cocos.nodes.Label.create({string: ''})
-        this.timeLabel.set('position', new geo.Point(550, 60));
-        this.timeLabel.set('zOrder', 3);
-        this.addChild({child: this.timeLabel});
+        this.timeNumber = SpriteNumber.create(3);
+        this.timeNumber.set('position', new geo.Point(515, 45));
+        this.timeNumber.set('znchorPoint', new geo.Point(0, 0));
+        this.timeNumber.set('zOrder', 4);
+        this.addChild({child: this.timeNumber});
         
         // Set up the score label
-        this.scoreLabel = cocos.nodes.Label.create({string: '0'});
-        this.scoreLabel.set('position', new geo.Point(750, 60));
-        this.scoreLabel.set('zOrder', 3);
-        this.addChild({child: this.scoreLabel});
+        this.scoreNumber = SpriteNumber.create(6);
+        this.scoreNumber.set('position', new geo.Point(690, 40));
+        this.scoreNumber.set('znchorPoint', new geo.Point(0, 0));
+        this.scoreNumber.set('zOrder', 4);
+        this.addChild({child: this.scoreNumber});
         
         this.onQuestionTimerStart = this.onQuestionTimerStart.bind(this);
         this.onBeforeNextQuestion = this.onBeforeNextQuestion.bind(this);
@@ -160,12 +162,12 @@ var HUD = cocos.nodes.Node.extend({
                 // Checks to see if stage timer has run out
                 if(this.timeLeft < 0) {
                     this.timeLeft = 0;
-                    this.timeLabel.set('string', this.timeLeft.toFixed(1));
+                    this.timeNumber.setVal(Math.ceil(this.timeLeft));    
                     this.paused = true;
                     events.trigger(this, 'stageTimeExpired');
                 }
                 
-                this.timeLabel.set('string', this.timeLeft.toFixed(1));
+                this.timeNumber.setVal(Math.ceil(this.timeLeft));
             }
         
             // Runs question specific timer
@@ -199,7 +201,7 @@ var HUD = cocos.nodes.Node.extend({
     // Changes the score value by the specified amount and updates the displayed score accordingly
     modifyScore: function(val) {
         this.score += val;
-        this.scoreLabel.set('string', this.score);
+        this.scoreNumber.setVal('string', this.score);
     
         //HACK: Kind of hacky way to stop question timer from continuing to count down
         this.qTimePause = true;
@@ -213,7 +215,7 @@ var HUD = cocos.nodes.Node.extend({
     setTimeLeft: function(val) {
         this.timeLeft = val;
         if(this.timeLeft != null) {
-            this.timeLabel.set('string', parseFloat(this.timeLeft).toFixed(1));
+            this.timeNumber.setVal(Math.ceil(this.timeLeft));
         }
     }
 });

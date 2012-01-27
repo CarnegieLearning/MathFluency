@@ -108,7 +108,6 @@ var ClawNode = cocos.nodes.Node.extend({
     setItemY: function(y) {
         var pt = this.theItem.get('position');
         pt.y = y;
-        console.log(y)
         this.theItem.set('position', pt);
     }
 });
