@@ -35,6 +35,11 @@ var HUD = cocos.nodes.Node.extend({
     qTimeMax    : null,     // Initial time for current question (null if N/A)
     qTimePause  : false,    // Pauses the individual question timer
     
+    itemsCount  : 0,        // 
+    
+    textG       : null,     // Holds green numbers
+    textR       : null,     // Holds red numbers
+    
     // Constructor
     init: function () {
         // Always call the superclass constructor
@@ -52,24 +57,87 @@ var HUD = cocos.nodes.Node.extend({
         
         this.onQuestionTimerStart = this.onQuestionTimerStart.bind(this);
         this.onBeforeNextQuestion = this.onBeforeNextQuestion.bind(this);
+        
+        var dir = '/resources/General_Wireframe/Window/Window_MedalStatus/';
+        // Medal meter frame
+        this.medalWindow = cocos.nodes.Sprite.create({file: dir + 'Window_MedalStatus_Frame.png'});
+        this.medalWindow.set('position', new geo.Point(HUD.MedalMeterX, 0));
+        this.medalWindow.set('anchorPoint', new geo.Point(0, 0));
+        this.medalWindow.set('scaleY', 0.9);
+        this.medalWindow.set('zOrder', 1);
+        this.addChild({child: this.medalWindow});
+        
+        // Medal meter needle
+        this.medalArrow = cocos.nodes.Sprite.create({file: dir + 'Window_MedalStatus_Needle.png'});
+        this.medalArrow.set('position', new geo.Point(HUD.MedalMeterX+15, 102));
+        this.medalArrow.set('zOrder', 2);
+        this.addChild({child: this.medalArrow});
+        
+        dir = '/resources/General_Wireframe/Window/';
+        // Current target frame
+        this.targetWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Target.png'});
+        this.targetWindow.set('position', new geo.Point(315, 5));
+        this.targetWindow.set('anchorPoint', new geo.Point(0, 0));
+        this.addChild({child: this.targetWindow});
+        
+        // Current score frame
+        this.scoreWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Score.png'});
+        this.scoreWindow.set('position', new geo.Point(650, 5));
+        this.scoreWindow.set('anchorPoint', new geo.Point(0, 0));
+        this.addChild({child: this.scoreWindow});
+        
+        // Items gained frame
+        this.itemsGWindow = cocos.nodes.Sprite.create({file: dir + 'Window_ItemsGained.png'});
+        this.itemsGWindow.set('position', new geo.Point(5, 5));
+        this.itemsGWindow.set('anchorPoint', new geo.Point(0, 0));
+        this.itemsGWindow.set('scaleY', 0.9);
+        this.addChild({child: this.itemsGWindow});
+        
+        // Items remaining frame
+        this.itemsLWindow = cocos.nodes.Sprite.create({file: dir + 'Window_ItemsLeft.png'});
+        this.itemsLWindow.set('position', new geo.Point(5, 5));
+        this.itemsLWindow.set('anchorPoint', new geo.Point(0, 0));
+        this.itemsLWindow.set('scaleY', 0.9);
+        
+        // Time remaining frame (digital format)
+        this.timerWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Time/Window_Time_Digital.png'});
+        this.timerWindow.set('position', new geo.Point(480, 5));
+        this.timerWindow.set('anchorPoint', new geo.Point(0, 0));
+        this.timerWindow.set('scaleY', 0.9);
+        this.addChild({child: this.timerWindow});
+        
+        // Load image based numbers
+        var dir1 = '/resources/General_Wireframe/Numbers_Green/'
+        var dir2 = '/resources/General_Wireframe/Numbers_Red/'
+        this.textG = [];
+        this.textR = [];
+        for(var i=0; i<10; i+=1) {
+            this.textG.push(cocos.nodes.Sprite.create({file: dir1 + 'NumG_' + i + '.png'}));
+            this.textR.push(cocos.nodes.Sprite.create({file: dir2 + 'NumR_' + i + '.png'}));
+        }
+        this.textG.push(cocos.nodes.Sprite.create({file: dir1 + 'NumG_neg.png'}));
+        this.textR.push(cocos.nodes.Sprite.create({file: dir2 + 'NumR_neg.png'}));
+        
     },
     
     delayedInit: function() {
+        var dir = '/resources/General_Wireframe/Window/Window_MedalStatus/Window_MedalStatus_';
         this.metalTextures = [
-            cocos.nodes.Sprite.create({file:'/resources/Score_Gold.png'}),
-            cocos.nodes.Sprite.create({file:'/resources/Score_Silver.png'}),
-            cocos.nodes.Sprite.create({file:'/resources/Score_Bronze.png'}),
-            cocos.nodes.Sprite.create({file:'/resources/Score_None.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Silver.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Bronze.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'None.png'}),
         ]
         
         var y = 0;
         for(i=0; i<4; i+=1) {
-            this.scaleTo(this.metalTextures[i], 100, NLC.proportions[i] * 98)
-            this.metalTextures[i].set('position', new geo.Point(200, y));
+            this.scaleTo(this.metalTextures[i], 90, NLC.proportions[i] * 93)
+            this.metalTextures[i].set('position', new geo.Point(HUD.MedalMeterX+5, y+10));
             this.metalTextures[i].set('anchorPoint', new geo.Point(0, 0));
+            this.metalTextures[i].set('zOrder', -1);
             this.addChild({child: this.metalTextures[i]});
             
-            y += NLC.proportions[i] * 98;
+            y += NLC.proportions[i] * 92;
         }
     },
     
@@ -133,6 +201,10 @@ var HUD = cocos.nodes.Node.extend({
     
         //HACK: Kind of hacky way to stop question timer from continuing to count down
         this.qTimePause = true;
+        
+        // Update medal meter
+        p = Math.max(Math.min((1 - this.score / NLC.medalScores[0]), 1), 0);
+        this.medalArrow.set('position', new geo.Point(HUD.MedalMeterX+15, p*92 + 10));
     },
     
     // Setter function for timeLeft
@@ -141,45 +213,9 @@ var HUD = cocos.nodes.Node.extend({
         if(this.timeLeft != null) {
             this.timeLabel.set('string', parseFloat(this.timeLeft).toFixed(1));
         }
-    },
-    
-    // TODO: Put this in a utility file
-    drawLine: function (ctx, startx, starty, endx, endy) {
-        ctx.beginPath();
-        ctx.moveTo(startx, starty);
-        ctx.lineTo(endx, endy);
-        ctx.closePath();
-        ctx.stroke();
-    },
-    
-    // Low level drawing calls
-    draw: function(ctx) {
-        ctx.fillStyle = '#C09000';
-        ctx.fillRect(0, 0, 900, 100);
-        
-        // Displays question specific timer (if applicable)
-        if(this.qTimeMax != null) {
-            p = (1 - this.qTime / this.qTimeMax) * 100;
-            p = Math.min(p, 100);
-            ctx.fillStyle = '#AA3333';
-            ctx.fillRect(600, p, 100, 100 - p);
-        }
-        
-        // Draw medal marker
-        ctx.strokeStyle = '#DD2222';
-        ctx.lineWidth = 1;
-        p = Math.max(Math.min((1 - this.score / NLC.medalScores[0]), 1), 0);
-        this.drawLine(ctx, 200, p * 96, 300, p * 96);
-        
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 4;
-        this.drawLine(ctx, 200, 0, 200, 100);
-        this.drawLine(ctx, 300, 0, 300, 100);
-        this.drawLine(ctx, 600, 0, 600, 100);
-        this.drawLine(ctx, 700, 0, 700, 100);
-        
-        this.drawLine(ctx, 0, 100, 900, 100);
     }
 });
+
+HUD.MedalMeterX = 185;
 
 exports.HUD = HUD;

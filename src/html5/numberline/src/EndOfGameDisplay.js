@@ -16,7 +16,7 @@ Copyright 2011, Carnegie Learning
 
 // Cocos imports
 var cocos = require('cocos2d');
-var geom = require('geometry');
+var geo = require('geometry');
 var events = require('events');
 
 // Static imports
@@ -35,7 +35,7 @@ GuiNode = cocos.nodes.Node.extend({
     // Slides a label in from the right
     slideLabelIn: function (l, d) {
         this.addChild({child: l});
-        var a = cocos.actions.MoveTo.create({position: new geom.Point(10, l.get('position').y), duration: d});
+        var a = cocos.actions.MoveTo.create({position: new geo.Point(30, l.get('position').y), duration: d});
         a.startWithTarget(l);
         l.runAction(a);
         
@@ -94,14 +94,14 @@ TotalLine = GuiNode.extend({
         this.buildLabel(amt, 'amount', 145);
         this.buildLabel('=', 'eLabel', 200);
         this.buildLabel('0', 'result', 350);
-        this.get('result').set('anchorPoint', new geom.Point(1, 0.5));
+        this.get('result').set('anchorPoint', new geo.Point(1, 0.5));
     },
     
     // Builds a basic label for the line
     buildLabel: function(s, l, x) {
         lbl = cocos.nodes.Label.create({string: s});
-        lbl.set('position', new geom.Point(x, 0));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
+        lbl.set('position', new geo.Point(x, 0));
+        lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set(l, lbl);
     },
     
@@ -157,7 +157,7 @@ EndOfGameDisplay = GuiNode.extend({
     timeAmt         : 0.0,      // Elapsed time to display
     abort           : false,    // Abort state of the game
     
-    sliderX         : 390,       // X location of the slider on the medal line
+    sliderX         : 410,       // X location of the slider on the medal line
     
     init: function (ta, a, lineVals) {
         EndOfGameDisplay.superclass.init.call(this);
@@ -168,18 +168,23 @@ EndOfGameDisplay = GuiNode.extend({
         var lbl;
         var opts = {};
         
+        this.bg = cocos.nodes.Sprite.create({file: '/resources/Score_Card/Window_Postgame.png'});
+        this.scaleTo(this.bg, 440, 550)
+        this.bg.set('anchorPoint', new geo.Point(0, 0));
+        this.addChild({child: this.bg});
+        
         // Text label for time elapsed
         opts['string'] = 'Elapsed Time';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(-500, 40));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
+        lbl.set('position', new geo.Point(-500, 40));
+        lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set('elapsedLabel', lbl);
         
         // Displays time elapsed
         opts['string'] = '0.0';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(350, 40));
-        lbl.set('anchorPoint', new geom.Point(1, 0.5));
+        lbl.set('position', new geo.Point(390, 40));
+        lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('elapsedTime', lbl);
         
         this.lines = [];
@@ -188,7 +193,7 @@ EndOfGameDisplay = GuiNode.extend({
         this.lines[2] = TotalLine.create('Miss'   , lineVals[2], Q.ptsIncorrect);
         
         for(var i=0; i<3; i+=1) {
-            this.lines[i].set('position', new geom.Point(10, 80 + 40*i));
+            this.lines[i].set('position', new geo.Point(30, 80 + 40*i));
             events.addListener(this.lines[i], 'animationCompleted', this.next.bind(this));
             this.addChild({child: this.lines[i]});
         }
@@ -196,28 +201,34 @@ EndOfGameDisplay = GuiNode.extend({
         // Holds overall total
         opts['string'] = '0';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(350, 200));
-        lbl.set('anchorPoint', new geom.Point(1, 0.5));
+        lbl.set('position', new geo.Point(390, 200));
+        lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('totalLabel', lbl);
         
+        var dir = '/resources/Score_Card/Window_MedalGained/Window_MedalGained_';
         this.metalTextures = [
-            cocos.nodes.Sprite.create({file:'/resources/Score_Gold.png'}),
-            cocos.nodes.Sprite.create({file:'/resources/Score_Silver.png'}),
-            cocos.nodes.Sprite.create({file:'/resources/Score_Bronze.png'}),
-            cocos.nodes.Sprite.create({file:'/resources/Score_None.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Silver.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Bronze.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'None.png'}),
         ]
         
-        var x = 10;
+        var x = 30;
         for(i=0; i<4; i+=1) {
             this.scaleTo(this.metalTextures[i], NLC.proportions[i] * 380, 20)
-            this.metalTextures[i].set('position', new geom.Point(x, 260));
-            this.metalTextures[i].set('anchorPoint', new geom.Point(0, 0));
+            this.metalTextures[i].set('position', new geo.Point(x, 260));
+            this.metalTextures[i].set('anchorPoint', new geo.Point(0, 0));
             this.addChild({child: this.metalTextures[i]});
             
             x += NLC.proportions[i] * 380;
         }
+        
+        this.needle = cocos.nodes.Sprite.create({file: '/resources/Score_Card/Window_MedalGained/Window_MedalGained_Needle.png'});
+        this.needle.set('position', new geo.Point(this.sliderX, 280))
+        this.addChild({child:this.needle});
     },
     
+    //TODO: Really should be a util function, or put in cocos.nodes.Node
     scaleTo: function(s, x, y) {
         var c = s.get('contentSize');
         s.set('scaleX', x / c.width);
@@ -282,19 +293,20 @@ EndOfGameDisplay = GuiNode.extend({
             MOT.create(this.sliderX, x, 1.0).bind(this, 'sliderX');
         }
         else if(step == 7) {
+            var dir = '/resources/Score_Card/Medals/Medal_'
             if(this.get('abort') || this.total < NLC.medalScores[3])
-                this.medal = cocos.nodes.Sprite.create({file: '/resources/Medal_0.png'});
+                this.medal = cocos.nodes.Sprite.create({file: dir + 'None.png'});
             else if(this.total > NLC.medalScores[1])
-                this.medal = cocos.nodes.Sprite.create({file: '/resources/Medal_1.png'});
+                this.medal = cocos.nodes.Sprite.create({file: dir + 'Gold.png'});
             else if(this.total > NLC.medalScores[2])
-                this.medal = cocos.nodes.Sprite.create({file: '/resources/Medal_2.png'});
+                this.medal = cocos.nodes.Sprite.create({file: dir + 'Silver.png'});
             else
-                this.medal = cocos.nodes.Sprite.create({file: '/resources/Medal_3.png'});
+                this.medal = cocos.nodes.Sprite.create({file: dir + 'Bronze.png'});
             
-            this.medal.set('position', new geom.Point(320, 370));
-            this.medal.set('anchorPoint', new geom.Point(0.5, 0.5));
-            this.medal.set('scaleX', 0.5);
-            this.medal.set('scaleY', 0.5);
+            this.medal.set('position', new geo.Point(290, 420));
+            this.medal.set('anchorPoint', new geo.Point(0.5, 0.5));
+            this.medal.set('scaleX', 1);
+            this.medal.set('scaleY', 1);
             this.addChild({child: this.medal});
             
             setTimeout(this.next.bind(this), 250);
@@ -308,20 +320,6 @@ EndOfGameDisplay = GuiNode.extend({
     // Handles all the low level drawing calls
     // TODO: Unmagic number these
     draw: function (ctx) {
-        // Draws the background of the window
-        ctx.fillStyle = "#8B7765";
-        ctx.fillRect(0, 0, 400, 450);
-        
-        // Draw the indicator for the medal meter line
-        var x = this.get('sliderX');
-        ctx.fillStyle = "#CC2222";
-        ctx.beginPath();
-        ctx.moveTo(x    , 277);
-        ctx.lineTo(x + 8, 250);
-        ctx.lineTo(x - 8, 250);
-        ctx.closePath();
-        ctx.fill();
-        
         // Draw the totaling line
         if(this.get('step') >= 6) {
             ctx.strokeStyle = '#FFFFFF';
@@ -331,6 +329,9 @@ EndOfGameDisplay = GuiNode.extend({
             ctx.lineTo(this.get('totalLineX'), 180);
             ctx.stroke();
         }
+        
+        //HACK: Laziness...
+        this.needle.position.x = this.sliderX;
     }
 });
 

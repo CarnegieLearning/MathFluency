@@ -27,20 +27,18 @@ var XML = require('XML').XML;
 var Question = cocos.nodes.Node.extend({
 	displayValue  : null,     // Content to display to the player
 	correctValue  : null,     // The exact correct answer
-	tolerance	  : 0.05,     // Allowable difference between response and answer
+    bandRanges    : null,     // 
+    bandPts       : null,     // 
 	
     playerValue	  : null,     // Player's response to the question
-    isCorrect     : null,     // Stores truth value
+    correctness   : null,     // Stores truth value
     isTimeout     : false,    // If true, the player timed out of responding to this question
     
     responseTime  : 0,        // Amount of time it took player to respond
     timeLimit     : null,     // Maximum amount of time allowed to answer this Question
     paused        : false,    // Stores if the question timer is paused
     
-    ptsCorrect    : null,     // Local override for points on correct answer
-    ptsIncorrect  : null,     // Local override for points on incorrect answer
     ptsTimeout    : null,     // Local override for points on question timeout
-    ptsQuestBonus : null,     // Local override for points per second remaining on question timer
     
     pointsEarned  : null,     // Number of points earned on this question
     
@@ -51,12 +49,15 @@ var Question = cocos.nodes.Node.extend({
 		this.correctValue = XML.getChildByName(node, 'ANSWER').value;
         
         // Load override values, if value is not overridden, use static default value
-        util.each('timeLimit tolerance ptsCorrect ptsIncorrect ptsTimeout ptsQuestBonus'.w(), util.callback(this, function (name) {
+        util.each('timeLimit ptsTimeout bandRanges bandPts'.w(), util.callback(this, function (name) {
             if(node.attributes.hasOwnProperty(name)) {
                 this[name] = node.attributes[name];
             }
-            else {
+            else if(Question.hasOwnProperty(name)) {
                 this[name] = Question[name]
+            }
+            else {
+                console.log("Question - Unrecognized Option : " + name);
             }
         }));
 		
@@ -69,15 +70,17 @@ var Question = cocos.nodes.Node.extend({
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
         
 		// Evaluate the response
-        //TODO: Implement bands of correctness rather than just correct/incorrect
-		if(Math.abs(ans - this.correctValue) < this.tolerance) {
-            this.pointsEarned = this.ptsCorrect + Math.floor(this.getTimeLeft()) * this.ptsQuestBonus;
-            this.isCorrect = true;
-			return true;
-		}
+        var i=0;
+        for(var i=0; i<this.bandRanges.length; i+=1) {
+            if(Math.abs(ans - this.correctValue) < this.bandRanges[i]) {
+                this.pointsEarned = this.bandPts[i];
+                this.correctness = i;
+                return true;
+            }
+        }
         
-        this.pointsEarned = this.ptsIncorrect;
-        this.isCorrect = false;
+        this.pointsEarned = this.bandPts[i];
+        this.correctness = i;
 		return false;
     },
     
@@ -108,15 +111,13 @@ var Question = cocos.nodes.Node.extend({
     }
 });
 
-// Defaults for Question values /////////
-Question.ptsCorrect    = 10;           // Points given for correct answers
-Question.ptsIncorrect  = -5;           // Points given for incorrect answers
-Question.ptsTimeout    = -5;           // Points given for having a specific question time out
-Question.ptsQuestBonus = 0;            // Points given per second left after answering a timed question correctly
+// Defaults for Question values //////////
+Question.ptsTimeout    = -5;            // Points given for having a specific question time out
 
-Question.timeLimit     = null;         // Default time limit for individual questions
-Question.tolerance     = 0.05;         // Default acceptable error tolerance for correct answers
-/////////////////////////////////////////
+Question.timeLimit     = null;          // Default time limit for individual questions
+Question.bandRanges    = [0.05, 0.10]   // Default limits of each correctness band (final band is anything greater than the last entry)
+Question.bandPts       = [10, 5, -5]    // Default value for answers in each of the bands
+//////////////////////////////////////////
 
 // TODO: Write static helper for building an options object to initialize a question
 

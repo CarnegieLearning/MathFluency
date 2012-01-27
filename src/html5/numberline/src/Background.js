@@ -15,17 +15,13 @@ Copyright 2011, Carnegie Learning
 */
 
 var cocos = require('cocos2d');
+var geo = require('geometry');
 
 var Background = cocos.nodes.Node.extend({
     init: function(lanes) {
         Background.superclass.init.call(this);
         
-        this.set('zOrder', -10);
-    },
-    
-    draw: function(context) {
-        context.fillStyle = '#2222DD';
-        context.fillRect(-10, -10, 920, 620);
+        
     },
 });
 
