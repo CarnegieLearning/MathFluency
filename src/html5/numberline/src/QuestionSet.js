@@ -168,39 +168,7 @@ var QuestionSet = cocos.nodes.Node.extend({
     
     set_lineColor: function(c) {
         this.lineColor = c;
-        this.numberline.lineColor = c;
     },
-    
-    // Drawing arrows here to help with coordinate calculations for the numberline
-    draw: function (context) {
-        context.strokeStyle = this.get('lineColor');
-        context.lineWidth = 6;
-        
-        // Left side arrow
-        context.beginPath();
-        context.moveTo(QuestionSet.NumberLineX - 10, QuestionSet.NumberLineY - 20);
-        context.lineTo(QuestionSet.NumberLineX - 30, QuestionSet.NumberLineY     );
-        context.lineTo(QuestionSet.NumberLineX - 10, QuestionSet.NumberLineY + 20);
-        context.stroke();
-        
-        context.beginPath();
-        context.moveTo(QuestionSet.NumberLineX - 30, QuestionSet.NumberLineY);
-        context.lineTo(QuestionSet.NumberLineX     , QuestionSet.NumberLineY);
-        context.closePath();
-        context.stroke();
-        
-        // Right side arrow
-        context.moveTo(QuestionSet.NumberLineX + this.numberline.length + 10, QuestionSet.NumberLineY - 20);
-        context.lineTo(QuestionSet.NumberLineX + this.numberline.length + 30, QuestionSet.NumberLineY     );
-        context.lineTo(QuestionSet.NumberLineX + this.numberline.length + 10, QuestionSet.NumberLineY + 20);
-        context.stroke();
-        
-        context.beginPath();
-        context.moveTo(QuestionSet.NumberLineX + this.numberline.length + 30, QuestionSet.NumberLineY);
-        context.lineTo(QuestionSet.NumberLineX + this.numberline.length     , QuestionSet.NumberLineY);
-        context.closePath();
-        context.stroke();
-    }
 });
 
 QuestionSet.NumberLineX = 225 - 150;

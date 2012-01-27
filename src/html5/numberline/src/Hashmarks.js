@@ -39,7 +39,7 @@ var Hashmarks = cocos.nodes.Node.extend({
     
     // Draws the hashmark on the line
     draw: function (ctx) {
-        ctx.strokeStyle = '#FFFFFF';
+        ctx.strokeStyle = '#000000';
         ctx.lineWidth = '4';
         ctx.beginPath();
         ctx.moveTo(0, -15);

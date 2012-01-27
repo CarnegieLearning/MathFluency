@@ -286,6 +286,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.hud.delayedInit();
         
         events.addListener(this.hud, 'stageTimeExpired', this.endOfGame.bind(this));
+        
+        this.menu.createMenu();
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
@@ -610,8 +612,6 @@ exports.main = function() {
     var app = FluencyApp.create(menu);
     
     // Set up inter-layer events
-    events.addListener(app, 'loaded', menu.createMenu.bind(menu));
-    
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
     events.addListener(menu, 'retryGameEvent', app.retryButtonHandler.bind(app));
     

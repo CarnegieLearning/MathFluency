@@ -30,11 +30,17 @@ var NumberLine = cocos.nodes.Node.extend({
 	hashes		: null,		    // Percentage based locations of hash marks
 	contents	: null,		    // Holds Content under hash marks
     length      : 600,          // Length, in pixels, of this numberline
-    lineColor   : '#FFFFFF',    // Color of the number line
+    NLImage     : null,
     
 	init: function (node) {
         NumberLine.superclass.init.call(this);
         
+        this.NLImage = cocos.nodes.Sprite.create({file: '/resources/General_Wireframe/Window/Window_NumberLine.png'});
+        this.scaleTo(this.NLImage, this.length + 80, 74);
+        this.NLImage.set('position', new geo.Point(-40, -20));
+        this.NLImage.set('anchorPoint', new geo.Point(0, 0));
+        this.addChild({child: this.NLImage});
+    
         this.hashes = [];
         this.contents = [];
         
@@ -50,20 +56,17 @@ var NumberLine = cocos.nodes.Node.extend({
             }
             
             this.hashes[i].set('position', new geo.Point(this.length * this.hashes[i].location, 0));
+            this.hashes[i].set('zOrder', 1);
             
             this.addChild({child: this.hashes[i]});
         }
 	},
     
-	draw: function (context) {
-		// Draw the number line
-		context.strokeStyle = this.lineColor;
-		context.lineWidth = 6;
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.lineTo(this.length, 0);
-        context.stroke();
-	},
+    scaleTo: function(s, x, y) {
+        var c = s.get('contentSize');
+        s.set('scaleX', x / c.width);
+        s.set('scaleY', y / c.height);
+    },
 });
 
 exports.NumberLine = NumberLine;
