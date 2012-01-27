@@ -475,6 +475,10 @@ var FluencyApp = KeyboardLayer.extend({
             }
         }
     },
+    
+    retryButtonHandler: function(evt) {
+        window.runStage(window.currentSequence, window.currentStage);
+    }
 });
 
 var MenuLayer = cocos.nodes.Menu.extend({
@@ -519,7 +523,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         b.set('scaleX', 0.3);
         b.set('scaleY', 0.3);
         this.addChild({child: b});
-        
+        /*
         opts['normalImage'] = dir + 'Next_Norm.png';
         opts['selectedImage'] = dir + 'Next_Down.png';
         opts['disabledImage'] = dir + 'Next_Norm.png';
@@ -530,7 +534,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         b.set('anchorPoint', new geo.Point(0, 0));
         b.set('scaleX', 0.3);
         b.set('scaleY', 0.3);
-        this.addChild({child: b});
+        this.addChild({child: b});*/
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -589,6 +593,7 @@ exports.main = function() {
     
     // Set up inter-layer events
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
+    events.addListener(menu, 'retryGameEvent', app.retryButtonHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
