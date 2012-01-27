@@ -102,12 +102,12 @@ var QuestionSet = cocos.nodes.Node.extend({
         
         //Prevent off line answers
         if(ans > 1.05) {
-            return false;
+            return -1;
         }
         ans = Math.min(ans, 1);
         
         if(ans < -0.05) {
-            return false;
+            return -1;
         }
         ans = Math.max(ans, 0);
         
@@ -135,7 +135,7 @@ var QuestionSet = cocos.nodes.Node.extend({
         
         this.nextQuestion();
         
-        return true;
+        return retVal;
     },
     
     // Handles questions timing out

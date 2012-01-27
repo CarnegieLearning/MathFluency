@@ -426,9 +426,10 @@ var FluencyApp = KeyboardLayer.extend({
     // Handles answering the current question
     answerQuestion: function(ans) {
         if(!this.answerLock)
-            if(this.questionList[this.current].giveAnswer(ans)) {
+            var retVal = this.questionList[this.current].giveAnswer(ans)
+            if(retVal >= 0 && retVal <= 2) {
                 this.answerLock = true;
-                this.claw.grabAt(ans);
+                this.claw.grabAt(ans, retVal);
             }
     },
     

@@ -75,13 +75,13 @@ var Question = cocos.nodes.Node.extend({
             if(Math.abs(ans - this.correctValue) < this.bandRanges[i]) {
                 this.pointsEarned = this.bandPts[i];
                 this.correctness = i;
-                return true;
+                return i;
             }
         }
         
         this.pointsEarned = this.bandPts[i];
         this.correctness = i;
-		return false;
+		return i;
     },
     
     // Returns the amount of time remaining for the question

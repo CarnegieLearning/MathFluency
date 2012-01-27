@@ -25,12 +25,14 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Since children do not play nice with animations...
 var ClawNode = cocos.nodes.Node.extend({
-    theClaw     : null,     // 
-    theItem     : null,     // 
+    theClaw     : null,     // THE CLAW!!!!
+    theItem     : null,     // The current item of interest
     
-    badItems    : null,     // 
-    goodItems   : null,     // 
-    greatItems  : null,     // 
+    items       : null,     // Stores lists of all available items, sorted by bamd
+    
+    badItems    : null,     // List of band 2 items
+    goodItems   : null,     // List of band 1 items
+    greatItems  : null,     // List of band 0 items
     
     init: function() {
         ClawNode.superclass.init.call(this);
@@ -62,17 +64,19 @@ var ClawNode = cocos.nodes.Node.extend({
         this.greatItems.push(cocos.nodes.Sprite.create({file: dir + 'Bear.png'}));
         this.greatItems.push(cocos.nodes.Sprite.create({file: dir + 'Money.png'}));
         this.greatItems.push(cocos.nodes.Sprite.create({file: dir + 'Suit.png'}));
+        
+        this.items = [this.greatItems, this.goodItems, this.badItems];
     },
     
     // Performs the full cycle of moving, grabbing, returning, dropping and resetting
-    grabAt: function(x) {
+    grabAt: function(x, grade) {
         var dx = x - this.get('position').x;
         
         this.theClaw.playAnimation('right');
         MOT.create(this.get('position').x, dx, 0.5).bindFunc(this, this.setX);
         
         var that = this;
-        this.theItem = this.badItems[0];
+        this.theItem = this.items[grade][Math.floor(Math.random()*this.items[grade].length)];
         this.theItem.set('position', new geo.Point(0, 375));
         this.theItem.set('scaleX', 0.5);
         this.theItem.set('scaleY', 0.5);
@@ -87,7 +91,8 @@ var ClawNode = cocos.nodes.Node.extend({
             MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setX); }, 1600);
         setTimeout(function() { that.theClaw.playAnimation('settleL'); }, 2100);
         setTimeout(function() { that.theClaw.playAnimation('open');
-            MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY); }, 2500);
+            MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY);
+            that.set('position', new geo.Point(100, 160)); }, 2500);
         setTimeout(function() { that.theClaw.playAnimation('close');
             that.removeChild({child: that.theItem}); }, 2700);
     },
