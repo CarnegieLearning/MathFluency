@@ -878,6 +878,41 @@
             "displayName": "Conversions 2 (Snowboard)",
             "engine": "snowboard_html5",
             "cli_fluency_task": "s2w4r2"
+        },
+        "week4_claw3" : {
+            "displayName": "Week 4: Claw 3",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c3"
+        },
+        "week4_claw4" : {
+            "displayName": "Week 4: Claw 4",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c4"
+        },
+        "week4_claw5" : {
+            "displayName": "Week 4: Claw 5",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c5"
+        },
+        "week4_claw6" : {
+            "displayName": "Week 4: Claw 6",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c3"
+        },
+        "week4_claw7" : {
+            "displayName": "Week 4: Claw 7",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c7"
+        },
+        "week4_claw8" : {
+            "displayName": "Week 4: Claw 8",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c8"
+        },
+        "week4_claw9" : {
+            "displayName": "Week 4: Claw 9",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c9"
         }
     },
     
