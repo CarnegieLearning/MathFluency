@@ -47,12 +47,14 @@ var HUD = cocos.nodes.Node.extend({
         
         // Set up the time remaining label
         this.timeLabel = cocos.nodes.Label.create({string: ''})
-        this.timeLabel.set('position', new geo.Point(850, 50));
+        this.timeLabel.set('position', new geo.Point(550, 60));
+        this.timeLabel.set('zOrder', 3);
         this.addChild({child: this.timeLabel});
         
         // Set up the score label
         this.scoreLabel = cocos.nodes.Label.create({string: '0'});
-        this.scoreLabel.set('position', new geo.Point(50, 50));
+        this.scoreLabel.set('position', new geo.Point(750, 60));
+        this.scoreLabel.set('zOrder', 3);
         this.addChild({child: this.scoreLabel});
         
         this.onQuestionTimerStart = this.onQuestionTimerStart.bind(this);
