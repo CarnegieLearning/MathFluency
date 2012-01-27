@@ -35,6 +35,7 @@ var HUD = require('HUD').HUD;
 var QuestionSet = require('QuestionSet').QuestionSet;
 var Question = require('Question').Question;
 var ClawNode = require('Claw').ClawNode;
+var Preloader = require('Preloader').Preloader;
 
 // TODO: De-magic number these
 /* Zorder
@@ -75,12 +76,27 @@ var FluencyApp = KeyboardLayer.extend({
         // Keep a reference to the menu layer
         this.menu = menu;
         
-        // Allow this Layer to catch mouse events
-        this.set('isMouseEnabled', true);
-        
         // Set up basic audio
         var AM = AudioMixer.create();
         this.set('audioMixer', AM);
+        
+        // Run the 'preloader'
+        var preloader = Preloader.create();
+        this.addChild({child: preloader});
+        this.set('preloader', preloader);
+        
+        events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
+    },
+    
+    delayedInit: function() {
+        // Remove the 'preloader'
+        var preloader = this.get('preloader')
+        this.removeChild({child: preloader});
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(preloader);
+        this.set('preloader', null);
+    
+        // Allow this Layer to catch mouse events
+        this.set('isMouseEnabled', true);
         
         // Get "command line" arguments from the div tag
         var app_div = $('#cocos_test_app')
@@ -484,9 +500,11 @@ var FluencyApp = KeyboardLayer.extend({
 var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
-    init: function(hook) {
+    init: function() {
         MenuLayer.superclass.init.call(this, {});
-        
+    },
+    
+    createMenu: function() {
         // Create the button
         var dir = '/resources/Buttons/';
         var opts = Object();
@@ -592,6 +610,8 @@ exports.main = function() {
     var app = FluencyApp.create(menu);
     
     // Set up inter-layer events
+    events.addListener(app, 'loaded', menu.createMenu.bind(menu));
+    
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
     events.addListener(menu, 'retryGameEvent', app.retryButtonHandler.bind(app));
     
