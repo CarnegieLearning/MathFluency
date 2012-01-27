@@ -285,7 +285,8 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.hud.delayedInit();
         
-        events.addListener(this.hud, 'stageTimeExpired', this.endOfGame.bind(this));
+        var that = this;
+        events.addListener(this.hud, 'stageTimeExpired', function() {that.endOfGame(true); });
         
         this.menu.createMenu();
     },
