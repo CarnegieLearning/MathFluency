@@ -334,22 +334,22 @@ var FluencyApp = KeyboardLayer.extend({
         }
     
         var ql = this.get('questionList')
-        var i = 0, correct = 0, almost = 0, incorrect = 0, unanswered = 0;
+        var correct = 0, almost = 0, incorrect = 0, unanswered = 0;
         
         // Tally question results
-        for(subset in ql) {
-            for(i in ql[subset].questions) {
-                if(ql[subset].questions[i].correctness == 0) {
+        for(var i=0; i<ql.length; i+=1) {
+            for(var j=0; j<ql[i].questions.length; j+=1) {
+                if(ql[i].questions[j].correctness == 0) {
                     correct += 1;
                 }
-                else if(ql[subset].questions[i].correctness == 1) {
+                else if(ql[i].questions[j].correctness == 1) {
                     almost += 1;
                 }
-                else if(ql[subset].questions[i].isTimeout) {
-                    unanswered += 1;
-                }
-                else if(!ql[subset].questions[i].correctness == 2){
+                else if(ql[i].questions[j].correctness == 2){
                     incorrect += 1;
+                }
+                else if(ql[i].questions[j].isTimeout) {
+                    unanswered += 1;
                 }
                 //else question was not reached and thus is not counted
             }
