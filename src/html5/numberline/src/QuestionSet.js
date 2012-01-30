@@ -37,7 +37,6 @@ var QuestionSet = cocos.nodes.Node.extend({
         QuestionSet.superclass.init.call(this);
     
         // Statically binding functions used only as callbacks
-        this.resetColor = this.resetColor.bind(this);
         this.onQuestionTimeout = this.onQuestionTimeout.bind(this)
         
         this.set('position', new geo.Point(150, 200));
@@ -71,11 +70,11 @@ var QuestionSet = cocos.nodes.Node.extend({
             }
             this.current += 1;
             
-            setTimeout(this.nextQuestionCallback.bind(this), 3000);
+            setTimeout(this.nextQuestionCallback.bind(this), QuestionSet.QDelay);
         }
         else {
             var that = this;
-            setTimeout(function() {events.trigger(that, 'endOfSet')}, 3000);
+            setTimeout(function() {events.trigger(that, 'endOfSet')}, QuestionSet.QDelay);
         }
     },
     
@@ -103,8 +102,7 @@ var QuestionSet = cocos.nodes.Node.extend({
     },
     
     // Answers the current question
-    // Returns: false if the answer was not valid, true if te answer was valid
-    // NOTE: valid/invalid ONLY indicte if the answer is allowed to be processed, NOT if it was correct or not
+    // Returns: -1 if the answer was not valid, [0-2] if te answer was valid
     giveAnswer: function(ans) {
         ans -= (this.get('position').x + this.numberline.get('position').x);
         ans /= this.numberline.length;
@@ -127,12 +125,10 @@ var QuestionSet = cocos.nodes.Node.extend({
         //TODO: Remove hardcoding
         if(retVal < 2) {
             events.trigger(this, 'rightAnswer');
-            this.set('lineColor', '#22FF22');
         }
         // Incorrect feedback
         else {
             events.trigger(this, 'wrongAnswer');
-            this.set('lineColor', '#FF2222');
         }
         
         events.trigger(this, 'scoreChange', this.questions[this.current].pointsEarned);
@@ -140,9 +136,6 @@ var QuestionSet = cocos.nodes.Node.extend({
         var x = this.questions[this.current].correctValue * this.numberline.length + QuestionSet.NumberLineX;
         this.correctLocator.set('position', new geo.Point(x, QuestionSet.NumberLineY));
         this.addChild({child: this.correctLocator});
-        
-        var that = this;
-        setTimeout(this.resetColor, 3000);
         
         this.nextQuestion();
         
@@ -155,23 +148,13 @@ var QuestionSet = cocos.nodes.Node.extend({
         events.trigger(this, 'scoreChange', this.questions[this.current].pointsEarned);
         this.set('lineColor', '#220000');
         
-        var that = this;
-        setTimeout(this.resetColor, 3000);
-        
         this.nextQuestion();
-    },
-    
-    resetColor: function() {
-        this.set('lineColor', '#FFFFFF');
-        this.removeChild({child: this.correctLocator});
-    },
-    
-    set_lineColor: function(c) {
-        this.lineColor = c;
     },
 });
 
 QuestionSet.NumberLineX = 225 - 150;
 QuestionSet.NumberLineY = 510 - 200;
+
+QuestionSet.QDelay = 3500;              // Delay (in ms) between answering a question and advancing to the next one
 
 exports.QuestionSet = QuestionSet;

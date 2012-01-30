@@ -25,12 +25,12 @@ var ModifyOverTime = BObject.extend({
     
     init: function (x, amount, time) {
         ModifyOverTime.superclass.init.call();
-        
+        this.tot = 0
         // Initialize
         this.set('value', x);
         this.set('rate', amount / time);
         this.set('duration', time);
-        
+
         // Force calling updates since this will not be added to the scene
         cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
         
@@ -57,12 +57,12 @@ var ModifyOverTime = BObject.extend({
             // Check the case that the tick is longer than our remaining time
             var edt = Math.min(dt, dur);
             this.set('duration', dur - edt);
-            
+
             var rate = this.get('rate');
             this.set('value', this.get('value') + rate * edt);
-            
+
             if(this.func) {
-                this.func.apply(this.obj, [this.get('value') + rate * edt]);
+                this.func.apply(this.obj, [this.get('value')]);
             }
         }
         
@@ -70,7 +70,7 @@ var ModifyOverTime = BObject.extend({
         else {
             // Let anyone who wants to know that this change has finished
             events.trigger(this, 'Completed', this);
-            
+
             // Then kill it
             this.kill();
         }

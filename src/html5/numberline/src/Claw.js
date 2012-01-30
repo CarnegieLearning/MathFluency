@@ -73,7 +73,7 @@ var ClawNode = cocos.nodes.Node.extend({
         var dx = x - this.get('position').x;
         
         this.theClaw.playAnimation('right');
-        MOT.create(this.get('position').x, dx, 0.5).bindFunc(this, this.setX);
+        MOT.create(this.get('position').x, dx, 0.5).bindFunc(this, this.setClawX);
         
         var that = this;
         this.theItem = this.items[grade][Math.floor(Math.random()*this.items[grade].length)];
@@ -88,17 +88,16 @@ var ClawNode = cocos.nodes.Node.extend({
         setTimeout(function() { that.theClaw.playAnimation('grab'); }, 1050);
         setTimeout(function() { MOT.create(375, -150, 0.23).bindFunc(that, that.setItemY); }, 1320);
         setTimeout(function() { that.theClaw.playAnimation('left'); 
-            MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setX); }, 1600);
+            MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setClawX); }, 1600);
         setTimeout(function() { that.theClaw.playAnimation('settleL'); }, 2100);
-        setTimeout(function() { that.theClaw.playAnimation('open');
-            MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY);
-            that.set('position', new geo.Point(100, 160)); }, 2500);
+        setTimeout(function() { that.theClaw.playAnimation('open'); }, 3000);
+        setTimeout(function() { MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY); }, 3100);
         setTimeout(function() { that.theClaw.playAnimation('close');
-            that.removeChild({child: that.theItem}); }, 2700);
+            that.removeChild({child: that.theItem}); }, 3200);
     },
     
     // Accessor for MOT
-    setX: function(x) {
+    setClawX: function(x) {
         var pt = this.get('position');
         pt.x = x;
         this.set('position', pt);
@@ -119,6 +118,7 @@ var Claw = cocos.nodes.Sprite.extend({
         Claw.superclass.init.call(this, {file: '/resources/Claw.png'});
         
         this.set('anchorPoint', new geo.Point(0.5, 0));
+        this.set('position', new geo.Point(20, 0));
         
         // Load animations
         var dir = '/resources/Claw_Animation/Claw_';
