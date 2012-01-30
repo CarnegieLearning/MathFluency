@@ -4,10 +4,14 @@
             "c1s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -15,10 +19,14 @@
             "c2s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -26,10 +34,14 @@
             "c3s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -37,10 +49,14 @@
             "c4s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -48,10 +64,14 @@
             "c5s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -59,10 +79,14 @@
             "c6s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -70,10 +94,14 @@
             "c7s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"        
                 ]
             }
         },
@@ -81,10 +109,14 @@
             "c8s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"    
                 ]
             }
         },
@@ -92,10 +124,14 @@
             "c9s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"    
                 ]
             }
         },
@@ -103,10 +139,14 @@
             "c10s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -114,10 +154,14 @@
             "c11s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -125,10 +169,14 @@
             "c12s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -136,10 +184,14 @@
             "c13s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -147,10 +199,14 @@
             "c14s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -158,10 +214,14 @@
             "c15s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -169,10 +229,14 @@
             "c16s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -180,10 +244,14 @@
             "c17s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -191,10 +259,14 @@
             "c18s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -202,10 +274,14 @@
             "c19s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -213,10 +289,14 @@
             "c20s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"   
                 ]
             }
         },
@@ -224,10 +304,14 @@
             "c21s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -235,10 +319,14 @@
             "c22s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -246,10 +334,14 @@
             "c23s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -257,10 +349,14 @@
             "c24s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         }, 
@@ -268,10 +364,14 @@
             "c25s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -279,10 +379,14 @@
             "c26s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -290,10 +394,14 @@
             "c27s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -301,10 +409,14 @@
             "c28s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -312,10 +424,14 @@
             "c29s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -323,10 +439,14 @@
             "c30s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -334,10 +454,14 @@
             "c31s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -345,10 +469,14 @@
             "c32s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"   
                 ]
             }
         },
@@ -356,10 +484,14 @@
             "c33s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -367,10 +499,14 @@
             "c34s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -378,10 +514,14 @@
             "c35s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -389,10 +529,14 @@
             "c36s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -400,10 +544,14 @@
             "c37s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -411,10 +559,14 @@
             "c38s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -422,10 +574,14 @@
             "c39s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -433,10 +589,14 @@
             "c40s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -444,10 +604,14 @@
             "c41s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -455,10 +619,14 @@
             "c42s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -466,10 +634,14 @@
             "c43s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -477,10 +649,14 @@
             "c44s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"   
                 ]
             }
         },
@@ -488,10 +664,14 @@
             "c45s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -499,10 +679,14 @@
             "c46s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -510,10 +694,14 @@
             "c47s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -521,10 +709,14 @@
             "c48s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -532,10 +724,14 @@
             "c49s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -543,10 +739,14 @@
             "c50s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -554,10 +754,14 @@
             "c51s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -565,10 +769,14 @@
             "c52s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -576,10 +784,14 @@
             "c53s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -587,10 +799,14 @@
             "c54s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         },
@@ -598,10 +814,14 @@
             "c55s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -609,10 +829,14 @@
             "c56s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9"   
                 ]
             }
         },
@@ -620,10 +844,14 @@
             "c57s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw8",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -631,10 +859,14 @@
             "c58s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9"  
                 ]
             }
         },
@@ -642,10 +874,14 @@
             "c59s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -653,10 +889,14 @@
             "c12s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw9",
+                    "week4_claw9" 
                 ]
             }
         },
@@ -664,10 +904,14 @@
             "c61s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Race_1",
-                    "Battle_10Fract",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -675,10 +919,14 @@
             "c62s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Battle_1Fract",
-                    "Race_10",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw4",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -686,10 +934,14 @@
             "c63s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Battle_1Fract",
-                    "Battle_10Fract",
-                    "Race_1",
-                    "Race_10"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw5",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw8",
+                    "week4_claw9"
                 ]
             }
         },
@@ -697,10 +949,14 @@
             "c64s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Race_1",
-                    "Race_10",
-                    "Battle_1Fract",
-                    "Battle_10Fract"
+                    "Snow_1",
+                    "Snow_2",
+                    "week4_claw3",
+                    "week4_claw5",
+                    "week4_claw6",
+                    "week4_claw7",
+                    "week4_claw9",
+                    "week4_claw9"
                 ]
             }
         }
