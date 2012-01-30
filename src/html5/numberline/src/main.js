@@ -36,6 +36,7 @@ var QuestionSet = require('QuestionSet').QuestionSet;
 var Question = require('Question').Question;
 var ClawNode = require('Claw').ClawNode;
 var Preloader = require('Preloader').Preloader;
+var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // TODO: De-magic number these
 /* Zorder
@@ -44,7 +45,8 @@ var Preloader = require('Preloader').Preloader;
 -2  ClawNode (Claw.js)
 -1  Cabinet Foreground
 0   Anything not mentioned
-2   End Of Game Display
+10  Fade out
+12  EndOfGame Display
 */
 
 // Create a new layer
@@ -365,7 +367,7 @@ var FluencyApp = KeyboardLayer.extend({
                 else if(ql[i].questions[j].correctness == 1) {
                     almost += 1;
                 }
-                else if(!ql[i].questions[j].correctness == 2){
+                else if(ql[i].questions[j].correctness == 2){
                     incorrect += 1;
                 }
                 else if(ql[i].questions[j].isTimeout) {
@@ -378,12 +380,22 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Checks to see if abort was related to window.unload
         if(finished != null) {
+            var fade = cocos.nodes.Sprite.create({file: '/resources/fade_black.png'});
+            fade.set('position', new geo.Point(-10, -10));
+            fade.set('anchorPoint', new geo.Point(0, 0));
+            fade.set('opacity', 0);
+            fade.set('zOrder', 10);
+            MOT.create(0, 255, 2).bind(fade, 'opacity');
+            this.addChild({child: fade});
+        
             var e = EOGD.create(this.hud.elapsed, !finished, [correct, almost, (unanswered + incorrect)]);
             e.set('position', new geo.Point(210, 25));
-            e.set('zOrder', 2);
-            this.addChild({child: e});
+            e.set('zOrder', 12);
             events.addListener(e, 'animationCompleted', this.menu.endGameButtons.bind(this.menu));
-            e.start();
+            
+            var that = this;
+            setTimeout(function() {that.addChild({child: e}); }, 1000);
+            setTimeout(e.start.bind(e), 2000);
         }
     
         // If the 'command line' specified a call back, feed the callback the xml
@@ -544,7 +556,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         b.set('scaleX', 0.3);
         b.set('scaleY', 0.3);
         this.addChild({child: b});
-        /*
+        /* /
         opts['normalImage'] = dir + 'Next_Norm.png';
         opts['selectedImage'] = dir + 'Next_Down.png';
         opts['disabledImage'] = dir + 'Next_Norm.png';
@@ -555,7 +567,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         b.set('anchorPoint', new geo.Point(0, 0));
         b.set('scaleX', 0.3);
         b.set('scaleY', 0.3);
-        this.addChild({child: b});*/
+        this.addChild({child: b}); //*/
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
