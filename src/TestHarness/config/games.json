@@ -4,13 +4,10 @@
             "c1s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3678",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"                    
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -18,13 +15,10 @@
             "c2s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3687",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -32,13 +26,10 @@
             "c3s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3768",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -46,13 +37,10 @@
             "c4s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3786",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -60,13 +48,10 @@
             "c5s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3867",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -74,13 +59,10 @@
             "c6s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3876",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -88,13 +70,10 @@
             "c7s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6378",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -102,13 +81,10 @@
             "c8s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6387",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -116,13 +92,10 @@
             "c9s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6738",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -130,13 +103,10 @@
             "c10s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6783",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -144,13 +114,10 @@
             "c11s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6837",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -158,13 +125,10 @@
             "c12s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6873",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -172,13 +136,10 @@
             "c13s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7368",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -186,13 +147,10 @@
             "c14s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7386",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -200,13 +158,10 @@
             "c15s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7638",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -214,13 +169,10 @@
             "c16s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7683",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -228,13 +180,10 @@
             "c17s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7836",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -242,13 +191,10 @@
             "c18s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7863",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -256,13 +202,10 @@
             "c19s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8367",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -270,13 +213,10 @@
             "c20s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8376",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -284,13 +224,10 @@
             "c21s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8637",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -298,13 +235,10 @@
             "c22s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8673",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -312,13 +246,10 @@
             "c23s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8736",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -326,13 +257,10 @@
             "c24s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8763",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         }, 
@@ -340,13 +268,10 @@
             "c25s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3678",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"                    
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -354,13 +279,10 @@
             "c26s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3687",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -368,13 +290,10 @@
             "c27s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3768",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -382,13 +301,10 @@
             "c28s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3786",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -396,13 +312,10 @@
             "c29s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3867",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -410,13 +323,10 @@
             "c30s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3876",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -424,13 +334,10 @@
             "c31s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6378",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -438,13 +345,10 @@
             "c32s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6387",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -452,13 +356,10 @@
             "c33s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6738",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -466,13 +367,10 @@
             "c34s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6783",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -480,13 +378,10 @@
             "c35s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6837",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -494,13 +389,10 @@
             "c36s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6873",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -508,13 +400,10 @@
             "c37s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7368",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -522,13 +411,10 @@
             "c38s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7386",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -536,13 +422,10 @@
             "c39s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7638",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -550,13 +433,10 @@
             "c40s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7683",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -564,13 +444,10 @@
             "c41s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7836",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -578,13 +455,10 @@
             "c42s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7863",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -592,13 +466,10 @@
             "c43s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8367",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -606,13 +477,10 @@
             "c44s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8376",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -620,13 +488,10 @@
             "c45s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8637",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -634,13 +499,10 @@
             "c46s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8673",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -648,13 +510,10 @@
             "c47s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8736",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -662,13 +521,10 @@
             "c48s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_8763",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -676,13 +532,10 @@
             "c49s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3678",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"                    
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -690,13 +543,10 @@
             "c50s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3687",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -704,13 +554,10 @@
             "c51s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3768",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -718,13 +565,10 @@
             "c52s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3786",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -732,13 +576,10 @@
             "c53s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3867",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -746,13 +587,10 @@
             "c54s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba3876",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -760,13 +598,10 @@
             "c55s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6378",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -774,13 +609,10 @@
             "c56s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6387",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -788,13 +620,10 @@
             "c57s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6738",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -802,13 +631,10 @@
             "c58s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6783",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -816,13 +642,10 @@
             "c59s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6837",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -830,13 +653,10 @@
             "c12s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_6873",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -844,13 +664,10 @@
             "c61s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7368",
-                    "Battle_50Click",
-                    "Battle_50Type",  
-                    "Battle_10Click",
-                    "Battle_10Type",  
-                    "Battle_100Click",
-                    "Battle_100Type"  
+                    "Battle_1Fract",
+                    "Race_1",
+                    "Battle_10Fract",
+                    "Race_10"
                 ]
             }
         },
@@ -858,13 +675,10 @@
             "c62s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7386",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_10Click",
-                    "Battle_100Type",   
-                    "Battle_100Click"
+                    "Race_1",
+                    "Battle_1Fract",
+                    "Race_10",
+                    "Battle_10Fract"
                 ]
             }
         },
@@ -872,13 +686,10 @@
             "c63s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7638",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Type", 
-                    "Battle_100Type",
-                    "Battle_10Click",   
-                    "Battle_100Click"
+                    "Battle_1Fract",
+                    "Battle_10Fract",
+                    "Race_1",
+                    "Race_10"
                 ]
             }
         },
@@ -886,16 +697,13 @@
             "c64s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "s2w01_scuba_7683",
-                    "Battle_50Click",
-                    "Battle_50Type", 
-                    "Battle_10Click",   
-                    "Battle_100Click",
-                    "Battle_10Type", 
-                    "Battle_100Type"
+                    "Race_1",
+                    "Race_10",
+                    "Battle_1Fract",
+                    "Battle_10Fract"
                 ]
             }
-        }  
+        }
     },
     
     "stages": {
@@ -1042,6 +850,69 @@
         "Battle_100Type": {
             "displayName": "Battleship Numberline",
             "engine": "battleship"
+        },
+        "Battle_1Fract": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Battle_10Fract": {
+            "displayName": "Battleship Numberline",
+            "engine": "battleship"
+        },
+        "Race_1": {
+            "displayName": "Fractions (Racecar)",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "s2w2_fract_1"
+        },
+        "Race_10": {
+            "displayName": "Fractions (Racecar)",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "s2w2_fract_2"
+        },
+        "Snow_1": {
+            "displayName": "Week 4: Conversions 1 (Snowboard)",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w4r1"
+        },
+        "Snow_2": {
+            "displayName": "Week 4: Conversions 2 (Snowboard)",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w4r2"
+        },
+        "week4_claw3" : {
+            "displayName": "Week 4: Claw 3",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c3"
+        },
+        "week4_claw4" : {
+            "displayName": "Week 4: Claw 4",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c4"
+        },
+        "week4_claw5" : {
+            "displayName": "Week 4: Claw 5",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c5"
+        },
+        "week4_claw6" : {
+            "displayName": "Week 4: Claw 6",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c3"
+        },
+        "week4_claw7" : {
+            "displayName": "Week 4: Claw 7",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c7"
+        },
+        "week4_claw8" : {
+            "displayName": "Week 4: Claw 8",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c8"
+        },
+        "week4_claw9" : {
+            "displayName": "Week 4: Claw 9",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w4c9"
         }
     },
     
@@ -1049,6 +920,10 @@
         "snowboard": {
             "type": "CLFlashGameEngine",
             "cli_task_id": "ft1_snow"
+        },
+        "snowboard_html5": {
+            "type": "CLHTML5GameEngine",
+            "cli_task_id": "ft1_snow_html5"
         },
         "racecar": {
             "type": "CLFlashGameEngine",
@@ -1081,6 +956,10 @@
         "scuba": {
             "type": "CLFlashGameEngine",
             "cli_task_id": "ft3_scuba"
+        },
+        "claw_html5": {
+            "type": "CLHTML5GameEngine",
+            "cli_task_id": "ft2_claw_html5"
         }
     }
 }

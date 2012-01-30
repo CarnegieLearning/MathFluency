@@ -2,17 +2,12 @@ import core
 import random
 import decimal
 import math
+import level_output
 
 #Shortcut abbreviations
 RI = random.randint
 RC = random.choice
 D = decimal.Decimal
-
-#Globals
-LOAD_PREVIOUS_CONFIG = 0
-SAVE_CURRENT_CONFIG = 0
-GENERATE = 0
-BATCHRUN = 1
 
 #generator specific configuration settings
 #EXPECTS: engine string, header file location, output directory, output filename
@@ -22,8 +17,8 @@ class decimalConfig1(core.config):
     def __init__(self, eng, header, dir, name):
         core.config.__init__(self, eng, header, dir, name)
     
-        self.whole_min = 1      #smallest value right of the decimal
-        self.whole_max = 10     #largest value right of the decimal
+        self.whole_min = 0      #smallest value right of the decimal
+        self.whole_max = 0      #largest value right of the decimal
         self.part_min = 2      #smallest value left of the decimal
         self.part_max = 999     #largest value left of the decimal
         self.part_mag = 3       #divides [part_min, part_max] by power(10, part_mag)
@@ -38,23 +33,25 @@ class decimalConfig1(core.config):
         
         self.r_min = 30         #min distance between selector and gate
         self.r_max = 300        #max distance between selector and gate
-        self.r_mult = 0.01      #multiply distance by this amount before applying
+        self.r_mult = 0.001      #multiply distance by this amount before applying
         
-        self.min_dist = D(1.33)#Minimum distance apart two adjecent selectors need to be
+        self.min_dist = D(0.33)#Minimum distance apart two adjecent selectors need to be
         self.last_val = None
+        
+        self.toXML = level_output.Racecar_toXML
         
     #Formats delimiters into strings
     def strDelim(self, d):
         dStr = D(d) * D(self.delititer_multiplier)
         if(dStr > 150):
-            return self.delimiter_prepend + str(D(round(dStr, -1)).quantize(D(1))) + self.delimiter_append
+            return core.strContent(self.delimiter_prepend + str(D(round(dStr, -1)).quantize(D(1))) + self.delimiter_append)
 
         dStr = dStr.quantize(D(1))
-        return self.delimiter_prepend + str(dStr) + self.delimiter_append
+        return core.strContent(self.delimiter_prepend + str(dStr) + self.delimiter_append)
     
     #Formats selectors into strings    
     def strSelector(self, s):
-        return self.selector_prepend + str(s * self.selector_multiplier) + self.selector_append
+        return core.strContent(self.selector_prepend + str(s * self.selector_multiplier) + self.selector_append)
         
     #generates a question subset
     def generate(self):
@@ -173,24 +170,8 @@ def loadBatch(loadWith, batchLoad):
 #generate/build/load needed configs here
 #IMPORTANT: Only the FIRST config is used by core.runBatch to set filenames, paths, engine, number of subsets and runs
 #IMPORTANT: All configs are selected at random to run their own specified generate function for data generation
-configs = [decimalConfig1('ft1_racecar', 'f1header.xml', 'private/test3/', 'set')]
+configs = [decimalConfig1('ft1_racecar', 'f1header_s2w4.xml', 'private/s2w4r1/', 's2w4r1_set')]
 configs[0].datasets_per_run = 40
-    
-#Load config(s)
-if(LOAD_PREVIOUS_CONFIG):
-    temp = configs[0].loadConfig(configs[0].directory + "generator_config")
-    if(temp != None):
-        configs[0] = temp
-        
-#Generate questions
-if(GENERATE):
-    core.runBatch(configs)
-elif(BATCHRUN):
-    batch = [['private/test1/generator_config'], ['private/test2/generator_config'],
-             ['private/test3/generator_config1', 'private/test3/generator_config2']]
-             
-    runMultiBatch(decimalConfig1, batch)
-                
-#Save config(s)
-if(SAVE_CURRENT_CONFIG):
-    configs[0].saveConfig(configs[0].directory + "generator_config2")
+configs[0].outputCSV = 0
+
+core.runBatch(configs)

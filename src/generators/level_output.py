@@ -77,7 +77,7 @@ def CraneGame_toXML(dataset):
     return allQuestions
     
 #Converts a question subset into its XML equivalent
-#INPUT: subset should be [([hashmark, ...], (answer, question content), ...), ...]
+#INPUT: subset should be ([(hash location, hash content), ...], [(answer, question content), ...])
 def CraneGame_XMLSubset(subset):
     nline, questions = subset
     
@@ -85,10 +85,11 @@ def CraneGame_XMLSubset(subset):
     numberline = Element("NUMBER_LINE")
     for hash in nline:
         h = Element("HASH")
+        h.setAttribute("location", hash[0])
         c = Element("Content")
-        c = q[i].toXML(c)
+        c = hash[1].toXML(c)
         h.appendChild(c)
-        numberline.append(h)
+        numberline.appendChild(h)
     
     subset.appendChild(numberline)
     

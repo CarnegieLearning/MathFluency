@@ -80,7 +80,7 @@ class strContent(content):
     def __init__(self, s):
         content.__init__(self, "String")
         
-        self.s = s
+        self.s = str(s)
     
     #toString()
     def __str__(self):
