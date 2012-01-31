@@ -99,16 +99,16 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('countdown',    dir + "Countdown v1");
         AM.loadSound('finish',       dir + "FinishLine v1");
         AM.loadSound('wrong',        dir + "Incorrect v1");
-        AM.loadSound('intermission', dir + "Numberchange v1");
-        AM.loadSound('decel',        dir + "Slowdown v1");
-        AM.loadSound('accel',        dir + "SpeedUp v1");
+        AM.loadSound('intermission', dir + "Numberchange v2");
+        AM.loadSound('decel',        dir + "Slowdown v2 (short)");
+        AM.loadSound('accel',        dir + "SpeedUp v2 (short)");
         AM.loadSound('start',        dir + "Start v1");
-        AM.loadSound('turbo',        dir + "Turboboost v1");
+        AM.loadSound('turbo',        dir + "Turboboost v2 (short)");
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
-        MM.loadSound('bg_slow', dir + "NormalLoop v1");
-        MM.loadSound('bg_fast', dir + "FastLoop v1");
+        MM.loadSound('bg_slow', dir + "NormalLoop v2");
+        MM.loadSound('bg_fast', dir + "FastLoop v2");
         this.set('musicMixer', MM);
         
         events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
