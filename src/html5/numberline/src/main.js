@@ -156,6 +156,12 @@ var FluencyApp = KeyboardLayer.extend({
         this.fg.set('zOrder', -1);
         this.addChild({child: this.fg});
         
+        // Floating Text
+        this.floatText = FloatText.create();
+        this.floatText.set('position', new geo.Point(450, 250));
+        this.floatText.set('zOrder', 4);
+        this.addChild({child: this.floatText});
+        
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error message
         __remote_resources__["/resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "numberline.xml"};
@@ -464,7 +470,11 @@ var FluencyApp = KeyboardLayer.extend({
             if(retVal >= 0 && retVal <= 2) {
                 this.answerLock = true;
                 this.claw.grabAt(ans, retVal);
-                this.hud.modifyItemCount();
+                this.floatText.display(retVal);
+                
+                if(retVal < 2) {
+                    this.hud.modifyItemCount();
+                }
             }
     },
     

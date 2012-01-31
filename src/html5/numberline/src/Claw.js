@@ -43,11 +43,12 @@ var ClawNode = cocos.nodes.Node.extend({
         // Load bad items
         this.badItems = [];
         dir = '/resources/Toys/Bad/Bad_';
+        this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Blank.png'}));   /*
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Boot.png'}));
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Can.png'}));
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Fish.png'}));
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Plastic.png'}));
-        this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Tire.png'}));
+        this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Tire.png'}));    //*/
         
         // Load good items
         this.goodItems = [];
@@ -88,8 +89,8 @@ var ClawNode = cocos.nodes.Node.extend({
         setTimeout(function() { that.theClaw.playAnimation('grab'); }, 1050);
         setTimeout(function() { MOT.create(375, -150, 0.23).bindFunc(that, that.setItemY); }, 1320);
         setTimeout(function() { that.theClaw.playAnimation('left'); 
-            MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setClawX); }, 1600);
-        setTimeout(function() { that.theClaw.playAnimation('settleL'); }, 2100);
+            MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setClawX); }, 2100);
+        setTimeout(function() { that.theClaw.playAnimation('settleL'); }, 2600);
         setTimeout(function() { that.theClaw.playAnimation('open'); }, 3000);
         setTimeout(function() { MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY); }, 3100);
         setTimeout(function() { that.theClaw.playAnimation('close');

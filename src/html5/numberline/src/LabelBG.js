@@ -28,7 +28,7 @@ var LabelBG = cocos.nodes.Node.extend({
     init: function(opts) {
         // You must always call the super class version of init
         LabelBG.superclass.init.call(this, opts);
-        console.log(opts);
+        
         opts['string']    = this.defaulter(opts, 'string',    '');
         opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
         opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
