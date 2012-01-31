@@ -37,6 +37,7 @@ var Question = require('Question').Question;
 var ClawNode = require('Claw').ClawNode;
 var Preloader = require('Preloader').Preloader;
 var MOT = require('ModifyOverTime').ModifyOverTime;
+var FloatText = require('FloatText').FloatText;
 
 // TODO: De-magic number these
 /* Zorder
@@ -54,7 +55,7 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     gameID      : '',       // Unique ID for the game
-    version     : 'v 0.9',  // The version number
+    version     : 'v 0.9.1',// The version number
     
     questionList: [],       // List of all question sets in the input
     current     : -1,       // The index of the current QuestionSet

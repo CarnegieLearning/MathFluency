@@ -45,6 +45,11 @@ var Question = cocos.nodes.Node.extend({
     init: function(node) {
         Question.superclass.init.call(this);
         
+        var displayHack = XML.getDeepChildByName(node, 'ContentSettings')
+        displayHack.attributes['bgShow'] = false;
+        displayHack.attributes['fontSize'] = 36;
+        displayHack.attributes['fontColor'] = '#FFFFFF';
+        
 		this.displayValue = Content.buildFrom(XML.getChildByName(node, 'Content'));
 		this.correctValue = XML.getChildByName(node, 'Answer').attributes['VALUE'];
         
@@ -60,7 +65,9 @@ var Question = cocos.nodes.Node.extend({
                 console.log("Question - Unrecognized Option : " + name);
             }
         }));
-		
+        
+		var cs = this.displayValue.get('contentSize');
+        this.displayValue.set('position', new geo.Point(cs.width / 2, cs.height / 2));
 		this.addChild({child: this.displayValue});
     },
     
@@ -112,11 +119,11 @@ var Question = cocos.nodes.Node.extend({
 });
 
 // Defaults for Question values //////////
-Question.ptsTimeout    = -5;            // Points given for having a specific question time out
+Question.ptsTimeout    = 0;             // Points given for having a specific question time out
 
 Question.timeLimit     = null;          // Default time limit for individual questions
 Question.bandRanges    = [0.05, 0.10]   // Default limits of each correctness band (final band is anything greater than the last entry)
-Question.bandPts       = [100, 25, -25] // Default value for answers in each of the bands
+Question.bandPts       = [100, 25, 0]   // Default value for answers in each of the bands
 //////////////////////////////////////////
 
 // TODO: Write static helper for building an options object to initialize a question

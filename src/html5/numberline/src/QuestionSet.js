@@ -91,7 +91,7 @@ var QuestionSet = cocos.nodes.Node.extend({
     
     // Finish advancing to the next question
     nextQuestionCallback: function() {
-        this.questions[this.current].set('position', new geo.Point(250, -125));
+        this.questions[this.current].set('position', new geo.Point(235, -130));
         this.addChild({child: this.questions[this.current]});
         this.questions[this.current].scheduleUpdate();
         events.trigger(this, 'nextQuestion');
