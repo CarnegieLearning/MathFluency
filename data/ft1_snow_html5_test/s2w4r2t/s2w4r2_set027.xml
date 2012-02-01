@@ -1,0 +1,204 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="45000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="70000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="95000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings string="1.698"/>
+		</TARGET>
+		<QUESTION INDEX="1">
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="85%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="String">
+				<ContentSettings string="310%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="600%"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="3">
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="230%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings string="8.999"/>
+		</TARGET>
+		<QUESTION INDEX="4">
+			<Content TYPE="String">
+				<ContentSettings string="400%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="630%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="5">
+			<Content TYPE="String">
+				<ContentSettings string="980%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="1010%"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="String">
+				<ContentSettings string="1180%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="1400%"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings string="2.0"/>
+		</TARGET>
+		<QUESTION INDEX="7">
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="4%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="8">
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="500%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="9">
+			<Content TYPE="String">
+				<ContentSettings string="142%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="230%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings string="3.74"/>
+		</TARGET>
+		<QUESTION INDEX="10">
+			<Content TYPE="String">
+				<ContentSettings string="129%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="580%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="11">
+			<Content TYPE="String">
+				<ContentSettings string="290%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="330%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="String">
+				<ContentSettings string="2%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="200%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings string="2.392"/>
+		</TARGET>
+		<QUESTION INDEX="13">
+			<Content TYPE="String">
+				<ContentSettings string="530%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="570%"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="14">
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="72%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="15">
+			<Content TYPE="String">
+				<ContentSettings string="85%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="460%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String">
+			<ContentSettings string="4.868"/>
+		</TARGET>
+		<QUESTION INDEX="16">
+			<Content TYPE="String">
+				<ContentSettings string="63%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="260%"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="17">
+			<Content TYPE="String">
+				<ContentSettings string="310%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="520%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="18">
+			<Content TYPE="String">
+				<ContentSettings string="420%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="680%"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>
