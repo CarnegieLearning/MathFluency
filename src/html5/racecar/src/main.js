@@ -70,7 +70,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.4.1',    // Current version number
+    version     : 'v 1.0.1',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -463,8 +463,12 @@ var FluencyApp = KeyboardLayer.extend({
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
 
-        this.audioMixer.getSound('accel').setVolume(0.8);
-        this.audioMixer.getSound('lanechange').setVolume(0.5);
+        if(this.audioMixer.getSound('accel')) {
+            this.audioMixer.getSound('accel').setVolume(0.8);
+        }
+        if(this.audioMixer.getSound('lanechange')) {
+            this.audioMixer.getSound('lanechange').setVolume(0.5);
+        }
         
         this.audioMixer.playSound('countdown');
     
@@ -518,7 +522,9 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Start background music
         this.musicMixer.loopSound('bg_slow');
-        this.musicMixer.getSound('bg_fast').setVolume(0);
+        if(this.musicMixer.getSound('bg_fast')) {
+            this.musicMixer.getSound('bg_fast').setVolume(0);
+        }
         this.musicMixer.loopSound('bg_fast');
         
         this.audioMixer.playSound('start');
@@ -591,9 +597,13 @@ var FluencyApp = KeyboardLayer.extend({
         // Fade out background music tracks at the end of the game
         var s;
         s = this.musicMixer.getSound('bg_fast');
-        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        if(s) {
+            MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        }
         s = this.musicMixer.getSound('bg_slow');
-        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        if(s) {
+            MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        }
         
         this.audioMixer.playSound('finish');
     

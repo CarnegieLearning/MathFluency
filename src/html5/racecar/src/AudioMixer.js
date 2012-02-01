@@ -86,7 +86,14 @@ var AudioMixer = BObject.extend({
         
         if(!this.checkRef(ref)) {
             var sndList = this.get('sounds');
-            sndList[ref] = AudioTrack.create(filename);
+            
+            try {
+                sndList[ref] = AudioTrack.create(filename);
+            }
+            catch(exception) {
+                console.log(exception);
+            }
+            
             this.set('sounds', sndList);
         }
         else {
@@ -176,8 +183,11 @@ var AudioMixer = BObject.extend({
     crossFade: function(from, to, dur) {
         var f = this.getSound(from);
         var t = this.getSound(to);
-        MOT.create(1, -1, dur).bindFunc(f, f.setVolume);
-        MOT.create(0,  1, dur).bindFunc(t, t.setVolume);
+        
+        if(f && t) {
+            MOT.create(1, -1, dur).bindFunc(f, f.setVolume);
+            MOT.create(0,  1, dur).bindFunc(t, t.setVolume);
+        }
         
         setTimeout(this.crossFadeComplete, dur * 1000);
     },
