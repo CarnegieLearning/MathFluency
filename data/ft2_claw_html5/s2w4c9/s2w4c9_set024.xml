@@ -4,11 +4,11 @@
 <TIME_MODE>Level</TIME_MODE>
 <TIME_LIMIT>60</TIME_LIMIT>
 <MEDALS>
-    <MEDAL Id="1" Score="1500">Gold</MEDAL>
-    <MEDAL Id="2" Score="1000">Silver</MEDAL>
-    <MEDAL Id="3" Score="700">Bronze</MEDAL>
+    <MEDAL Id="1" Score="1000">Gold</MEDAL>
+    <MEDAL Id="2" Score="750">Silver</MEDAL>
+    <MEDAL Id="3" Score="600">Bronze</MEDAL>
 </MEDALS>
-<SCORING ptsCorrect="100" ptsIncorrect="-25" ptsTimeout="-25"/>
+<SCORING ptsCorrect="100" ptsIncorrect="0" ptsTimeout="0"/>
 <ANSWER_BANDS>
     <BAND>Perfect</BAND>
     <BAND>Almost</BAND>
@@ -18,194 +18,194 @@
 	<PROBLEM_SUBSET>
 		<NUMBER_LINE>
 			<HASH location="0">
-				<Content TYPE="String">
+				<CONTENT TYPE="String">
 					<ContentSettings string="0"/>
-				</Content>
+				</CONTENT>
 			</HASH>
 			<HASH location="1">
-				<Content TYPE="String">
+				<CONTENT TYPE="String">
 					<ContentSettings string="10"/>
-				</Content>
+				</CONTENT>
 			</HASH>
 		</NUMBER_LINE>
 		<QUESTION INDEX="1">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="3.6"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.36"/>
 		</QUESTION>
 		<QUESTION INDEX="2">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="9.8"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.98"/>
 		</QUESTION>
 		<QUESTION INDEX="3">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="9.8"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.98"/>
 		</QUESTION>
 		<QUESTION INDEX="4">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="5.4"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.54"/>
 		</QUESTION>
 		<QUESTION INDEX="5">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string=".3"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.03"/>
 		</QUESTION>
 		<QUESTION INDEX="6">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="7.1"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.71"/>
 		</QUESTION>
 		<QUESTION INDEX="7">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="6.5"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.65"/>
 		</QUESTION>
 		<QUESTION INDEX="8">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="9.3"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.93"/>
 		</QUESTION>
 		<QUESTION INDEX="9">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="4.2"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.42"/>
 		</QUESTION>
 		<QUESTION INDEX="10">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="1.1"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.11"/>
 		</QUESTION>
 		<QUESTION INDEX="11">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="7.9"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.79"/>
 		</QUESTION>
 		<QUESTION INDEX="12">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="3.1"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.31"/>
 		</QUESTION>
 		<QUESTION INDEX="13">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="2.75"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.275"/>
 		</QUESTION>
 		<QUESTION INDEX="14">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="2.8"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.28"/>
 		</QUESTION>
 		<QUESTION INDEX="15">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="5.2"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.52"/>
 		</QUESTION>
 		<QUESTION INDEX="16">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="1.95"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.195"/>
 		</QUESTION>
 		<QUESTION INDEX="17">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="2.85"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.285"/>
 		</QUESTION>
 		<QUESTION INDEX="18">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="9.85"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.985"/>
 		</QUESTION>
 		<QUESTION INDEX="19">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="6.7"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.67"/>
 		</QUESTION>
 		<QUESTION INDEX="20">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="3.6"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.36"/>
 		</QUESTION>
 		<QUESTION INDEX="21">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="3.7"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.37"/>
 		</QUESTION>
 		<QUESTION INDEX="22">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="2.85"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.285"/>
 		</QUESTION>
 		<QUESTION INDEX="23">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="3.7"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.37"/>
 		</QUESTION>
 		<QUESTION INDEX="24">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="0.95"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.095"/>
 		</QUESTION>
 		<QUESTION INDEX="25">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="5.2"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.52"/>
 		</QUESTION>
 		<QUESTION INDEX="26">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="8.6"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.86"/>
 		</QUESTION>
 		<QUESTION INDEX="27">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="9.65"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.965"/>
 		</QUESTION>
 		<QUESTION INDEX="28">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="6.35"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.635"/>
 		</QUESTION>
 		<QUESTION INDEX="29">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="0.85"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.085"/>
 		</QUESTION>
 		<QUESTION INDEX="30">
-			<Content TYPE="String">
+			<CONTENT TYPE="String">
 				<ContentSettings string="6.75"/>
-			</Content>
+			</CONTENT>
 			<Answer VALUE="0.675"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
