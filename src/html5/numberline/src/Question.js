@@ -50,7 +50,7 @@ var Question = cocos.nodes.Node.extend({
         displayHack.attributes['fontSize'] = 36;
         displayHack.attributes['fontColor'] = '#FFFFFF';
         
-		this.displayValue = Content.buildFrom(XML.getChildByName(node, 'Content'));
+		this.displayValue = Content.buildFrom(XML.getChildByName(node, 'CONTENT'));
 		this.correctValue = XML.getChildByName(node, 'Answer').attributes['VALUE'];
         
         // Load override values, if value is not overridden, use static default value

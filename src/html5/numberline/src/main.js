@@ -43,9 +43,10 @@ var FloatText = require('FloatText').FloatText;
 /* Zorder
 -10 Cabinet Background
 -3  Claw Bar
--2  ClawNode (Claw.js)
+-2  ClawNode
 -1  Cabinet Foreground
 0   Anything not mentioned
+4   FloatText
 10  Fade out
 12  EndOfGame Display
 */
@@ -55,7 +56,7 @@ var FloatText = require('FloatText').FloatText;
 var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     gameID      : '',       // Unique ID for the game
-    version     : 'v 0.9.1',// The version number
+    version     : 'v 0.9.4',// The version number
     
     questionList: [],       // List of all question sets in the input
     current     : -1,       // The index of the current QuestionSet
