@@ -100,15 +100,16 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('finish',       dir + "FinishLine v1");
         AM.loadSound('wrong',        dir + "Incorrect v1");
         AM.loadSound('intermission', dir + "Numberchange v2");
-        AM.loadSound('decel',        dir + "Slowdown v2 (short)");
-        AM.loadSound('accel',        dir + "SpeedUp v2 (short)");
-        AM.loadSound('start',        dir + "Start v1");
+        AM.loadSound('decel',        dir + "Slowdown v2 (long)");
+        AM.loadSound('accel',        dir + "SpeedUp v2 (long)");
+        AM.loadSound('lanechange',   dir + "SpeedUp v1");
+        AM.loadSound('start',        dir + "SpeedUp v2 (short)");
         AM.loadSound('turbo',        dir + "Turboboost v2 (short)");
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
-        MM.loadSound('bg_slow', dir + "NormalLoop v2");
-        MM.loadSound('bg_fast', dir + "FastLoop v2");
+        MM.loadSound('bg_slow', dir + "NormalLoop v1");
+        MM.loadSound('bg_fast', dir + "FastLoop v1");
         this.set('musicMixer', MM);
         
         events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
@@ -290,7 +291,7 @@ var FluencyApp = KeyboardLayer.extend({
             
             var inter = Intermission.create(interContent, z);
             events.addListener(inter, 'changeSelector', this.get('player').startIntermission.bind(this.get('player')));
-            events.addListener(inter, 'changeSelector', this.pause.bind(this));
+            events.addListener(inter, 'changeSelector', this.intermissionPause.bind(this));
             inter.idle();
 			
             // Append the intermission to the list of intermissions
@@ -463,6 +464,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.musicMixer.setMasterVolume(0.35);
 
         this.audioMixer.getSound('accel').setVolume(0.8);
+        this.audioMixer.getSound('lanechange').setVolume(0.5);
         
         this.audioMixer.playSound('countdown');
     
@@ -522,11 +524,16 @@ var FluencyApp = KeyboardLayer.extend({
         this.audioMixer.playSound('start');
     },
     
+    intermissionPause: function() {
+        var that = this;
+        setTimeout(function() {that.audioMixer.playSound('intermission');}, 2000);
+        
+        this.pause();
+    },
+    
 	// Pauses the dashboard and medal cars
     pause: function () {
         this.get('dash').pauseTimer();
-        
-        this.audioMixer.playSound('intermission');
         
         var mc = this.get('medalCars');
         
@@ -797,6 +804,7 @@ var FluencyApp = KeyboardLayer.extend({
             if(this.lane > 0) {
                 this.lane -= 1;
                 player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('lanechange', true);
             }
         }
         // 'D' / 'RIGHT' Move right, discreet
@@ -804,6 +812,7 @@ var FluencyApp = KeyboardLayer.extend({
             if(this.lane < RC.curNumLanes-1) {
                 this.lane += 1;
                 player.set('xCoordinate', this.lanePosX[RC.curNumLanes][this.lane]);
+                this.audioMixer.playSound('lanechange', true);
             }
         }
         
