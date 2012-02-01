@@ -159,7 +159,20 @@ module.exports = function restapi(gameController)
         {
             gc.getAvailableStagesForPlayer(req.playerState, function (stages)
             {
-                res.send({'stages': stages});
+                var stagesJSON = new Array();
+                for( var i in stages ){
+                    var stj = stages[i].toJSON();
+                    stj.locked = false;
+                    console.log
+                    for( var seqID in req.playerState.stageLocking ){
+                        if( req.playerState.stageLocking[seqID][stages[i].id] ){
+                            stj.locked = true;
+                            break;
+                        }
+                    }
+                    stagesJSON.push( stj );
+                }
+                res.send({'stages': stagesJSON});
             });
         }
     });
@@ -227,8 +240,22 @@ module.exports = function restapi(gameController)
             {
                 gc.getAvailableStagesForPlayer(req.playerState, function (stages)
                 {
-                    console.log('sending '+ stages.length +' available stages');
-                    res.send({'stages': stages});
+                   gc.getAvailableStagesForPlayer(req.playerState, function (stages)
+                   {
+                       var stagesJSON = new Array();
+                       for( var i in stages ){
+                           var stj = stages[i].toJSON();
+                           stj.locked = false;
+                           console.log
+                           for( var seqID in req.playerState.stageLocking ){
+                               if( req.playerState.stageLocking[seqID][stages[i].id] ){
+                                   stj.locked = true;
+                                   break;
+                               }
+                           }
+                           stagesJSON.push( stj );
+                       }
+                       res.send({'stages': stagesJSON});
                 });
             }
         });
