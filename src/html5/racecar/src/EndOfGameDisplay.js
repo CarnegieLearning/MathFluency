@@ -16,26 +16,131 @@ Copyright 2011, Carnegie Learning
 
 // Cocos imports
 var cocos = require('cocos2d');
-var geom = require('geometry');
+var geo = require('geometry');
 var events = require('events');
 
 // Static imports
 var RC = require('RaceControl').RaceControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 
+GuiNode = cocos.nodes.Node.extend({
+    init: function(opts) {
+        GuiNode.superclass.init.call(this, opts);
+        this._actionComplete = this._actionComplete.bind(this);
+    },
+    
+    // Slides a label in from the right
+    slideLabelIn: function (l, d) {
+        this.addChild({child: l});
+        var a = cocos.actions.MoveTo.create({position: new geo.Point(30, l.get('position').y), duration: d});
+        a.startWithTarget(l);
+        l.runAction(a);
+        
+        events.addListener(a, 'actionComplete', this._actionComplete);
+    },
+    
+    // Totals a label up over time
+    totalLabelUp: function(label, link, value, duration) {
+        this.addChild({child: label});
+        
+        var m = MOT.create(0, value, duration);
+        m.bind(this, link);
+        
+        events.addListener(m, 'Completed', this._actionComplete);
+    },
+    
+    // Causes a label to appear
+    showLabel: function (l, d) {
+        this.addChild({child: l});
+        
+        setTimeout(this._actionComplete, d * 1000);
+    },
+    
+    // Triggers 'actionComplete'
+    _actionComplete: function () {
+        events.trigger(this, 'actionComplete');
+    }
+});
+
+TotalLine = GuiNode.extend({
+    step : 0,           // Current animation step
+    
+    name : null,        // Label to display for the line
+    instances : null,   // Displays the numer of incorrect answers
+    xLabel : null,      // Displays the multiplication symbol
+    amount : null,      // Displays the time penalty for each incorrect answer
+    eLabel : null,      // Displays the equals sign
+    result : null,      // Displays the total time lost to penalties
+    medal : null,       //
+    
+    instT : 0,          // Numeric total number of instances
+    instLink : 0,       // Binding value for counting up animation
+    resultT : 0,        // Numeric total for the result value
+    resultLink : 0,     // Binding value for counting up animation
+    
+    init: function (name, inst, amt) {
+        TotalLine.superclass.init.call(this);
+    
+        this.instT = inst;
+        this.resultT = amt * inst;
+    
+        // Labels for the line
+        this.buildLabel(name, 'name', -500);
+        this.buildLabel('0', 'instances', 130);
+        this.buildLabel('errors X', 'xLabel', 150);
+        this.buildLabel(amt, 'amount', 210);
+        this.buildLabel('sec =', 'eLabel', 220);
+        this.buildLabel('0', 'result', 350);
+        this.get('result').set('anchorPoint', new geo.Point(1, 0.5));
+    },
+    
+    // Builds a basic label for the line
+    buildLabel: function(s, l, x) {
+        lbl = cocos.nodes.Label.create({string: s});
+        lbl.set('position', new geo.Point(x, 0));
+        lbl.set('anchorPoint', new geo.Point(0, 0.5));
+        this.set(l, lbl);
+    },
+    
+    // Start the animation sequence
+    start: function() {
+        events.addListener(this, 'actionComplete', this.next.bind(this));
+        this.next();
+    },
+    
+    // Performs the next step in the animation
+    next: function() {
+        var step = this.get('step');
+        
+        if(step == 0)
+            this.slideLabelIn(this.get('name'), 0.75);
+        else if(step == 1)
+            this.showLabel(this.get('instances'), 0.05);
+        else if(step == 2)
+            this.showLabel(this.get('xLabel'), 0.05);
+        else if(step == 3)
+            this.showLabel(this.get('amount'), 0.05);
+        else if(step == 4)
+            this.showLabel(this.get('eLabel'), 0.05);
+        else if(step == 5)
+            this.showLabel(this.get('result'), 0.05);
+        else if(step == 6) {
+            this.totalLabelUp(this.get('instances'), 'instLink', this.get('instT'), 0.5);
+            this.totalLabelUp(this.get('result'), 'resultLink', this.get('resultT'), 0.5);
+        }
+        else if(step == 8) {
+            events.trigger(this, 'animationCompleted');
+        }
+        
+        this.set('step', step + 1);
+    }
+});
+
 // Responsible for displaying the player's stats at the end of the game
-EndOfGameDisplay = cocos.nodes.Node.extend({
+EndOfGameDisplay = GuiNode.extend({
     elapsedLabel    : null,     // Text label for the elapsed line
     elapsedTime     : null,     // Displays the elapsed time
     elapsedLink     : 0,        // Holds the raw value of elapsedTime
-    incorrectLabel  : null,     // Text label for the incorrect line
-    incorrects      : null,     // Displays the numer of incorrect answers
-    incorrectsLink  : 0,        // Holds the raw value of incorrects
-    xLabel          : null,     // Displays the multiplication symbol
-    penalty         : null,     // Displays the time penalty for each incorrect answer
-    eLabel          : null,     // Displays the equals sign
-    totalPenalty    : null,     // Displays the total time lost to penalties
-    totalPenLink    : 0,        // Holds the raw value of totalPenalty
     totalLabel      : null,     // Text label for the total line
     total           : null,     // Displays the total time including penalties
     totalLink       : 0,        // Holds the raw value of total
@@ -61,75 +166,35 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         // Text label for time elapsed
         opts['string'] = 'Elapsed Time';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(-500, 40));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
+        lbl.set('position', new geo.Point(-500, 40));
+        lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set('elapsedLabel', lbl);
         
         // Displays time elapsed
         opts['string'] = '0.000';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(350, 40));
-        lbl.set('anchorPoint', new geom.Point(1, 0.5));
+        lbl.set('position', new geo.Point(350, 40));
+        lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('elapsedTime', lbl);
         
-////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        // Text label for the missed questions line
-        opts['string'] = 'Incorrects';
-        lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(-500, 80));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
-        this.set('incorrectLabel', lbl);
-        
-        // Displays number of questions missed
-        opts['string'] = '0';
-        lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(100, 80));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
-        this.set('incorrects', lbl);
-        
-        // Displays multiplication symbol
-        opts['string'] = 'X';
-        lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(120, 80));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
-        this.set('xLabel', lbl);
-        
-        // Displays the penalty for each missed question
-        opts['string'] = parseFloat(RC.penaltyTime).toFixed(3);
-        lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(145, 80));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
-        this.set('penalty', lbl);
-        
-        // Displays an equal sign
-        opts['string'] = '=';
-        lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(200, 80));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
-        this.set('eLabel', lbl);
-        
-        // Subtotal for penalty time
-        opts['string'] = '0.000';
-        lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(350, 80));
-        lbl.set('anchorPoint', new geom.Point(1, 0.5));
-        this.set('totalPenalty', lbl);
-        
-////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Missed questions line
+        this.line = TotalLine.create('Penalty Time', np, RC.penaltyTime);
+        this.line.set('position', new geo.Point(0, 80));
+        events.addListener(this.line, 'animationCompleted', this.next.bind(this));
+        this.addChild({child: this.line});
         
         // Text label for the total line
-        opts['string'] = 'Total Time';
+        opts['string'] = 'Total Score';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(-500, 120));
-        lbl.set('anchorPoint', new geom.Point(0, 0.5));
+        lbl.set('position', new geo.Point(-500, 120));
+        lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set('totalLabel', lbl);
         
         // Displays the overall time, including penalties
         opts['string'] = '0.000';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geom.Point(350, 120));
-        lbl.set('anchorPoint', new geom.Point(1, 0.5));
+        lbl.set('position', new geo.Point(350, 120));
+        lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('total', lbl);
         
         this.scheduleUpdate();
@@ -137,16 +202,9 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
     
     // Called every frame
     update: function(dt) {
-        this.fix(this.get('elapsedTime'), this.get('elapsedLink'), 3);
-        this.fix(this.get('incorrects'), this.get('incorrectsLink'), 0);
-        this.fix(this.get('totalPenalty'), this.get('totalPenLink'), 3);
-        this.fix(this.get('total'), this.get('totalLink'), 3);
-    },
-    
-    // Keeps the label's string value fixed to three positions
-    fix: function(l, v, p) {
-        f = parseFloat(v);
-        l.set('string', f.toFixed(p));
+        this.composeTime(this.get('elapsedTime'), parseFloat(this.get('elapsedLink')));
+        this.composeTime(this.line.get('result'), parseFloat(this.line.get('resultLink')));
+        this.composeTime(this.get('total'),       parseFloat(this.get('totalLink')));
     },
     
     // Start the animation sequence
@@ -164,20 +222,10 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
         else if(step == 1)
             this.totalLabelUp(this.get('elapsedTime'), 'elapsedLink', this.get('timeAmt'), 0.5);
         else if(step == 2)
-            this.slideLabelIn(this.get('incorrectLabel'), 0.75);
+            this.line.start();
         else if(step == 3)
-            this.totalLabelUp(this.get('incorrects'), 'incorrectsLink', this.get('numPenalty'), 0.5);
-        else if(step == 4)
-            this.showLabel(this.get('xLabel'), 0.1);
-        else if(step == 5)
-            this.showLabel(this.get('penalty'), 0.1);
-        else if(step == 6)
-            this.showLabel(this.get('eLabel'), 0.1);
-        else if(step == 7)
-            this.totalLabelUp(this.get('totalPenalty'), 'totalPenLink', this.get('numPenalty') * RC.penaltyTime, 0.5);
-        else if(step == 8)
             this.slideLabelIn(this.get('totalLabel'), 0.75);
-        else if(step == 9) {
+        else if(step == 4) {
             var tt = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;
             this.totalLabelUp(this.get('total'), 'totalLink', tt, 1.0);
             
@@ -192,42 +240,39 @@ EndOfGameDisplay = cocos.nodes.Node.extend({
             MOT.create(this.get('sliderX'), x, 1.0).bind(this, 'sliderX');
             
         }
-        else if(step == 10) {
+        else if(step == 5) {
             // "Stamp" the medal on the score sheet here
         }
-        else if(step == 11) {
+        else if(step == 6) {
             // Motivational message / tip / advice popup
         }
             
         this.set('step', step + 1);
     },
     
-    // Slides a label in from the right
-    slideLabelIn: function (l, d) {
-        this.addChild({child: l});
-        var a = cocos.actions.MoveTo.create({position: new geom.Point(10, l.get('position').y), duration: d});
-        a.startWithTarget(l);
-        l.runAction(a);
+    composeTime: function (l, s) {
+        var val = "";
         
-        var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000);
+        if(s >= 60) {
+            var m = Math.floor(s / 60);
+            s = s % 60;
+            
+            val += m + ' min';
+            
+            val += ' ';
+        }
+        
+        val += s.toFixed(1) + ' sec';
+        
+        l.set('string', val);
+        
+        var p = l.get('position');
+        p.x = 390 - l.get('contentSize').width;
+        l.set('position', p);
     },
     
-    // Totals a label up over time
-    totalLabelUp: function(label, link, value, duration) {
-        this.addChild({child: label});
-        MOT.create(0, value, duration).bind(this, link);
-        
-        var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, duration * 1000);
-    },
-    
-    // Causes a label to appear
-    showLabel: function (l, d) {
-        this.addChild({child: l});
-        
-        var that = this;
-        setTimeout(function() {events.trigger(that, 'actionComplete');}, d * 1000);
+    skipAnimation: function () {
+        this.playRate = 0.1;
     },
     
     // Helper function that gives area percentage for medal time ranges
