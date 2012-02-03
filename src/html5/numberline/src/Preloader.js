@@ -46,7 +46,7 @@ var Preloader = cocos.nodes.Node.extend({
         }
         
         var animNode = cocos.nodes.Sprite.create();
-        animNode.set('position', new geo.Point(450, 320));
+        animNode.set('position', new geo.Point(440, 314));
         animNode.set('zOrder', 2);
         this.addChild(animNode);
         
