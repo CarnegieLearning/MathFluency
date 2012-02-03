@@ -4,8 +4,8 @@
             "c1s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -19,8 +19,8 @@
             "c2s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -34,8 +34,8 @@
             "c3s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -49,8 +49,8 @@
             "c4s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -64,8 +64,8 @@
             "c5s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -79,8 +79,8 @@
             "c6s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -98,8 +98,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"        
                 ]
@@ -113,8 +113,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"    
                 ]
@@ -128,8 +128,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"    
                 ]
@@ -143,8 +143,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -158,8 +158,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -173,8 +173,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -184,8 +184,8 @@
             "c13s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -199,8 +199,8 @@
             "c14s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -214,8 +214,8 @@
             "c15s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -229,8 +229,8 @@
             "c16s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -244,8 +244,8 @@
             "c17s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -259,8 +259,8 @@
             "c18s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -278,8 +278,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"  
                 ]
@@ -293,8 +293,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"   
                 ]
@@ -308,8 +308,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9" 
                 ]
@@ -323,8 +323,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -338,8 +338,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -353,8 +353,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -364,8 +364,8 @@
             "c25s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -379,8 +379,8 @@
             "c26s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -394,8 +394,8 @@
             "c27s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -409,8 +409,8 @@
             "c28s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -424,8 +424,8 @@
             "c29s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -439,8 +439,8 @@
             "c30s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -458,8 +458,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"  
                 ]
@@ -473,8 +473,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"   
                 ]
@@ -488,8 +488,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9" 
                 ]
@@ -503,8 +503,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -518,8 +518,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -533,8 +533,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -544,8 +544,8 @@
             "c37s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -559,8 +559,8 @@
             "c38s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -574,8 +574,8 @@
             "c39s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -589,8 +589,8 @@
             "c40s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -604,8 +604,8 @@
             "c41s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -619,8 +619,8 @@
             "c42s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -638,8 +638,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"  
                 ]
@@ -653,8 +653,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"   
                 ]
@@ -668,8 +668,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9" 
                 ]
@@ -683,8 +683,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -698,8 +698,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -713,8 +713,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -724,8 +724,8 @@
             "c49s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -739,8 +739,8 @@
             "c50s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -754,8 +754,8 @@
             "c51s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -769,8 +769,8 @@
             "c52s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -784,8 +784,8 @@
             "c53s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -799,8 +799,8 @@
             "c54s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -818,8 +818,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"  
                 ]
@@ -833,8 +833,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9"   
                 ]
@@ -848,8 +848,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw8",
                     "week4_claw9" 
                 ]
@@ -863,8 +863,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9"  
                 ]
@@ -878,8 +878,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -893,8 +893,8 @@
                     "week4_claw5",
                     "week4_claw6",
                     "week4_claw7",
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw9",
                     "week4_claw9" 
                 ]
@@ -904,8 +904,8 @@
             "c61s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
@@ -919,8 +919,8 @@
             "c62s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw4",
                     "week4_claw5",
                     "week4_claw6",
@@ -934,8 +934,8 @@
             "c63s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw5",
                     "week4_claw5",
                     "week4_claw6",
@@ -949,8 +949,8 @@
             "c64s1": {
                 "displayName": "Available Games",
                 "stages": [
-                    "Snow_1",
-                    "Snow_2",
+                    "Snow_1t",
+                    "Snow_2t",
                     "week4_claw3",
                     "week4_claw5",
                     "week4_claw6",
