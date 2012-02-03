@@ -112,13 +112,7 @@ exports.gameController = function (serverConfig, model)
                         console.log('ERROR fetching stages serially: '+ error );
                         return callback(null);
                     }
-                    for( var seqID in results ){
-//                        console.log("results["+ seqID +"] = ");
-//                        for( var stageID in results[seqID] ){
-//                          console.log("stage "+ stageID +" = "+ results[seqID][stageID] );
-//                        }
-                        student.stageLocking = results;
-                    }
+                    student.stageLocking = results;
                     callback(student);
                 });
             } );
@@ -262,6 +256,7 @@ exports.gameController = function (serverConfig, model)
             {
                 console.log('… stage '+ stage.id );
                 var medal = outcome ? outcome.medal : 0;
+                playerState.stageLocking[sequence.id][stage.id] = false;
                 gc.addOrUpdateSA( playerState, stage, false, medal, function()
                 {   
                     callback();
