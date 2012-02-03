@@ -55,29 +55,10 @@ exports.gameController = function (serverConfig, model)
                                                          transitionFn: defaultTFn,
                                                          stages : stageIDs },
                                                        conf ) };
-            //this is the instructor view: unlock all stages
-            for( var i in sequences["Default"].stages ){
-                sequences["Default"].stages[i].locked = false;
-            }
             return callback(sequences);
         }
-        // need to fetch any unlocked stages from the DB, using a serial (blocking) process
-        var sequences = conf.conditions[playerState.condition];
-        var fetchSeq = {};
-        for( var seqID in sequences ){
-            fetchSeq[seqID] = sequences[seqID].makeAvailableStagesFn(playerState);
-        }
-        async.series( fetchSeq, function(error, results)
-        {
-            if( error ){
-                console.log('ERROR fetching stages serially: '+ error );
-                return callback(null);
-            }
-            for( var seqID in results ){
-                sequences[seqID].stages = results[seqID];
-            }
-            callback(sequences);
-        });
+        // otherwise we just return the sequences in the player's condition
+        callback( conf.conditions[playerState.condition] );
     };
     
     gc.getAvailableStagesForPlayer = function (playerState, callback)
@@ -116,7 +97,25 @@ exports.gameController = function (serverConfig, model)
         model.Student.find(playerID).on('success', function (student)
         {
             student.playerID = student.loginID;
-            callback(student);
+            student.stageLocking = {};
+            // set the lock status of stages
+            gc.getAvailableSequencesForPlayer( student, function(sequences)
+            {
+                // need to fetch any unlocked stages from the DB, using a serial (blocking) process
+                var fetchSeq = {};
+                for( var seqID in sequences ){
+                    fetchSeq[seqID] = sequences[seqID].makeAvailableStagesFn(student);
+                }
+                async.series( fetchSeq, function(error, results)
+                {
+                    if( error ){
+                        console.log('ERROR fetching stages serially: '+ error );
+                        return callback(null);
+                    }
+                    student.stageLocking = results;
+                    callback(student);
+                });
+            } );
         })
         .on('failure', function (error)
         {
@@ -256,9 +255,9 @@ exports.gameController = function (serverConfig, model)
             sequence.getNextStage( playerState, function(stage)
             {
                 console.log('… stage '+ stage.id );
-                stage.locked = false;
                 var medal = outcome ? outcome.medal : 0;
-                gc.addOrUpdateSA( playerState, stage, medal, function()
+                playerState.stageLocking[sequence.id][stage.id] = false;
+                gc.addOrUpdateSA( playerState, stage, false, medal, function()
                 {   
                     callback();
                 });
@@ -266,7 +265,7 @@ exports.gameController = function (serverConfig, model)
         });
     }
     
-    gc.addOrUpdateSA = function( playerState, stage, medal, callback )
+    gc.addOrUpdateSA = function( playerState, stage, isLocked, medal, callback )
     {
         playerState.getStageAvailabilities().on('success', function(stageAvailabilities)
         {
@@ -275,7 +274,7 @@ exports.gameController = function (serverConfig, model)
                 var sa = stageAvailabilities[i];
                 if( stage.id == sa.stageID ){
                     sa.medal = medal;
-                    sa.isLocked = stage.locked;
+                    sa.isLocked = isLocked;
                     
                     sa.save().on('success', function()
                     {
@@ -292,7 +291,7 @@ exports.gameController = function (serverConfig, model)
             var sa = model.StageAvailability.build({
                 'stageID' : stage.id,
                 'medal': medal,
-                'isLocked' : stage.locked
+                'isLocked' : isLocked
             });
             sa.setStudent( playerState ).on('success', function(sa)
             {
@@ -385,8 +384,6 @@ function makeSequence( seqID, seqConfig, gameConfig )
         var stageID = seqConfig.stages[i];
         if( gameConfig ){
             sequence.stages[i] = gameConfig.stages[stageID];
-            if( i == 0 )
-                sequence.stages[i].locked = false;
         } else {
             sequence.stages[i] = stageID;
         }
@@ -396,6 +393,13 @@ function makeSequence( seqID, seqConfig, gameConfig )
     {
         return function(callback)
         {
+            var stageLocking = {};
+            // set default lock state
+            for( var i in sequence.stages ){
+                stageLocking[ sequence.stages[i].id ] = true;
+            }
+            // the first stage is always available
+            stageLocking[ sequence.stages[0].id ] = false;
 //            console.log('fetching available stages from db…');
             playerState.getStageAvailabilities().on('success', function(stageAvailabilities)
             {
@@ -403,19 +407,13 @@ function makeSequence( seqID, seqConfig, gameConfig )
                 for( var i in stageAvailabilities ){
                     var stageID = stageAvailabilities[i].stageID;
                     var isLocked = stageAvailabilities[i].isLocked; 
-                    for( var n in sequence.stages ){
-                        if( sequence.stages[n].id == stageID ){
-//                            console.log('sequence: '+ sequence.id +' stage: '+ stageID +' isLocked: '+ isLocked );
-                            sequence.stages[n].locked = ( isLocked ? true : false );
-                            break;
-                        }
-                    }
+//                    console.log('setting '+ stageID +' to '+ isLocked );
+                    stageLocking[ stageID ] = ( isLocked ? true : false );
                 }
-                // the first stage is always available
-                sequence.stages[0].locked = false;
 //                console.log('passing on available stages');
-                callback(null,sequence.stages);
+                callback(null,stageLocking);
             }).on('error', function(error){
+                console.log('ERROR getting available stages: '+ error );
                 callback(error,null);
             });
         };
@@ -431,7 +429,7 @@ function makeSequence( seqID, seqConfig, gameConfig )
                         return callback( sequence.stages[i+1] );
         // otherwise we find the first locked one
         for( var i in sequence.stages )
-            if( sequence.stages[i].locked )
+            if( playerState.stageLocking[sequence.id][sequence.stages[i].id] )
                 return callback( sequence.stages[i] );
         // otherwise we return the last stage in the sequence
         callback( sequence.stages[ sequence.stages.length - 1 ] );
@@ -451,16 +449,20 @@ function makeStage(stageID, config, serverConfig)
 {
     var stageConfig = config.stages[stageID];
     var engineConfig = config.engines[stageConfig.engine];
+    var instructionsPath = null;
+    var tipsPath = null;
     
     var stage = new QuestionHierarchy.Stage(stageID, stageConfig.displayName, stageConfig.gameProperties);
     stage.engineID = stageConfig.engine;
     stage.isCLGame = engineConfig.type == 'CLFlashGameEngine' || engineConfig.type == 'CLHTML5GameEngine';
     stage.engineType = engineConfig.type;
-    stage.locked = true;
 
     if (stageConfig.cli_fluency_task)
     {
         var engineDataPath = path.join(serverConfig.dataPath, engineConfig.cli_task_id);
+        instructionsPath = path.join(engineDataPath, 'ft_instructions.html');
+        tipsPath = path.join(engineDataPath, stageConfig.cli_fluency_task, 'ft_tips.html');
+//        console.log("tipsPath: "+ tipsPath );
         stage._cachedCLITaskConfig = null;
         
         stage.getCLITaskConfig = function (callback)
@@ -528,45 +530,14 @@ function makeStage(stageID, config, serverConfig)
                 callback(taskConfig[questionSetID]);
             });
         }
-        
-        stage.getInstructionsHTML = function (baseURL, callback)
-        {
-            var instructionsPath = path.join(engineDataPath, 'ft_instructions.html'),
-                tipsPath = path.join(engineDataPath, stageConfig.cli_fluency_task, 'ft_tips.html');
-            async.map([instructionsPath, tipsPath],
-                function (path, callback)
-                {
-                    fs.readFile(path, 'utf8', function (err, str)
-                    {
-                        if (err)
-                        {
-                            if (err.code == 'ENOENT')
-                            {
-                                return callback(null, '<p>Not available.</p>');
-                            }
-                            else
-                            {
-                                return callback(err);
-                            }
-                        }
-                        
-                        // Remove the <?xml...?> declaration and resolve relative image paths.
-                        str = str.replace(/<\?xml [^>]*\?>/, '')
-                                 .replace(/(<img src=['"])\.\//g, '$1' + baseURL + '/data/' + engineConfig.cli_task_id + '/');
-                        callback(err, str);
-                    });
-                },
-                function (error, results)
-                {
-                    if (error) return callback(error);
-                    
-                    var html = '<h2>Instructions</h2>' + results[0] + '<h2>Tips</h2>' + results[1];
-                    callback(null, html);
-                });
-        };
     }
     else if( stage.engineType == 'ExtFlashGameEngine' )
     {   
+        if( engineConfig.instructionsPath )
+            instructionsPath = engineConfig.instructionsPath;
+        if( engineConfig.tipsPath )    
+            tipsPath = engineConfig.tipsPath;
+        
         stage.getAllQuestionSetIDs = function (callback)
         {
             callback( [ stage.id ] );
@@ -596,6 +567,43 @@ function makeStage(stageID, config, serverConfig)
         throw "Cannot parse game stage configuration: " + JSON.stringify(stageConfig);
     }
     
+    // load instructions
+    stage.getInstructionsHTML = function (baseURL, callback)
+    {
+        async.map([instructionsPath, tipsPath],
+            function (path, callback)
+            {
+                if( ! path )
+                    return callback(null, '<p>Not available.</p>');
+                fs.readFile(path, 'utf8', function (err, str)
+                {
+                    if (err)
+                    {
+                        if (err.code == 'ENOENT')
+                        {
+                            return callback(null, '<p>Not available.</p>');
+                        }
+                        else
+                        {
+                            return callback(err);
+                        }
+                    }
+                    
+                    // Remove the <?xml...?> declaration and resolve relative image paths.
+                    str = str.replace(/<\?xml [^>]*\?>/, '')
+                             .replace(/(<img src=['"])\.\//g, '$1' + baseURL + '/data/' + engineConfig.cli_task_id + '/');
+                    callback(err, str);
+                });
+            },
+            function (error, results)
+            {
+                if (error) return callback(error);
+                
+                var html = '<h2>Instructions</h2>' + results[0] + '<h2>Tips</h2>' + results[1];
+                callback(null, html);
+            });
+    };
+    
     // getNextQuestionSet is random with replacement.
     stage.getNextQuestionSet = function (playerState, callback)
     {
@@ -609,7 +617,6 @@ function makeStage(stageID, config, serverConfig)
     {
         var json = QuestionHierarchy.QuestionEntity.prototype.toJSON.call( this );
         json.isCLGame = stage.isCLGame;
-        json.locked = stage.locked;
         return json;
     }
     

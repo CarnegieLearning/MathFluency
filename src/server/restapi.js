@@ -137,9 +137,19 @@ module.exports = function restapi(gameController)
         if( req.stage ){
             res.send( req.stage.toJSON() );
         } else {
-            req.sequence.getAvailableStages( req.playerState, function(availStages)
+            var availFn = req.sequence.makeAvailableStagesFn( req.playerState );
+            availFn( function( error, stageLocking )
             {
-                res.send({'stages': availStages });
+                if( error )
+                    return next(new Error('Cannot fetch stageLocking: ' + error));
+                var stagesJSON = new Array();
+                var stages = req.sequence.stages;
+                for( var i in stages ){
+                    var stj = stages[i].toJSON();
+                    stj.locked = ( stageLocking[ stages[i].id ] ? true : false );
+                    stagesJSON.push( stj );
+                }
+                res.send({'stages': stagesJSON});
             });
         }
     });
@@ -159,7 +169,20 @@ module.exports = function restapi(gameController)
         {
             gc.getAvailableStagesForPlayer(req.playerState, function (stages)
             {
-                res.send({'stages': stages});
+                var stagesJSON = new Array();
+                for( var i in stages ){
+                    var stj = stages[i].toJSON();
+                    stj.locked = false;
+                    console.log
+                    for( var seqID in req.playerState.stageLocking ){
+                        if( req.playerState.stageLocking[seqID][stages[i].id] ){
+                            stj.locked = true;
+                            break;
+                        }
+                    }
+                    stagesJSON.push( stj );
+                }
+                res.send({'stages': stagesJSON});
             });
         }
     });
@@ -227,8 +250,20 @@ module.exports = function restapi(gameController)
             {
                 gc.getAvailableStagesForPlayer(req.playerState, function (stages)
                 {
-                    console.log('sending '+ stages.length +' available stages');
-                    res.send({'stages': stages});
+                   var stagesJSON = new Array();
+                   for( var i in stages ){
+                       var stj = stages[i].toJSON();
+                       stj.locked = false;
+                       console.log
+                       for( var seqID in req.playerState.stageLocking ){
+                           if( req.playerState.stageLocking[seqID][stages[i].id] ){
+                               stj.locked = true;
+                               break;
+                           }
+                       }
+                       stagesJSON.push( stj );
+                   }
+                   res.send({'stages': stagesJSON});
                 });
             }
         });
