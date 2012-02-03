@@ -18,7 +18,7 @@
                 <% for (var j in seq.stages) { 
                        var stage = seq.stages[j]; %>
                 <li>
-                    <button class="level" type="button" id="<%= stage.id %>" value="<%=  seq.id +'/'+ stage.id %>" <% if (student.stageLocking[seq.id][stage.id]){ %>disabled<% } %>>
+                    <button class="level" type="button" id="<%= stage.id %>" value="<%=  seq.id +'/'+ stage.id %>"<% if( student && student.stageLocking[seq.id][stage.id]){ %>disabled<% } %>>
                         <%= stage.displayName %>
                     </button>
                 </li>
