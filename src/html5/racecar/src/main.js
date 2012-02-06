@@ -95,7 +95,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Set up basic audio
         var AM = AudioMixer.create();
         var dir = "sound/snowboard/";
-        AM.loadSound('correct',      dir + "Correct v1");
+        AM.loadSound('correct',      dir + "Correct v2");
         AM.loadSound('countdown',    dir + "Countdown v1");
         AM.loadSound('finish',       dir + "FinishLine v1");
         AM.loadSound('wrong',        dir + "Incorrect v1");
@@ -108,8 +108,9 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
-        MM.loadSound('bg_slow', dir + "NormalLoop v1");
-        MM.loadSound('bg_fast', dir + "FastLoop v1");
+        MM.loadSound('bg_slow', dir + "NormalLoop v1-2");
+        MM.loadSound('bg_fast', dir + "FastLoop v1-2");
+        MM.loadSound('bg_open', dir + "Opening Pwrchord v1");
         this.set('musicMixer', MM);
         
         events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
@@ -522,6 +523,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Start background music
         this.musicMixer.loopSound('bg_slow');
+        this.musicMixer.playSound('bg_open');
         if(this.musicMixer.getSound('bg_fast')) {
             this.musicMixer.getSound('bg_fast').setVolume(0);
         }
