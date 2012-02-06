@@ -25,6 +25,8 @@ var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Since children do not play nice with animations...
 var ClawNode = cocos.nodes.Node.extend({
+    sfx         : null,     // Holds a reference to main's audioMixer
+    
     theClaw     : null,     // THE CLAW!!!!
     theItem     : null,     // The current item of interest
     
@@ -34,16 +36,18 @@ var ClawNode = cocos.nodes.Node.extend({
     goodItems   : null,     // List of band 1 items
     greatItems  : null,     // List of band 0 items
     
-    init: function() {
+    init: function(AM) {
         ClawNode.superclass.init.call(this);
+        
+        this.sfx = AM;
         
         this.theClaw = Claw.create();
         this.addChild(this.theClaw);
         
         // Load bad items
         this.badItems = [];
-        dir = '/resources/Toys/Bad/Bad_';
-        this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Blank.png'}));   /*
+        dir = '/resources/Toys/Bad/Bad_';                                           //*
+        this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Blank.png'}));   /*/
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Boot.png'}));
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Can.png'}));
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Fish.png'}));
@@ -73,6 +77,7 @@ var ClawNode = cocos.nodes.Node.extend({
     grabAt: function(x, grade) {
         var dx = x - this.get('position').x;
         
+        this.sfx.playSound('startMove');
         this.theClaw.playAnimation('right');
         MOT.create(this.get('position').x, dx, 0.5).bindFunc(this, this.setClawX);
         
@@ -84,17 +89,55 @@ var ClawNode = cocos.nodes.Node.extend({
         this.theItem.set('zOrder', -1);
         this.addChild(this.theItem);
         
-        setTimeout(function() { that.theClaw.playAnimation('settleR'); }, 500);
-        setTimeout(function() { that.theClaw.playAnimation('open'); }, 900);
-        setTimeout(function() { that.theClaw.playAnimation('grab'); }, 1050);
-        setTimeout(function() { MOT.create(375, -150, 0.23).bindFunc(that, that.setItemY); }, 1320);
-        setTimeout(function() { that.theClaw.playAnimation('left'); 
-            MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setClawX); }, 2100);
-        setTimeout(function() { that.theClaw.playAnimation('settleL'); }, 2600);
-        setTimeout(function() { that.theClaw.playAnimation('open'); }, 3000);
-        setTimeout(function() { MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY); }, 3100);
-        setTimeout(function() { that.theClaw.playAnimation('close');
-            that.removeChild({child: that.theItem}); }, 3200);
+        setTimeout(function() { 
+            that.theClaw.playAnimation('settleR');
+            that.sfx.playSound('stopMove');
+        }, 500);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('open');
+            that.sfx.playSound('openClawNT');
+        }, 900);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('grab');
+            that.sfx.playSound('grabToy');
+        }, 1050);
+        
+        setTimeout(function() {
+            MOT.create(375, -150, 0.23).bindFunc(that, that.setItemY);
+        },  1320);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('left');
+            MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setClawX);
+            that.sfx.playSound('startMove');
+        }, 2100);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('settleL');
+            that.sfx.playSound('stopMove');
+        }, 2600);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('open');
+            if(grade == 2) {
+                that.sfx.playSound('openClawNT');
+            }
+        }, 3000);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('drop');
+            MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY);
+            if(grade < 2) {
+                that.sfx.playSound('dropToy');
+            }
+        }, 3100);
+        
+        setTimeout(function() {
+            that.theClaw.playAnimation('close');
+            that.removeChild({child: that.theItem});
+        }, 3200);
     },
     
     // Accessor for MOT

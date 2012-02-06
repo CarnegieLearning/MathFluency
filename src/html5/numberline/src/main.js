@@ -56,7 +56,7 @@ var FloatText = require('FloatText').FloatText;
 var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer
     gameID      : '',       // Unique ID for the game
-    version     : 'v 0.9.4',// The version number
+    version     : 'v 0.9.9',// The version number
     
     questionList: [],       // List of all question sets in the input
     current     : -1,       // The index of the current QuestionSet
@@ -81,8 +81,23 @@ var FluencyApp = KeyboardLayer.extend({
         this.menu = menu;
         
         // Set up basic audio
+        var dir = 'sound/claw/';
         var AM = AudioMixer.create();
+        AM.loadSound('startMove',  dir + 'ContraptionStartV_1');    // Claw starting to move
+        AM.loadSound('stopMove',   dir + 'ContraptionStopV_1');     // Claw stopping from moving
+        AM.loadSound('countdown',  dir + 'Counter321V_1');          // Initial starting countdown
+        AM.loadSound('counter',    dir + 'CounterSingleV_1');   //  ?? {Unused}
+        AM.loadSound('dropToy',    dir + 'DropToyV_1');             // Claw dropping a toy
+        AM.loadSound('start',      dir + 'GoV_1');                  // Countdown ended, start of game
+        AM.loadSound('grabToy',    dir + 'GrabToyV_1');             // Claw grabbing a toy
+        AM.loadSound('buttonIG',   dir + 'InGameButtonPressV_1');   // Pressing a button in game (mute) {Unused}
+        AM.loadSound('buttonM',    dir + 'MenuButtonPressV_1');     // Pressing a button in a menu (start, retry, next) {Unused}
+        AM.loadSound('openClawNT', dir + 'OpenClawNoToyV_1');       // Claw opening without a toy
         this.set('audioMixer', AM);
+        
+        var MM = AudioMixer.create();
+        MM.loadSound('music', dir + 'Teatro');
+        this.set('musicMixer', MM)
         
         // Run the 'preloader'
         var preloader = Preloader.create();
@@ -116,7 +131,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
         this.setBinding('ANSWER',       [32, 13]);  // [SPACE, ENTER]
         this.setBinding('ABORT',        [27]);      // [ESC]
-        this.setBinding('DEBUG_PAUSE',  [80]);      // [P]
+        //this.setBinding('DEBUG_PAUSE',  [80]);      // [P]
         
         // Create and add the HUD
         var h = HUD.create();
@@ -128,7 +143,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.versionLabel.set('position', new geo.Point(875, 590));
         this.addChild({child: this.versionLabel});
         
-        this.claw = ClawNode.create();
+        this.claw = ClawNode.create(this.audioMixer);
         this.claw.set('position', new geo.Point(100, 160));
         this.claw.set('anchorPoint', new geo.Point(0.5, 0));
         this.claw.set('zOrder', -2)
@@ -299,12 +314,16 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(this.hud, 'stageTimeExpired', function() {that.endOfGame(true); });
         
         this.menu.createMenu();
+        
+        this.musicMixer.setMasterVolume(0.4);
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
         setTimeout(this.startGame.bind(this), 3000);
+        
+        this.audioMixer.playSound('countdown');
         
         var cd = cocos.nodes.Label.create({string: '3', textColor: '#000000'});
         cd.set('scaleX', 10);
@@ -317,7 +336,11 @@ var FluencyApp = KeyboardLayer.extend({
         var that = this;
         setTimeout(function () { that.get('cdt').set('string', '2'); }, 1000)
         setTimeout(function () { that.get('cdt').set('string', '1'); }, 2000)
-        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 3000)
+        setTimeout(function () {
+            that.get('cdt').set('string', 'GO!');
+            that.get('cdt').set('position', new geo.Point(300, 300));
+            that.audioMixer.playSound('start');
+        }, 3000)
         setTimeout(function () { that.removeChild(that.get('cdt')); }, 3500)
         
         //$(window).unload(this.endOfGame.bind(this, null));
@@ -334,6 +357,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.cursor.set('position', new geo.Point((this.min_x + this.max_x) / 2, 200 + QuestionSet.NumberLineY));
         this.cursor.set('zOrder', 10);
         
+        this.musicMixer.loopSound('music')
+        
         this.hud.startGame();
     },
 
@@ -343,15 +368,20 @@ var FluencyApp = KeyboardLayer.extend({
     endOfGame: function(finished) {
         if(this.ended)
             return;
+        this.ended = true;
     
+        // Fade out background music tracks at the end of the game
+        var s = this.musicMixer.getSound('music');
+        if(s) {
+            MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        }
+        
         //$(window).unbind('unload')
         
         // Stopping the game
         s = cocos.Scheduler.get('sharedScheduler')
         s.unscheduleUpdateForTarget(this);
         s.unscheduleUpdateForTarget(this.hud);
-        
-        this.ended = true;
         
         // Removing any remaining visible content
         this.removeChild({child: this.cursor});
