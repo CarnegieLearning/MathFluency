@@ -1,5 +1,6 @@
 import core
 import random
+import decimal
 import fractions
 import operator
 
@@ -7,6 +8,7 @@ import operator
 RI = random.randint
 RC = random.choice
 F = fractions.Fraction
+D = decimal.Decimal
 
 class FractionItem:
     def __init__(self, denom = [2, 3, 4, 5, 8, 10, 12, 100, 1000]):

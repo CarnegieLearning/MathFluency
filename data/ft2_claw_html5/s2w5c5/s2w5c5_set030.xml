@@ -1,0 +1,158 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<INPUT_MODE>Click</INPUT_MODE>
+<TIME_MODE>Level</TIME_MODE>
+<TIME_LIMIT>60</TIME_LIMIT>
+<MEDALS>
+    <MEDAL Id="1" Score="1000">Gold</MEDAL>
+    <MEDAL Id="2" Score="750">Silver</MEDAL>
+    <MEDAL Id="3" Score="600">Bronze</MEDAL>
+</MEDALS>
+<SCORING ptsCorrect="100" ptsIncorrect="0" ptsTimeout="0"/>
+<ANSWER_BANDS>
+    <BAND>Perfect</BAND>
+    <BAND>Almost</BAND>
+    <BAND>Miss</BAND>
+</ANSWER_BANDS>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<NUMBER_LINE>
+			<HASH location="0">
+				<Content TYPE="String">
+					<ContentSettings string="0"/>
+				</Content>
+			</HASH>
+			<HASH location="0.5">
+				<Content TYPE="String">
+					<ContentSettings string="0.5"/>
+				</Content>
+			</HASH>
+			<HASH location="1">
+				<Content TYPE="String">
+					<ContentSettings string="1"/>
+				</Content>
+			</HASH>
+		</NUMBER_LINE>
+		<QUESTION INDEX="1">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="2" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="4"/>
+			</Content>
+			<Answer VALUE="0.8"/>
+		</QUESTION>
+		<QUESTION INDEX="3">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.333"/>
+		</QUESTION>
+		<QUESTION INDEX="4">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.333"/>
+		</QUESTION>
+		<QUESTION INDEX="5">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="2"/>
+			</Content>
+			<Answer VALUE="0.666"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="8" numerator="3"/>
+			</Content>
+			<Answer VALUE="0.375"/>
+		</QUESTION>
+		<QUESTION INDEX="7">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.2"/>
+		</QUESTION>
+		<QUESTION INDEX="8">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="2" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="9">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.2"/>
+		</QUESTION>
+		<QUESTION INDEX="10">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="2"/>
+			</Content>
+			<Answer VALUE="0.2"/>
+		</QUESTION>
+		<QUESTION INDEX="11">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="5" numerator="4"/>
+			</Content>
+			<Answer VALUE="0.8"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="8" numerator="2"/>
+			</Content>
+			<Answer VALUE="0.25"/>
+		</QUESTION>
+		<QUESTION INDEX="13">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="2"/>
+			</Content>
+			<Answer VALUE="0.666"/>
+		</QUESTION>
+		<QUESTION INDEX="14">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="7"/>
+			</Content>
+			<Answer VALUE="0.7"/>
+		</QUESTION>
+		<QUESTION INDEX="15">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="8" numerator="3"/>
+			</Content>
+			<Answer VALUE="0.375"/>
+		</QUESTION>
+		<QUESTION INDEX="16">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="8" numerator="3"/>
+			</Content>
+			<Answer VALUE="0.375"/>
+		</QUESTION>
+		<QUESTION INDEX="17">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="10" numerator="5"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="18">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="2" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.5"/>
+		</QUESTION>
+		<QUESTION INDEX="19">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="3" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.333"/>
+		</QUESTION>
+		<QUESTION INDEX="20">
+			<Content TYPE="Fraction">
+				<ContentSettings denominator="4" numerator="1"/>
+			</Content>
+			<Answer VALUE="0.25"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>
