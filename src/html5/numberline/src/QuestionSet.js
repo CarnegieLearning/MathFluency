@@ -25,6 +25,7 @@ var XML = require('XML').XML;
 // Project Imports
 var Question = require('Question').Question;
 var NumberLine = require('NumberLine').NumberLine;
+var MOT = require('ModifyOverTime').ModifyOverTime;
 
 // Holds the in game representation of a QuestionSubset
 var QuestionSet = cocos.nodes.Node.extend({
@@ -135,11 +136,17 @@ var QuestionSet = cocos.nodes.Node.extend({
 
         var x = this.questions[this.current].correctValue * this.numberline.length + QuestionSet.NumberLineX;
         this.correctLocator.set('position', new geo.Point(x, QuestionSet.NumberLineY));
+        this.correctLocator.set('opacity', 255);
         this.addChild({child: this.correctLocator});
+        setTimeout(this.fadeCorrectLocator.bind(this), 2000);
         
         this.nextQuestion();
         
         return retVal;
+    },
+    
+    fadeCorrectLocator: function() {
+        MOT.create(255, -255, 1.5).bind(this.correctLocator, 'opacity');
     },
     
     // Handles questions timing out
