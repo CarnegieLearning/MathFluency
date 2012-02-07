@@ -39,40 +39,62 @@ var FractionRenderer = cocos.nodes.Node.extend({
             }
         }));
         
+        this.bgShow = true;
+        if(opts.hasOwnProperty('bgShow')) {
+            if(!opts['bgShow'] || opts['bgShow'] == "false") {
+                this.bgShow = false;
+            }
+        }
+        
+        this.lineWidth = this.get("fontSize") / 8;
+        
+        var h = 4;
+        var w = 4;
+        
         // Create the numerical labels for the numerator and denominator
         var opts = Object();
         opts["string"] = this.get("numerator");
         opts["fontName"] = this.get("fontName");
         opts["fontColor"] = this.get("fontColor");
         opts["fontSize"] = this.get("fontSize");
+        
         var label = cocos.nodes.Label.create(opts);
-        label.set('position', new geom.Point(0, -15));
+        label.set('anchorPoint', new geom.Point(0.5, 1));
         label.bindTo('opacity', this, 'opacity');
         this.addChild({child: label});
+        
+        h += label.get('contentSize').height;
+        w += label.get('contentSize').width;
         
         opts["string"] = this.get("denominator");
         label = cocos.nodes.Label.create(opts);
-        label.set('position', new geom.Point(0, 15));
+        label.set('anchorPoint', new geom.Point(0.5, 0));
         label.bindTo('opacity', this, 'opacity');
         this.addChild({child: label});
         
-        this.set('contentSize', new geom.Size(40, 50));
+        h += label.get('contentSize').height;
+        w += label.get('contentSize').width;
+        
+        this.set('contentSize', new geom.Size(h, w));
     },
     
     // Draw the background and the horizontal fraction bar
     draw: function(context) {
         var size = this.get('contentSize');
-    
-        context.fillStyle = this.get('bgColor');
-        context.beginPath();
-        context.moveTo(size.width /  2, size.height /  2);
-        context.lineTo(size.width /  2, size.height / -2);
-        context.lineTo(size.width / -2, size.height / -2);
-        context.lineTo(size.width / -2, size.height /  2);
-        context.closePath();
-        context.fill();
         
+        if(this.bgShow) {
+            context.fillStyle = this.get('bgColor');
+            context.beginPath();
+            context.moveTo(size.width /  2, size.height /  2);
+            context.lineTo(size.width /  2, size.height / -2);
+            context.lineTo(size.width / -2, size.height / -2);
+            context.lineTo(size.width / -2, size.height /  2);
+            context.closePath();
+            context.fill();
+        }
+            
         context.strokeStyle = this.get('lineColor');
+        context.lineWidth = this.lineWidth;
         context.beginPath();
         context.moveTo(size.height /  4, 0);
         context.lineTo(size.height / -4, 0);
