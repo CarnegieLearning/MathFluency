@@ -136,13 +136,10 @@ module.exports = function restapi(gameController)
     {
         if( req.stage ){
             res.send( req.stage.toJSON() );
+        } else if( ! req.playerState ){
+                console.log("no playerState, must be instructor. Sending all stages: ");
+                res.send({'stages': req.sequence.stages});
         } else {
-            if( ! req.playerState ){
-                gc.getAvailableStagesForPlayer( req.playerState, function(availStages)
-                {
-                    return res.send({'stages': availStages });
-                });
-            }
             var availFn = req.sequence.makeAvailableStagesFn( req.playerState );
             availFn( function( error, stageLocking )
             {
