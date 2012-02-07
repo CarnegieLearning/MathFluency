@@ -10,23 +10,23 @@
 <PROBLEM_SET>
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="Fraction">
-			<ContentSettings denominator="4" numerator="1"/>
+			<ContentSettings denominator="4" numerator="3"/>
 		</TARGET>
 		<QUESTION INDEX="1">
-			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings string="1"/>
-			</Content>
-			<Answer VALUE="0"/>
-		</QUESTION>
-		<QUESTION INDEX="2">
 			<Content TYPE="String">
 				<ContentSettings string="0"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
+				<ContentSettings string="0.5"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="String">
+				<ContentSettings string="0.7"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="0.8"/>
 			</Content>
 			<Answer VALUE="1"/>
 		</QUESTION>
@@ -37,25 +37,25 @@
 			<Content TYPE="String">
 				<ContentSettings string="1"/>
 			</Content>
-			<Answer VALUE="0"/>
+			<Answer VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="4">
 			<Content TYPE="String">
-				<ContentSettings string="0"/>
+				<ContentSettings string="0.5"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
+				<ContentSettings string="0.8"/>
 			</Content>
 			<Answer VALUE="1"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
 		<TARGET TYPE="Fraction">
-			<ContentSettings denominator="4" numerator="2"/>
+			<ContentSettings denominator="2" numerator="1"/>
 		</TARGET>
 		<QUESTION INDEX="5">
 			<Content TYPE="String">
-				<ContentSettings string="0.9"/>
+				<ContentSettings string="0.75"/>
 			</Content>
 			<Content TYPE="String">
 				<ContentSettings string="1"/>
@@ -64,28 +64,69 @@
 		</QUESTION>
 		<QUESTION INDEX="6">
 			<Content TYPE="String">
-				<ContentSettings string="0.25"/>
+				<ContentSettings string="0.2"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
+				<ContentSettings string="0.3"/>
 			</Content>
-			<Answer VALUE="1"/>
+			<Answer VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="7">
 			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
+				<ContentSettings string="0.4"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="1"/>
+				<ContentSettings string="0.8"/>
 			</Content>
-			<Answer VALUE="0"/>
+			<Answer VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="8">
 			<Content TYPE="String">
-				<ContentSettings string="0.1"/>
+				<ContentSettings string="0"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.7"/>
+				<ContentSettings string="0.25"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+			<ContentSettings denominator="10" numerator="3"/>
+		</TARGET>
+		<QUESTION INDEX="9">
+			<Content TYPE="String">
+				<ContentSettings string="0.25"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="0.5"/>
+			</Content>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="10">
+			<Content TYPE="String">
+				<ContentSettings string="0.4"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="0.8"/>
+			</Content>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="11">
+			<Content TYPE="String">
+				<ContentSettings string="0"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="0.25"/>
+			</Content>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="String">
+				<ContentSettings string="0.25"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="0.5"/>
 			</Content>
 			<Answer VALUE="1"/>
 		</QUESTION>
@@ -94,80 +135,39 @@
 		<TARGET TYPE="Fraction">
 			<ContentSettings denominator="5" numerator="4"/>
 		</TARGET>
-		<QUESTION INDEX="9">
+		<QUESTION INDEX="13">
 			<Content TYPE="String">
 				<ContentSettings string="0.4"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.5"/>
+				<ContentSettings string="0.7"/>
 			</Content>
 			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="10">
-			<Content TYPE="String">
-				<ContentSettings string="0.5"/>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
-			</Content>
-			<Answer VALUE="2"/>
-		</QUESTION>
-		<QUESTION INDEX="11">
-			<Content TYPE="String">
-				<ContentSettings string="0.75"/>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings string="1"/>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-		<QUESTION INDEX="12">
-			<Content TYPE="String">
-				<ContentSettings string="0.25"/>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings string="1"/>
-			</Content>
-			<Answer VALUE="1"/>
-		</QUESTION>
-	</PROBLEM_SUBSET>
-	<PROBLEM_SUBSET>
-		<TARGET TYPE="Fraction">
-			<ContentSettings denominator="10" numerator="2"/>
-		</TARGET>
-		<QUESTION INDEX="13">
-			<Content TYPE="String">
-				<ContentSettings string="0"/>
-			</Content>
-			<Content TYPE="String">
-				<ContentSettings string="0.25"/>
-			</Content>
-			<Answer VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="14">
 			<Content TYPE="String">
-				<ContentSettings string="0.7"/>
+				<ContentSettings string="0.1"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.9"/>
+				<ContentSettings string="0.3"/>
 			</Content>
-			<Answer VALUE="0"/>
+			<Answer VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="15">
 			<Content TYPE="String">
-				<ContentSettings string="0"/>
+				<ContentSettings string="0.5"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.1"/>
+				<ContentSettings string="0.7"/>
 			</Content>
 			<Answer VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="16">
 			<Content TYPE="String">
-				<ContentSettings string="0.8"/>
+				<ContentSettings string="0.9"/>
 			</Content>
 			<Content TYPE="String">
-				<ContentSettings string="0.9"/>
+				<ContentSettings string="1"/>
 			</Content>
 			<Answer VALUE="0"/>
 		</QUESTION>

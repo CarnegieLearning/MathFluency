@@ -37,7 +37,7 @@ class configR2(core.config):
         while(player[0] == self.prev[0] and player[1] == self.prev[1]):
             player = self.validPlayer.get()
     
-        fCompare = F(player[0], player[1])
+        fCompare = player[0] * 1.0 / player[1]
     
         i = 0
         while(i < 4):
