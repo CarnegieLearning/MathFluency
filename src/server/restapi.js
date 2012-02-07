@@ -137,6 +137,12 @@ module.exports = function restapi(gameController)
         if( req.stage ){
             res.send( req.stage.toJSON() );
         } else {
+            if( ! req.playerState ){
+                req.sequence.getAvailableStages( req.playerState, function(availStages)
+                {
+                    return res.send({'stages': availStages });
+                });
+            }
             var availFn = req.sequence.makeAvailableStagesFn( req.playerState );
             availFn( function( error, stageLocking )
             {
@@ -173,11 +179,12 @@ module.exports = function restapi(gameController)
                 for( var i in stages ){
                     var stj = stages[i].toJSON();
                     stj.locked = false;
-                    console.log
-                    for( var seqID in req.playerState.stageLocking ){
-                        if( req.playerState.stageLocking[seqID][stages[i].id] ){
-                            stj.locked = true;
-                            break;
+                    if( req.playerState ){
+                        for( var seqID in req.playerState.stageLocking ){
+                            if( req.playerState.stageLocking[seqID][stages[i].id] ){
+                                stj.locked = true;
+                                break;
+                            }
                         }
                     }
                     stagesJSON.push( stj );
@@ -254,11 +261,12 @@ module.exports = function restapi(gameController)
                    for( var i in stages ){
                        var stj = stages[i].toJSON();
                        stj.locked = false;
-                       console.log
-                       for( var seqID in req.playerState.stageLocking ){
-                           if( req.playerState.stageLocking[seqID][stages[i].id] ){
-                               stj.locked = true;
-                               break;
+                       if( req.playerState ){
+                           for( var seqID in req.playerState.stageLocking ){
+                               if( req.playerState.stageLocking[seqID][stages[i].id] ){
+                                   stj.locked = true;
+                                   break;
+                               }
                            }
                        }
                        stagesJSON.push( stj );
