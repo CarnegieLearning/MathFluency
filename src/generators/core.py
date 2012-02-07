@@ -111,7 +111,6 @@ class config:
         self.filename = name        #File name for datasets, will be appended with 001, 002, etc
         
         self.outputXML = TRUE       #If TRUE, will output the .xml file for each dataset
-        self.outputCSV = TRUE       #If TRUE, will output the .csv file for each dataset
         
         self.randomSeed = None      #Set to something other than None to use that as the random.seed()
     
@@ -214,12 +213,6 @@ def runBatch(configList):
                 logfile.write("Error attempting to write to file " + str(filelist[-1]) + "\n")
         else:
             logfile.write("outputXML set to " + str(c.outputXML) + ".  Skipping file write.\n")
-
-        #Convert and write to CSV
-        if(c.outputCSV):
-            dumpCSV(c.directory + c.filename + str(i).zfill(3) + ".csv", dataset)
-        else:
-            logfile.write("outputCSV set to " + str(c.outputCSV) + ".  Skipping file write.\n")
         
         i += 1
     
@@ -305,47 +298,3 @@ def getHeader(filename):
     else:
         logfile.write("Error opening xml header file\n")
         return [""]
-
-#Converts the internal dataset format to CSV and outputs it to a file alongside the XML
-def dumpCSV(filename, dataset):
-    i = 1
-    j = 1
-    f = open(filename, 'w')
-    if(f):
-        logfile.write("Writing to file " + str(filename) + "\n")
-        f.write("Subset #,Q#,Selector,,,Lower Gate,,Upper Gate,,,\n")
-        for subset in dataset:
-            s = str(j) + ','
-            for question in subset[1]:
-                #Initial column buffering for non start of subset rows
-                if(s == ""):
-                    s = ','
-                #Question numbering
-                s += str(i) + ','
-                
-                #Selector placement for start of subset rows
-                #The extra single quote is to tell Excel to not try and interpet the cell
-                if(s[0] != ','):
-                    s += '\'' + str(subset[0])
-                s+= ',,'
-                
-                #Edge case that the answer is in the first column
-                if(question[0] == '0'):
-                    s += 'x'
-                
-                #Adds the correct answer marker to the specified lane
-                #The extra single quote is to tell Excel to not try and interpet the cell
-                h = 1
-                while(h < len(question)):
-                    s += ',"\'' + question[h] + '",'
-                    if(question[0] == str(h)):
-                        s += 'x'
-                    h += 1
-                
-                f.write(s + "\n")
-                
-                s = ""
-                i += 1
-            j += 1
-    else:
-        logfile.write("Error opening CSV file for write.\n")

@@ -1,0 +1,9 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="38000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="58000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="77000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>

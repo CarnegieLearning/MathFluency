@@ -767,7 +767,7 @@
                     "week4_claw7"
                 ]
             }
-        }  
+        }
     },
     
     "stages": {
@@ -934,24 +934,24 @@
             "cli_fluency_task": "s2w2_fract_2"
         },
         "Snow_1": {
-            "displayName": "Conversions 1 (Snowboard)",
+            "displayName": "Week 4: Conversions 1 (Snowboard)",
             "engine": "snowboard_html5",
             "cli_fluency_task": "s2w4r1"
         },
         "Snow_2": {
-            "displayName": "Conversions 2 (Snowboard)",
+            "displayName": "Week 4: Conversions 2 (Snowboard)",
             "engine": "snowboard_html5",
             "cli_fluency_task": "s2w4r2"
         },
         "Snow_1t": {
             "displayName": "Conversions 1 (Snowboard) (FF5 Safe)",
-            "engine": "snowboard_html5_test",
-            "cli_fluency_task": "s2w4r1t"
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w4r1"
         },
         "Snow_2t": {
             "displayName": "Conversions 2 (Snowboard) (FF5 Safe)",
-            "engine": "snowboard_html5_test",
-            "cli_fluency_task": "s2w4r2t"
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w4r2"
         },
         "week4_claw3" : {
             "displayName": "Week 4: Claw 3",
@@ -987,6 +987,41 @@
             "displayName": "Week 4: Claw 9",
             "engine": "claw_html5",
             "cli_fluency_task": "s2w4c9"
+        },
+        "week5_snow1" : {
+            "displayName": "Week 5: Snow 1",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w5r1"
+        },
+        "week5_snow2" : {
+            "displayName": "Week 5: Snow 2",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w5r2"
+        },
+        "week5_race3" : {
+            "displayName": "Week 5: Race 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "s2w5r3"
+        },
+        "week5_race4" : {
+            "displayName": "Week 5: Race 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "s2w5r4"
+        },
+        "week5_claw5" : {
+            "displayName": "Week 5: Claw 5",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w5c5"
+        },
+        "week5_claw6" : {
+            "displayName": "Week 5: Claw 6",
+            "engine": "claw_html5",
+            "cli_fluency_task": "s2w5c6"
+        },
+        "week5_snow7" : {
+            "displayName": "Week 5: Snow 7",
+            "engine": "snowboard_html5",
+            "cli_fluency_task": "s2w5r7"
         }
     },
     
