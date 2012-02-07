@@ -504,7 +504,8 @@ var FluencyApp = KeyboardLayer.extend({
                 this.floatText.display(retVal);
                 
                 if(retVal < 2) {
-                    this.hud.modifyItemCount();
+                    var that = this;
+                    setTimeout(function () {that.hud.modifyItemCount(); }, 3200);
                 }
             }
     },
