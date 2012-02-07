@@ -138,7 +138,7 @@ module.exports = function restapi(gameController)
             res.send( req.stage.toJSON() );
         } else {
             if( ! req.playerState ){
-                req.sequence.getAvailableStages( req.playerState, function(availStages)
+                gc.getAvailableStagesForPlayer( req.playerState, function(availStages)
                 {
                     return res.send({'stages': availStages });
                 });
