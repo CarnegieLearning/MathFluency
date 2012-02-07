@@ -990,22 +990,22 @@
         },
         "week5_snow1" : {
             "displayName": "Week 5: Snow 1",
-            "engine": "claw_html5",
+            "engine": "snowboard_html5",
             "cli_fluency_task": "s2w5r1"
         },
         "week5_snow2" : {
             "displayName": "Week 5: Snow 2",
-            "engine": "claw_html5",
+            "engine": "snowboard_html5",
             "cli_fluency_task": "s2w5r2"
         },
         "week5_race3" : {
             "displayName": "Week 5: Race 3",
-            "engine": "claw_html5",
+            "engine": "racecar_html5",
             "cli_fluency_task": "s2w5r3"
         },
         "week5_race4" : {
             "displayName": "Week 5: Race 4",
-            "engine": "claw_html5",
+            "engine": "racecar_html5",
             "cli_fluency_task": "s2w5r4"
         },
         "week5_claw5" : {
@@ -1020,7 +1020,7 @@
         },
         "week5_snow7" : {
             "displayName": "Week 5: Snow 7",
-            "engine": "claw_html5",
+            "engine": "snowboard_html5",
             "cli_fluency_task": "s2w5r7"
         }
     },
