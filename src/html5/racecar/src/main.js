@@ -462,8 +462,15 @@ var FluencyApp = KeyboardLayer.extend({
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
 
-        this.audioMixer.getSound('accel').setVolume(0.8);
-        this.audioMixer.getSound('screech').setVolume(0.5);
+        var s = this.audioMixer.getSound('accel')
+        if(s) {
+            s.setVolume(0.8);
+        }
+        
+        s = this.audioMixer.getSound('screech')
+        if(s) {
+            s.setVolume(0.5);
+        }
         
         this.audioMixer.playSound('countdown');
     
@@ -520,7 +527,10 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Start background music
         this.musicMixer.loopSound('bg_slow');
-        this.musicMixer.getSound('bg_fast').setVolume(0);
+        var s = this.musicMixer.getSound('bg_fast')
+        if(s) {
+            s.setVolume(0);
+        }
         this.musicMixer.loopSound('bg_fast');
     },
     
@@ -585,10 +595,16 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Fade out background music tracks at the end of the game
         var s;
+        
         s = this.musicMixer.getSound('bg_fast');
-        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        if(s) {
+            MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        }
+        
         s = this.musicMixer.getSound('bg_slow');
-        MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        if(s) {
+            MOT.create(s.volume, -1, 2).bindFunc(s, s.setVolume);
+        }
         
         this.audioMixer.stopSound('hum');
         this.audioMixer.playSound('finish');

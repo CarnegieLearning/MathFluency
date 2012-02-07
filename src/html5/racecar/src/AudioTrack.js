@@ -1,17 +1,17 @@
 /*
 Copyright 2011, Carnegie Learning
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 */
 
 // Cocos requires
@@ -19,15 +19,15 @@ var cocos = require('cocos2d')
 
 // Wrapper class for the <audio> element
 var AudioTrack = BObject.extend({
-    audio       : null,     // Holds the actual audio element
-    loop        : false,    // Whether or not the track should loop on ending
-    isPlaying   : false,    // True if the track is current playing
-    volume      : 1,        // [0-1] the volume for this specific AudioTrack
-    masterVolume: 1,        // [0-1] the volume of the AudioMixer
+    audio : null, // Holds the actual audio element
+    loop : false, // Whether or not the track should loop on ending
+    isPlaying : false, // True if the track is current playing
+    volume : 1, // [0-1] the volume for this specific AudioTrack
+    masterVolume: 1, // [0-1] the volume of the AudioMixer
     init: function(file) {
         this.audio = document.createElement('audio');
         this.audio.setAttribute('src', file);
-        this.audio.addEventListener('ended', this.endCallback.bind(this));
+        this.audio.addEventListener('ended', this.endCallback.bind(this), false);
         this.set('isPlaying', false);
     },
     

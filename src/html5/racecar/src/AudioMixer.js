@@ -1,17 +1,17 @@
 /*
 Copyright 2011, Carnegie Learning
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 */
 
 // Cocos requires
@@ -27,12 +27,12 @@ var AudioTrack = require('AudioTrack').AudioTrack;
 // Only need a single Audio Mixer, so the class is static
 // Responsible for managing all the audio in the app
 var AudioMixer = BObject.extend({
-    sounds      : null,     // Dictionary of AudioTracks
-    availible   : false,    // true if browser supports <audio>
-    ogg         : false,    // true if browser supports ogg/oga format
-    mp3         : false,    // true is browser supports mp3 format
-    muted       : false,    // Whether or not all audio should be muted
-    volume      : 1,        // Master volume
+    sounds : null, // Dictionary of AudioTracks
+    availible : false, // true if browser supports <audio>
+    ogg : false, // true if browser supports ogg/oga format
+    mp3 : false, // true is browser supports mp3 format
+    muted : false, // Whether or not all audio should be muted
+    volume : 1, // Master volume
     
     init: function () {
         AudioMixer.superclass.init.call(this);
@@ -86,7 +86,14 @@ var AudioMixer = BObject.extend({
         
         if(!this.checkRef(ref)) {
             var sndList = this.get('sounds');
-            sndList[ref] = AudioTrack.create(filename);
+            
+            try {
+                sndList[ref] = AudioTrack.create(filename);
+            }
+            catch(exception) {
+                console.log(exception);
+            }
+            
             this.set('sounds', sndList);
         }
         else {
@@ -176,8 +183,11 @@ var AudioMixer = BObject.extend({
     crossFade: function(from, to, dur) {
         var f = this.getSound(from);
         var t = this.getSound(to);
-        MOT.create(1, -1, dur).bindFunc(f, f.setVolume);
-        MOT.create(0,  1, dur).bindFunc(t, t.setVolume);
+        
+        if(f && t) {
+            MOT.create(1, -1, dur).bindFunc(f, f.setVolume);
+            MOT.create(0, 1, dur).bindFunc(t, t.setVolume);
+        }
         
         setTimeout(this.crossFadeComplete, dur * 1000);
     },
@@ -196,6 +206,6 @@ var AudioMixer = BObject.extend({
 });
 
 // Static constants
-AudioMixer.enabled = true;     // Setting to false disables constructor, preventing audio from playing
+AudioMixer.enabled = true; // Setting to false disables constructor, preventing audio from playing
 
 exports.AudioMixer = AudioMixer
