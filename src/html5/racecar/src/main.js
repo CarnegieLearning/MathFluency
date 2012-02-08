@@ -652,7 +652,6 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Checks to see if abort was related to window.unload
         if(finished != null) {
-            //alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
             var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
             e.set('position', new geo.Point(200, 50));
             this.addChild({child: e});
