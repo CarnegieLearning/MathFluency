@@ -55,13 +55,12 @@ function updateStageLocking( stages )
 {
 //    alert('looking at '+ stages.length +' stages');
     var buttons = $('#stage-list li button');
-    for( var i in stages ){
-        for( var j in buttons ){
-            var bvals = buttons[j].value.split('/',2);
-            var seqID = bvals[0];
-            var stageID = bvals[1];
+    for( var j = 0; j < buttons.length; j++ ){
+        var bvals = buttons[j].value.split('/',2);
+        var seqID = bvals[0];
+        var stageID = bvals[1];
+        for( var i = 0; i < stages.length; i++ ){
             if( stageID == stages[i].id ){
-//                alert('setting stage '+ stageID +' disabled? '+ stages[i].locked );
                 $('#'+ stageID).button('option','disabled', stages[i].locked );
                 break;
             }
