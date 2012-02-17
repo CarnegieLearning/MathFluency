@@ -161,8 +161,8 @@ var HUD = cocos.nodes.Node.extend({
     update: function(dt) {
         // Runs stage timer
         if(!this.paused) {
+            this.elapsed += dt;
             if(this.timeLeft != null) {
-                this.elapsed += dt;
                 this.timeLeft -= dt;
                 
                 // Checks to see if stage timer has run out

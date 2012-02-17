@@ -477,7 +477,7 @@ var FluencyApp = KeyboardLayer.extend({
         '<OUTPUT>\n' + 
         '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
         '    <SCORE_SUMMARY>\n' + 
-        '        <Score Correct="' + correct +'" Almost="' + almost + '" Incorrect="' + incorrect + '" TotalScore="' + this.hud.score +'" Medal="' + m + '"/>\n' + 
+        '        <Score ElapsedTime="' + this.hud.elapsed + '" Correct="' + correct +'" Almost="' + almost + '" Incorrect="' + incorrect + '" TotalScore="' + this.hud.score +'" Medal="' + m + '"/>\n' + 
         '    </SCORE_SUMMARY>\n' +
         '    <SCORE_DETAILS>\n';
                 var i = 0;
