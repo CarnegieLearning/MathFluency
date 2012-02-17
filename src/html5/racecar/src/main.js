@@ -92,29 +92,31 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Explicitly enable audio
         AudioMixer.enabled = true;
+        var dir = 'sound/'
         // Set up basic audio
         var AM = AudioMixer.create();
-        AM.loadSound('screech', "sound/CarScreech2");
-        AM.loadSound('decel', "sound/SlowDown");
-        AM.loadSound('accel', "sound/SpeedUp");
-        AM.loadSound('turbo', "sound/Turboboost");
-        AM.loadSound('start', "sound/EngineStart");
-        AM.loadSound('hum', "sound/Engine Hum");
-        AM.loadSound('correct', "sound/Correct v1");
-        AM.loadSound('wrong', "sound/Incorrect v1");
-        AM.loadSound('finish', "sound/FinishLine v1");
-        AM.loadSound('intermission', "sound/Numberchange v1");
-        AM.loadSound('countdown', "sound/countdown");
+        AM.loadSound('screech',      dir + 'CarScreech2');
+        AM.loadSound('decel',        dir + 'SlowDown');
+        AM.loadSound('accel',        dir + 'SpeedUp');
+        AM.loadSound('turbo',        dir + 'Turboboost');
+        AM.loadSound('start',        dir + 'EngineStart');
+        AM.loadSound('hum',          dir + 'Engine Hum');
+        AM.loadSound('correct',      dir + 'Correct v1');
+        AM.loadSound('wrong',        dir + 'Incorrect v1');
+        AM.loadSound('finish',       dir + 'FinishLine v1');
+        AM.loadSound('intermission', dir + 'Numberchange v1');
+        AM.loadSound('countdown',    dir + 'countdown');
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
-        MM.loadSound('bg_slow', "sound/race bg slow");
-        MM.loadSound('bg_fast', "sound/race bg fast2");
+        MM.loadSound('bg_slow', dir + 'Racecar v3-2');
+        MM.loadSound('bg_fast', dir + 'Racecar FAST v3-2');
+        MM.loadSound('bg_open', dir + 'Racecar Opening Chord');
         this.set('musicMixer', MM);
         
         // Load custom font
         xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "sound/androidnation_i.ttf",true);
+        xmlhttp.open('GET', 'sound/androidnation_i.ttf',true);
         xmlhttp.onreadystatechange=function() {
             if (xmlhttp.readyState==4) {
                 // Font is loaded
@@ -517,6 +519,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Start background music
         this.musicMixer.loopSound('bg_slow');
+        this.musicMixer.playSound('bg_open');
         var s = this.musicMixer.getSound('bg_fast')
         if(s) {
             s.setVolume(0);
