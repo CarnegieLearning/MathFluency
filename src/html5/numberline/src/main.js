@@ -86,14 +86,18 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('startMove',  dir + 'ContraptionStartV_1');    // Claw starting to move
         AM.loadSound('stopMove',   dir + 'ContraptionStopV_1');     // Claw stopping from moving
         AM.loadSound('countdown',  dir + 'Counter321V_1');          // Initial starting countdown
-        AM.loadSound('counter',    dir + 'CounterSingleV_1');   //  ?? {Unused}
         AM.loadSound('dropToy',    dir + 'DropToyV_1');             // Claw dropping a toy
         AM.loadSound('start',      dir + 'GoV_1');                  // Countdown ended, start of game
         AM.loadSound('grabToy',    dir + 'GrabToyV_1');             // Claw grabbing a toy
         AM.loadSound('buttonIG',   dir + 'InGameButtonPressV_1');   // Pressing a button in game (mute) {Unused}
         AM.loadSound('buttonM',    dir + 'MenuButtonPressV_1');     // Pressing a button in a menu (start, retry, next) {Unused}
         AM.loadSound('openClawNT', dir + 'OpenClawNoToyV_1');       // Claw opening without a toy
+        AM.loadSound('correct',    dir + 'CorrectV_1');             // Audio feedback for correct answers
+        AM.loadSound('almost',     dir + 'AlmostV_2');              // Audio feedback for almost answers
+        AM.loadSound('wrong',      dir + 'IncorrectV_2');           // Audio feedback for wrong answers
         this.set('audioMixer', AM);
+        
+        this.audioAnswer = ['correct', 'almost', 'wrong'];          // Mapping band numbers to audio feedback
         
         var MM = AudioMixer.create();
         MM.loadSound('music', dir + 'Teatro');
@@ -502,7 +506,9 @@ var FluencyApp = KeyboardLayer.extend({
                 this.answerLock = true;
                 this.claw.grabAt(ans, retVal);
                 this.floatText.display(retVal);
+                this.audioMixer.playSound(this.audioAnswer[retVal]);
                 
+                // Increment item counter after dropping toy in chute
                 if(retVal < 2) {
                     var that = this;
                     setTimeout(function () {that.hud.modifyItemCount(); }, 3200);
