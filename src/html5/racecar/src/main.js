@@ -102,7 +102,7 @@ var FluencyApp = KeyboardLayer.extend({
         AM.loadSound('intermission', dir + "Numberchange v2");
         AM.loadSound('decel',        dir + "Slowdown v2 (long)");
         AM.loadSound('accel',        dir + "SpeedUp v2 (long)");
-        AM.loadSound('lanechange',   dir + "SpeedUp v1");
+        AM.loadSound('lanechange',   dir + "SidetoSide v1");
         AM.loadSound('start',        dir + "SpeedUp v2 (short)");
         AM.loadSound('turbo',        dir + "Turboboost v2 (short)");
         this.set('audioMixer', AM);
