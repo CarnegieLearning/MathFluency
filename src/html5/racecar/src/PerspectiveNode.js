@@ -191,13 +191,13 @@ var PerspectiveNode = cocos.nodes.Node.extend({
 });
 
 // Static constants
-PerspectiveNode.horizonStart    = 150;      // From top of screen to start of horizon in pixels
-PerspectiveNode.horizonHeight   = 450;      // From horizonStart to the bottom of the screen in pixels
+PerspectiveNode.horizonStart    = 191;      // From top of screen to start of horizon in pixels
+PerspectiveNode.horizonHeight   = 409;      // From horizonStart to the bottom of the screen in pixels
 PerspectiveNode.horizonDistance = 100;      // In meters from the camera
-PerspectiveNode.horizonScale    = 0.05;     // Scale of objects on the horizon
+PerspectiveNode.horizonScale    = 0.074;    // Scale of objects on the horizon (553:41)
 PerspectiveNode.roadWidth       = 9.0;      // Width of road at bottom of the screen in meters
-PerspectiveNode.roadWidthPix    = 800;      // Width of road at bottom of the screen in pixels
-PerspectiveNode.roadOffset      = 000;      // Number of pixels from the left hand side that the road starts at
+PerspectiveNode.roadWidthPix    = 553;      // Width of road at bottom of the screen in pixels
+PerspectiveNode.roadOffset      = 175;      // Number of pixels from the left hand side that the road starts at
 
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera

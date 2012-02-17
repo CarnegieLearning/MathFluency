@@ -15,67 +15,67 @@ Copyright 2011, Carnegie Learning
 */
 
 var cocos = require('cocos2d');
+var geo = require('geometry');
 
 var PNode = require('PerspectiveNode').PerspectiveNode;
 var RC = require('RaceControl').RaceControl;
 
 var Background = cocos.nodes.Node.extend({
+    sky     : null,     // Holds the sky background image
+    city    : null,     // Holds the city image
+    pave    : null,     // Holds the pavement image
+    street  : null,     // Holds the street image
+    lines   : null,     // Holds the lane delimiter image
+
     init: function(lanes) {
         Background.superclass.init.call(this);
+        
+        var dir = '/resources/Background/';
+        
+        // Sky background
+        this.sky = cocos.nodes.Sprite.create({file: dir + 'sky.png'});
+        this.sky.set('anchorPoint', new geo.Point(0.5, 0));
+        this.sky.set('position', new geo.Point(450, 0));
+        this.addChild({child: this.sky});
+        
+        // City layer, will move up as race progresses, between sky and pavement
+        this.city = cocos.nodes.Sprite.create({file: dir + 'city.png'});
+        this.city.set('anchorPoint', new geo.Point(0.5, 0));
+        this.city.set('position', new geo.Point(450, 140));
+        this.city.set('scaleX', 0.52);
+        this.city.set('scaleY', 0.52);
+        this.addChild({child: this.city});
+        
+        // Base pavement layer
+        this.pave = cocos.nodes.Sprite.create({file: dir + 'pavement.png'});
+        this.pave.set('anchorPoint', new geo.Point(0.5, 1));
+        this.pave.set('position', new geo.Point(450, 641));
+        this.addChild({child: this.pave});
+        
+        // Street for cars
+        this.street = cocos.nodes.Sprite.create({file: dir + 'street.png'});
+        this.street.set('anchorPoint', new geo.Point(0.5, 1));
+        this.street.set('position', new geo.Point(450, 625));
+        this.addChild({child: this.street});
+        
+        // Lane Delimiters
+        //TODO: 2(/4?) lane version
+        this.lines = cocos.nodes.Sprite.create({file: dir + 'dividingLines3.png'});
+        this.lines.set('anchorPoint', new geo.Point(0.5, 1));
+        this.lines.set('position', new geo.Point(450, 600));
+        this.addChild({child: this.lines});
     },
     
-    draw: function(context) {
-        // Ground
-        context.fillStyle = "#44AA22";
-        context.fillRect(-10, -10, 820, 620);
+    // Raises sky and city as race progresses
+    progress: function(p) {
+        var pt = this.sky.get('position');
+        pt.y = -130 * p;
+        this.sky.set('position', pt);
         
-        // Sky
-        context.fillStyle = "#1122BB";
-        context.fillRect(-10, -10, 820, PNode.horizonStart + 10);
-        
-        // Road
-        context.fillStyle = "#808080";
-        context.beginPath();
-        context.moveTo(385,                PNode.horizonStart);
-        context.lineTo(PNode.roadOffset,   610);
-        context.lineTo(PNode.roadWidthPix, 610);
-        context.lineTo(415,                PNode.horizonStart);
-        context.closePath();
-        context.fill();
-        
-        // Lanes
-        context.fillStyle = "#FFFF00";
-        context.lineWidth = 4
-        
-        if(RC.curNumLanes == 2) {
-            context.beginPath();
-            context.moveTo(400, PNode.horizonStart);
-            context.lineTo(396, 610);
-            context.lineTo(404, 610);
-            context.lineTo(400, PNode.horizonStart);
-            context.closePath();
-            context.fill();
-        }
-        else if(RC.curNumLanes == 3) {
-            var x = 400 - PNode.roadWidthPix / 9 * 1.5;
-            
-            context.beginPath();
-            context.moveTo(395,   PNode.horizonStart);
-            context.lineTo(x - 4, 610);
-            context.lineTo(x + 4, 610);
-            context.lineTo(395,   PNode.horizonStart);
-            context.closePath();
-            context.fill();
-            
-            x = 400 + PNode.roadWidthPix / 9 * 1.5;
-            context.beginPath();
-            context.moveTo(405,   PNode.horizonStart);
-            context.lineTo(x - 4, 610);
-            context.lineTo(x + 4, 610);
-            context.lineTo(405,   PNode.horizonStart);
-            context.fill();
-        }
-    },
+        var pt = this.city.get('position');
+        pt.y = 140 - 130 * p;
+        this.city.set('position', pt);
+    }
 });
 
 exports.Background = Background

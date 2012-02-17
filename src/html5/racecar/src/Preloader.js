@@ -18,22 +18,37 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
+var Texture2D = require('cocos2d').Texture2D;
 
 // Preloading screen
 var Preloader = cocos.nodes.Node.extend({
     pct: 0.0,       // Percent loaded
-    txt: null,      // Holds the loading text
     
     init: function() {
         Preloader.superclass.init.call(this);
+        
+        var dir = '/resources/Loader/';
+        
+        // Load animation
+        var animCache = cocos.AnimationCache.get('sharedAnimationCache');
+        var frameCache = cocos.SpriteFrameCache.get('sharedSpriteFrameCache');
+        
+        var anim = [];
+        var r = geo.rectMake(0, 0, 310, 73);
     
+        for(var i=1; i<=16; i++) {
+            anim.push(cocos.SpriteFrame.create({texture: Texture2D.create({file: module.dirname + dir + 'LoadingScreen' + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
+        }
+        
+        var animNode = cocos.nodes.Sprite.create();
+        animNode.set('position', new geo.Point(440, 314));
+        animNode.set('zOrder', 2);
+        this.addChild(animNode);
+        
+        var Animation = cocos.Animation.create({frames: anim, delay: 0.19});
+        animNode.runAction(cocos.actions.Animate.create({animation: Animation, restoreOriginalFrame: false}));
+        
         this.scheduleUpdate();
-        
-        txt = cocos.nodes.Label.create({string: 'Loading'});
-        txt.set('position', new geo.Point(450, 350));
-        txt.set('anchorPoint', new geo.Point(0.5, 0.5));
-        
-        this.addChild({child: txt});
     },
     
     // Fake loading update
@@ -45,19 +60,11 @@ var Preloader = cocos.nodes.Node.extend({
         }
     },
     
-    // Draw the screen (no images as they may of not loaded at this point)
+    // Draw the screen
     draw: function(context) {
         // Cover the screen
         context.fillStyle = "#000000";
-        context.fillRect(-10, -10, 820, 620);
-        
-        // Outline of the progress box
-        context.fillStyle = "#FFFFFF";
-        context.fillRect(340, 400, 220, 40);
-        
-        // Progress bar
-        context.fillStyle = "#AA2222";
-        context.fillRect(350, 405, 200 * this.pct, 30);
+        context.fillRect(-10, -10, 920, 620);
     }
 });
 

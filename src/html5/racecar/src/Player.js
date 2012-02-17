@@ -37,8 +37,8 @@ var Player = PNode.extend({
     selectorX       : null,     // The X coordinate that the label should be at, ignoring rotational transforms
     selectorY       : null,     // The Y coordinate that the label should be at, ignoring rotational transforms
     
-    chaseDist       : 6,        // The distance in meters the player is ahead of the camera by
-    chaseMin        : 6,        // The closest the camera can get behind the car in meters
+    chaseDist       : 13,       // The distance in meters the player is ahead of the camera by
+    chaseMin        : 13,       // The closest the camera can get behind the car in meters
     chaseDelta      : 1,        // How many meters the player will pull away from the camera by moving at maximum speed
     
     minSpeed        : 0,        // Minimum player speed in m/s (Zero is okay, negatives are BAD)
@@ -61,10 +61,13 @@ var Player = PNode.extend({
         this.startIntermission = this.startIntermission.bind(this)
         this.startAnimationCallback = this.startAnimationCallback.bind(this)
         
+        this.selectorBG = cocos.nodes.Sprite.create({file: '/resources/carNumberB.png'});
+        this.selectorBG.set('zOrder', -1);
+        this.selectorBG.set('scaleX', 0.4);
+        this.selectorBG.set('scaleY', 0.4);
+        
         // Load the car sprite for the player
-        var sprite = cocos.nodes.Sprite.create({file: '/resources/car_white.png',});
-        sprite.set('scaleX', 0.5);
-        sprite.set('scaleY', 0.5);
+        var sprite = cocos.nodes.Sprite.create({file: '/resources/Cars/carPlayer01.png'});
         this.addChild({child: sprite});
     },
     
@@ -94,11 +97,16 @@ var Player = PNode.extend({
     
     // Used to set the selector at the start of the game
     changeSelectorByForce: function(selector) {
-        selector.set('position', new geom.Point(selector.get('contentSize').width / 2 * selector.get('scaleX'), 80));
-        this.set('selectorX', selector.get('contentSize').width / 2 * selector.get('scaleX'));
+        var x = selector.get('contentSize').width / 2 * selector.get('scaleX');
+    
+        selector.set('position', new geom.Point(x, 80));
+        selector.set('scaleX', 1.4);
+        selector.set('scaleY', 1.4);
+        this.set('selectorX', x);
         this.set('selectorY', 80);
         this.addChild({child: selector});
         this.set('selector', selector);
+        selector.addChild({child: this.selectorBG});
     },
     
     // Starts an intermission
@@ -291,11 +299,11 @@ var Player = PNode.extend({
         }
         // Otherwise just rotate the player as they move to keep the visual angles realistic
         else {
-            if(pos.x < 400.0) {
-                this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (400.0 - pos.x))) / 1.5)
+            if(pos.x < 450.0) {
+                this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (450.0 - pos.x))) / 1.5)
             }
             else {
-                this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (pos.x - 400.0))) / -1.5)
+                this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (pos.x - 450.0))) / -1.5)
             }
         }
     

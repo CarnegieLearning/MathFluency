@@ -43,7 +43,7 @@ var Question = PNode.extend({
         // Build delimiters for question
         this.delimiters = [];
         for(var i=0; i<node.children.length-1; i+=1) {
-            this.buildDelim(node.children[i], z);
+            this.buildDelim(node.children[i], z, i==0 ? 1 : -1);
             this.delimiters[i].xCoordinate = RC.delimiterSpacing[node.children.length][i];
         }
         
@@ -52,12 +52,20 @@ var Question = PNode.extend({
 
         this.set('correctAnswer', node.children[i].attributes['VALUE']);
         
-        return this
+        return this;
     },
     
-    buildDelim: function(node, z) {
+    buildDelim: function(node, z, flip) {
+        var sign = cocos.nodes.Sprite.create({file: '/resources/roadSignA.png'});
+        sign.set('scaleX', 0.20 * flip);
+        sign.set('scaleY', 0.20);
+    
         var c = Content.buildFrom(node);
-        c.set('position', new geom.Point(c.get('contentSize').width / 2, 0))
+        c.set('scaleX', 5 * flip);
+        c.set('scaleY', 5);
+        sign.addChild({child: c});
+        c.set('anchorPoint', new geom.Point(0, 0));     //HACK: (0, 0) works and (0.5, 0.5) does not work but should be correct
+        c.set('position', new geom.Point(190, 137))
         
         var pSet = XML.getChildByName(node, 'PerspectiveSettings');
         pSet = pSet == null ? {attributes:{}} : pSet;
@@ -68,12 +76,12 @@ var Question = PNode.extend({
             silent      : true,
             minScale    : pSet.attributes['minScale']   == null ? 1 : pSet.attributes['minScale'],
             maxScale    : pSet.attributes['maxScale']   == null ? 4 : pSet.attributes['maxScale'],
-            alignH      : 0.5,
+            alignH      : 0.87,
             alignV      : 1,
             visibility  : pSet.attributes['visibility'] == null ? 5 : pSet.attributes['visibility'],
             xCoordinate : 0,
             zCoordinate : z,
-            content     : c
+            content     : sign
         }
     
         // Create the first delimiter
@@ -107,17 +115,9 @@ var Question = PNode.extend({
                 this.set('timeElapsed', this.timeElapsed + dt);
                 
                 // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
-                if(PNode.cameraZ + 6 >= this.zCoordinate) {
+                if(PNode.cameraZ + 13 >= this.zCoordinate) {
                     events.trigger(this, "questionTimeExpired", this);
                 }
-            }
-            
-            // Pulls the delimiters more onto the lane lines as they progress down the screen
-            var shift = (this.position.y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
-            
-            if(this.delimiters.length > 1) {
-                this.delimiters[0].set('alignH', 1 - shift);
-                this.delimiters[this.delimiters.length-1].set('alignH', 0 + shift);
             }
         }
     },

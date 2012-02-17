@@ -65,12 +65,12 @@ var FluencyApp = KeyboardLayer.extend({
     bgFade      : false,    // True when crossfading between bg tracks
     bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
     
-    lanePosX    : {2: [-2, 2], 3:[-3, 0, 3]},
+    lanePosX    : {2: [-3, 3], 3:[-3.8, 0, 3.8]},
     lane        : 1,
     
-    endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
+    endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.3.0',    // Current version number
+    version     : 'v 0.9.5',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -112,6 +112,16 @@ var FluencyApp = KeyboardLayer.extend({
         MM.loadSound('bg_fast', "sound/race bg fast2");
         this.set('musicMixer', MM);
         
+        // Load custom font
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "sound/androidnation_i.ttf",true);
+        xmlhttp.onreadystatechange=function() {
+            if (xmlhttp.readyState==4) {
+                // Font is loaded
+            }
+        }
+        xmlhttp.send(null)
+
         events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
         
         var preloader = Preloader.create();
@@ -135,13 +145,8 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Create player
         var player = Player.create();
-        player.set('position', new geo.Point(400, 450));
+        player.set('position', new geo.Point(450, 450));
         this.set('player', player);
-        
-        // Create dashboard
-        var dash = Dashboard.create();
-        dash.set('position', new geo.Point(800, 0));
-        this.set('dash', dash);
         
         // Get "command line" arguments from the div tag
         var app_div = $('#cocos_test_app')
@@ -180,7 +185,7 @@ var FluencyApp = KeyboardLayer.extend({
 
         // Sanity check
         if(medals[0] > medals[1]) {
-            console.log("WARNING: Calculated minimum time (" + medal[0] +") is longer than the maximum allowed time for a gold medal (" + medal[1] +").");
+            console.log("WARNING: Calculated minimum time (" + medal[0] + ") is longer than the maximum allowed time for a gold medal (" + medal[1] + ").");
         }
         
         this.preprocessingComplete();
@@ -309,7 +314,8 @@ var FluencyApp = KeyboardLayer.extend({
 				zCoordinate : z,
 				dropoffDist : -10,
 			}
-			opts['content'] = cocos.nodes.Sprite.create({file: '/resources/checkpoint_p.png',});
+			opts['content'] = cocos.nodes.Sprite.create({file: '/resources/checkPoint.png',});
+			opts['content'].set('scaleX', 1.5);
 			
 			var fl = PNode.create(opts);
 			events.addListener(fl, 'addMe', this.addMeHandler);
@@ -348,21 +354,26 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('ABORT',        [27]);      // [ESC]
         this.setBinding('SHOW_FPS',     [80]);      // [P]
         
+        var player = this.get('player');
+        player.set('xCoordinate', this.lanePosX[RC.curNumLanes][1]);
+        
+        // Create dashboard
+        var dash = Dashboard.create(this.get('inters'));
+        dash.set('anchorPoint', new geo.Point(0, 1));
+        dash.set('position', new geo.Point(0, 600));
+        this.set('dash', dash);
+        
+        // Add the right hand side dash
+        dash.set('maxSpeed', player.get('maxSpeed'));
+        this.addChild({child: dash});
+        dash.set('zOrder', -1);
+		dash.set('checkpoints', this.get('inters'));
+        
         // Draw background
         var bg = Background.create();
         bg.set('zOrder', -10);
         this.set('background', bg);
         this.addChild({child: bg});
-        
-        var player = this.get('player');
-        player.set('xCoordinate', this.lanePosX[RC.curNumLanes][1]);
-        
-        // Add the right hand side dash
-        var dash = this.get('dash');
-        dash.set('maxSpeed', player.get('maxSpeed'));
-        this.addChild({child: dash});
-        dash.set('zOrder', -1);
-		dash.set('checkpoints', this.get('inters'));
         
         events.addListener(player, 'IntermissionComplete', this.unpause.bind(this));
         
@@ -380,8 +391,7 @@ var FluencyApp = KeyboardLayer.extend({
             dropoffDist : -10,
         }
         opts['content'] = cocos.nodes.Sprite.create({file: '/resources/finishline.png',});
-        opts['content'].set('scaleX', 2);
-        opts['content'].set('scaleY', 0.5);
+        opts['content'].set('scaleX', 1.5);
         
         var fl = PNode.create(opts);
         events.addListener(fl, 'addMe', this.addMeHandler);
@@ -406,24 +416,6 @@ var FluencyApp = KeyboardLayer.extend({
         m = Math.min(m, RC.finishSpacing);
         
         RC.maxTimeWindow = m / player.get('maxSpeed') * 0.9;
-        
-        // Generate things to the side of the road
-        var sprite = cocos.nodes.Sprite.create({file: '/resources/tree_1.png',});
-        
-        for(var t=10; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6+4)) {
-            if(Math.random() < 0.25) {
-                var p = PNode.create({xCoordinate: 4 * Math.random() + 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
-                p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler);
-                p.idle();
-            }
-            if(Math.random() < 0.25) {
-                var p = PNode.create({xCoordinate: -4 * Math.random() - 5.5, zCoordinate: t, content: sprite, alignH: 0.5, alignV: 0.5})
-                p.set('zOrder', -4);
-                events.addListener(p, 'addMe', this.addMeHandler);
-                p.idle();
-            }
-        }
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
@@ -444,11 +436,9 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Ghost cars representing medal cutoffs
         // TODO: Make seperate class, support lines in addition to cars
+        var names = ['Gold', 'Silver', 'Bronze']
         for(var i=0; i<3; i+= 1) {
-            var car = cocos.nodes.Sprite.create({file: '/resources/car'+i+'.png'});
-            car.set('opacity', 192);
-        
-            opts['content'] = car
+            opts['content'] = cocos.nodes.Sprite.create({file: '/resources/Cars/car'+names[i]+'01.png'});
             medalCars[i] = PNode.create(opts)
             medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
             
@@ -485,7 +475,7 @@ var FluencyApp = KeyboardLayer.extend({
         var cd = cocos.nodes.Label.create({string: '3', textColor: '#000000'});
         cd.set('scaleX', 10);
         cd.set('scaleY', 10);
-        cd.set('position', new geo.Point(400, 300));
+        cd.set('position', new geo.Point(450, 300));
         
         this.set('cdt', cd);
         this.addChild({child: cd});
@@ -654,7 +644,7 @@ var FluencyApp = KeyboardLayer.extend({
         if(finished != null) {
             //alert("Correct: " + correct + '\nTotal Time: ' + tt + '\nMedal Earned: ' + RC.medalNames[m] );
             var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
-            e.set('position', new geo.Point(200, 50));
+            e.set('position', new geo.Point(50, 50));
             this.addChild({child: e});
             var that = this;
             events.addListener(e, 'almostComplete', function () {that.get('menuLayer').addRetryButton();});
@@ -762,7 +752,7 @@ var FluencyApp = KeyboardLayer.extend({
             var t = dash.elapsedTime + dash.pTime + parseFloat(RC.penaltyTime);
         
             player.wipeout(1);
-            dash.modifyPenaltyTime(RC.penaltyTime);
+            dash.modifyPenaltyCount();
             
             this.audioMixer.playSound('wrong', true);
             
@@ -802,12 +792,12 @@ var FluencyApp = KeyboardLayer.extend({
         var player = this.get('player');
         var playerX = player.get('xCoordinate');
         
+        // Update the skyline
+        this.get('background').progress(player.get('zCoordinate') / RC.finishLine);
+        
+        // Check if the race is finished
         if(player.get('zCoordinate') > RC.finishLine && this.eogd == null) {
             this.endOfGame(true);
-        }
-        
-        if(this.checkAnyKey() && this.eogd != null) {
-            this.eogd.skipAnimation();
         }
         
     // Move the player according to keyboard
@@ -927,11 +917,13 @@ var MenuLayer = cocos.nodes.Menu.extend({
     },
     
     createMenu: function() {
+        var dir = '/resources/Buttons/';
+    
         // Create the button
         var opts = Object();
-        opts['normalImage'] = '/resources/start-button.png';
-        opts['selectedImage'] = '/resources/start-button.png';
-        opts['disabledImage'] = '/resources/start-button.png';
+        opts['normalImage']   = dir + 'buttonStartNormal.png';
+        opts['selectedImage'] = dir + 'buttonStartClick.png';
+        opts['disabledImage'] = dir + 'buttonStartNormal.png';
         // We use this callback so we can do cleanup before handing everything over to the main game
         opts['callback'] = this.startButtonCallback.bind(this);
         
@@ -943,35 +935,42 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.addChild({child: sb});
         
         // Create the volume control
+        dir = '/resources/Dashboard/';
         // TODO: Make a better basic (toggle)button (extend MenuItemImage?)
-        opts['normalImage'] = '/resources/volume-control.png';
-        opts['selectedImage'] = '/resources/volume-control.png';
-        opts['disabledImage'] = '/resources/volume-control.png';
+        opts['normalImage']   = dir + 'dashBoardSoundOn.png';
+        opts['selectedImage'] = dir + 'dashBoardSoundOn.png';
+        opts['disabledImage'] = dir + 'dashBoardSoundOn.png';
         opts['callback'] = this.volumeCallback.bind(this);
         
         var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(425, 250));
+        vc.set('position', new geo.Point(-420, 240));
         this.set('volumeButtonOn', vc);
         this.addChild({child: vc});
         
+        opts['normalImage']   = dir + 'dashBoardMusicOn.png';
+        opts['selectedImage'] = dir + 'dashBoardMusicOn.png';
+        opts['disabledImage'] = dir + 'dashBoardMusicOn.png';
         opts['callback'] = this.musicCallback.bind(this);
         vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(375, 250));
+        vc.set('position', new geo.Point(-420, 275));
         this.set('musicButtonOn', vc);
         this.addChild({child: vc});
         
-        opts['normalImage'] = '/resources/volume-control-off.png';
-        opts['selectedImage'] = '/resources/volume-control-off.png';
-        opts['disabledImage'] = '/resources/volume-control-off.png';
+        opts['normalImage']   = dir + 'dashBoardSoundOff.png';
+        opts['selectedImage'] = dir + 'dashBoardSoundOff.png';
+        opts['disabledImage'] = dir + 'dashBoardSoundOff.png';
         opts['callback'] = this.volumeCallback.bind(this);
         
         vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(425, 250));
+        vc.set('position', new geo.Point(-420, 240));
         this.set('volumeButtonOff', vc);
         
+        opts['normalImage']   = dir + 'dashBoardMusicOff.png';
+        opts['selectedImage'] = dir + 'dashBoardMusicOff.png';
+        opts['disabledImage'] = dir + 'dashBoardMusicOff.png';
         opts['callback'] = this.musicCallback.bind(this);
         vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(375, 250));
+        vc.set('position', new geo.Point(-420, 275));
         this.set('musicButtonOff', vc);
     },
     
@@ -1016,10 +1015,12 @@ var MenuLayer = cocos.nodes.Menu.extend({
     
     // Adds the retry button to the MenuLayer
     addRetryButton: function() {
+        var dir = '/resources/Buttons/';
+    
         var opts = Object();
-        opts['normalImage'] = '/resources/Retry_Up.png';
-        opts['selectedImage'] = '/resources/Retry_Down.png';
-        opts['disabledImage'] = '/resources/Retry_Up.png';
+        opts['normalImage']   = dir + 'buttonRetryNormal.png';
+        opts['selectedImage'] = dir + 'buttonRetryClick.png';
+        opts['disabledImage'] = dir + 'buttonRetryNormal.png';
         opts['callback'] = this.retryButtonCallback.bind(this);
         
         var b = cocos.nodes.MenuItemImage.create(opts);
