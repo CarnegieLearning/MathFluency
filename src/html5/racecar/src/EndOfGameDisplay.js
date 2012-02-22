@@ -329,14 +329,16 @@ EndOfGameDisplay = GuiNode.extend({
         if(this.get('step') >= 5) {
             // Draw the medal
             var t = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;
-            if(this.get('abort') || t > RC.times[3])
+            if(this.get('abort'))
                 ctx.fillStyle = RC.noMedal;
             else if(t < RC.times[1])
                 ctx.fillStyle = RC.gold;
             else if(t < RC.times[2])
                 ctx.fillStyle = RC.silver;
-            else
+            else if(t < RC.times[3])
                 ctx.fillStyle = RC.bronze;
+            else
+                ctx.fillStyle = RC.noMedal;
             ctx.beginPath();
             ctx.arc(300, 300, 80, 0, Math.PI * 2);
             ctx.closePath();
