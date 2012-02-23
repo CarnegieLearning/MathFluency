@@ -138,8 +138,8 @@ exports.gameController = function (serverConfig, model)
     gc.getGameEngineForQuestionSet = function (questionSet, playerState, callback)
     {
         var engine = config().engines[questionSet.parent.engineID];
-        if( questionSet.getFlashParams ){
-            questionSet.getFlashParams( playerState, function( params )
+        if( questionSet.getExtParams ){
+            questionSet.getExtParams( playerState, function( params )
             {
                 engine.params = params;
             });
@@ -361,9 +361,6 @@ function makeEngine(engineConfig)
         engineConfig.scriptPath = '/fluency/games/' + engineConfig.cli_task_id;
         engineConfig.dataPath = '/fluency/data/' + engineConfig.cli_task_id;
     }
-    else if( engineConfig.type == 'ExtFlashGameEngine'){
-        engineConfig.swfPath = engineConfig.swfPath;
-    }
     
     engineConfig.toJSON = function ()
     {
@@ -531,7 +528,7 @@ function makeStage(stageID, config, serverConfig)
             });
         }
     }
-    else if( stage.engineType == 'ExtFlashGameEngine' )
+    else if( stage.engineType == 'ExtGameEngine' )
     {   
         if( engineConfig.instructionsPath )
             instructionsPath = engineConfig.instructionsPath;
@@ -549,11 +546,14 @@ function makeStage(stageID, config, serverConfig)
                 console.log('no such question set as '+ questionSetID +' for stage '+ stage.id);
                 return callback(null);
             }
-            var qs = new QuestionHierarchy.QuestionSet(stage, stage.id, stage.displayName, {} );
             
-            qs.getFlashParams = function( playerState, callback )
+            var qs = new QuestionHierarchy.QuestionSet(stage, stage.id, stage.displayName, stageConfig );
+            
+            qs.getExtParams = function( playerState, callback )
             {
-                var params = { 'lname': qs.id };
+                var params = qs.allGameProperties();
+                params.lname = qs.id;
+                params.scriptPath = '/fluency/games/'+ params.engine;
                 if( playerState )
                     params.uid = playerState.playerID;
                 callback( params );

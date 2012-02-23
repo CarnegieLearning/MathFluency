@@ -1086,6 +1086,13 @@
             "displayName": "Week 5: Snow 7",
             "engine": "snowboard_html5",
             "cli_fluency_task": "s2w5r7"
+        },
+        "week6_oops1" : {
+            "displayName": "Week 6: OrderOps 1",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 1
         }
     },
     
@@ -1123,7 +1130,7 @@
             "cli_task_id": "ft2_pie"
         },
         "battleship": {
-            "type": "ExtFlashGameEngine",
+            "type": "ExtGameEngine",
             "swfPath": "http://playpowerlabs.org/test/bsnl/BSNL.swf"
         },
         "jungle": {
@@ -1137,6 +1144,9 @@
         "claw_html5": {
             "type": "CLHTML5GameEngine",
             "cli_task_id": "ft2_claw_html5"
+        },
+        "orderops": {
+            "type": "ExtGameEngine"
         }
     }
 }
