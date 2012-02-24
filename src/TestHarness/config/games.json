@@ -1,834 +1,834 @@
 {
     "conditions": {
         "cond1": {
-            "c1s2": {
+            "c1s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond2": {
-            "c2s2": {
+            "c2s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond3": {
-            "c3s2": {
+            "c3s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond4": {
-            "c4s2": {
+            "c4s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond5": {
-            "c5s2": {
+            "c5s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond6": {
-            "c6s2": {
+            "c6s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond7": {
-            "c7s2": {
+            "c7s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond8": {
-            "c8s2": {
+            "c8s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond9": {
-            "c9s2": {
+            "c9s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond10": {
-            "c10s2": {
+            "c10s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond11": {
-            "c11s2": {
+            "c11s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond12": {
-            "c12s2": {
+            "c12s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond13": {
-            "c13s2": {
+            "c13s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond14": {
-            "c14s2": {
+            "c14s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond15": {
-            "c15s2": {
+            "c15s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond16": {
-            "c16s2": {
+            "c16s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond17": {
-            "c17s2": {
+            "c17s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond18": {
-            "c18s2": {
+            "c18s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond19": {
-            "c19s2": {
+            "c19s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond20": {
-            "c20s2": {
+            "c20s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond21": {
-            "c21s2": {
+            "c21s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond22": {
-            "c22s2": {
+            "c22s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond23": {
-            "c23s2": {
+            "c23s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond24": {
-            "c24s2": {
+            "c24s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond25": {
-            "c25s2": {
+            "c25s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond26": {
-            "c26s2": {
+            "c26s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond27": {
-            "c27s2": {
+            "c27s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond28": {
-            "c28s2": {
+            "c28s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond29": {
-            "c29s2": {
+            "c29s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond30": {
-            "c30s2": {
+            "c30s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond31": {
-            "c31s2": {
+            "c31s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond32": {
-            "c32s2": {
+            "c32s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond33": {
-            "c33s2": {
+            "c33s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond34": {
-            "c34s2": {
+            "c34s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond35": {
-            "c35s2": {
+            "c35s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond36": {
-            "c36s2": {
+            "c36s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond37": {
-            "c37s2": {
+            "c37s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond38": {
-            "c38s2": {
+            "c38s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond39": {
-            "c39s2": {
+            "c39s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond40": {
-            "c40s2": {
+            "c40s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond41": {
-            "c41s2": {
+            "c41s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond42": {
-            "c42s2": {
+            "c42s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond43": {
-            "c43s2": {
+            "c43s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond44": {
-            "c44s2": {
+            "c44s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond45": {
-            "c45s2": {
+            "c45s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond46": {
-            "c46s2": {
+            "c46s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond47": {
-            "c47s2": {
+            "c47s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond48": {
-            "c48s2": {
+            "c48s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond49": {
-            "c49s2": {
+            "c49s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond50": {
-            "c50s2": {
+            "c50s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond51": {
-            "c51s2": {
+            "c51s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond52": {
-            "c52s2": {
+            "c52s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond53": {
-            "c53s2": {
+            "c53s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond54": {
-            "c54s2": {
+            "c54s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond55": {
-            "c55s2": {
+            "c55s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond56": {
-            "c56s2": {
+            "c56s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond57": {
-            "c57s2": {
+            "c57s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond58": {
-            "c58s2": {
+            "c58s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond59": {
-            "c59s2": {
+            "c59s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond60": {
-            "c60s2": {
+            "c60s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond61": {
-            "c61s2": {
+            "c61s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw5",
-                    "week5_snow7"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond62": {
-            "c62s2": {
+            "c62s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_claw6",
-                    "week5_snow7"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         },
         "cond63": {
-            "c63s2": {
+            "c63s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw5"
+                    "week7_oops1-1",
+                    "week7_oops1-2",
+                    "week7_oops1-3",
+                    "week7_oops1-4",
+                    "week7_oops1-5",
+                    "week7_oops1-6"
                 ]
             }
         },
         "cond64": {
-            "c64s2": {
+            "c64s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "week5_race3",
-                    "week5_race4",
-                    "week5_snow1",
-                    "week5_snow2",
-                    "week5_snow7",
-                    "week5_claw6"
+                    "week7_oops2-1",
+                    "week7_oops2-2",
+                    "week7_oops2-3",
+                    "week7_oops2-4",
+                    "week7_oops2-5",
+                    "week7_oops2-6"
                 ]
             }
         }
@@ -1092,13 +1092,101 @@
             "engine": "akira_html5",
             "cli_fluency_task": "s2w5r3"
         },
-        "week6_oops1" : {
-            "displayName": "Week 6: OrderOps 1",
+        "week7_oops1-1" : {
+            "displayName": "Week 7: OrderOps 1a",
             "divid": "OrderOpsDiv",
             "engine": "orderops",
             "script": "order_ops.js",
             "roundID": 1,
             "group": 1
+        },
+        "week7_oops1-2" : {
+            "displayName": "Week 7: OrderOps 2a",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 4,
+            "group": 1
+        },
+        "week7_oops1-3" : {
+            "displayName": "Week 7: OrderOps 3a",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 7,
+            "group": 1
+        },
+        "week7_oops1-4" : {
+            "displayName": "Week 7: OrderOps 4a",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 10,
+            "group": 1
+        },
+        "week7_oops1-5" : {
+            "displayName": "Week 7: OrderOps 5a",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 13,
+            "group": 1
+        },
+        "week7_oops1-6" : {
+            "displayName": "Week 7: OrderOps 6a",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 16,
+            "group": 1
+        },
+        "week7_oops2-1" : {
+            "displayName": "Week 7: OrderOps 1b",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 1,
+            "group": 2
+        },
+        "week7_oops2-2" : {
+            "displayName": "Week 7: OrderOps 2b",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 4,
+            "group": 2
+        },
+        "week7_oops2-3" : {
+            "displayName": "Week 7: OrderOps 3b",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 7,
+            "group": 2
+        },
+        "week7_oops2-4" : {
+            "displayName": "Week 7: OrderOps 4b",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 10,
+            "group": 2
+        },
+        "week7_oops2-5" : {
+            "displayName": "Week 7: OrderOps 5b",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 13,
+            "group": 2
+        },
+        "week7_oops2-6" : {
+            "displayName": "Week 7: OrderOps 6b",
+            "divid": "OrderOpsDiv",
+            "engine": "orderops",
+            "script": "order_ops.js",
+            "roundID": 16,
+            "group": 2
         }
     },
     
