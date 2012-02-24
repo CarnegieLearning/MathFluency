@@ -1,12 +1,14 @@
 var GameControllerClient = require('./client/GameControllerClient').GameControllerClient;
 var CLFlashGameEngine = require('./client/CLFlashGameEngine').CLFlashGameEngine;
 var CLHTML5GameEngine = require('./client/CLHTML5GameEngine').CLHTML5GameEngine;
-var ExtGameEngine = require('./client/ExtGameEngine').ExtGameEngine;
+var ExtFlashGameEngine = require('./client/ExtFlashGameEngine').ExtFlashGameEngine;
+var ExtHTML5GameEngine = require('./client/ExtHTML5GameEngine').ExtHTML5GameEngine;
 
 var gc = new GameControllerClient('/api');
 gc.registerEngineConstructor('CLFlashGameEngine', CLFlashGameEngine);
 gc.registerEngineConstructor('CLHTML5GameEngine', CLHTML5GameEngine);
-gc.registerEngineConstructor('ExtGameEngine', ExtGameEngine);
+gc.registerEngineConstructor('ExtFlashGameEngine', ExtFlashGameEngine);
+gc.registerEngineConstructor('ExtHTML5GameEngine', ExtHTML5GameEngine);
 
 var instructionsURL;
 

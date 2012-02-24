@@ -1135,7 +1135,7 @@
             "cli_task_id": "ft2_pie"
         },
         "battleship": {
-            "type": "ExtGameEngine",
+            "type": "ExtFlashGameEngine",
             "swfPath": "http://playpowerlabs.org/test/bsnl/BSNL.swf"
         },
         "jungle": {
@@ -1155,7 +1155,7 @@
             "cli_task_id": "ft1_akira_html5"
         },
         "orderops": {
-            "type": "ExtGameEngine"
+            "type": "ExtHTML5GameEngine"
         }
     }
 }

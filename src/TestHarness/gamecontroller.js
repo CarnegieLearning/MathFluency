@@ -158,10 +158,10 @@ exports.gameController = function (serverConfig, model)
         var timestamp = Date.now();
         
         // We parse the results from CL games
-        if( questionSet.parent.isCLGame ){
-            var parser = new xml2js.Parser()
-            parser.on('end', function (data)
-            {
+        var parser = new xml2js.Parser()
+        parser.on('end', function (data)
+        {
+            if( data.GAME_REFERENCE_NUMBER ){ 
                 var refNode = data.GAME_REFERENCE_NUMBER,
                     refID = refNode ? refNode['@'].ID.split('::') : [uuid()],
                     UUID = refID.length == 0 ? uuid() : refID[0],
@@ -231,11 +231,15 @@ exports.gameController = function (serverConfig, model)
                 });
                 // run the tasks in parallel
                 async.parallel( saveResultsTasks, callback );
-            }).parseString(text);
-            return;
-        }
-        // otherwise we just unlock the next stage
-        unlockNextStage(playerState, sequence, questionSet, null, callback);
+            } else {
+                // otherwise we just unlock the next stage
+                unlockNextStage(playerState, sequence, questionSet, null, callback);
+            }
+        }).on('error', function(err){
+            // console.log("Error parsing xml: "+ err );
+            // otherwise we just unlock the next stage
+            unlockNextStage(playerState, sequence, questionSet, null, callback);
+        }).parseString(text);
     };
     
     function unlockNextStage(playerState, sequence, questionSet, outcome, callback)
@@ -528,7 +532,7 @@ function makeStage(stageID, config, serverConfig)
             });
         }
     }
-    else if( stage.engineType == 'ExtGameEngine' )
+    else if( stage.engineType == 'ExtFlashGameEngine' || stage.engineType == 'ExtHTML5GameEngine' )
     {   
         if( engineConfig.instructionsPath )
             instructionsPath = engineConfig.instructionsPath;
