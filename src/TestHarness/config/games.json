@@ -1097,7 +1097,8 @@
             "divid": "OrderOpsDiv",
             "engine": "orderops",
             "script": "order_ops.js",
-            "roundID": 1
+            "roundID": 1,
+            "group": 1
         }
     },
     
