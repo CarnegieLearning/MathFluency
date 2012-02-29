@@ -14,53 +14,74 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+var cocos = require('cocos2d');
 var geo = require('geometry');
 
-var Question = require('Question').Question;
+var Content = require('Content').Content;
+var XML = require('XML').XML;
 
-var Ball = BObject.extend({
-    v       : null,
-    p       : null,
+var Ball = cocos.nodes.Node.extend({
+    v       : null,     // Velocity vector of the ball
+    p       : null,     // Position of the ball
     
-    radius  : 10,
+    radius  : 10,       // Radius of the ball
     
-    correct : false,
-    bonus   : false,
+    correct : false,    // If true, the ball is a correct answer
+    bonus   : false,    // If true, the ball is a bonus ball
     
-    content : null,
+    content : null,     // Holds the content to be displayed on the ball
+    ball    : null,     // Holds the sprite of a blank ball
 
-    init: function() {
+    init: function(xml) {
         Ball.superclass.init.call(this);
         
-        this.loc = new geo.Point(0, 0);
-        this.nextLoc = new geo.Point(0, 0);
+        this.p = new geo.Point(Math.floor(Math.random()*792), Math.floor(Math.random()*-468));
+        this.v = Vector(Math.floor(Math.random()*20+10), Math.floor(Math.random()*10));
         
-        this.v = Vector(0, 0);
+        this.ball = cocos.nodes.Sprite.create({file: '/resources/ball-blank.png'});
+        this.addChild({child: this.ball});
+        
+        this.content = Content.buildFrom(XML.getChildByName(xml, 'Content'));
+        this.addChild({child: this.content});
     },
     
+    // Moves the ball based on its current velocity vector and time elapsed since last frame
     move: function(dt) {
-        v.addTo(p);
+        this.v.multBy(dt).addTo(this.p);
+        console.log(this.p.x + ' , ' + this.p.y);
+        if(this.p.x < -1 * 20) {
+            this.p.x += 792 + 20;
+        }
+        else if(this.p.x > 792 + 20) {
+            this.p.x -= 792 - 20;
+        }
         
-        if(p.x < -1 * Question.bufferW) {
-            p.x += Question.width + Question.bufferW;
+        if(this.p.y - this.radius < 0) {
+            this.v.y *= -1;
         }
-        else if(p.x > Question.width + Question.bufferW) {
-            p.x -= Question.width + Question.bufferW;
-        }
-        
-        if(p.y - this.radius < 0) {
-            v.y *= -1;
-        }
-        else if(p.y + this.radius > Question.height) {
-            v.y *= -1;
+        else if(this.p.y + this.radius > 468) {
+            this.v.y *= -1;
         }
     },
     
+    // Checks to see if this ball is colliding with the provided coordinates
+    isCollidingPoint: function(x, y) {
+        var dx = Math.abs(this.p.x - x);
+        var dy = Math.abs(this.p.y - y);
+        
+        if(dx < this.radius && dy < this.radius) {
+            if(Math.sqrt(dx * dx + dy * dy) < this.radius) {
+                return true;
+            }
+        }
+    },
+    
+    // Checks to see if this balls is colliding with the other specified ball
     isColliding: function(other) {
         var twoR = this.radius + other.radius;
         
-        var dx = Math.abs(this.nextLoc.x - other.nextLoc.x);
-        var dy = Math.abs(this.nextLoc.y - other.nextLoc.y);
+        var dx = Math.abs(this.p.x - other.p.x);
+        var dy = Math.abs(this.p.y - other.p.y);
         
         if(dx < twoR && dy < twoR) {
             if(Math.sqrt(dx * dx + dy * dy) < twoR) {
@@ -71,6 +92,7 @@ var Ball = BObject.extend({
         return false;
     },
     
+    // Resolves a collision between this and the other ball
     collide: function(other) {
         // minimum translation distance to push balls apart after intersecting
         var delta = Vector(this.p.x - other.p.x, this.p.y - other.p.y)
@@ -114,6 +136,8 @@ var Vector = function(x, y) {
     multBy = function(m) {
         return Vector(this.x * m, this.y * m);
     }
+    
+    return this;
 }
 
 exports.Ball = Ball;

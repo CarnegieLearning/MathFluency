@@ -21,10 +21,9 @@ var events = require('events');
 
 // Project Imports
 var AudioMixer = require('AudioMixer').AudioMixer;
-var GameView = require('GameView').GameView;
+var Game = require('Game').Game;
 var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var Preloader = require('Preloader').Preloader;
-var Question = require('Question').Question;
 
 var LabelBG = require('LabelBG').LabelBG;   //HACK
 
@@ -35,12 +34,7 @@ var Content = require('Content').Content;
 
 // TODO: De-magic number these
 /* Zorder
--10 Background
--5  Finish Line
--4  Trees
--1  Dashboard
 0   Anything not mentioned
-100 Question Delimiters
 */
 
 // Create a new layer
@@ -53,7 +47,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.1.0',    // Current version number
+    version     : 'v 0.2.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -83,20 +77,21 @@ var FluencyApp = KeyboardLayer.extend({
         var MM = AudioMixer.create();
         this.set('musicMixer', MM);
         
-        //var preloader = Preloader.create();
-        //this.addChild({child: preloader});
-        //this.set('preloader', preloader);
+        this.ended = false;
         
-        //events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
-        this.delayedInit();
+        var preloader = Preloader.create();
+        this.addChild({child: preloader});
+        this.set('preloader', preloader);
+        
+        events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
     },
     
     delayedInit: function() {
         // Remove the 'preloader'
-        //var preloader = this.get('preloader')
-        //this.removeChild({child: preloader});
-        //cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(preloader);
-        //this.set('preloader', null);
+        var preloader = this.get('preloader')
+        this.removeChild({child: preloader});
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(preloader);
+        this.set('preloader', null);
         
         // Get "command line" arguments from the div tag
         var app_div = $('#cocos_test_app')
@@ -104,9 +99,12 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('gameID', app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
         
+        // Allow this Layer to catch mouse events
+        this.set('isMouseEnabled', true);
+        
         // Set up remote resources, default value allows for running 'locally'
         // TODO: Remove default in production, replace with error
-        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "set002.xml"};
+        __remote_resources__["resources/testset.xml"] = {meta: {mimetype: "application/xml"}, data: xml_path ? xml_path : "ma.xml"};
         
         // Preload remote resources
         var p = cocos.Preloader.create();
@@ -121,14 +119,9 @@ var FluencyApp = KeyboardLayer.extend({
         var xml = XML.parser(xmlDoc.firstChild);
     
         // Parse and process questions
-        this.parseProblemSet(xml)
+        this.game = Game.create(xml);
         
         this.preprocessingComplete();
-    },
-    
-    // Parses the PROBLEM_SET
-    parseProblemSet: function (xml) {
-        var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
     },
     
     // The 'real init()' called after all the preloading/parsing is completed
@@ -136,7 +129,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Create key bindings
         this.setBinding('ABORT', [27]); // [ESC]
         
-        this.addChild({child: GameView.create()});
+        this.addChild({child: this.game});
         
         // Add version number
         var vtag = cocos.nodes.Label.create({string: this.get('version')})
@@ -148,25 +141,12 @@ var FluencyApp = KeyboardLayer.extend({
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
     countdown: function () {
-        var medalCars = []
-        
-        var opts = {
-            maxScale    : 1.00,
-            alignH      : 0.5,
-            alignV      : 0,
-            visibility  : 1,
-            xCoordinate : 4.5,
-            zCoordinate : 0,
-            dropoffDist : -10,
-            delOnDrop   : false,
-        }
-        
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
         
-        setTimeout(this.startGame.bind(this), RC.initialCountdown);
+        setTimeout(this.startGame.bind(this), 2500);
         
-        var cd = cocos.nodes.Label.create({string: '3', textColor: '#000000'});
+        var cd = cocos.nodes.Label.create({string: '3', fontColor: '#000000'});
         cd.set('scaleX', 10);
         cd.set('scaleY', 10);
         cd.set('position', new geo.Point(450, 300));
@@ -174,15 +154,11 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('cdt', cd);
         this.addChild({child: cd});
         
-        // Set the starting value on the player's car
-        this.get('player').changeSelectorByForce(this.get('startSelector'));
-        
         var that = this;
         setTimeout(function () { that.get('cdt').set('string', '2'); }, 750)
         setTimeout(function () { that.get('cdt').set('string', '1'); }, 1500)
         setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 2250)
         setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
-        
         
         // Catch window unloads at this point as aborts
         $(window).unload(this.endOfGame.bind(this, null));
@@ -190,7 +166,8 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Starts the game
     startGame: function () {
-        this.scheduleUpdate();          // Start keyboard input and fps tracking
+        this.scheduleUpdate();
+        this.game.startGame();
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
@@ -288,14 +265,14 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Toggles the AudioMixer's mute
-    muteHandler: function() {
+    muteAudioHandler: function() {
         var AM = this.get('audioMixer');
         AM.setMute(!AM.get('muted'));
     },
     
     muteMusicHandler: function() {
-        var AM = this.get('musicMixer');
-        AM.setMute(!AM.get('muted'));
+        var MM = this.get('musicMixer');
+        MM.setMute(!MM.get('muted'));
     },
     
     // Called every frame, manages keyboard input
@@ -306,6 +283,15 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
     },
+    
+    // Callback for mouseDown events
+    mouseDown: function (evt) {
+        if(!this.ended) {
+            this.game.input(evt.locationInCanvas.x, evt.locationInCanvas.y);
+        }
+        
+        console.log(evt.locationInCanvas.x + ' , ' + evt.locationInCanvas.y);
+    }
 });
 
 // For button-like interactions (e.g. starting the game)
@@ -320,7 +306,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     },
     
     createMenu: function() {
-        var dir = '/resources/Buttons/';
+        var dir = '/resources/';
     
         // Create the button
         var opts = Object();
@@ -383,6 +369,8 @@ exports.main = function() {
     events.addListener(app, 'loaded', menu.createMenu.bind(menu));
     
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
+    events.addListener(menu, 'musicMuteEvent', app.muteMusicHandler.bind(app));
+    events.addListener(menu, 'audioMuteEvent', app.muteAudioHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});

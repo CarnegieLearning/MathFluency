@@ -14,9 +14,15 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+var cocos = require('cocos2d');
+var geo = require('geometry');
+
+var Ball = require('Ball').Ball;
+
+var Content = require('Content').Content;
 var XML = require('XML').XML;
 
-var Question = BObject.extend({
+var Question = cocos.nodes.Node.extend({
     qContent    : null,
     correctVal  : 0,
     
@@ -26,23 +32,58 @@ var Question = BObject.extend({
     corrects    : 0,
     misses      : 0,
     
-    maxMisses   : 0,
+    maxMisses   : 3,
     maxCorrects : 0,
     
     init: function(xml) {
         Question.superclass.init.call(this);
         
+        this.set('anchorPoint', new geo.Point(0, 0));
+        
+        this.qContent = Content.buildFrom(XML.getChildByName(xml, 'EQUATION'));
+        
         this.balls = [];
+        var xb = XML.getChildrenByName(XML.getChildByName(xml, 'BALLS'), 'BALL');
+        for(var i=0; i<xb.length; i+=1) {
+            this.balls.push(Ball.create(xb[i]));
+            this.addChild({child: this.balls[i]});
+        }
+    },
+    
+    input: function(x, y) {
+        // Bring values into Question coordinate space
+        var p = this.get('position');
+        x -= p.x;
+        y -= p.y;
+        
+        // Check translated coordinates against the question's balls
+        for(var i=0; i<this.balls.length; i+=1) {
+            if(this.balls[i].isCollidingPoint(x, y)) {
+                
+                if(balls[i].correct) {
+                    
+                }
+                else if(balls[i].bonus) {
+                }
+                else {
+                }
+                
+                this.removeChild(this.balls[i]);
+                this.balls.splice(i, 1);
+            }
+        }
     },
     
     update: function(dt) {
         this.elapsedTime += dt;
         
+        // Move balls
         var i=0;
         for(var i=0; i<this.balls.length; i+=1) {
             this.balls[i].move();
         }
         
+        // The check for and resolve any collisions
         for(var i=0; i<this.balls.length; i+=1) {
             for(var j=i+1; j<this.balls.length; j+=1) {
                 if(this.balls[i].isColliding(this.balls[j])) {
@@ -55,7 +96,7 @@ var Question = BObject.extend({
 
 Question.height     = 468;
 Question.width      = 792;
-Question.bufferW    = 50;
+Question.bufferW    = 20;       // Minimum buffer value = radius
 Question.hardW      = true;
 
 exports.Question = Question;

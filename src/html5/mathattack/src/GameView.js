@@ -17,68 +17,112 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
-var QuestionView = require('QuestionView').QuestionView;
+var Numberline = require('Numberline').Numberline;
 
 var XML = require('XML').XML;
 
 var GameView = cocos.nodes.Node.extend({
-    roundLabel      : null,
-    timeLabel       : null,
-    remainingLabel  : null,
-    incorrectLabel  : null,
-    scoreLabel      : null,
+    roundLabel      : null,     // Holds text label "Round"
+    roundCount      : null,     // Holds the current round number as a text label
+    
+    timeLabel       : null,     // Holds text label "Time"
+    timeCount       : null,     // Holds the current time remaining as a text label
+    
+    remainingLabel  : null,     // Holds text label "Remaining"
+    
+    incorrectLabel  : null,     // Holds text label "Misses"
+    
+    scoreLabel      : null,     // Holds text label "Score"
+    scoreCount      : null,     // Holds the current score as a text label
+    
+    line            : null,     // Holds the numberline
+    
+    misses          : null,
+    remainings      : null,
 
     init: function(xml) {
         GameView.superclass.init.call(this);
         
+        var bg = cocos.nodes.Sprite.create({file: '/resources/whiteback.png'});
+        bg.set('position', new geo.Point(450, 300));
+        this.addChild({child: bg});
+        
         var fg = cocos.nodes.Sprite.create({file: '/resources/background.png'});
         fg.set('anchorPoint', new geo.Point(0, 0));
-        
         this.addChild({child: fg});
         
-        var qv = QuestionView.create();
-        qv.set('position', geo.Point(60, 76));
-        
-        this.line = cocos.nodes.Sprite.create({file: '/resources/numberLine.png'});
+        this.line = Numberline.create();
         this.line.set('anchorPoint', new geo.Point(0.5, 0));
         this.line.set('position', new geo.Point(450, 5));
         this.addChild({child: this.line});
         
-        var opts = {}
-        opts['fontColor'] = '#000000';
+        var tc = '#000000';
+        this.buildLabel('roundLabel',       'Round',     tc, 110, 545);
+        this.buildLabel('roundCount',       '0',         tc, 110, 575);
+        this.buildLabel('timeLabel',        'Time',      tc, 230, 545);
+        this.buildLabel('timeCount',        '0',         tc, 230, 575);
+        this.buildLabel('remainingLabel',   'Remaining', tc, 430, 545);
+        this.buildLabel('incorrectLabel',   'Misses',    tc, 640, 545);
+        this.buildLabel('scoreLabel',       'Score',     tc, 780, 545);
+        this.buildLabel('scoreCount',       '0',         tc, 780, 575);
         
-        opts['string'] = 'Round';
-        this.roundLabel = cocos.nodes.Label.create(opts);
-        this.roundLabel.set('position', new geo.Point(110, 545));
-        this.addChild({child: this.roundLabel});
+        this.misses = [[], []];
+        for(var i=0; i<3; i+=1) {
+            this.misses[0].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-gray.png'}));
+            this.misses[0][i].set('position', new geo.Point(618 + i*22, 575));
+            this.misses[1].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-red.png'}));
+            this.misses[1][i].set('position', new geo.Point(618 + i*22, 575));
+            this.addChild({child: this.misses[0][i]});
+        }
         
-        opts['string'] = 'Time';
-        this.timeLabel = cocos.nodes.Label.create(opts);
-        this.timeLabel.set('position', new geo.Point(230, 545));
-        this.addChild({child: this.timeLabel});
-        
-        opts['string'] = 'Remaining';
-        this.remainingLabel = cocos.nodes.Label.create(opts);
-        this.remainingLabel.set('position', new geo.Point(430, 545));
-        this.addChild({child: this.remainingLabel});
-        
-        opts['string'] = 'Misses';
-        this.incorrectLabel = cocos.nodes.Label.create(opts);
-        this.incorrectLabel.set('position', new geo.Point(640, 545));
-        this.addChild({child: this.incorrectLabel});
-        
-        opts['string'] = 'Score';
-        this.scoreLabel = cocos.nodes.Label.create(opts);
-        this.scoreLabel.set('position', new geo.Point(780, 545));
-        this.addChild({child: this.scoreLabel});
+        this.remainings = [[], []];
+        for(var i=0; i<9; i+=1) {
+            this.remainings[0].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-gray.png'}));
+            this.remainings[0][i].set('position', new geo.Point(342 + i*22, 575));
+            this.remainings[1].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-green.png'}));
+            this.remainings[1][i].set('position', new geo.Point(342 + i*22, 575));
+            this.addChild({child: this.remainings[0][i]});
+        }
     },
     
-    nextQuestionCallback: function() {
-        
+    // Helper function for initializing all of the labels
+    buildLabel: function(name, str, fc, x, y) {
+        this[name] = cocos.nodes.Label.create({fontColor: fc, string: str});
+        this[name].set('position', new geo.Point(x, y));
+        this.addChild({child: this[name]});
     },
     
-    update: function(dt) {
-    }
+    enableMiss: function(i) {
+        this.removeChild({child: this.misses[0][i]});
+        this.addChild({child: this.misses[1][i]});
+    },
+    
+    enableRemaining: function(i) {
+        this.removeChild({child: this.remainings[0][i]});
+        this.addChild({child: this.remainings[1][i]});
+    },
+    
+    // Resets the icon based counters
+    resetCounters: function() {
+        for(var i=0; i<3; i+=1) {
+            this.removeChild({child: this.misses[0][i]});
+            this.removeChild({child: this.misses[1][i]});
+            this.addChild({child: this.misses[0][i]});
+        }
+        
+        for(var i=0; i<9; i+=1) {
+            this.removeChild({child: this.remainings[0][i]});
+            this.removeChild({child: this.remainings[1][i]});
+            this.addChild({child: this.remainings[0][i]});
+        }
+    },
+    
+    // Prepares the GameView for a new question
+    nextQuestion: function() {
+        this.roundCount.set('string', parseInt(this.roundCount.get('string')) + 1);
+        this.resetCounters();
+        this.line.clearAllSlots();
+    },
 });
 
 exports.GameView = GameView;
