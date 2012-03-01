@@ -30,6 +30,11 @@ var Game = cocos.nodes.Node.extend({
     currentQuestion : -1,       // Current question index
     
     view            : null,     // Holds the GameView
+    
+    right           : 0,        // Number of correct answers for the current question
+    wrong           : 0,        // Number of incorrect answers for the current question
+    
+    transition      : false,    // True during question transitions, blocks input when true
 
     init: function(xml) {
         Game.superclass.init.call(this);
@@ -45,20 +50,37 @@ var Game = cocos.nodes.Node.extend({
         this.addChild({child: this.view});
     },
     
+    // Fade screen out in prepartion for a question swap.
+    prepareNextQuestion: function() {
+        this.transition = true;
+        this.view.fadeCycle();
+        setTimeout(this.nextQuestion.bind(this), 500);
+    },
+    
+    // Move to next question, or trigger the end of the game
     nextQuestion: function() {
+        // Remove the previous question, if there was one
         if(this.currentQuestion > -1) {
-            this.removeChild({child: this.questions[this.currentQuestion]});
+            this.view.removeChild({child: this.questions[this.currentQuestion]});
             cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.questions[this.currentQuestion]);
         }
     
+        // Progress through the question array
         this.currentQuestion += 1;
         
         // Check for end of game (due to running out of questions)
         if(this.currentQuestion < this.questions.length) {
             
-            this.addChild({child: this.questions[this.currentQuestion]});
+            // Setup and add the next question
+            this.view.addChild({child: this.questions[this.currentQuestion]});
             this.questions[this.currentQuestion].scheduleUpdate();
             this.view.nextQuestion();
+            
+            // Reset answer type totals
+            this.right = 0;
+            this.wrong = 0;
+            
+            this.transition = false;
             
             events.trigger('nextQuestion');
         }
@@ -67,16 +89,52 @@ var Game = cocos.nodes.Node.extend({
         }
     },
     
+    // Resolve mouse click input
     input: function(x, y) {
-        this.questions[this.currentQuestion].input(x, y);
+        // Ignore if we do not have a valid question
+        if(this.currentQuestion < 0 || this.currentQuestion >= this.questions.length || this.transition)
+            return;
+    
+        // Get the result from the quesion
+        var rv = this.questions[this.currentQuestion].input(x, y);
+        
+        // Update view based on return value
+        if(rv.retVal == 1) {
+            this.view.line.correctSlot(rv.lineLoc);
+            this.view.enableRemaining(this.right);
+            this.right += 1;
+            
+            this.modifyScore(200);
+        }
+        else if(rv.retVal == 2) {
+            this.modifyScore(1000);
+        }
+        else if(rv.retVal == 0) {
+            this.view.line.incorrectSlot(rv.lineLoc);
+            this.view.enableMiss(this.wrong);
+            this.wrong += 1;
+        }
+        
+        if(this.right >= 7 || this.wrong >= 3) {
+            this.prepareNextQuestion();
+        }
     },
     
+    // Starts the game
     startGame: function() {
         this.scheduleUpdate();
         this.nextQuestion();
     },
     
+    // Change the player's score value
+    modifyScore: function(val) {
+        this.score += val;
+        this.view.scoreCount.set('string', this.score);
+        this.view.scoreCount._updateLabelContentSize();
+    },
+    
     update: function(dt) {
+        // Update timers
         this.timeElapsed += dt;
         this.timeRemaining -= dt;
         
@@ -92,7 +150,6 @@ var Game = cocos.nodes.Node.extend({
         if(this.timeRemaining.toFixed) {
             this.view.timeCount.set('string', this.timeRemaining.toFixed(0));
         }
-        this.view.scoreCount.set('string', this.score);
     }
 });
 

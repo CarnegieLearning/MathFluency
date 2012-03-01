@@ -24,42 +24,56 @@ var Ball = cocos.nodes.Node.extend({
     v       : null,     // Velocity vector of the ball
     p       : null,     // Position of the ball
     
-    radius  : 10,       // Radius of the ball
+    radius  : 37,       // Radius of the ball
     
     correct : false,    // If true, the ball is a correct answer
     bonus   : false,    // If true, the ball is a bonus ball
+    lineLoc : 0,        // 
     
     content : null,     // Holds the content to be displayed on the ball
     ball    : null,     // Holds the sprite of a blank ball
-
+    
     init: function(xml) {
         Ball.superclass.init.call(this);
         
-        this.p = new geo.Point(Math.floor(Math.random()*792), Math.floor(Math.random()*-468));
-        this.v = Vector(Math.floor(Math.random()*20+10), Math.floor(Math.random()*10));
+        this.p = new geo.Point(Math.random()*750+20, Math.random()*400+20);
+        this.v = new geo.Point(Math.random()*80-40, Math.random()*40-20);
+        
+        this.set('position', this.p);
+        
+        this.correct = xml.attributes['correct'] == 'false' ? false : true;
+        this.bonus = xml.attributes['bonus'] == 'false' ? false : true;
+        this.lineLoc = xml.attributes['lineLoc'];
         
         this.ball = cocos.nodes.Sprite.create({file: '/resources/ball-blank.png'});
         this.addChild({child: this.ball});
         
+        var displayHack = XML.getDeepChildByName(xml, 'ContentSettings')
+        displayHack.attributes['fontColor'] = '#FFF';
+        displayHack.attributes['fontSize'] = 36;
+        displayHack.attributes['bgShow'] = false;
+        
         this.content = Content.buildFrom(XML.getChildByName(xml, 'Content'));
+        this.content.set('anchorPoint', new geo.Point(0, 0));
         this.addChild({child: this.content});
     },
     
     // Moves the ball based on its current velocity vector and time elapsed since last frame
     move: function(dt) {
-        this.v.multBy(dt).addTo(this.p);
-        console.log(this.p.x + ' , ' + this.p.y);
-        if(this.p.x < -1 * 20) {
-            this.p.x += 792 + 20;
+        this.p.x += this.v.x * dt;
+        this.p.y += this.v.y * dt;
+        
+        if(this.p.x < -1 * 40) {
+            this.p.x += (792 + 80);
         }
-        else if(this.p.x > 792 + 20) {
-            this.p.x -= 792 - 20;
+        else if(this.p.x > 792 + 40) {
+            this.p.x -= (792 + 80);
         }
         
         if(this.p.y - this.radius < 0) {
             this.v.y *= -1;
         }
-        else if(this.p.y + this.radius > 468) {
+        else if(this.p.y + this.radius > 450) {
             this.v.y *= -1;
         }
     },

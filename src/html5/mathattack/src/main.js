@@ -47,7 +47,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.2.0',    // Current version number
+    version     : 'v 0.3.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -77,6 +77,7 @@ var FluencyApp = KeyboardLayer.extend({
         var MM = AudioMixer.create();
         this.set('musicMixer', MM);
         
+        this.started = false;
         this.ended = false;
         
         var preloader = Preloader.create();
@@ -166,6 +167,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Starts the game
     startGame: function () {
+        this.started = true;
         this.scheduleUpdate();
         this.game.startGame();
     },
@@ -180,6 +182,8 @@ var FluencyApp = KeyboardLayer.extend({
         else {
             this.cleanup();
         }
+        
+        this.ended = true;
     
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
@@ -235,7 +239,7 @@ var FluencyApp = KeyboardLayer.extend({
         '</OUTPUT>';
         
         return x;
-    },*/
+    },//*/
     
     // Code to be run when the game is finished
     cleanup: function() {
@@ -278,7 +282,7 @@ var FluencyApp = KeyboardLayer.extend({
     // Called every frame, manages keyboard input
     update: function(dt) {
         // 'ESC' Abort game, discreet
-        if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
+        if(this.checkBinding('ABORT') == KeyboardLayer.PRESS && this.started && !this.ended) {
             this.endOfGame(false);
         }
         
@@ -286,7 +290,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Callback for mouseDown events
     mouseDown: function (evt) {
-        if(!this.ended) {
+        if(this.started && !this.ended) {
             this.game.input(evt.locationInCanvas.x, evt.locationInCanvas.y);
         }
         

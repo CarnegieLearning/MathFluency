@@ -19,6 +19,7 @@ var geo = require('geometry');
 
 var Numberline = require('Numberline').Numberline;
 
+var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
 
 var GameView = cocos.nodes.Node.extend({
@@ -37,23 +38,32 @@ var GameView = cocos.nodes.Node.extend({
     
     line            : null,     // Holds the numberline
     
-    misses          : null,
-    remainings      : null,
+    misses          : null,     // 
+    remainings      : null,     // 
 
     init: function(xml) {
         GameView.superclass.init.call(this);
         
         var bg = cocos.nodes.Sprite.create({file: '/resources/whiteback.png'});
         bg.set('position', new geo.Point(450, 300));
+        bg.set('zOrder', -1);
+        this.addChild({child: bg});
+        
+        this.fadePane = cocos.nodes.Sprite.create({file: '/resources/whiteback.png'});
+        this.fadePane.set('position', new geo.Point(450, 300));
+        this.fadePane.set('zOrder', 1);
+        this.fadePane.set('opacity',0);
         this.addChild({child: bg});
         
         var fg = cocos.nodes.Sprite.create({file: '/resources/background.png'});
         fg.set('anchorPoint', new geo.Point(0, 0));
+        fg.set('zOrder', 2);
         this.addChild({child: fg});
         
         this.line = Numberline.create();
-        this.line.set('anchorPoint', new geo.Point(0.5, 0));
-        this.line.set('position', new geo.Point(450, 5));
+        this.line.set('anchorPoint', new geo.Point(0, 0));
+        this.line.set('position', new geo.Point(65, 5));
+        this.line.set('zOrder', 3);
         this.addChild({child: this.line});
         
         var tc = '#000000';
@@ -70,17 +80,21 @@ var GameView = cocos.nodes.Node.extend({
         for(var i=0; i<3; i+=1) {
             this.misses[0].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-gray.png'}));
             this.misses[0][i].set('position', new geo.Point(618 + i*22, 575));
+            this.misses[0][i].set('zOrder', 3);
             this.misses[1].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-red.png'}));
             this.misses[1][i].set('position', new geo.Point(618 + i*22, 575));
+            this.misses[1][i].set('zOrder', 3);
             this.addChild({child: this.misses[0][i]});
         }
         
         this.remainings = [[], []];
-        for(var i=0; i<9; i+=1) {
+        for(var i=0; i<7; i+=1) {
             this.remainings[0].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-gray.png'}));
-            this.remainings[0][i].set('position', new geo.Point(342 + i*22, 575));
+            this.remainings[0][i].set('position', new geo.Point(364 + i*22, 575));
+            this.remainings[0][i].set('zOrder', 3);
             this.remainings[1].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-green.png'}));
-            this.remainings[1][i].set('position', new geo.Point(342 + i*22, 575));
+            this.remainings[1][i].set('position', new geo.Point(364 + i*22, 575));
+            this.remainings[1][i].set('zOrder', 3);
             this.addChild({child: this.remainings[0][i]});
         }
     },
@@ -89,14 +103,17 @@ var GameView = cocos.nodes.Node.extend({
     buildLabel: function(name, str, fc, x, y) {
         this[name] = cocos.nodes.Label.create({fontColor: fc, string: str});
         this[name].set('position', new geo.Point(x, y));
+        this[name].set('zOrder', 3);
         this.addChild({child: this[name]});
     },
     
+    // Enables the specified miss icon
     enableMiss: function(i) {
         this.removeChild({child: this.misses[0][i]});
         this.addChild({child: this.misses[1][i]});
     },
     
+    // Enables the specified remaining icon
     enableRemaining: function(i) {
         this.removeChild({child: this.remainings[0][i]});
         this.addChild({child: this.remainings[1][i]});
@@ -104,13 +121,13 @@ var GameView = cocos.nodes.Node.extend({
     
     // Resets the icon based counters
     resetCounters: function() {
-        for(var i=0; i<3; i+=1) {
+        for(var i=0; i<this.misses[0].length; i+=1) {
             this.removeChild({child: this.misses[0][i]});
             this.removeChild({child: this.misses[1][i]});
             this.addChild({child: this.misses[0][i]});
         }
         
-        for(var i=0; i<9; i+=1) {
+        for(var i=0; i<this.remainings[0].length; i+=1) {
             this.removeChild({child: this.remainings[0][i]});
             this.removeChild({child: this.remainings[1][i]});
             this.addChild({child: this.remainings[0][i]});
@@ -123,6 +140,13 @@ var GameView = cocos.nodes.Node.extend({
         this.resetCounters();
         this.line.clearAllSlots();
     },
+    
+    fadeCycle: function() {
+        MOT.create(0, 255, 0.5).bind(this.fadePane, 'opacity');
+        
+        var that = this;
+        setTimeout(function(){ MOT.create(255, -255, 0.5).bind(that.fadePane, 'opacity'); }, 500);
+    }
 });
 
 exports.GameView = GameView;

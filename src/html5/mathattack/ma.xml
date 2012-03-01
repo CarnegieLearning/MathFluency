@@ -1,0 +1,121 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+    <PROBLEM_SET>
+        <QUESTION>
+            <NUMBERLINE Min="-10" Step="1" Max="10" />
+            <EQUATION TYPE="String">
+                <ContentSettings string="x &gt; -5"/>
+            </EQUATION>
+            <BALLS>
+                <BALL lineLoc="0" correct="false" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-10"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="2" correct="false" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-8"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="3" correct="false" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-7"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="6" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-4"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="7" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-3"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="10" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="0"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="13" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="3"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="15" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="5"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="18" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="8"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="20" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="10"/>
+                    </Content>
+                </BALL>
+            </BALLS>
+        </QUESTION>
+        <QUESTION>
+            <NUMBERLINE Min="-10" Step="1" Max="10" />
+            <EQUATION TYPE="String">
+                <ContentSettings string="x &lt; 5"/>
+            </EQUATION>
+            <BALLS>
+                <BALL lineLoc="0" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-10"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="2" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-8"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="3" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-7"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="6" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-4"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="7" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="-3"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="10" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="0"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="13" correct="true" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="3"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="15" correct="false" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="5"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="18" correct="false" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="8"/>
+                    </Content>
+                </BALL>
+                <BALL lineLoc="20" correct="false" bonus="false">
+                    <Content TYPE="String">
+                        <ContentSettings string="10"/>
+                    </Content>
+                </BALL>
+            </BALLS>
+        </QUESTION>
+    </PROBLEM_SET>
+</INPUT>

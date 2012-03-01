@@ -32,16 +32,33 @@ var Question = cocos.nodes.Node.extend({
     corrects    : 0,
     misses      : 0,
     
-    maxMisses   : 3,
-    maxCorrects : 0,
-    
     init: function(xml) {
         Question.superclass.init.call(this);
         
+        // Position the Question inside the frame of the GameView's foreground.
+        this.set('position', new geo.Point(61, 77));
         this.set('anchorPoint', new geo.Point(0, 0));
         
-        this.qContent = Content.buildFrom(XML.getChildByName(xml, 'EQUATION'));
+        // Modify the content's display settings
+        var displayHack = XML.getChildByName(XML.getChildByName(xml, 'EQUATION'), 'ContentSettings');
+        displayHack.attributes['fontSize'] = 48;
+        displayHack.attributes['bgShow'] = false;
         
+        // Question content to be displayed
+        this.qContent = Content.buildFrom(XML.getChildByName(xml, 'EQUATION'));
+        this.qContent.set('position', new geo.Point(135, 30));
+        this.qContent.set('anchorPoint', new geo.Point(0, 0));
+        this.qContent.set('zOrder', 5);
+        
+        // Box that the question content appears within
+        this.qBox = cocos.nodes.Sprite.create({file: '/resources/questionBox.png'});
+        this.qBox.set('position', new geo.Point(400, 24));
+        this.qBox.set('zOrder', 2);
+        this.addChild({child: this.qBox});
+        
+        this.qBox.addChild({child: this.qContent});
+        
+        // Generate the balls for the question
         this.balls = [];
         var xb = XML.getChildrenByName(XML.getChildByName(xml, 'BALLS'), 'BALL');
         for(var i=0; i<xb.length; i+=1) {
@@ -50,6 +67,7 @@ var Question = cocos.nodes.Node.extend({
         }
     },
     
+    // Resolve mouse input for this question
     input: function(x, y) {
         // Bring values into Question coordinate space
         var p = this.get('position');
@@ -59,38 +77,45 @@ var Question = cocos.nodes.Node.extend({
         // Check translated coordinates against the question's balls
         for(var i=0; i<this.balls.length; i+=1) {
             if(this.balls[i].isCollidingPoint(x, y)) {
+                var rv = 0;
                 
-                if(balls[i].correct) {
-                    
+                if(this.balls[i].correct) {
+                    rv = 1;
                 }
-                else if(balls[i].bonus) {
+                else if(this.balls[i].bonus) {
+                    rv = 2;
                 }
-                else {
-                }
+                
+                var ll = this.balls[i].lineLoc;
                 
                 this.removeChild(this.balls[i]);
                 this.balls.splice(i, 1);
+                
+                return {retVal: rv, lineLoc: ll};
             }
         }
+        
+        return {retVal: -1};
     },
     
+    // Deals with ball motion and collision
     update: function(dt) {
         this.elapsedTime += dt;
         
         // Move balls
         var i=0;
         for(var i=0; i<this.balls.length; i+=1) {
-            this.balls[i].move();
+            this.balls[i].move(dt);
         }
         
-        // The check for and resolve any collisions
+        /*/ The check for and resolve any collisions
         for(var i=0; i<this.balls.length; i+=1) {
             for(var j=i+1; j<this.balls.length; j+=1) {
                 if(this.balls[i].isColliding(this.balls[j])) {
                     //this.balls.collide(this.balls[j]);
                 }
             }
-        }
+        }//*/
     }
 });
 
