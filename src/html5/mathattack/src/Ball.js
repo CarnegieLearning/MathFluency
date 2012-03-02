@@ -70,6 +70,19 @@ var Ball = cocos.nodes.Node.extend({
             this.p.x -= (792 + 80);
         }
         
+        if(this.p.x < 0) {
+            if(this.v.x > -10 && this.v.x < 0)
+                this.p.x -= 15 * dt;
+            else if(this.v.x < 10 && this.v.x > 0)
+                this.p.x += 15 * dt;
+        }
+        else if(this.p.x > 790) {
+            if(this.v.x > -10 && this.v.x < 0)
+                this.p.x -= 15 * dt;
+            else if(this.v.x < 10 && this.v.x > 0)
+                this.p.x += 15 * dt;
+        }
+        
         if(this.p.y - this.radius < 0) {
             this.v.y *= -1;
         }
@@ -133,25 +146,5 @@ var Ball = cocos.nodes.Node.extend({
         ball.velocity = ball.velocity.subtract(impulse.multiply(im2));*/
     },
 });
-
-var Vector = function(x, y) {
-    this.x = 0;
-    this.y = 0;
-    
-    addTo = function(pt) {
-        pt.x += this.x;
-        pt.y += this.y;
-    }
-    
-    addRet = function(pt) {
-        return geo.ccp(pt.x + this.x, pt.y + this.y);
-    }
-    
-    multBy = function(m) {
-        return Vector(this.x * m, this.y * m);
-    }
-    
-    return this;
-}
 
 exports.Ball = Ball;

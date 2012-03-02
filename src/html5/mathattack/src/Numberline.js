@@ -79,7 +79,7 @@ var Numberline = cocos.nodes.Node.extend({
     
     // Activate the specified correct icon
     correctSlot: function (i) {
-        if(!this.status) {
+        if(!this.status[i]) {
             this.addChild({child: this.correct[i]});
             this.addChild({child: this.content[i]});
             this.status[i] = true;
@@ -88,7 +88,7 @@ var Numberline = cocos.nodes.Node.extend({
     
     // Activate the specified incorrect icon
     incorrectSlot: function (i) {
-        if(!this.status) {
+        if(!this.status[i]) {
             this.addChild({child: this.incorrect[i]});
             this.addChild({child: this.content[i]});
             this.status[i] = true;
