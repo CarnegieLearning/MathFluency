@@ -20,6 +20,7 @@ var events = require('events');
 var GameView = require('GameView').GameView;
 var Question = require('Question').Question;
 
+var MAC = require('MathAttackControl').MathAttackControl;
 var XML = require('XML').XML;
 
 var Game = cocos.nodes.Node.extend({
@@ -34,10 +35,25 @@ var Game = cocos.nodes.Node.extend({
     right           : 0,        // Number of correct answers for the current question
     wrong           : 0,        // Number of incorrect answers for the current question
     
+    rightTotal      : 0,        // Total correct answers for the stage
+    wrongTotal      : 0,        // Total incorrect answers for the stage
+    bonusTotal      : 0,        // Total number of bonus seconds for the stage
+    
     transition      : false,    // True during question transitions, blocks input when true
 
     init: function(xml) {
         Game.superclass.init.call(this);
+        
+        var medals = XML.getDeepChildByName(xml, 'MEDALS');
+        if(medals != null) {
+            for(var i=0; i<medals.children.length; i++) {
+                var m = medals.children[i]
+                if(m.attributes.hasOwnProperty('Id') && m.attributes.hasOwnProperty('Score'))
+                    MAC.medalScores[m.attributes['Id']] = parseInt(m.attributes['Score']);
+            }
+        }
+        MAC.medalScores[0] = MAC.medalScores[1] * 1.4;
+        MAC.calcProportions();
         
         this.questions = [];
         var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
@@ -52,15 +68,20 @@ var Game = cocos.nodes.Node.extend({
     
     // Fade screen out in prepartion for a question swap.
     prepareNextQuestion: function() {
-        this.transition = true;
-        this.view.fadeCycle();
-        setTimeout(this.nextQuestion.bind(this), 500);
+        if(!this.transition) {
+            this.transition = true;
+            this.view.fadeCycle();
+            setTimeout(this.nextQuestion.bind(this), 500);
+        }
     },
     
     // Move to next question, or trigger the end of the game
     nextQuestion: function() {
         // Remove the previous question, if there was one
         if(this.currentQuestion > -1) {
+            this.questions[this.currentQuestion].right = this.right;
+            this.questions[this.currentQuestion].wrong = this.wrong;
+        
             this.view.removeChild({child: this.questions[this.currentQuestion]});
             cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this.questions[this.currentQuestion]);
         }
@@ -80,12 +101,18 @@ var Game = cocos.nodes.Node.extend({
             this.right = 0;
             this.wrong = 0;
             
-            this.transition = false;
+            // Set the current round's timer
+            this.timeRemaining = this.questions[this.currentQuestion].timeLimit;
             
-            events.trigger('nextQuestion');
+            // No longer transitioning, enable input
+            this.transition = false;
         }
         else {
-            events.trigger('endOfGame');
+            // Clear icons and numberline at the end of the game
+            this.view.resetCounters();
+            this.view.line.clearAllSlots();
+            
+            events.trigger(this, 'endOfGame');
         }
     },
     
@@ -103,6 +130,7 @@ var Game = cocos.nodes.Node.extend({
             this.view.line.correctSlot(rv.lineLoc);
             this.view.enableRemaining(this.right);
             this.right += 1;
+            this.rightTotal += 1;
             
             this.modifyScore(200);
         }
@@ -113,9 +141,19 @@ var Game = cocos.nodes.Node.extend({
             this.view.line.incorrectSlot(rv.lineLoc);
             this.view.enableMiss(this.wrong);
             this.wrong += 1;
+            this.wrongTotal += 1;
         }
         
+        // If we have hit an answer limit, move to the next question
         if(this.right >= 7 || this.wrong >= 3) {
+            // Only apply time bonus for correctly ending a round
+            if(this.right >= 7) {
+                var bonus = Math.round(this.timeRemaining);
+                
+                this.modifyScore(bonus * 50);
+                this.bonusTotal += bonus;
+                this.questions[this.currentQuestion].bonus = bonus;
+            }
             this.prepareNextQuestion();
         }
     },
@@ -133,6 +171,7 @@ var Game = cocos.nodes.Node.extend({
         this.view.scoreCount._updateLabelContentSize();
     },
     
+    // Tracks time
     update: function(dt) {
         // Update timers
         this.timeElapsed += dt;
@@ -141,9 +180,7 @@ var Game = cocos.nodes.Node.extend({
         // Check for end of the game (due to timer running out)
         if(this.timeRemaining <= 0) {
             this.timeRemaining = 0;
-            cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
-            
-            events.trigger('endOfGame');
+            this.prepareNextQuestion();
         }
         
         // Update the numerical displays of the GameView

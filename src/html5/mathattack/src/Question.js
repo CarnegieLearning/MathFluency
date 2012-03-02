@@ -23,14 +23,16 @@ var Content = require('Content').Content;
 var XML = require('XML').XML;
 
 var Question = cocos.nodes.Node.extend({
-    qContent    : null,
-    correctVal  : 0,
+    qContent    : null,     // Content displayed as question
     
-    balls       : null,
+    balls       : null,     // Array of all active balls
     
-    elapsedTime : 0,
-    corrects    : 0,
-    misses      : 0,
+    elapsedTime : 0,        // Time elapsed on this question
+    right       : 0,        // Number of correct answers selected
+    wrong       : 0,        // Number of incorrect answers selected
+    bonus       : 0,
+    
+    timeLimit   : 30,       // Time allowed for this question
     
     init: function(xml) {
         Question.superclass.init.call(this);
@@ -116,6 +118,10 @@ var Question = cocos.nodes.Node.extend({
                 }
             }
         }//*/
+    },
+    
+    toXML: function(i) {
+        return '        <Question Number= "' + i + '" Correct= "' + this.right + '" Incorrect= "' + this.wrong + '" Bonus= "' + this.bonus +'" />\n';
     }
 });
 

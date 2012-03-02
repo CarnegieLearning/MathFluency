@@ -1,8 +1,13 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <INPUT>
+    <MEDALS>
+        <MEDAL Id="1" Score="1000">Gold</MEDAL>
+        <MEDAL Id="2" Score="750">Silver</MEDAL>
+        <MEDAL Id="3" Score="600">Bronze</MEDAL>
+    </MEDALS>
     <PROBLEM_SET>
-        <QUESTION>
-            <NUMBERLINE Min="-10" Step="1" Max="10" />
+        <QUESTION timeLimit="30">
+            <NUMBERLINE/>
             <EQUATION TYPE="String">
                 <ContentSettings string="x &gt; -5"/>
             </EQUATION>
@@ -60,7 +65,7 @@
             </BALLS>
         </QUESTION>
         <QUESTION>
-            <NUMBERLINE Min="-10" Step="1" Max="10" />
+            <NUMBERLINE/>
             <EQUATION TYPE="String">
                 <ContentSettings string="x &lt; 5"/>
             </EQUATION>

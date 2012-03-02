@@ -18,10 +18,11 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 
 var Numberline = cocos.nodes.Node.extend({
-    content  : null,    // 
+    content  : null,    // Labels to overlay on the line
 
-    correct  : null,    // 
-    incorrect: null,    //  
+    correct  : null,    // Correct background for the numberline
+    incorrect: null,    // Incorrect background for the numberline
+    status   : null,    // Holds the state of each slot (true means the slot is currently displaying a value)
     
     init: function(xml) {
         Numberline.superclass.init.call(this);
@@ -33,12 +34,16 @@ var Numberline = cocos.nodes.Node.extend({
         this.addChild({child: this.line});
         
         this.content = [];
+        this.status = [];
         
         // Displayed content values for each slot on the numberline
         for(var i=0; i<21; i+=1) {
             this.content.push(cocos.nodes.Label.create({string: (i-10 == 0 ? '0' : i-10), fontColor: "#FFF"}));
             this.content[i].set('position', new geo.Point(32.125 + i*35.5, 32));
             this.content[i].set('zOrder', 1);
+            
+            // Initialize the status array
+            this.status.push(false);
         }
         
         // Holds background (in)correct colors for the numberline
@@ -74,14 +79,20 @@ var Numberline = cocos.nodes.Node.extend({
     
     // Activate the specified correct icon
     correctSlot: function (i) {
-        this.addChild({child: this.correct[i]});
-        this.addChild({child: this.content[i]});
+        if(!this.status) {
+            this.addChild({child: this.correct[i]});
+            this.addChild({child: this.content[i]});
+            this.status[i] = true;
+        }
     },
     
     // Activate the specified incorrect icon
     incorrectSlot: function (i) {
-        this.addChild({child: this.incorrect[i]});
-        this.addChild({child: this.content[i]});
+        if(!this.status) {
+            this.addChild({child: this.incorrect[i]});
+            this.addChild({child: this.content[i]});
+            this.status[i] = true;
+        }
     },
     
     // Reset a specific slot on the numberline
@@ -89,6 +100,7 @@ var Numberline = cocos.nodes.Node.extend({
         this.removeChild({child: this.correct[i]});
         this.removeChild({child: this.incorrect[i]});
         this.removeChild({child: this.content[i]});
+        this.status[i] = false;
     },
     
     // Reset the entire numberline

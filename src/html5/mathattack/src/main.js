@@ -21,6 +21,7 @@ var events = require('events');
 
 // Project Imports
 var AudioMixer = require('AudioMixer').AudioMixer;
+var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var Game = require('Game').Game;
 var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var Preloader = require('Preloader').Preloader;
@@ -28,6 +29,7 @@ var Preloader = require('Preloader').Preloader;
 var LabelBG = require('LabelBG').LabelBG;   //HACK
 
 // Static Imports
+var MAC = require('MathAttackControl').MathAttackControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
 var Content = require('Content').Content;
@@ -47,7 +49,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.3.0',    // Current version number
+    version     : 'v 0.9.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -141,7 +143,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
     // TODO: Make countdown more noticible
-    countdown: function () {
+    countdown: function() {
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
         
@@ -158,7 +160,7 @@ var FluencyApp = KeyboardLayer.extend({
         var that = this;
         setTimeout(function () { that.get('cdt').set('string', '2'); }, 750)
         setTimeout(function () { that.get('cdt').set('string', '1'); }, 1500)
-        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(300, 300)); }, 2250)
+        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(375, 300)); }, 2250)
         setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
         
         // Catch window unloads at this point as aborts
@@ -166,8 +168,10 @@ var FluencyApp = KeyboardLayer.extend({
     },
     
     // Starts the game
-    startGame: function () {
+    startGame: function() {
         this.started = true;
+        events.addListener(this.game, 'endOfGame', this.endOfGame.bind(this, true));
+        
         this.scheduleUpdate();
         this.game.startGame();
     },
@@ -175,15 +179,25 @@ var FluencyApp = KeyboardLayer.extend({
     // Called when game ends, should collect results, display them to the screen and output the result XML
     // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
-        if(finished != null) {
-            $(window).unbind('unload')
-            $(window).unload(this.cleanup.bind(this, null));
-        }
-        else {
-            this.cleanup();
-        }
-        
+        if(this.ended)
+            return;
         this.ended = true;
+        //$(window).unbind('unload')
+        
+        // Stopping the game
+        s = cocos.Scheduler.get('sharedScheduler')
+        s.unscheduleUpdateForTarget(this);
+        s.unscheduleUpdateForTarget(this.game);
+        
+        // Checks to see if abort was related to window.unload
+        if(finished != null) {
+            var e = EOGD.create(this.game.timeElapsed, !finished, this.game.rightTotal, this.game.wrongTotal, this.game.bonusTotal);
+            e.set('position', new geo.Point(210, 25));
+            e.set('zOrder', 12);
+            
+            this.addChild({child: e});
+            setTimeout(e.start.bind(e), 1000);
+        }
     
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
@@ -196,50 +210,51 @@ var FluencyApp = KeyboardLayer.extend({
         }
     },
 
-    /*/ Writes the output xml file as a string and returns it
+    // Writes the output xml file as a string and returns it
     // TODO: Decide on a new format if needed and update
     writeXML: function(state) {
         // Get needed values
         var ref = this.get('gameID');
-        var d = this.get('dash');
-        var e = d.get('elapsedTime');
-        var p = d.get('pTime');
+        var g = this.game;
+        
+        var t = g.timeElapsed;
+        var s = g.score;
         var m = ' - ';
         
         // Determine medal string
         if(state == 'FINISH') {
-            if(e + p < RC.times[1])
+            if(s >= MAC.medalScores[1])
                 m = "Gold";
-            else if(e + p < RC.times[2])
+            else if(s >= MAC.medalScores[2])
                 m = "Silver";
-            else if(e + p < RC.times[3])
+            else if(s >= MAC.medalScores[3])
                 m = "Bronze";
         }
         
         // Convert times to milliseconds for reporting
-        e = Math.round(e * 1000)
-        p = Math.round(p * 1000)
+        t = Math.round(t * 1000)
+        
+        // Question level details
+        var detail = ''
+        for(var i=0; i<g.questions.length; i+=1) {
+            detail += g.questions[i].toXML(i+1);
+        }
         
         // Build the XML string
         var x =
         '<OUTPUT>\n' + 
         '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
         '    <SCORE_SUMMARY>\n' + 
-        '        <Score CorrectAnswers="' + correct +'" ElapsedTime="' + e + '" PenaltyTime="' + p + '" TotalScore="' + (e + p) +'" Medal="' + m + '"/>\n' + 
+        '        <Score CorrectAnswers="' + g.rightTotal + '" IncorrectAnswers="' + g.wrongTotal + '" BonusSeconds="' + g.bonusTotal + '" ElapsedTime="' + t + '" Score="' + s +'" Medal="' + m + '"/>\n' + 
         '    </SCORE_SUMMARY>\n' +
-        '    <SCORE_DETAILS>\n';
-                var i = 0;
-                var ql = this.get('questionList');
-                while(i < ql.length) {
-                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
-                i += 1;
-                }
-            x += '    </SCORE_DETAILS>\n' + 
+        '    <SCORE_DETAIL>\n' +
+                detail +
+        '    </SCORE_DETAIL>\n' + 
         '    <END_STATE STATE="' + state + '"/>\n' +
         '</OUTPUT>';
         
         return x;
-    },//*/
+    },
     
     // Code to be run when the game is finished
     cleanup: function() {
@@ -274,6 +289,7 @@ var FluencyApp = KeyboardLayer.extend({
         AM.setMute(!AM.get('muted'));
     },
     
+    // Toggles the MusicMixer's mute
     muteMusicHandler: function() {
         var MM = this.get('musicMixer');
         MM.setMute(!MM.get('muted'));
@@ -293,8 +309,6 @@ var FluencyApp = KeyboardLayer.extend({
         if(this.started && !this.ended) {
             this.game.input(evt.locationInCanvas.x, evt.locationInCanvas.y);
         }
-        
-        console.log(evt.locationInCanvas.x + ' , ' + evt.locationInCanvas.y);
     }
 });
 
@@ -314,9 +328,9 @@ var MenuLayer = cocos.nodes.Menu.extend({
     
         // Create the button
         var opts = Object();
-        opts['normalImage']   = dir + 'buttonStartNormal.png';
-        opts['selectedImage'] = dir + 'buttonStartClick.png';
-        opts['disabledImage'] = dir + 'buttonStartNormal.png';
+        opts['normalImage']   = dir + 'button-start.png';
+        opts['selectedImage'] = dir + 'button-start.png';
+        opts['disabledImage'] = dir + 'button-start.png';
         // We use this callback so we can do cleanup before handing everything over to the main game
         opts['callback'] = this.startButtonCallback.bind(this);
         
