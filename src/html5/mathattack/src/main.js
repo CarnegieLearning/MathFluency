@@ -340,12 +340,81 @@ var MenuLayer = cocos.nodes.Menu.extend({
         sb.set('scaleY', 0.5);
         this.set('startButton', sb);
         this.addChild({child: sb});
+        
+        // Create the volume control
+        dir = '/resources/';
+        // TODO: Make a better basic (toggle)button (extend MenuItemImage?)
+        opts['normalImage'] = dir + 'fx-on.png';
+        opts['selectedImage'] = dir + 'fx-click.png';
+        opts['disabledImage'] = dir + 'fx-click.png';
+        opts['callback'] = this.volumeCallback.bind(this);
+        
+        var vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 170));
+        this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['normalImage'] = dir + 'music-on.png';
+        opts['selectedImage'] = dir + 'music-click.png';
+        opts['disabledImage'] = dir + 'music-click.png';
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 205));
+        this.set('musicButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['normalImage'] = dir + 'fx-off.png';
+        opts['selectedImage'] = dir + 'fx-click.png';
+        opts['disabledImage'] = dir + 'fx-click.png';
+        opts['callback'] = this.volumeCallback.bind(this);
+        
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 170));
+        this.set('volumeButtonOff', vc);
+        
+        opts['normalImage'] = dir + 'music-off.png';
+        opts['selectedImage'] = dir + 'music-click.png';
+        opts['disabledImage'] = dir + 'music-click.png';
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 205));
+        this.set('musicButtonOff', vc);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
     startButtonCallback: function() {
         this.removeChild(this.get('startButton'));
         events.trigger(this, "startGameEvent");
+    },
+    
+    volumeCallback: function() {
+        events.trigger(this, "muteAudioEvent");
+        
+        var m = this.get('muted')
+        if(!m) {
+            this.removeChild(this.get('volumeButtonOn'));
+            this.addChild({child: this.get('volumeButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('volumeButtonOff'));
+            this.addChild({child: this.get('volumeButtonOn')});
+        }
+        this.set('muted', !m);
+    },
+    
+    musicCallback: function() {
+        events.trigger(this, "muteMusicEvent");
+        
+        var m = this.get('mutedMusic')
+        if(!m) {
+            this.removeChild(this.get('musicButtonOn'));
+            this.addChild({child: this.get('musicButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('musicButtonOff'));
+            this.addChild({child: this.get('musicButtonOn')});
+        }
+        this.set('mutedMusic', !m);
     },
 });
 
@@ -387,8 +456,8 @@ exports.main = function() {
     events.addListener(app, 'loaded', menu.createMenu.bind(menu));
     
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
-    events.addListener(menu, 'musicMuteEvent', app.muteMusicHandler.bind(app));
-    events.addListener(menu, 'audioMuteEvent', app.muteAudioHandler.bind(app));
+    events.addListener(menu, 'muteAudioEvent', app.muteAudioHandler.bind(app));
+    events.addListener(menu, 'muteMusicEvent', app.muteMusicHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
