@@ -186,7 +186,7 @@ EndOfGameDisplay = GuiNode.extend({
         
         this.lines = [];
         this.lines[0] = TotalLine.create('Correct'  , right, 200);
-        this.lines[1] = TotalLine.create('Incorrect', wrong, 0);
+        this.lines[1] = TotalLine.create('Incorrect', wrong, -100);
         this.lines[2] = TotalLine.create('Bonus'    , bonus, 50);
         
         for(var i=0; i<3; i+=1) {

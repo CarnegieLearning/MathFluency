@@ -142,6 +142,8 @@ var Game = cocos.nodes.Node.extend({
             this.view.enableMiss(this.wrong);
             this.wrong += 1;
             this.wrongTotal += 1;
+            
+            this.modifyScore(-100);
         }
         
         // If we have hit an answer limit, move to the next question
