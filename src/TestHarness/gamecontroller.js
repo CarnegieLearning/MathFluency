@@ -532,7 +532,7 @@ function makeStage(stageID, config, serverConfig)
             });
         }
     }
-    else if( stage.engineType == 'ExtGameEngine' )
+    else if( stage.engineType == 'ExtFlashGameEngine' || stage.engineType == 'ExtHTML5GameEngine' )
     {   
         if( engineConfig.instructionsPath )
             instructionsPath = engineConfig.instructionsPath;
