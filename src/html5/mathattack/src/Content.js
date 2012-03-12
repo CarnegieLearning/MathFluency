@@ -16,7 +16,7 @@ Copyright 2011, Carnegie Learning
 
 // Project Imports
 var FractionRenderer = require('FractionRenderer').FractionRenderer;
-//var LabelBG = require('LabelBG').LabelBG; //HACK
+var LabelBG = require('LabelBG').LabelBG;
 var PieChart = require('PieChart').PieChart;
 
 // Static Imports
@@ -38,7 +38,7 @@ Content.registerContent = function(str, cls) {
 }
 
 Content.initialize = function () {
-    //Content.registerContent(LabelBG.identifier, LabelBG); //HACK
+    Content.registerContent(LabelBG.identifier, LabelBG);
     Content.registerContent('Fraction', FractionRenderer);
     Content.registerContent('PieChart', PieChart);
 }

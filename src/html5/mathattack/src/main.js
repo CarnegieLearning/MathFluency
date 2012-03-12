@@ -67,7 +67,6 @@ var FluencyApp = KeyboardLayer.extend({
         FluencyApp.superclass.init.call(this);
         
         Content.initialize();
-        Content.registerContent(LabelBG.identifier, LabelBG);   //HACK
         
         // Explicitly enable audio
         AudioMixer.enabled = true;
