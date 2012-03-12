@@ -77,7 +77,7 @@ var Question = cocos.nodes.Node.extend({
         y -= p.y;
         
         // Check translated coordinates against the question's balls
-        for(var i=0; i<this.balls.length; i+=1) {
+        for(var i=this.balls.length-1; i>-1; i-=1) {
             if(this.balls[i].isCollidingPoint(x, y)) {
                 var rv = 0;
                 
