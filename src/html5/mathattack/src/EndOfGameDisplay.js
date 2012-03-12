@@ -185,9 +185,9 @@ EndOfGameDisplay = GuiNode.extend({
         this.set('elapsedTime', lbl);
         
         this.lines = [];
-        this.lines[0] = TotalLine.create('Correct'  , right, 200);
+        this.lines[0] = TotalLine.create('Correct'  , right, 120);
         this.lines[1] = TotalLine.create('Incorrect', wrong, -100);
-        this.lines[2] = TotalLine.create('Bonus'    , bonus, 50);
+        this.lines[2] = TotalLine.create('Bonus'    , bonus, 25);
         
         for(var i=0; i<3; i+=1) {
             this.lines[i].set('position', new geo.Point(30, 80 + 40*i));

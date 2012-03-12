@@ -132,7 +132,7 @@ var Game = cocos.nodes.Node.extend({
             this.right += 1;
             this.rightTotal += 1;
             
-            this.modifyScore(200);
+            this.modifyScore(120);
         }
         else if(rv.retVal == 2) {
             this.modifyScore(1000);
@@ -152,7 +152,7 @@ var Game = cocos.nodes.Node.extend({
             if(this.right >= 7) {
                 var bonus = Math.round(this.timeRemaining);
                 
-                this.modifyScore(bonus * 50);
+                this.modifyScore(bonus * 25);
                 this.bonusTotal += bonus;
                 this.questions[this.currentQuestion].bonus = bonus;
             }
