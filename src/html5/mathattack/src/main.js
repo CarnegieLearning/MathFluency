@@ -76,6 +76,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.set('audioMixer', AM);
         
         var MM = AudioMixer.create();
+        MM.loadSound('bg', dir + 'PuzzlePrelude8-1-10v1');
         this.set('musicMixer', MM);
         
         this.started = false;
@@ -170,6 +171,8 @@ var FluencyApp = KeyboardLayer.extend({
     startGame: function() {
         this.started = true;
         events.addListener(this.game, 'endOfGame', this.endOfGame.bind(this, true));
+        
+        this.musicMixer.loopSound('bg');
         
         this.scheduleUpdate();
         this.game.startGame();
