@@ -14,11 +14,14 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Cocos imports
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
+// Project imports
 var Ball = require('Ball').Ball;
 
+// Static imports
 var Content = require('Content').Content;
 var XML = require('XML').XML;
 
@@ -26,11 +29,12 @@ var Question = cocos.nodes.Node.extend({
     qContent    : null,     // Content displayed as question
     
     balls       : null,     // Array of all active balls
+    history     : null,     // Cronological list of choices' {returnValue, lineLocation}
     
     elapsedTime : 0,        // Time elapsed on this question
     right       : 0,        // Number of correct answers selected
     wrong       : 0,        // Number of incorrect answers selected
-    bonus       : 0,
+    bonus       : 0,        // Number of seconds remaining after completing
     
     timeLimit   : 30,       // Time allowed for this question
     
@@ -67,6 +71,9 @@ var Question = cocos.nodes.Node.extend({
             this.balls.push(Ball.create(xb[i]));
             this.addChild({child: this.balls[i]});
         }
+        
+        // Initialize choice history
+        this.history = [];
     },
     
     // Resolve mouse input for this question
@@ -88,15 +95,20 @@ var Question = cocos.nodes.Node.extend({
                     rv = 2;
                 }
                 
+                // Get the ball's line location and store the ball in the history
                 var ll = this.balls[i].lineLoc;
+                this.history.push({retVal: rv, lineLoc: ll});
                 
+                // Remove the ball from the question
                 this.removeChild(this.balls[i]);
                 this.balls.splice(i, 1);
                 
+                // Return the results
                 return {retVal: rv, lineLoc: ll};
             }
         }
         
+        // Click empty space case
         return {retVal: -1};
     },
     
@@ -110,7 +122,7 @@ var Question = cocos.nodes.Node.extend({
             this.balls[i].move(dt);
         }
         
-        /*/ The check for and resolve any collisions
+        /*/ Check for and resolve any collisions
         for(var i=0; i<this.balls.length; i+=1) {
             for(var j=i+1; j<this.balls.length; j+=1) {
                 if(this.balls[i].isColliding(this.balls[j])) {
@@ -120,14 +132,21 @@ var Question = cocos.nodes.Node.extend({
         }//*/
     },
     
+    // Returns a XML representation of the question result
     toXML: function(i) {
-        return '        <Question Number= "' + i + '" Correct= "' + this.right + '" Incorrect= "' + this.wrong + '" Bonus= "' + this.bonus +'" />\n';
+        var xml = '        <Question Number="' + i + '" Correct="' + this.right + '" Incorrect="' + this.wrong + '" Bonus="' + this.bonus +'">\n';
+        for(var j=0; j<this.history.length; j+=1) {
+            xml += this.choiceXML(this.history[j], j);
+        }
+        xml += '        </Question>\n';
+        
+        return xml;
+    },
+    
+    // Converts a choice in the history to a XML representation
+    choiceXML: function(obj, n) {
+        return '            <Choice Number="' + n + '" LineLoc="' + obj.lineLoc + '" ReturnValue="' + obj.retVal + '" />\n'
     }
 });
-
-Question.height     = 468;
-Question.width      = 792;
-Question.bufferW    = 20;       // Minimum buffer value = radius
-Question.hardW      = true;
 
 exports.Question = Question;
