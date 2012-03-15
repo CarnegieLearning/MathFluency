@@ -49,7 +49,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.9.0',    // Current version number
+    version     : 'v 0.9.5',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -199,6 +199,8 @@ var FluencyApp = KeyboardLayer.extend({
             
             this.addChild({child: e});
             setTimeout(e.start.bind(e), 1000);
+            
+            console.log(this.writeXML('FINISH'));
         }
     
         // If the 'command line' specified a call back, feed the callback the xml

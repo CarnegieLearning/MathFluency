@@ -202,6 +202,7 @@ EndOfGameDisplay = GuiNode.extend({
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('totalLabel', lbl);
         
+        // Medal meter
         var dir = '/resources/Score_Card/Window_MedalGained/Window_MedalGained_';
         this.metalTextures = [
             cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),

@@ -14,11 +14,15 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Cocos imports
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
+// Project imports
 var Numberline = require('Numberline').Numberline;
 
+// Static imports
+var MAC = require('MathAttackControl').MathAttackControl;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
 
@@ -40,6 +44,11 @@ var GameView = cocos.nodes.Node.extend({
     
     misses          : null,     // Indicators for incorrect answers
     corrects        : null,     // Indicators for correct answers
+    
+    medalBar        : null,     // Holds the horizontal bar for the medal meter
+    medalBars       : null,     // Array with all the metal color backrounds for the metal meter
+    medalContainer  : null,     // Frame for the metal meter
+    medalTrend      : 145,      // Y value for medal meter to trend towards
 
     init: function(xml) {
         GameView.superclass.init.call(this);
@@ -83,27 +92,55 @@ var GameView = cocos.nodes.Node.extend({
         
         // Incorrect answer indicators
         this.misses = [[], []];
-        for(var i=0; i<3; i+=1) {
+        var mm = 3;
+        var offset = Math.floor(mm/2)*22 + ((mm % 2 == 0) ? 11 : 0);
+        for(var i=0; i<mm; i+=1) {
             this.misses[0].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-gray.png'}));
-            this.misses[0][i].set('position', new geo.Point(618 + i*22, 575));
+            this.misses[0][i].set('position', new geo.Point(640 - offset + i*22, 575));
             this.misses[0][i].set('zOrder', 3);
             this.misses[1].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-red.png'}));
-            this.misses[1][i].set('position', new geo.Point(618 + i*22, 575));
+            this.misses[1][i].set('position', new geo.Point(640 - offset + i*22, 575));
             this.misses[1][i].set('zOrder', 3);
             this.addChild({child: this.misses[0][i]});
         }
         
         // Correct answers remaining indicators
         this.corrects = [[], []];
-        for(var i=0; i<7; i+=1) {
+        var mc = 7;
+        offset = Math.floor(mc/2)*22 + ((mc % 2 == 0) ? 11 : 0);
+        for(var i=0; i<mc; i+=1) {
             this.corrects[0].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-gray.png'}));
-            this.corrects[0][i].set('position', new geo.Point(364 + i*22, 575));
+            this.corrects[0][i].set('position', new geo.Point(430 - offset + i*22, 575));
             this.corrects[0][i].set('zOrder', 3);
             this.corrects[1].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-green.png'}));
-            this.corrects[1][i].set('position', new geo.Point(364 + i*22, 575));
+            this.corrects[1][i].set('position', new geo.Point(430 - offset + i*22, 575));
             this.corrects[1][i].set('zOrder', 3);
             this.addChild({child: this.corrects[0][i]});
         }
+        
+        // Medal status bar
+        var dir = '/resources/medal-status-';
+        this.medalContainer = cocos.nodes.Sprite.create({file: dir + 'container.png'});
+        this.medalContainer.set('position', new geo.Point(860, 250));
+        this.medalContainer.set('anchorPoint', new geo.Point(0, 1));
+        this.medalContainer.set('zOrder', 4);
+        this.addChild({child: this.medalContainer});
+        
+        this.medalBar = cocos.nodes.Sprite.create({file: dir + 'bar.png'});
+        this.medalBar.set('position', new geo.Point(15, 145));
+        this.medalBar.set('zOrder', 5);
+        
+        this.medalContainer.addChild({child: this.medalBar});
+        
+        this.medalBars = [];
+        this.medalBars.push(this.buildBar(dir + 'gold.png'));
+        this.medalBars.push(this.buildBar(dir + 'silver.png'));
+        this.medalBars.push(this.buildBar(dir + 'bronze.png'));
+        this.medalBars.push(this.buildBar(dir + 'blank.png'));
+        
+        this.activeBar = 3;
+        
+        this.scheduleUpdate();
     },
     
     // Helper function for initializing all of the labels
@@ -112,6 +149,43 @@ var GameView = cocos.nodes.Node.extend({
         this[name].set('position', new geo.Point(x, y));
         this[name].set('zOrder', 3);
         this.addChild({child: this[name]});
+    },
+    
+    // Helper function for building metal bars for the medal meter
+    buildBar: function(name) {
+        var bar = cocos.nodes.Sprite.create({file: name});
+        bar.set('position', new geo.Point(5, 145));
+        bar.set('anchorPoint', new geo.Point(0, 1));
+        bar.set('zOrder', -1);
+        
+        return bar;
+    },
+    
+    // Update the score field
+    updateScore: function(val) {
+        this.scoreCount.set('string', val);
+        this.scoreCount._updateLabelContentSize();
+        
+        this.updateMedalMeter(val);
+    },
+    
+    // Update the status of the medal meter
+    updateMedalMeter: function(val) {
+        var p = Math.max(Math.min(val / MAC.medalScores[0], 1), 0);
+        
+        // Position the horizontal bar
+        this.medalTrend = 145 - p * 140;
+        
+        // Determine current medal
+        var i=0;
+        this.medalContainer.removeChild({child: this.medalBars[this.activeBar]});
+        while(i<4 && val < MAC.medalScores[i]) {
+            i += 1;
+        }
+        
+        // Update the bar background
+        this.activeBar = i-1;
+        this.medalContainer.addChild({child: this.medalBars[this.activeBar]});
     },
     
     // Enables the specified miss icon
@@ -154,6 +228,26 @@ var GameView = cocos.nodes.Node.extend({
         
         var that = this;
         setTimeout(function(){ MOT.create(255, -255, 0.5).bind(that.fadePane, 'opacity'); }, 500);
+    },
+    
+    update: function(dt) {
+        // Move the medal bar smoothly over time
+        var p = this.medalBar.get('position');
+        if(this.medalTrend < p.y) {
+            p.y -= 20 * dt;
+            if(this.medalTrend > p.y) {
+                p.y = this.medalTrend;
+            }
+            this.medalBars[this.activeBar].set('scaleY', 1 - ((p.y - 5) / 140.0));
+        }
+        else if(this.medalTrend > p.y) {
+            p.y += 20 * dt;
+            if(this.medalTrend < p.y) {
+                p.y = this.medalTrend;
+            }
+            this.medalBars[this.activeBar].set('scaleY', 1 - ((p.y - 5) / 140.0));
+        }
+        this.medalBar.set('position', p);
     }
 });
 

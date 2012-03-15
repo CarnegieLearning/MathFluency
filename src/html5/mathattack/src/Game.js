@@ -44,6 +44,7 @@ var Game = cocos.nodes.Node.extend({
     init: function(xml) {
         Game.superclass.init.call(this);
         
+        // Load medal cutoff values
         var medals = XML.getDeepChildByName(xml, 'MEDALS');
         if(medals != null) {
             for(var i=0; i<medals.children.length; i++) {
@@ -55,6 +56,7 @@ var Game = cocos.nodes.Node.extend({
         MAC.medalScores[0] = MAC.medalScores[1] * 1.4;
         MAC.calcProportions();
         
+        // Load questions
         this.questions = [];
         var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
         var q = XML.getChildrenByName(problemRoot, 'QUESTION');
@@ -169,8 +171,7 @@ var Game = cocos.nodes.Node.extend({
     // Change the player's score value
     modifyScore: function(val) {
         this.score += val;
-        this.view.scoreCount.set('string', this.score);
-        this.view.scoreCount._updateLabelContentSize();
+        this.view.updateScore(this.score, val);
     },
     
     // Tracks time
