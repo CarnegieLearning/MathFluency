@@ -135,7 +135,6 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
         this.setBinding('ANSWER',       [32, 13]);  // [SPACE, ENTER]
         this.setBinding('ABORT',        [27]);      // [ESC]
-        //this.setBinding('DEBUG_PAUSE',  [80]);      // [P]
         
         // Create and add the HUD
         var h = HUD.create();
@@ -237,8 +236,18 @@ var FluencyApp = KeyboardLayer.extend({
         if(!this.ended && this.current > -1 && !this.hud.paused) {
             this.answerQuestion(evt.locationInCanvas.x);
         }
-        
-        console.log(evt.locationInCanvas.x + ' , ' + evt.locationInCanvas.y);
+    },
+    
+    // Toggles the AudioMixer's mute
+    muteAudioHandler: function() {
+        var AM = this.get('audioMixer');
+        AM.setMute(!AM.get('muted'));
+    },
+    
+    // Toggles the MusicMixer's mute
+    muteMusicHandler: function() {
+        var MM = this.get('musicMixer');
+        MM.setMute(!MM.get('muted'));
     },
     
 //============ Pre Game ========================================================
@@ -500,7 +509,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Handles answering the current question
     answerQuestion: function(ans) {
-        if(!this.answerLock)
+        if(!this.answerLock) {
             var retVal = this.questionList[this.current].giveAnswer(ans)
             if(retVal >= 0 && retVal <= 2) {
                 this.answerLock = true;
@@ -514,6 +523,7 @@ var FluencyApp = KeyboardLayer.extend({
                     setTimeout(function () {that.hud.modifyItemCount(); }, 3200);
                 }
             }
+        }
     },
     
     // Removes the answer lock, allowing the player to answer the question
@@ -544,15 +554,6 @@ var FluencyApp = KeyboardLayer.extend({
         // Quit the game
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
             this.endOfGame(false);
-        }
-        
-        // Pause the game
-        if(this.checkBinding('DEBUG_PAUSE') == KeyboardLayer.PRESS) {
-            this.hud.paused = !this.hud.paused;
-            
-            if(this.questionList[this.current].current < this.questionList[this.current].questions.length) {
-                this.questionList[this.current].questions[this.questionList[this.current].current].paused = this.hud.paused;
-            }
         }
     },
     
@@ -588,6 +589,38 @@ var MenuLayer = cocos.nodes.Menu.extend({
         var vc = cocos.nodes.MenuItemImage.create(opts);
         vc.set('position', new geo.Point(400, 250));
         this.set('volumeButtonOff', vc);
+        
+        // Create the volume control
+        // TODO: Make a better basic (toggle)button (extend MenuItemImage?)
+        opts['normalImage'] = '/resources/volume-control.png';
+        opts['selectedImage'] = '/resources/volume-control.png';
+        opts['disabledImage'] = '/resources/volume-control.png';
+        opts['callback'] = this.audioCallback.bind(this);
+        
+        var vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(-315, 275));
+        this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(-315, 225));
+        this.set('musicButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['normalImage'] = '/resources/volume-control-off.png';
+        opts['selectedImage'] = '/resources/volume-control-off.png';
+        opts['disabledImage'] = '/resources/volume-control-off.png';
+        opts['callback'] = this.audioCallback.bind(this);
+        
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(-315, 275));
+        this.set('volumeButtonOff', vc);
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(-315, 225));
+        this.set('musicButtonOff', vc);
     },
     
     // Adds the next level and retry buttons to the score card
@@ -617,6 +650,39 @@ var MenuLayer = cocos.nodes.Menu.extend({
         b.set('scaleX', 0.3);
         b.set('scaleY', 0.3);
         this.addChild({child: b}); //*/
+    },
+    
+    // Called when the volume button is pressed
+    // TODO: Seperate this into two functions (mute/unmute)?
+    // TODO: Implement a slider/levels to set master volume
+    audioCallback: function() {
+        events.trigger(this, "muteAudioEvent");
+        
+        var m = this.get('muted')
+        if(!m) {
+            this.removeChild(this.get('volumeButtonOn'));
+            this.addChild({child: this.get('volumeButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('volumeButtonOff'));
+            this.addChild({child: this.get('volumeButtonOn')});
+        }
+        this.set('muted', !m);
+    },
+    
+    musicCallback: function() {
+        events.trigger(this, "muteMusicEvent");
+        
+        var m = this.get('mutedMusic')
+        if(!m) {
+            this.removeChild(this.get('musicButtonOn'));
+            this.addChild({child: this.get('musicButtonOff')});
+        }
+        else {
+            this.removeChild(this.get('musicButtonOff'));
+            this.addChild({child: this.get('musicButtonOn')});
+        }
+        this.set('mutedMusic', !m);
     },
     
     // Called when the button is pressed, clears the button, then hands control over to the main game
@@ -676,6 +742,8 @@ exports.main = function() {
     // Set up inter-layer events
     events.addListener(menu, 'startGameEvent', app.countdown.bind(app));
     events.addListener(menu, 'retryGameEvent', app.retryButtonHandler.bind(app));
+    events.addListener(menu, 'muteAudioEvent', app.muteAudioHandler.bind(app));
+    events.addListener(menu, 'muteMusicEvent', app.muteMusicHandler.bind(app));
     
     // Add our layers to the scene
     scene.addChild({child: app});
