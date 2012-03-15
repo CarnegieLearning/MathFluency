@@ -178,10 +178,12 @@ var FluencyApp = KeyboardLayer.extend({
         medals[0] = RC.finishLine / this.get('player').get('maxSpeed');
         medals[medals.length] = medals[medals.length - 1] * 1.5;
         RC.times = medals;
+        
+        RC.calcProportions();
 
         // Sanity check
         if(medals[0] > medals[1]) {
-            console.log("WARNING: Calculated minimum time (" + medal[0] +") is longer than the maximum allowed time for a gold medal (" + medal[1] +").");
+            console.log("WARNING: Calculated minimum time (" + medal[0] + ") is longer than the maximum allowed time for a gold medal (" + medal[1] + ").");
         }
         
         this.preprocessingComplete();
@@ -1016,13 +1018,13 @@ var MenuLayer = cocos.nodes.Menu.extend({
     // Adds the retry button to the MenuLayer
     addRetryButton: function() {
         var opts = Object();
-        opts['normalImage'] = '/resources/Retry_Up.png';
-        opts['selectedImage'] = '/resources/Retry_Down.png';
-        opts['disabledImage'] = '/resources/Retry_Up.png';
+        opts['normalImage'] = '/resources/scoreboard/Retry_Up.png';
+        opts['selectedImage'] = '/resources/scoreboard/Retry_Down.png';
+        opts['disabledImage'] = '/resources/scoreboard/Retry_Up.png';
         opts['callback'] = this.retryButtonCallback.bind(this);
         
         var b = cocos.nodes.MenuItemImage.create(opts);
-        b.set('position', new geo.Point(10-450+300, 230-300+125));
+        b.set('position', new geo.Point(10-450+300, 230-300+175));
         b.set('scaleX', 0.8);
         b.set('scaleY', 0.8);
         this.addChild({child: b});

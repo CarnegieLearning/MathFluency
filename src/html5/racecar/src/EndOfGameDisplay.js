@@ -90,7 +90,7 @@ TotalLine = GuiNode.extend({
         this.buildLabel('errors X', 'xLabel', 135);
         this.buildLabel(amt, 'amount', 205);
         this.buildLabel('sec =', 'eLabel', 225);
-        this.buildLabel('0.000', 'result', 390);
+        this.buildLabel('0.000', 'result', 375);
         this.get('result').set('anchorPoint', new geo.Point(1, 0.5));
     },
     
@@ -152,7 +152,7 @@ EndOfGameDisplay = GuiNode.extend({
     numPenalty      : 0,        // Number of penalties incurred
     abort           : false,    // Abort state of the game
     
-    sliderX         : 10,       // X location of the slider on the medal line
+    sliderX         : 370,      // X location of the slider on the medal line
     
     init: function (ta, np, a) {
         EndOfGameDisplay.superclass.init.call(this);
@@ -164,41 +164,78 @@ EndOfGameDisplay = GuiNode.extend({
         var lbl;
         var opts = {};
         
+        // Background
+        this.bg = cocos.nodes.Sprite.create({file: '/resources/scoreboard/Scoreboard_Bg.png'});
+        this.scaleTo(this.bg, 440, 550);
+        this.bg.set('anchorPoint', new geo.Point(0, 0));
+        this.addChild({child: this.bg});
+        
         // Text label for time elapsed
         opts['string'] = 'Elapsed Time';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(-500, 40));
+        lbl.set('position', new geo.Point(-500, 80));
         lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set('elapsedLabel', lbl);
         
         // Displays time elapsed
         opts['string'] = '0.000';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(390, 40));
+        lbl.set('position', new geo.Point(375, 80));
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('elapsedTime', lbl);
         
         // Missed questions line
         this.line = TotalLine.create('Penalty Time', np, RC.penaltyTime);
-        this.line.set('position', new geo.Point(0, 80));
+        this.line.set('position', new geo.Point(0, 110));
         events.addListener(this.line, 'animationCompleted', this.next.bind(this));
         this.addChild({child: this.line});
         
         // Text label for the total line
         opts['string'] = 'Total Score';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(-500, 120));
+        lbl.set('position', new geo.Point(-500, 140));
         lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set('totalLabel', lbl);
         
         // Displays the overall time, including penalties
         opts['string'] = '0.000';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(390, 120));
+        lbl.set('position', new geo.Point(375, 140));
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('total', lbl);
         
+        // Medal meter
+        var dir = '/resources/scoreboard/Metal_';
+        this.metalTextures = [
+            cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Silver.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Bronze.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Empty.png'}),
+        ]
+        
+        var x = 20;
+        for(i=0; i<4; i+=1) {
+            this.scaleTo(this.metalTextures[i], RC.proportions[i] * 360, 20);
+            this.metalTextures[i].set('position', new geo.Point(x, 260));
+            this.metalTextures[i].set('anchorPoint', new geo.Point(0, 0));
+            this.addChild({child: this.metalTextures[i]});
+            
+            x += RC.proportions[i] * 360;
+        }
+        
+        this.needle = cocos.nodes.Sprite.create({file: '/resources/scoreboard/Metal_arrow.png'});
+        this.needle.set('position', new geo.Point(this.sliderX, 280))
+        this.needle.set('anchorPoint', new geo.Point(0.5, 0.5))
+        this.addChild({child:this.needle});
+        
         this.scheduleUpdate();
+    },
+    
+    //TODO: Really should be a util function, or put in cocos.nodes.Node
+    scaleTo: function(s, x, y) {
+        var c = s.get('contentSize');
+        s.set('scaleX', x / c.width);
+        s.set('scaleY', y / c.height);
     },
     
     // Called every frame
@@ -208,6 +245,8 @@ EndOfGameDisplay = GuiNode.extend({
         this.composeTime(this.get('total'),       parseFloat(this.get('totalLink')));
         
         this.line.instances.set('string', parseFloat(this.line.instLink).toFixed(0));
+        
+        this.needle.set('position', new geo.Point(this.sliderX, 280));
     },
     
     // Start the animation sequence
@@ -236,10 +275,8 @@ EndOfGameDisplay = GuiNode.extend({
             var x;
             if(this.get('abort'))
                 x = 0;
-            else if(tt > RC.times[3])
-                x = 90 - 90 * Math.min(1, tt / RC.times[4]);
             else
-                x = 380 - 290 * (tt - RC.times[0]) / (RC.times[3] - RC.times[0]);
+                x = Math.min((tt - RC.times[0]) / (RC.times[4] - RC.times[0]), 1) * 360 - 360;
             
             MOT.create(this.get('sliderX'), x, 1.0).bind(this, 'sliderX');
         }
@@ -273,10 +310,6 @@ EndOfGameDisplay = GuiNode.extend({
         
         l.set('string', val);
         l._updateLabelContentSize();
-        
-        //var p = l.get('position');
-        //p.x = 390 - l.get('contentSize').width;
-        //l.set('position', p);
     },
     
     skipAnimation: function () {
@@ -291,41 +324,6 @@ EndOfGameDisplay = GuiNode.extend({
     // Handles all the low level drawing calls
     // TODO: Unmagic number these
     draw: function (ctx) {
-        // Draws the background of the window
-        ctx.fillStyle = "#8B7765";
-        ctx.fillRect(0, 0, 400, 450);
-        
-        // Draw the medal meter line
-        var offset = 100;
-        
-        ctx.fillStyle = RC.noMedal;
-        ctx.fillRect(10, 160, 90, 20);
-        
-        run = this.proportions(3) * 290;
-        ctx.fillStyle = RC.bronze;
-        ctx.fillRect(offset, 160, run, 20);
-        offset += run;
-        
-        run = this.proportions(2) * 290;
-        ctx.fillStyle = RC.silver;
-        ctx.fillRect(offset, 160, run, 20);
-        offset += run;
-        
-        var run = this.proportions(1) * 290;
-        ctx.fillStyle = RC.gold;
-        ctx.fillRect(offset, 160, run, 20);
-        offset += run;
-        
-        // Draw the indicator for the medal meter line
-        var x = this.get('sliderX');
-        ctx.fillStyle = "#CC2222";
-        ctx.beginPath();
-        ctx.moveTo(x    , 177);
-        ctx.lineTo(x + 8, 150);
-        ctx.lineTo(x - 8, 150);
-        ctx.closePath();
-        ctx.fill();
-        
         if(this.get('step') >= 5) {
             // Draw the medal
             var t = this.get('timeAmt') + this.get('numPenalty') * RC.penaltyTime;

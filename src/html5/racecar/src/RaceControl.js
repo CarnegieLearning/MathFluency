@@ -34,6 +34,14 @@ RaceControl.crossFadeSpeed = 30;
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
 RaceControl.medalNames          = ['Ludicrous Speed', 'Gold', 'Silver', 'Bronze', ' - '];
 
+RaceControl.calcProportions = function() {
+    RaceControl.proportions = [];
+    RaceControl.proportions[0] = (RaceControl.times[1] - RaceControl.times[0]) / RaceControl.times[4];
+    RaceControl.proportions[1] = (RaceControl.times[2] - RaceControl.times[1]) / RaceControl.times[4];
+    RaceControl.proportions[2] = (RaceControl.times[3] - RaceControl.times[2]) / RaceControl.times[4];
+    RaceControl.proportions[3] = (RaceControl.times[4] - RaceControl.times[3]) / RaceControl.times[4];
+}
+
 RaceControl.gold    = '#CC9900';        // Color for gold medals
 RaceControl.silver  = '#C0C0C0';        // Color for silver medals
 RaceControl.bronze  = '#E26B10';        // Color for bronze medals
