@@ -600,12 +600,12 @@ var MenuLayer = cocos.nodes.Menu.extend({
         opts['callback'] = this.retryButtonCallback.bind(this);
         
         var b = cocos.nodes.MenuItemImage.create(opts);
-        b.set('position', new geo.Point(-190, 25));
+        b.set('position', new geo.Point(-190, 100));
         b.set('anchorPoint', new geo.Point(0, 0));
-        b.set('scaleX', 0.3);
-        b.set('scaleY', 0.3);
+        b.set('scaleX', 0.75);
+        b.set('scaleY', 0.75);
         this.addChild({child: b});
-        /* /
+        /*/
         opts['normalImage'] = dir + 'Next_Norm.png';
         opts['selectedImage'] = dir + 'Next_Down.png';
         opts['disabledImage'] = dir + 'Next_Norm.png';

@@ -176,14 +176,14 @@ EndOfGameDisplay = GuiNode.extend({
         // Text label for time elapsed
         opts['string'] = 'Elapsed Time';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(-500, 40));
+        lbl.set('position', new geo.Point(-500, 100));
         lbl.set('anchorPoint', new geo.Point(0, 0.5));
         this.set('elapsedLabel', lbl);
         
         // Displays time elapsed
         opts['string'] = '0.0';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(390, 40));
+        lbl.set('position', new geo.Point(390, 100));
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('elapsedTime', lbl);
         
@@ -193,7 +193,7 @@ EndOfGameDisplay = GuiNode.extend({
         this.lines[2] = TotalLine.create('Miss'   , lineVals[2], Q.bandPts[2]);
         
         for(var i=0; i<3; i+=1) {
-            this.lines[i].set('position', new geo.Point(30, 80 + 40*i));
+            this.lines[i].set('position', new geo.Point(30, 120 + 30*i));
             events.addListener(this.lines[i], 'animationCompleted', this.next.bind(this));
             this.addChild({child: this.lines[i]});
         }
@@ -201,7 +201,7 @@ EndOfGameDisplay = GuiNode.extend({
         // Holds overall total
         opts['string'] = '0';
         lbl = cocos.nodes.Label.create(opts);
-        lbl.set('position', new geo.Point(390, 200));
+        lbl.set('position', new geo.Point(390, 220));
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('totalLabel', lbl);
         
@@ -303,10 +303,10 @@ EndOfGameDisplay = GuiNode.extend({
             else
                 this.medal = cocos.nodes.Sprite.create({file: dir + 'Bronze.png'});
             
-            this.medal.set('position', new geo.Point(290, 420));
+            this.medal.set('position', new geo.Point(300, 450));
             this.medal.set('anchorPoint', new geo.Point(0.5, 0.5));
-            this.medal.set('scaleX', 1);
-            this.medal.set('scaleY', 1);
+            this.medal.set('scaleX', 0.95);
+            this.medal.set('scaleY', 0.95);
             this.addChild({child: this.medal});
             
             setTimeout(this.next.bind(this), 250);
