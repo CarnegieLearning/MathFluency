@@ -859,6 +859,18 @@
             "displayName": "Battleship Numberline",
             "engine": "battleship"
         },
+        "1": {
+            "displayName": "Battleships on a Plane Type-in test",
+            "engine": "bs_plane"
+        },
+        "2": {
+            "displayName": "Battleships on a Plane Click test",
+            "engine": "bs_plane"
+        },
+        "sqn": {
+            "displayName": "Battleships on a Plane sqn",
+            "engine": "bs_plane"
+        },
         "Race_1": {
             "displayName": "Fractions (Racecar)",
             "engine": "racecar_html5",
@@ -1128,6 +1140,10 @@
         "battleship": {
             "type": "ExtFlashGameEngine",
             "swfPath": "http://playpowerlabs.org/test/bsnl/BSNL.swf"
+        },
+        "bs_plane": {
+            "type": "ExtFlashGameEngine",
+            "swfPath": "http://playpowerlabs.org/BSNLS/coordGame/Coordinate.swf"
         },
         "jungle": {
             "type": "CLFlashGameEngine",
