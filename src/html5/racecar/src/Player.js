@@ -96,7 +96,7 @@ var Player = PNode.extend({
     },
     
     // Plays the fishtail animation
-    fishtail: function() {
+    fishtailAnimation: function() {
         this.removeChild({child: this.sprite});
         this.addChild({child: this.animNode});
         
@@ -223,7 +223,7 @@ var Player = PNode.extend({
     
     // Sets the wipeout status of the car, causing it to spin over time and slow down
     wipeout: function(spins) {
-        this.fishtail();
+        this.fishtailAnimation();
         if(this.get('turbo')) {
             this.endTurboBoost();
         }
