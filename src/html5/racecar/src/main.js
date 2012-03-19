@@ -18,6 +18,7 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
+var Texture2D = require('cocos2d').Texture2D;
 
 // Project Imports
 var AudioMixer = require('AudioMixer').AudioMixer;
@@ -27,11 +28,10 @@ var Intermission = require('Intermission').Intermission;
 var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
 var Player = require('Player').Player;
 var PNode = require('PerspectiveNode').PerspectiveNode;
+var PNodeA = require('PerspectiveNode').PerspectiveNodeAnim;
 var Question = require('Question').Question;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var Preloader = require('Preloader').Preloader;
-
-var LabelBG = require('LabelBG').LabelBG;   //HACK
 
 // Static Imports
 var RC = require('RaceControl').RaceControl;
@@ -70,7 +70,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.9.5',    // Current version number
+    version     : 'v 1.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -88,7 +88,6 @@ var FluencyApp = KeyboardLayer.extend({
         FluencyApp.superclass.init.call(this);
         
         Content.initialize();
-        Content.registerContent(LabelBG.identifier, LabelBG);   //HACK
         
         // Explicitly enable audio
         AudioMixer.enabled = true;
@@ -418,6 +417,56 @@ var FluencyApp = KeyboardLayer.extend({
         m = Math.min(m, RC.finishSpacing);
         
         RC.maxTimeWindow = m / player.get('maxSpeed') * 0.9;
+        
+        // Generate things to the side of the road
+        var dir = '/resources/sidewalk_stuff/';
+        var sprites = [
+            cocos.nodes.Sprite.create({file: dir + 'sideWalkCrack01.png',}),
+            cocos.nodes.Sprite.create({file: dir + 'sideWalkCrack02.png',}),
+            cocos.nodes.Sprite.create({file: dir + 'tire.png',}),
+            cocos.nodes.Sprite.create({file: dir + 'tirePile01.png',}),
+            cocos.nodes.Sprite.create({file: dir + 'tirePile02.png',})
+        ];
+        
+        var anim = [];
+        var r = geo.rectMake(0, 0, 70, 100);
+        dir = '/resources/sidewalk_stuff/trashCan00';
+        for(var i=1; i<=18; i+=1) {
+            anim.push(cocos.SpriteFrame.create({texture: Texture2D.create({file: module.dirname + dir + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
+        }
+        
+        var tAnim = cocos.Animation.create({frames: anim, delay: 0.05});
+        
+        var choice = 0;
+        var p;
+        for(var t=10; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6+4)) {
+            if(Math.random() < 0.25) {
+                choice = Math.floor(Math.random() * 6);
+                if(choice < 5) {
+                    p = PNode.create({xCoordinate: 5 * Math.random() + 6, zCoordinate: t, content: sprites[choice], alignH: 0.5, alignV: 0.5})
+                }
+                else {
+                    p = PNodeA.create({xCoordinate: 5 * Math.random() + 6, zCoordinate: t, content: cocos.nodes.Sprite.create(), alignH: 0.5, alignV: 0.5})
+                    p.prepareAnimation(cocos.actions.Animate.create({animation: tAnim}));
+                }
+                p.set('zOrder', -4);
+                events.addListener(p, 'addMe', this.addMeHandler);
+                p.idle();
+            }
+            if(Math.random() < 0.25) {
+                choice = Math.floor(Math.random() * 6);
+                if(choice < 5) {
+                    p = PNode.create({xCoordinate: -5 * Math.random() - 6, zCoordinate: t, content: sprites[choice], alignH: 0.5, alignV: 0.5})
+                }
+                else {
+                    p = PNodeA.create({xCoordinate: -5 * Math.random() - 6, zCoordinate: t, content: cocos.nodes.Sprite.create(), alignH: 0.5, alignV: 0.5})
+                    p.prepareAnimation(cocos.actions.Animate.create({animation: tAnim}));
+                }
+                p.set('zOrder', -4);
+                events.addListener(p, 'addMe', this.addMeHandler);
+                p.idle();
+            }
+        }
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
@@ -453,7 +502,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
-
+        
         var s = this.audioMixer.getSound('accel')
         if(s) {
             s.setVolume(0.8);
@@ -465,7 +514,7 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         this.audioMixer.playSound('countdown');
-    
+        
         this.get('dash').bindTo('speed', this.get('player'), 'zVelocity');
         this.get('dash').bindTo('playerZ', this.get('player'), 'zCoordinate');
         this.get('dash').bindTo('goldZ', this.medalCars[0], 'zCoordinate');
@@ -696,13 +745,13 @@ var FluencyApp = KeyboardLayer.extend({
         '<OUTPUT>\n' + 
         '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
         '    <SCORE_SUMMARY>\n' + 
-        '        <Score CorrectAnswers="' + correct +'" ElapsedTime="' + e + '" PenaltyTime="' + p + '" TotalScore="' + (e + p) +'" Medal="' + m + '"/>\n' + 
+        '        <Score CorrectAnswers="' + correct + '" ElapsedTime="' + e + '" PenaltyTime="' + p + '" TotalScore="' + (e + p) + '" Medal="' + m + '"/>\n' + 
         '    </SCORE_SUMMARY>\n' +
         '    <SCORE_DETAILS>\n';
                 var i = 0;
                 var ql = this.get('questionList');
                 while(i < ql.length) {
-                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
+                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="'+ Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
                 i += 1;
                 }
             x += '    </SCORE_DETAILS>\n' + 
