@@ -100,7 +100,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.audioAnswer = ['correct', 'almost', 'wrong'];          // Mapping band numbers to audio feedback
         
         var MM = AudioMixer.create();
-        MM.loadSound('music', dir + 'Teatro');
+        MM.loadSound('music', dir + 'TeatroV_2');
         this.set('musicMixer', MM)
         
         // Run the 'preloader'
