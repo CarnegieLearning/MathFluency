@@ -1153,6 +1153,10 @@
             "type": "ExtFlashGameEngine",
             "swfPath": "http://playpowerlabs.org/test/bsnl/BSNL.swf"
         },
+        "bs_plane": {
+            "type": "ExtFlashGameEngine",
+            "swfPath": "http://playpowerlabs.org/BSNLS/coordGame/Coordinate.swf"
+        },
         "jungle": {
             "type": "CLFlashGameEngine",
             "cli_task_id": "ft3_jungle"
