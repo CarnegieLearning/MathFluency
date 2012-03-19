@@ -867,10 +867,6 @@
             "displayName": "Battleships on a Plane Click test",
             "engine": "bs_plane"
         },
-        "sqn": {
-            "displayName": "Battleships on a Plane sqn",
-            "engine": "bs_plane"
-        },
         "Race_1": {
             "displayName": "Fractions (Racecar)",
             "engine": "racecar_html5",
