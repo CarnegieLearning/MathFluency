@@ -859,12 +859,28 @@
             "displayName": "Battleship Numberline",
             "engine": "battleship"
         },
-        "1": {
-            "displayName": "Battleships on a Plane Type-in test",
+        "10click": {
+            "displayName": "Battleships on a Plane",
             "engine": "bs_plane"
         },
-        "2": {
-            "displayName": "Battleships on a Plane Click test",
+        "10type": {
+            "displayName": "Battleships on a Plane",
+            "engine": "bs_plane"
+        },
+        "20click": {
+            "displayName": "Battleships on a Plane",
+            "engine": "bs_plane"
+        },
+        "20type": {
+            "displayName": "Battleships on a Plane",
+            "engine": "bs_plane"
+        },
+        "100click": {
+            "displayName": "Battleships on a Plane",
+            "engine": "bs_plane"
+        },
+        "100type": {
+            "displayName": "Battleships on a Plane",
             "engine": "bs_plane"
         },
         "Race_1": {
