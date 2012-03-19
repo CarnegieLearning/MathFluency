@@ -859,6 +859,30 @@
             "displayName": "Battleship Numberline",
             "engine": "battleship"
         },
+        "10click": {
+            "displayName": "Battleship on a Plane",
+            "engine": "bs_plane"
+        },
+        "10type": {
+            "displayName": "Battleship on a Plane",
+            "engine": "bs_plane"
+        },
+        "20click": {
+            "displayName": "Battleship on a Plane",
+            "engine": "bs_plane"
+        },
+        "20type": {
+            "displayName": "Battleship on a Plane",
+            "engine": "bs_plane"
+        },
+        "100click": {
+            "displayName": "Battleship on a Plane",
+            "engine": "bs_plane"
+        },
+        "100type": {
+            "displayName": "Battleship on a Plane",
+            "engine": "bs_plane"
+        },
         "Race_1": {
             "displayName": "Fractions (Racecar)",
             "engine": "racecar_html5",
