@@ -39,6 +39,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     xVelocity   : 0,        // Meters per second speed along the X axis
     content     : null,     // Content to be displayed in the node
     delOnDrop   : true,     // If true, runs cleanup when the node is removed from the scene
+    
     init: function(opts) {
         PerspectiveNode.superclass.init.call(this, opts);
         
@@ -202,4 +203,27 @@ PerspectiveNode.roadOffset      = 175;      // Number of pixels from the left ha
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera
 
+var PerspectiveNodeAnim = PerspectiveNode.extend({
+    init: function (opts) {
+        PerspectiveNodeAnim.superclass.init.call(this, opts);
+    },
+    
+    prepareAnimation: function (act) {
+        this.act = act;
+        
+        events.addListener(this.act, 'actionComplete', this.runAnimation.bind(this));
+    },
+    
+    runAnimation: function() {
+        this.content.runAction(this.act);
+    },
+    
+    onEnter: function() {
+        this.runAnimation();
+        
+        PerspectiveNodeAnim.superclass.onEnter.call(this);
+    },
+});
+
 exports.PerspectiveNode = PerspectiveNode
+exports.PerspectiveNodeAnim = PerspectiveNodeAnim
