@@ -18,17 +18,25 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 
 var LabelBG = cocos.nodes.Node.extend({
-    label  : null,      //The label that the class wraps
-    bgColor: '#FFFFFF', //The color of the background that will be behind the label
+    label : null, // The label that the class wraps
+    bgColor: '#FFFFFF', // The color of the background that will be behind the label
+    bgShow : null, // If true, use the colored background
     
     init: function(opts) {
         // You must always call the super class version of init
         LabelBG.superclass.init.call(this, opts);
         
-        opts['string']    = this.defaulter(opts, 'string',    '');
-        opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
+        opts['string'] = this.defaulter(opts, 'string', '');
+        opts['fontName'] = this.defaulter(opts, 'fontName', 'Helvetica');
         opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
-        opts['fontSize']  = this.defaulter(opts, 'fontSize',  '16');
+        opts['fontSize'] = this.defaulter(opts, 'fontSize', '16');
+        
+        this.bgShow = true;
+        if(opts.hasOwnProperty('bgShow')) {
+            if(!opts['bgShow'] || opts['bgShow'] == "false") {
+                this.bgShow = false;
+            }
+        }
         
         var label = cocos.nodes.Label.create(opts)
         label.bindTo('opacity', this, 'opacity');
@@ -42,10 +50,12 @@ var LabelBG = cocos.nodes.Node.extend({
     
     // Draws the background for the label
     draw: function(context) {
-        var size = this.get('contentSize');
-        
-        context.fillStyle = this.get('bgColor');
-        context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
+        if(this.bgShow) {
+            var size = this.get('contentSize');
+            
+            context.fillStyle = this.get('bgColor');
+            context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
+        }
     },
     
     //TODO: Put into a utility script/class
