@@ -74,7 +74,7 @@ exports.GameControllerClient = function GameControllerClient(baseURL)
     };
     
     this.saveQuestionSetResults = function (playerState, sequence, questionSet, results, callback)
-    {
+    {     
         $.post(this.baseURL + '/sequence/'+ sequence.id +'/stage/' + questionSet.parent.id + '/questionSet/' + questionSet.id + '/results', 'results='+ results)
         .success(function (data)
         {

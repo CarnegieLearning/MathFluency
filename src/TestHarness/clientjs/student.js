@@ -3,12 +3,14 @@ var CLFlashGameEngine = require('./client/CLFlashGameEngine').CLFlashGameEngine;
 var CLHTML5GameEngine = require('./client/CLHTML5GameEngine').CLHTML5GameEngine;
 var ExtFlashGameEngine = require('./client/ExtFlashGameEngine').ExtFlashGameEngine;
 var ExtHTML5GameEngine = require('./client/ExtHTML5GameEngine').ExtHTML5GameEngine;
+var JavaGameEngine = require('./client/JavaGameEngine').JavaGameEngine;
 
 var gc = new GameControllerClient('/api');
 gc.registerEngineConstructor('CLFlashGameEngine', CLFlashGameEngine);
 gc.registerEngineConstructor('CLHTML5GameEngine', CLHTML5GameEngine);
 gc.registerEngineConstructor('ExtFlashGameEngine', ExtFlashGameEngine);
 gc.registerEngineConstructor('ExtHTML5GameEngine', ExtHTML5GameEngine);
+gc.registerEngineConstructor('JavaGameEngine', JavaGameEngine);
 
 var instructionsURL;
 
@@ -40,15 +42,13 @@ window.runStage = function runStage( seqID, stageID )
     lock('Loading level ' + stageID + '...');
     gc.getStage( stageID, function (stage)
     {   
-        var sequence = null;
-        gc.getSequence( seqID, function(seq)
+        gc.getSequence( seqID, function(sequence)
         {
-            sequence = seq;
-        });
-        // Don't need to pass playerState since the server stores this in the session.
-        stage.getNextQuestionSet(null, function (questionSet)
-        {
-            runQuestionSet(sequence, questionSet);
+            // Don't need to pass playerState since the server stores this in the session.
+            stage.getNextQuestionSet(null, function (questionSet)
+            {
+                runQuestionSet(sequence, questionSet);
+            });
         });
     });
 }
@@ -83,12 +83,14 @@ function runQuestionSet( sequence, questionSet )
     {
         statusMessage('Running game engine for question set ' + questionSet.id + '...');
         instructionsURL = 'instructions/' + questionSet.parent.id;
+        var new_pos = $('#game-container').offset();
+        window.scrollTo(new_pos.left,new_pos.top);
         
         engine.run(questionSet, $('#game-container'), function (xml)
         {
             statusMessage('Sending game data…');
             // clear the game container if not a CL game
-            if( ! questionSet.parent.isCLGame )
+            //if( ! questionSet.parent.isCLGame )
                 $('#game-container').empty();
             gc.saveQuestionSetResults(null, sequence, questionSet, xml, function (error,stages)
             {
