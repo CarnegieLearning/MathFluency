@@ -4,10 +4,16 @@
             "c1s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"              
                 ]
             }
         },
@@ -15,10 +21,16 @@
             "c2s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"  
                 ]
             }
         },
@@ -26,10 +38,16 @@
             "c3s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"  
                 ]
             }
         },
@@ -37,10 +55,16 @@
             "c4s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"  
                 ]
             }
         },
@@ -48,10 +72,16 @@
             "c5s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                   "10type",
+                   "100click",
+                   "10type",
+                   "10click",
+                   "20type",
+                   "20click",
+                   "100type",
+                   "100click",
+                   "1type",
+                   "1click"  
                 ]
             }
         },
@@ -59,21 +89,33 @@
             "c6s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
-                ]
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
+                  ]
             }
         },
         "cond7": {
             "c7s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"  
                 ]
             }
         },
@@ -81,10 +123,16 @@
             "c8s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -92,10 +140,16 @@
             "c9s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -103,10 +157,16 @@
             "c10s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -114,10 +174,16 @@
             "c11s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -125,10 +191,16 @@
             "c12s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -136,10 +208,16 @@
             "c13s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -147,10 +225,16 @@
             "c14s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -158,10 +242,16 @@
             "c15s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -169,10 +259,16 @@
             "c16s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -180,10 +276,16 @@
             "c17s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -191,10 +293,16 @@
             "c18s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -202,10 +310,16 @@
             "c19s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -213,10 +327,16 @@
             "c20s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -224,10 +344,16 @@
             "c21s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -235,10 +361,16 @@
             "c22s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -246,10 +378,16 @@
             "c23s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                   "10type",
+                   "20type",
+                   "10type",
+                   "10click",
+                   "20type",
+                   "20click",
+                   "100type",
+                   "100click",
+                   "1type",
+                   "1click"
                 ]
             }
         },
@@ -257,10 +395,16 @@
             "c24s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -268,10 +412,16 @@
             "c25s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -279,10 +429,16 @@
             "c26s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -290,10 +446,16 @@
             "c27s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                   "10type",
+                   "1type",
+                   "10type",
+                   "10click",
+                   "20type",
+                   "20click",
+                   "100type",
+                   "100click",
+                   "1type",
+                   "1click"
                 ]
             }
         },
@@ -301,10 +463,16 @@
             "c28s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -312,10 +480,16 @@
             "c29s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                   "10type",
+                   "10click",
+                   "10type",
+                   "10click",
+                   "20type",
+                   "20click",
+                   "100type",
+                   "100click",
+                   "1type",
+                   "1click"
                 ]
             }
         },
@@ -323,10 +497,16 @@
             "c30s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -334,10 +514,16 @@
             "c31s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -345,10 +531,16 @@
             "c32s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -356,10 +548,16 @@
             "c33s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -367,10 +565,16 @@
             "c34s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -378,10 +582,16 @@
             "c35s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -389,10 +599,16 @@
             "c36s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -400,10 +616,16 @@
             "c37s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -411,10 +633,16 @@
             "c38s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -422,10 +650,16 @@
             "c39s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -433,10 +667,16 @@
             "c40s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -444,10 +684,16 @@
             "c41s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -455,10 +701,16 @@
             "c42s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -466,10 +718,16 @@
             "c43s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -477,10 +735,16 @@
             "c44s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -488,10 +752,16 @@
             "c45s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -499,10 +769,16 @@
             "c46s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -510,10 +786,16 @@
             "c47s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -521,10 +803,16 @@
             "c48s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -532,10 +820,16 @@
             "c49s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -543,10 +837,16 @@
             "c50s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -554,21 +854,32 @@
             "c51s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
-                ]
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"                ]
             }
         },
         "cond52": {
             "c52s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -576,10 +887,16 @@
             "c53s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -587,10 +904,16 @@
             "c54s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -598,10 +921,16 @@
             "c55s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -609,10 +938,16 @@
             "c56s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -620,10 +955,16 @@
             "c57s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -631,10 +972,16 @@
             "c58s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "20type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -642,10 +989,16 @@
             "c59s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "20click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -653,10 +1006,16 @@
             "c60s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "100type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click" 
                 ]
             }
         },
@@ -664,10 +1023,16 @@
             "c61s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "100click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -675,10 +1040,16 @@
             "c62s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "1type",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -686,10 +1057,16 @@
             "c63s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "10type",
+                    "1click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         },
@@ -697,10 +1074,16 @@
             "c64s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "10type",
+                    "10click",
+                    "10type",
+                    "10click",
+                    "20type",
+                    "20click",
+                    "100type",
+                    "100click",
+                    "1type",
+                    "1click"
                 ]
             }
         }
@@ -860,27 +1243,35 @@
             "engine": "battleship"
         },
         "10click": {
-            "displayName": "Battleships on a Plane",
+            "displayName": "Battleship on a Plane B",
             "engine": "bs_plane"
         },
         "10type": {
-            "displayName": "Battleships on a Plane",
+            "displayName": "Battleship on a Plane A",
             "engine": "bs_plane"
         },
         "20click": {
-            "displayName": "Battleships on a Plane",
+            "displayName": "Battleship on a Plane D",
             "engine": "bs_plane"
         },
         "20type": {
-            "displayName": "Battleships on a Plane",
+            "displayName": "Battleship on a Plane C",
             "engine": "bs_plane"
         },
         "100click": {
-            "displayName": "Battleships on a Plane",
+            "displayName": "Battleship on a Plane F",
             "engine": "bs_plane"
         },
         "100type": {
-            "displayName": "Battleships on a Plane",
+            "displayName": "Battleship on a Plane E",
+            "engine": "bs_plane"
+        },
+        "1click": {
+            "displayName": "Battleship on a Plane H",
+            "engine": "bs_plane"
+        },
+        "1type": {
+            "displayName": "Battleship on a Plane G",
             "engine": "bs_plane"
         },
         "Race_1": {
