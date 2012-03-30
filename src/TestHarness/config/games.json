@@ -4,16 +4,7 @@
             "c1s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"              
+                    "sqn"            
                 ]
             }
         },
@@ -21,16 +12,7 @@
             "c2s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"  
+                    "sqn"
                 ]
             }
         },
@@ -38,16 +20,7 @@
             "c3s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"  
+                    "sqn"
                 ]
             }
         },
@@ -55,16 +28,7 @@
             "c4s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"  
+                    "sqn"  
                 ]
             }
         },
@@ -72,16 +36,7 @@
             "c5s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "10type",
-                   "100click",
-                   "10type",
-                   "10click",
-                   "20type",
-                   "20click",
-                   "100type",
-                   "100click",
-                   "1type",
-                   "1click"  
+                   "sqn" 
                 ]
             }
         },
@@ -89,16 +44,7 @@
             "c6s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                   ]
             }
         },
@@ -106,16 +52,7 @@
             "c7s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"  
+                    "sqn"  
                 ]
             }
         },
@@ -123,16 +60,7 @@
             "c8s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -140,16 +68,7 @@
             "c9s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -157,16 +76,7 @@
             "c10s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -174,16 +84,7 @@
             "c11s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -191,16 +92,7 @@
             "c12s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -208,16 +100,7 @@
             "c13s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -225,16 +108,7 @@
             "c14s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -242,16 +116,7 @@
             "c15s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -259,16 +124,7 @@
             "c16s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -276,16 +132,7 @@
             "c17s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -293,16 +140,7 @@
             "c18s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -310,16 +148,7 @@
             "c19s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -327,16 +156,7 @@
             "c20s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -344,16 +164,7 @@
             "c21s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -361,16 +172,7 @@
             "c22s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -395,16 +197,7 @@
             "c24s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -412,16 +205,7 @@
             "c25s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -429,16 +213,7 @@
             "c26s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -446,16 +221,7 @@
             "c27s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "10type",
-                   "1type",
-                   "10type",
-                   "10click",
-                   "20type",
-                   "20click",
-                   "100type",
-                   "100click",
-                   "1type",
-                   "1click"
+                   "sqn"
                 ]
             }
         },
@@ -463,16 +229,7 @@
             "c28s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -480,16 +237,7 @@
             "c29s3": {
                 "displayName": "Available Games",
                 "stages": [
-                   "10type",
-                   "10click",
-                   "10type",
-                   "10click",
-                   "20type",
-                   "20click",
-                   "100type",
-                   "100click",
-                   "1type",
-                   "1click"
+                   "sqn"
                 ]
             }
         },
@@ -497,16 +245,7 @@
             "c30s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -514,16 +253,7 @@
             "c31s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -531,16 +261,7 @@
             "c32s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -548,16 +269,7 @@
             "c33s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -565,16 +277,7 @@
             "c34s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -582,16 +285,7 @@
             "c35s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -599,16 +293,7 @@
             "c36s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -616,16 +301,7 @@
             "c37s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -633,16 +309,7 @@
             "c38s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -650,16 +317,7 @@
             "c39s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -667,16 +325,7 @@
             "c40s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -684,16 +333,7 @@
             "c41s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -701,16 +341,7 @@
             "c42s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -718,16 +349,7 @@
             "c43s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -735,16 +357,7 @@
             "c44s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -752,16 +365,7 @@
             "c45s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -769,16 +373,7 @@
             "c46s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -786,16 +381,7 @@
             "c47s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -803,16 +389,7 @@
             "c48s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -820,16 +397,7 @@
             "c49s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -837,16 +405,7 @@
             "c50s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -854,32 +413,14 @@
             "c51s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"                ]
+                    "sqn"                ]
             }
         },
         "cond52": {
             "c52s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -887,16 +428,7 @@
             "c53s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -904,16 +436,7 @@
             "c54s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -921,16 +444,7 @@
             "c55s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -938,16 +452,7 @@
             "c56s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -955,16 +460,7 @@
             "c57s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -972,16 +468,7 @@
             "c58s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -989,16 +476,7 @@
             "c59s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "20click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -1006,16 +484,7 @@
             "c60s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click" 
+                    "sqn" 
                 ]
             }
         },
@@ -1023,16 +492,7 @@
             "c61s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "100click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -1040,16 +500,7 @@
             "c62s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1type",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -1057,16 +508,7 @@
             "c63s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "1click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         },
@@ -1074,16 +516,7 @@
             "c64s3": {
                 "displayName": "Available Games",
                 "stages": [
-                    "10type",
-                    "10click",
-                    "10type",
-                    "10click",
-                    "20type",
-                    "20click",
-                    "100type",
-                    "100click",
-                    "1type",
-                    "1click"
+                    "sqn"
                 ]
             }
         }
