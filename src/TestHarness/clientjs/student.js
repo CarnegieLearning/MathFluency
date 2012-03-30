@@ -39,14 +39,16 @@ window.runStage = function runStage( seqID, stageID )
 {
     lock('Loading level ' + stageID + '...');
     gc.getStage( stageID, function (stage)
-    {
-        gc.getSequence( seqID, function(sequence)
+    {   
+        var sequence = null;
+        gc.getSequence( seqID, function(seq)
         {
-            // Don't need to pass playerState since the server stores this in the session.
-            stage.getNextQuestionSet(null, function (questionSet)
-            {
-                runQuestionSet(sequence, questionSet);
-            });
+            sequence = seq;
+        });
+        // Don't need to pass playerState since the server stores this in the session.
+        stage.getNextQuestionSet(null, function (questionSet)
+        {
+            runQuestionSet(sequence, questionSet);
         });
     });
 }
