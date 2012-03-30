@@ -2,13 +2,13 @@
     "conditions": {
         "cond1": {
             "c1s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c1s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -16,13 +16,13 @@
         },
         "cond2": {
             "c2s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
-            "c2s3a": {
-                "displayName": "Available Games",
+            "c2s3b": {
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -30,13 +30,13 @@
         },
         "cond3": {
             "c3s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c3s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -44,13 +44,13 @@
         },
         "cond4": {
             "c4s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"  
                 ]
             },
             "c4s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -58,13 +58,13 @@
         },
         "cond5": {
             "c5s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                    "sqn1" 
                 ]
             },
             "c5s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -72,13 +72,13 @@
         },
         "cond6": {
             "c6s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                   ]
             },
             "c6s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -86,13 +86,13 @@
         },
         "cond7": {
             "c7s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"  
                 ]
             },
             "c7s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -100,13 +100,13 @@
         },
         "cond8": {
             "c8s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c8s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -114,13 +114,13 @@
         },
         "cond9": {
             "c9s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c9s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -128,13 +128,13 @@
         },
         "cond10": {
             "c10s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c10s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -142,13 +142,13 @@
         },
         "cond11": {
             "c11s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c11s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -156,13 +156,13 @@
         },
         "cond12": {
             "c12s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c12s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -170,13 +170,13 @@
         },
         "cond13": {
             "c13s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c13s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -184,13 +184,13 @@
         },
         "cond14": {
             "c14s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c14s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -198,13 +198,13 @@
         },
         "cond15": {
             "c15s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c15s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -212,13 +212,13 @@
         },
         "cond16": {
             "c16s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c16s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -226,13 +226,13 @@
         },
         "cond17": {
             "c17s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c17s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -240,13 +240,13 @@
         },
         "cond18": {
             "c18s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c18s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -254,13 +254,13 @@
         },
         "cond19": {
             "c19s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c19s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -268,13 +268,13 @@
         },
         "cond20": {
             "c20s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c20s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -282,13 +282,13 @@
         },
         "cond21": {
             "c21s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c21s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -296,13 +296,13 @@
         },
         "cond22": {
             "c22s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c22s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -310,13 +310,13 @@
         },
         "cond23": {
             "c23s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c23s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -324,13 +324,13 @@
         },
         "cond24": {
             "c24s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c24s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -338,13 +338,13 @@
         },
         "cond25": {
             "c25s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c25s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -352,13 +352,13 @@
         },
         "cond26": {
             "c26s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c26s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -366,13 +366,13 @@
         },
         "cond27": {
             "c27s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                    "sqn1"
                 ]
             },
             "c27s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -380,13 +380,13 @@
         },
         "cond28": {
             "c28s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c28s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -394,13 +394,13 @@
         },
         "cond29": {
             "c29s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                    "sqn1"
                 ]
             },
             "c29s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -408,13 +408,13 @@
         },
         "cond30": {
             "c30s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c30s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -422,13 +422,13 @@
         },
         "cond31": {
             "c31s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c31s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -436,13 +436,13 @@
         },
         "cond32": {
             "c32s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c32s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -450,13 +450,13 @@
         },
         "cond33": {
             "c33s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c33s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -464,13 +464,13 @@
         },
         "cond34": {
             "c34s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c34s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -478,13 +478,13 @@
         },
         "cond35": {
             "c35s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c35s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -492,13 +492,13 @@
         },
         "cond36": {
             "c36s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c36s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -506,13 +506,13 @@
         },
         "cond37": {
             "c37s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c37s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -520,13 +520,13 @@
         },
         "cond38": {
             "c38s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c38s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -534,13 +534,13 @@
         },
         "cond39": {
             "c39s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c39s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -548,13 +548,13 @@
         },
         "cond40": {
             "c40s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c40s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -562,13 +562,13 @@
         },
         "cond41": {
             "c41s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c41s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -576,13 +576,13 @@
         },
         "cond42": {
             "c42s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c42s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -590,13 +590,13 @@
         },
         "cond43": {
             "c43s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c43s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -604,13 +604,13 @@
         },
         "cond44": {
             "c44s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c44s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -618,13 +618,13 @@
         },
         "cond45": {
             "c45s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c45s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -632,13 +632,13 @@
         },
         "cond46": {
             "c46s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c46s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -646,13 +646,13 @@
         },
         "cond47": {
             "c47s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c47s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -660,13 +660,13 @@
         },
         "cond48": {
             "c48s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c48s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -674,13 +674,13 @@
         },
         "cond49": {
             "c49s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c49s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -688,13 +688,13 @@
         },
         "cond50": {
             "c50s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c50s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -702,12 +702,13 @@
         },
         "cond51": {
             "c51s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
-                    "sqn1"                ]
+                    "sqn1"
+                ]
             },
             "c51s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -715,13 +716,13 @@
         },
         "cond52": {
             "c52s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c52s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -729,13 +730,13 @@
         },
         "cond53": {
             "c53s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c53s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -743,13 +744,13 @@
         },
         "cond54": {
             "c54s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c54s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -757,13 +758,13 @@
         },
         "cond55": {
             "c55s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c55s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -771,13 +772,13 @@
         },
         "cond56": {
             "c56s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c56s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -785,13 +786,13 @@
         },
         "cond57": {
             "c57s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c57s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -799,13 +800,13 @@
         },
         "cond58": {
             "c58s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c58s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -813,13 +814,13 @@
         },
         "cond59": {
             "c59s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c59s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -827,13 +828,13 @@
         },
         "cond60": {
             "c60s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1" 
                 ]
             },
             "c60s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -841,13 +842,13 @@
         },
         "cond61": {
             "c61s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c61s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -855,13 +856,13 @@
         },
         "cond62": {
             "c62s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c62s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -869,13 +870,13 @@
         },
         "cond63": {
             "c63s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c63s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -883,13 +884,13 @@
         },
         "cond64": {
             "c64s3a": {
-                "displayName": "Available Games",
+                "displayName": "Sequence A",
                 "stages": [
                     "sqn1"
                 ]
             },
             "c64s3b": {
-                "displayName": "Available Games",
+                "displayName": "Sequence B",
                 "stages": [
                     "sqn2"
                 ]
@@ -1083,11 +1084,11 @@
             "engine": "bs_plane"
         },
         "sqn1": {
-            "displayName": "Battleship on a Plane Sequence",
+            "displayName": "Battleship on a Plane Sequence A",
             "engine": "bs_plane"
         },
         "sqn2": {
-            "displayName": "Battleship on a Plane Sequence",
+            "displayName": "Battleship on a Plane Sequence B",
             "engine": "bs_plane"
         },
         "Race_1": {
