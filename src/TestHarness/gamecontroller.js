@@ -556,7 +556,7 @@ function makeStage(stageID, config, serverConfig)
             qs.getExtParams = function( playerState, callback )
             {
                 var params = qs.allGameProperties();
-                params.lname = qs.id;
+                params.exsqname = qs.id;
                 params.scriptPath = '/fluency/games/'+ params.engine;
                 if( playerState )
                     params.uid = playerState.playerID;

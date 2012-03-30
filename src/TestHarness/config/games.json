@@ -1274,6 +1274,10 @@
             "displayName": "Battleship on a Plane G",
             "engine": "bs_plane"
         },
+        "sqn": {
+            "displayName": "Battleship on a Plane Sequence",
+            "engine": "bs_plane"
+        },
         "Race_1": {
             "displayName": "Fractions (Racecar)",
             "engine": "racecar_html5",
