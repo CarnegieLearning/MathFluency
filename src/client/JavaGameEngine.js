@@ -1,5 +1,4 @@
-var swfobject = require('./lib/swfobject').swfobject,
-    uuid = require('../node_modules/node-uuid/uuid');
+var uuid = require('../node_modules/node-uuid/uuid');
 
 /*
     Class: JavaGameEngine
@@ -15,12 +14,17 @@ exports.JavaGameEngine = function JavaGameEngine(json)
     this.params.callback = 'JavaGameEngineDoneCallback';
     this.height = '768px';
     this.width = '1024px';
-    this.classPath = this.params.classPath;
-    this.code = this.params.code;
+    this.codebase = json.codebase;
+    this.archive = json.archive;
+    this.code = json.code;
     if( this.params.divid )
         this.divid = this.params.divid
     else
         this.divid = 'java_game';
+    if( this.params.uid )
+        this.uid = this.params.uid;
+    else
+        this.uid = 'guest';
         
     var self = this;
     
@@ -32,7 +36,6 @@ exports.JavaGameEngine = function JavaGameEngine(json)
         var app_div = $('<div>');
         app_div.attr('id', self.divid );
         app_div.attr('gameID', uuid() + '::' + 'JavaGameEngine' + '::' + questionSet.parent.id + '::' + questionSet.id);
-        app_div.attr('callback', 'JavaGameEngineDoneCallback');
     
         for( var p in this.params ){
             if( p == 'divid' || p == 'script' )
@@ -41,11 +44,33 @@ exports.JavaGameEngine = function JavaGameEngine(json)
         }
         $(div).empty().append(app_div);
         
-        var head = document.getElementsByTagName('head')[0];
-        var applet = document.createElement('applet');
-        applet.code = self.code;
-        applet.archive = slef.classPath;
-        head.appendChild(applet);
+        var applet = $('<applet/>');
+        applet.attr('code', self.code );
+        applet.attr('codebase', self.codebase );
+        applet.attr('archive', self.archive );
+        applet.attr('width', this.width );
+        applet.attr('height', this.height );
+        
+        // user id
+        var user_p = $('<param/>');
+        user_p.attr('name', 'name' );
+        user_p.attr('value', this.uid );
+        user_p.appendTo(applet);
+        
+        // puzzle to load
+        var puzzle_p = $('<param/>');
+        puzzle_p.attr('name', 'puzzle' );
+        puzzle_p.attr('value', this.params.lname );
+        puzzle_p.appendTo(applet);
+        
+        // callback
+        var puzzle_p = $('<param/>');
+        puzzle_p.attr('name', 'callback' );
+        //        puzzle_p.attr('value', this.params.lname );
+        puzzle_p.attr('value', 'JavaGameEngineDoneCallback' );
+        puzzle_p.appendTo(applet);
+        
+        applet.appendTo( app_div );
     };
 };
 

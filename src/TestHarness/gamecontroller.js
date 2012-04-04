@@ -142,9 +142,11 @@ exports.gameController = function (serverConfig, model)
             questionSet.getExtParams( playerState, function( params )
             {
                 engine.params = params;
+                callback( engine );
             });
+        } else {
+            callback( engine );
         }
-        callback( engine );
     };
     
     gc.saveQuestionSetResults = function (playerState, sequence, questionSet, text, callback)
@@ -532,7 +534,7 @@ function makeStage(stageID, config, serverConfig)
             });
         }
     }
-    else if( stage.engineType == 'ExtFlashGameEngine' || stage.engineType == 'ExtHTML5GameEngine' )
+    else if( stage.engineType == 'ExtFlashGameEngine' || stage.engineType == 'ExtHTML5GameEngine' || stage.engineType == 'JavaGameEngine' )
     {   
         if( engineConfig.instructionsPath )
             instructionsPath = engineConfig.instructionsPath;
@@ -556,7 +558,8 @@ function makeStage(stageID, config, serverConfig)
             qs.getExtParams = function( playerState, callback )
             {
                 var params = qs.allGameProperties();
-                params.lname = qs.id;
+                if( ! params.lname )
+                    params.lname = qs.id;
                 params.scriptPath = '/fluency/games/'+ params.engine;
                 if( playerState )
                     params.uid = playerState.playerID;
