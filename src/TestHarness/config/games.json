@@ -1189,7 +1189,7 @@
             "type": "JavaGameEngine",
             "code": "BeadLoomGameV2.BeadLoomGame",
             "codebase": "/fluency/games/beadloom/",
-            "archive": "BeadLoomGameV2_MathFluency_286.jar,swing-layout-1.0.4.jar"
+            "archive": "BeadLoomGameV2_MathFluency_309.jar,swing-layout-1.0.4.jar"
         }
     }
 }
