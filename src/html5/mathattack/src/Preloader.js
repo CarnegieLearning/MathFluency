@@ -17,6 +17,7 @@ Copyright 2011, Carnegie Learning
 // Import the cocos2d module
 var cocos = require('cocos2d');
 var events = require('events');
+var geo = require('geometry');
 
 // Preloading screen
 var Preloader = cocos.nodes.Node.extend({
@@ -25,12 +26,18 @@ var Preloader = cocos.nodes.Node.extend({
     init: function() {
         Preloader.superclass.init.call(this);
         
+        var splash = cocos.nodes.Sprite.create({file: '/resources/splash.png'});
+        splash.set('position', new geo.Point(450, 300));
+        splash.set('scaleX', 0.88);
+        splash.set('scaleY', 0.78);
+        this.addChild(splash);
+        
         this.scheduleUpdate();
     },
     
     // Fake loading update
     update: function(dt) {
-        this.pct += dt;
+        this.pct += dt * 0.33;
         if(this.pct > 1) {
             this.pct = 1;
             events.trigger(this, 'loaded');
@@ -42,6 +49,9 @@ var Preloader = cocos.nodes.Node.extend({
         // Cover the screen
         context.fillStyle = "#FFFFFF";
         context.fillRect(-10, -10, 920, 620);
+        
+        context.fillStyle = "#000000";
+        context.fillRect(233, 300, 440 * this.pct, 100);
     }
 });
 

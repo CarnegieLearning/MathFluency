@@ -5,7 +5,7 @@ Copyright 2011, Carnegie Learning
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,10 +23,8 @@ var events = require('events');
 var AudioMixer = require('AudioMixer').AudioMixer;
 var EOGD = require('EndOfGameDisplay').EndOfGameDisplay;
 var Game = require('Game').Game;
-var KeyboardLayer = require('KeyboardLayer').KeyboardLayer
+var KeyboardLayer = require('KeyboardLayer').KeyboardLayer;
 var Preloader = require('Preloader').Preloader;
-
-var LabelBG = require('LabelBG').LabelBG;   //HACK
 
 // Static Imports
 var MAC = require('MathAttackControl').MathAttackControl;
@@ -46,6 +44,9 @@ var FluencyApp = KeyboardLayer.extend({
     audioMixer  : null,     // AudioMixer for sound effects
     musicMixer  : null,     // AudioMixer for music
     gameID      : '',       // Unique ID for the game
+    
+    started     : false,    // When true, the game has started
+    ended       : false,    // When true, the game has ended
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
@@ -68,10 +69,24 @@ var FluencyApp = KeyboardLayer.extend({
         
         Content.initialize();
         
+        // Load custom font
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open('GET', 'http://themes.googleusercontent.com/static/fonts/terminaldosis/v5/SwfduKDlxm7-vFPpKzhxuQTqTpp7o-vVvHh7B9lSITo.woff', true);
+        //xmlhttp.open('GET', 'sound/TerminalDosis-ExtraBold.ttf', true);
+        xmlhttp.onreadystatechange=function() {
+            if (xmlhttp.readyState==4) {
+                if(xmlhttp.status == 200 || xmlhttp.status == 304) {
+                    // Font is loaded
+                }
+            }
+        }
+        xmlhttp.send(null);
+        
         // Explicitly enable audio
         AudioMixer.enabled = true;
-        var dir = 'sound/mathattack/'
+        
         // Set up basic audio
+        var dir = 'sound/mathattack/';
         var AM = AudioMixer.create();
         this.set('audioMixer', AM);
         
@@ -79,9 +94,7 @@ var FluencyApp = KeyboardLayer.extend({
         MM.loadSound('bg', dir + 'PuzzlePrelude8-1-10v1');
         this.set('musicMixer', MM);
         
-        this.started = false;
-        this.ended = false;
-        
+        // Create 'preloader' to buy time for initialization and loading
         var preloader = Preloader.create();
         this.addChild({child: preloader});
         this.set('preloader', preloader);
@@ -91,13 +104,13 @@ var FluencyApp = KeyboardLayer.extend({
     
     delayedInit: function() {
         // Remove the 'preloader'
-        var preloader = this.get('preloader')
+        var preloader = this.get('preloader');
         this.removeChild({child: preloader});
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(preloader);
         this.set('preloader', null);
         
         // Get "command line" arguments from the div tag
-        var app_div = $('#cocos_test_app')
+        var app_div = $('#cocos_test_app');
         var xml_path = app_div.attr('data');
         this.set('gameID', app_div.attr('gameid'));
         this.set('endOfGameCallback', app_div.attr('callback'));
@@ -135,7 +148,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: this.game});
         
         // Add version number
-        var vtag = cocos.nodes.Label.create({string: this.get('version')})
+        var vtag = cocos.nodes.Label.create({string: this.get('version')});
         vtag.set('anchor-point', new geo.Point(0.5, 0.5));
         vtag.set('position', new geo.Point(850, 590));
         this.addChild({child: vtag});
@@ -149,7 +162,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         setTimeout(this.startGame.bind(this), 2500);
         
-        var cd = cocos.nodes.Label.create({string: '3', fontColor: '#000000'});
+        var cd = cocos.nodes.Label.create({string: '3', fontColor: '#000000', fontName: MAC.font});
         cd.set('scaleX', 10);
         cd.set('scaleY', 10);
         cd.set('position', new geo.Point(450, 300));
@@ -158,10 +171,10 @@ var FluencyApp = KeyboardLayer.extend({
         this.addChild({child: cd});
         
         var that = this;
-        setTimeout(function () { that.get('cdt').set('string', '2'); }, 750)
-        setTimeout(function () { that.get('cdt').set('string', '1'); }, 1500)
-        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(375, 300)); }, 2250)
-        setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750)
+        setTimeout(function () { that.get('cdt').set('string', '2'); }, 750);
+        setTimeout(function () { that.get('cdt').set('string', '1'); }, 1500);
+        setTimeout(function () { that.get('cdt').set('string', 'GO!'); that.get('cdt').set('position', new geo.Point(375, 300)); }, 2250);
+        setTimeout(function () { that.removeChild(that.get('cdt')); }, 2750);
         
         // Catch window unloads at this point as aborts
         $(window).unload(this.endOfGame.bind(this, null));
@@ -184,16 +197,30 @@ var FluencyApp = KeyboardLayer.extend({
         if(this.ended)
             return;
         this.ended = true;
-        //$(window).unbind('unload')
+        $(window).unbind('unload')
         
         // Stopping the game
-        s = cocos.Scheduler.get('sharedScheduler')
+        s = cocos.Scheduler.get('sharedScheduler');
         s.unscheduleUpdateForTarget(this);
         s.unscheduleUpdateForTarget(this.game);
         
+        // Remove the menu layer
+        this.menuLayer.removeChild({child: this.menuLayer.musicButtonOn});
+        this.menuLayer.removeChild({child: this.menuLayer.musicButtonOff});
+        this.menuLayer.removeChild({child: this.menuLayer.volumeButtonOn});
+        this.menuLayer.removeChild({child: this.menuLayer.volumeButtonOff});
+        
         // Checks to see if abort was related to window.unload
         if(finished != null) {
-            var e = EOGD.create(this.game.timeElapsed, !finished, this.game.rightTotal, this.game.wrongTotal, this.game.bonusTotal);
+            var rs = [];
+            
+            for(var i=0; i<this.game.questions.length; i+=1) {
+                rs[i] = this.game.questions[i].score;
+            }
+            
+            this.fadeOut();
+            
+            var e = EOGD.create(this.game.timeElapsed, !finished, rs);
             e.set('position', new geo.Point(210, 25));
             e.set('zOrder', 12);
             
@@ -212,6 +239,19 @@ var FluencyApp = KeyboardLayer.extend({
                 window[this.get('endOfGameCallback')](this.writeXML('ABORT'));
             }
         }
+    },
+    
+    fadeOut: function() {
+        this.fadePane = cocos.nodes.Sprite.create({file: '/resources/whiteback.png'});
+        this.fadePane.set('position', new geo.Point(450, 300));
+        this.fadePane.set('zOrder', 1);
+        this.fadePane.set('opacity',0);
+        this.addChild({child: this.fadePane});
+    
+        MOT.create(0, 255, 0.5).bind(this.fadePane, 'opacity');
+        
+        var that = this;
+        MOT.create(0, 255, 1).bind(that.fadePane, 'opacity');
     },
 
     // Writes the output xml file as a string and returns it
@@ -236,10 +276,10 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // Convert times to milliseconds for reporting
-        t = Math.round(t * 1000)
+        t = Math.round(t * 1000);
         
         // Question level details
-        var detail = ''
+        var detail = '';
         for(var i=0; i<g.questions.length; i+=1) {
             detail += g.questions[i].toXML(i+1);
         }
@@ -303,6 +343,7 @@ var FluencyApp = KeyboardLayer.extend({
     update: function(dt) {
         // 'ESC' Abort game, discreet
         if(this.checkBinding('ABORT') == KeyboardLayer.PRESS && this.started && !this.ended) {
+            this.game.abortGame();
             this.endOfGame(false);
         }
         
@@ -469,6 +510,7 @@ exports.main = function() {
     
     // Allow the App layer to directly access the UI layer
     app.set('menuLayer', menu);
+    app.set('scene', scene);
     
     // Run the scene
     director.runWithScene(scene);
