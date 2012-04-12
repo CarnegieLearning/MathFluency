@@ -1115,8 +1115,18 @@
             "cli_fluency_task": "s2w8m6"
         },
         "beadloom1" : {
-            "displayName": "Math Fluency Puzzles/Points",
+            "displayName": "BeadLoom Points",
             "lname": "Math Fluency Puzzles/Points",
+            "engine": "beadloom"
+        },
+        "beadloom2" : {
+            "displayName": "BeadLoom Slopes",
+            "lname": "Math Fluency Puzzles/Slopes",
+            "engine": "beadloom"
+        },
+        "beadloom3" : {
+            "displayName": "BeadLoom Star Intercepts",
+            "lname": "Math Fluency Puzzles/Star Intercepts",
             "engine": "beadloom"
         }
     },
