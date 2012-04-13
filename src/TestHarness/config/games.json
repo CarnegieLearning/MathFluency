@@ -1,8 +1,16 @@
 {
     "conditions": {
         "cond1": {
+            "c1s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c1s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -12,8 +20,16 @@
             }
         },
         "cond2": {
+            "c2s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c2s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -23,8 +39,16 @@
             }
         },
         "cond3": {
+            "c3s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c3s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -34,8 +58,16 @@
             }
         },
         "cond4": {
+            "c4s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c4s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -45,8 +77,16 @@
             }
         },
         "cond5": {
+            "c5s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c5s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                    "mathattack1",
                    "mathattack3",
@@ -56,8 +96,16 @@
             }
         },
         "cond6": {
+            "c6s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c6s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -67,8 +115,16 @@
             }
         },
         "cond7": {
+            "c7s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c7s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -78,8 +134,16 @@
             }
         },
         "cond8": {
+            "c8s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c8s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -89,8 +153,16 @@
             }
         },
         "cond9": {
+            "c9s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c9s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -100,8 +172,16 @@
             }
         },
         "cond10": {
+            "c10s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c10s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -111,8 +191,16 @@
             }
         },
         "cond11": {
+            "c11s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c11s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -122,8 +210,16 @@
             }
         },
         "cond12": {
+            "c12s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c12s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -133,8 +229,16 @@
             }
         },
         "cond13": {
+            "c13s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c13s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -144,8 +248,16 @@
             }
         },
         "cond14": {
+            "c14s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c14s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -155,8 +267,16 @@
             }
         },
         "cond15": {
+            "c15s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c15s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -166,8 +286,16 @@
             }
         },
         "cond16": {
+            "c16s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c16s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -177,8 +305,16 @@
             }
         },
         "cond17": {
+            "c17s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c17s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -188,8 +324,16 @@
             }
         },
         "cond18": {
+            "c18s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c18s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -199,8 +343,16 @@
             }
         },
         "cond19": {
+            "c19s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c19s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -210,8 +362,16 @@
             }
         },
         "cond20": {
+            "c20s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c20s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -221,8 +381,16 @@
             }
         },
         "cond21": {
+            "c21s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c21s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -232,8 +400,16 @@
             }
         },
         "cond22": {
+            "c22s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c22s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -243,8 +419,16 @@
             }
         },
         "cond23": {
+            "c23s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c23s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                    "mathattack1",
                    "mathattack3",
@@ -254,8 +438,16 @@
             }
         },
         "cond24": {
+            "c24s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c24s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -265,8 +457,16 @@
             }
         },
         "cond25": {
+            "c25s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c25s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -276,8 +476,16 @@
             }
         },
         "cond26": {
+            "c26s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c26s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -287,8 +495,16 @@
             }
         },
         "cond27": {
+            "c27s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c27s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                    "mathattack1",
                    "mathattack3",
@@ -298,8 +514,16 @@
             }
         },
         "cond28": {
+            "c28s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c28s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -309,8 +533,16 @@
             }
         },
         "cond29": {
+            "c29s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c29s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                    "mathattack1",
                    "mathattack3",
@@ -320,8 +552,16 @@
             }
         },
         "cond30": {
+            "c30s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c30s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -331,8 +571,16 @@
             }
         },
         "cond31": {
+            "c31s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c31s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -342,8 +590,16 @@
             }
         },
         "cond32": {
+            "c32s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c32s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -353,8 +609,16 @@
             }
         },
         "cond33": {
+            "c33s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c33s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -364,8 +628,16 @@
             }
         },
         "cond34": {
+            "c34s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c34s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -375,8 +647,16 @@
             }
         },
         "cond35": {
+            "c35s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c35s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -386,8 +666,16 @@
             }
         },
         "cond36": {
+            "c36s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c36s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -397,8 +685,16 @@
             }
         },
         "cond37": {
+            "c37s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c37s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -408,8 +704,16 @@
             }
         },
         "cond38": {
+            "c38s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c38s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -419,8 +723,16 @@
             }
         },
         "cond39": {
+            "c39s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c39s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -430,8 +742,16 @@
             }
         },
         "cond40": {
+            "c40s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c40s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -441,8 +761,16 @@
             }
         },
         "cond41": {
+            "c41s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c41s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -452,8 +780,16 @@
             }
         },
         "cond42": {
+            "c42s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c42s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -463,8 +799,16 @@
             }
         },
         "cond43": {
+            "c43s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c43s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -474,8 +818,16 @@
             }
         },
         "cond44": {
+            "c44s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c44s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -485,8 +837,16 @@
             }
         },
         "cond45": {
+            "c45s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c45s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -496,8 +856,16 @@
             }
         },
         "cond46": {
+            "c46s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c46s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -507,8 +875,16 @@
             }
         },
         "cond47": {
+            "c47s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c47s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -518,8 +894,16 @@
             }
         },
         "cond48": {
+            "c48s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c48s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -529,8 +913,16 @@
             }
         },
         "cond49": {
+            "c49s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c49s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -540,8 +932,16 @@
             }
         },
         "cond50": {
+            "c50s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c50s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -551,8 +951,16 @@
             }
         },
         "cond51": {
+            "c51s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c51s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -562,8 +970,16 @@
             }
         },
         "cond52": {
+            "c52s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c52s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -573,8 +989,16 @@
             }
         },
         "cond53": {
+            "c53s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c53s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -584,8 +1008,16 @@
             }
         },
         "cond54": {
+            "c54s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c54s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -595,8 +1027,16 @@
             }
         },
         "cond55": {
+            "c55s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c55s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -606,8 +1046,16 @@
             }
         },
         "cond56": {
+            "c56s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c56s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -617,8 +1065,16 @@
             }
         },
         "cond57": {
+            "c57s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c57s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -628,8 +1084,16 @@
             }
         },
         "cond58": {
+            "c58s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c58s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -639,8 +1103,16 @@
             }
         },
         "cond59": {
+            "c59s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c59s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -650,8 +1122,16 @@
             }
         },
         "cond60": {
+            "c60s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c60s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -661,8 +1141,16 @@
             }
         },
         "cond61": {
+            "c61s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c61s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -672,8 +1160,16 @@
             }
         },
         "cond62": {
+            "c62s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c62s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
@@ -683,8 +1179,16 @@
             }
         },
         "cond63": {
+            "c63s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c63s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack1",
                     "mathattack3",
@@ -694,8 +1198,16 @@
             }
         },
         "cond64": {
+            "c64s1": {
+                "displayName": "BeadLoom",
+                "stages": [
+                    "beadloom1",
+                    "beadloom2",
+                    "beadloom3"
+                ]
+            },
             "c64s3": {
-                "displayName": "Available Games",
+                "displayName": "Math Attack",
                 "stages": [
                     "mathattack2",
                     "mathattack3",
