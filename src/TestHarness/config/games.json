@@ -1523,12 +1523,12 @@
             "cli_fluency_task": "s2w13m6"
         },
         "mathattackblitz5" : {
-            "displayName": "Week 13: Math Attack 5",
+            "displayName": "Week 13: Math Attack Blitz 5",
             "engine": "mathattackblitz_html5",
             "cli_fluency_task": "s2w13b5"
         },
         "mathattackblitz6" : {
-            "displayName": "Week 13: Math Attack 6",
+            "displayName": "Week 13: Math Attack Blitz 6",
             "engine": "mathattackblitz_html5",
             "cli_fluency_task": "s2w13b6"
         }
@@ -1597,6 +1597,10 @@
         "mathattack_html5": {
             "type": "CLHTML5GameEngine",
             "cli_task_id": "mathattack_html5"
+        },
+        "mathattackblitz_html5": {
+            "type": "CLHTML5GameEngine",
+            "cli_task_id": "mathattackblitz_html5"
         },
         "beadloom": {
             "type": "JavaGameEngine",
