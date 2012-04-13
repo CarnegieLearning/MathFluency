@@ -12,10 +12,8 @@
             "c1s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -31,10 +29,8 @@
             "c2s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -50,10 +46,8 @@
             "c3s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -69,10 +63,8 @@
             "c4s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -88,10 +80,8 @@
             "c5s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                   "mathattack5-2",
+                   "mathattackblitz6"
                 ]
             }
         },
@@ -107,10 +97,8 @@
             "c6s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -126,10 +114,8 @@
             "c7s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -145,10 +131,8 @@
             "c8s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -164,10 +148,8 @@
             "c9s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -183,10 +165,8 @@
             "c10s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -202,10 +182,8 @@
             "c11s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -221,10 +199,8 @@
             "c12s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -240,10 +216,8 @@
             "c13s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -259,10 +233,8 @@
             "c14s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -278,10 +250,8 @@
             "c15s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -297,10 +267,8 @@
             "c16s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -316,10 +284,8 @@
             "c17s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -335,10 +301,8 @@
             "c18s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -354,10 +318,8 @@
             "c19s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -373,10 +335,8 @@
             "c20s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -392,10 +352,8 @@
             "c21s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -411,10 +369,8 @@
             "c22s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -430,10 +386,8 @@
             "c23s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -449,10 +403,8 @@
             "c24s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -468,10 +420,8 @@
             "c25s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -487,10 +437,8 @@
             "c26s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -506,10 +454,8 @@
             "c27s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -525,10 +471,7 @@
             "c28s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    
                 ]
             }
         },
@@ -544,10 +487,8 @@
             "c29s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                   "mathattack1",
-                   "mathattack3",
-                   "mathattack4",
-                   "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -563,10 +504,8 @@
             "c30s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -582,10 +521,8 @@
             "c31s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -601,10 +538,8 @@
             "c32s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -620,10 +555,8 @@
             "c33s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -639,10 +572,8 @@
             "c34s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -658,10 +589,8 @@
             "c35s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -677,10 +606,8 @@
             "c36s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -696,10 +623,8 @@
             "c37s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -715,10 +640,8 @@
             "c38s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -734,10 +657,8 @@
             "c39s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -753,10 +674,8 @@
             "c40s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -772,10 +691,8 @@
             "c41s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -791,10 +708,8 @@
             "c42s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -810,10 +725,8 @@
             "c43s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -829,10 +742,8 @@
             "c44s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -848,10 +759,8 @@
             "c45s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -867,10 +776,8 @@
             "c46s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -886,10 +793,8 @@
             "c47s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -905,10 +810,8 @@
             "c48s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -924,10 +827,8 @@
             "c49s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -943,10 +844,8 @@
             "c50s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -962,10 +861,8 @@
             "c51s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -981,10 +878,8 @@
             "c52s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -1000,10 +895,8 @@
             "c53s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -1019,10 +912,8 @@
             "c54s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -1038,10 +929,8 @@
             "c55s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -1057,10 +946,8 @@
             "c56s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -1076,10 +963,8 @@
             "c57s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -1095,10 +980,8 @@
             "c58s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -1114,10 +997,8 @@
             "c59s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -1133,10 +1014,8 @@
             "c60s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -1152,10 +1031,8 @@
             "c61s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattackblitz6"
                 ]
             }
         },
@@ -1171,10 +1048,8 @@
             "c62s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -1190,10 +1065,8 @@
             "c63s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack1",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack5"
+                    "mathattack5-2",
+                    "mathattack6-2"
                 ]
             }
         },
@@ -1209,10 +1082,8 @@
             "c64s3": {
                 "displayName": "Math Attack",
                 "stages": [
-                    "mathattack2",
-                    "mathattack3",
-                    "mathattack4",
-                    "mathattack6"
+                    "mathattackblitz5",
+                    "mathattackblitz6"
                 ]
             }
         }
@@ -1640,6 +1511,26 @@
             "displayName": "BeadLoom Star Intercepts",
             "lname": "Math Fluency Puzzles/Star Intercepts",
             "engine": "beadloom"
+        },
+        "mathattack5-2" : {
+            "displayName": "Week 13: Math Attack 5",
+            "engine": "mathattack_html5",
+            "cli_fluency_task": "s2w13m5"
+        },
+        "mathattack6-2" : {
+            "displayName": "Week 13: Math Attack 6",
+            "engine": "mathattack_html5",
+            "cli_fluency_task": "s2w13m6"
+        },
+        "mathattackblitz5" : {
+            "displayName": "Week 13: Math Attack 5",
+            "engine": "mathattackblitz_html5",
+            "cli_fluency_task": "s2w13b5"
+        },
+        "mathattackblitz6" : {
+            "displayName": "Week 13: Math Attack 6",
+            "engine": "mathattackblitz_html5",
+            "cli_fluency_task": "s2w13b6"
         }
     },
     
