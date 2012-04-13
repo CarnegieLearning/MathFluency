@@ -5,7 +5,7 @@ Copyright 2011, Carnegie Learning
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,8 +17,10 @@ Copyright 2011, Carnegie Learning
 // Cocos imports
 var cocos = require('cocos2d');
 var geo = require('geometry');
+var events = require('events');
 
-// Project imports
+// Project Imports
+var FloatText = require('FloatText').FloatText;
 var Numberline = require('Numberline').Numberline;
 
 // Static imports
@@ -33,31 +35,42 @@ var GameView = cocos.nodes.Node.extend({
     timeLabel       : null,     // Text label "Time"
     timeCount       : null,     // Current time remaining as a text label
     
-    remainingLabel  : null,     // Text label "Remaining"
+    correctLabel    : null,     // Text label "Remaining"
+    correctVal      : 0,        // Total correct answers as an integer
+    corrects        : null, 
     
     incorrectLabel  : null,     // Text label "Misses"
+    incorrectVal    : 0,        // Total incorrect answers as an integer
+    incorrects      : null, 
     
     scoreLabel      : null,     // Text label "Score"
     scoreCount      : null,     // Current score as a text label
     
     line            : null,     // Holds the numberline
     
-    misses          : null,     // Indicators for incorrect answers
-    corrects        : null,     // Indicators for correct answers
-    
     medalBar        : null,     // Holds the horizontal bar for the medal meter
     medalBars       : null,     // Array with all the metal color backrounds for the metal meter
     medalContainer  : null,     // Frame for the metal meter
     medalTrend      : 145,      // Y value for medal meter to trend towards
-
-    init: function(xml) {
+    
+    init: function(max_c, max_i) {
         GameView.superclass.init.call(this);
+        
+        // Static bind
+        this.removeFloatText = this.removeFloatText.bind(this);
         
         // Background of cut out question window
         var bg = cocos.nodes.Sprite.create({file: '/resources/whiteback.png'});
         bg.set('position', new geo.Point(450, 300));
         bg.set('zOrder', -1);
         this.addChild({child: bg});
+        
+        // Numberline
+        this.line = Numberline.create();
+        this.line.set('anchorPoint', new geo.Point(0, 0));
+        this.line.set('position', new geo.Point(65, 5));
+        this.line.set('zOrder', 3);
+        this.addChild({child: this.line});
         
         // Pane used to create a fade effect between questions
         this.fadePane = cocos.nodes.Sprite.create({file: '/resources/whiteback.png'});
@@ -72,51 +85,16 @@ var GameView = cocos.nodes.Node.extend({
         fg.set('zOrder', 2);
         this.addChild({child: fg});
         
-        // Numberline
-        this.line = Numberline.create();
-        this.line.set('anchorPoint', new geo.Point(0, 0));
-        this.line.set('position', new geo.Point(65, 5));
-        this.line.set('zOrder', 3);
-        this.addChild({child: this.line});
-        
         // Text labels
         var tc = '#000000';
-        this.buildLabel('roundLabel',       'Round',    tc, 110, 545);
-        this.buildLabel('roundCount',       '0',        tc, 110, 575);
-        this.buildLabel('timeLabel',        'Time',     tc, 230, 545);
-        this.buildLabel('timeCount',        '0',        tc, 230, 575);
-        this.buildLabel('remainingLabel',   'Correct',  tc, 430, 545);
-        this.buildLabel('incorrectLabel',   'Misses',   tc, 640, 545);
-        this.buildLabel('scoreLabel',       'Score',    tc, 780, 545);
-        this.buildLabel('scoreCount',       '0',        tc, 780, 575);
-        
-        // Incorrect answer indicators
-        this.misses = [[], []];
-        var mm = 3;
-        var offset = Math.floor(mm/2)*22 + ((mm % 2 == 0) ? 11 : 0);
-        for(var i=0; i<mm; i+=1) {
-            this.misses[0].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-gray.png'}));
-            this.misses[0][i].set('position', new geo.Point(640 - offset + i*22, 575));
-            this.misses[0][i].set('zOrder', 3);
-            this.misses[1].push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-red.png'}));
-            this.misses[1][i].set('position', new geo.Point(640 - offset + i*22, 575));
-            this.misses[1][i].set('zOrder', 3);
-            this.addChild({child: this.misses[0][i]});
-        }
-        
-        // Correct answers remaining indicators
-        this.corrects = [[], []];
-        var mc = 7;
-        offset = Math.floor(mc/2)*22 + ((mc % 2 == 0) ? 11 : 0);
-        for(var i=0; i<mc; i+=1) {
-            this.corrects[0].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-gray.png'}));
-            this.corrects[0][i].set('position', new geo.Point(430 - offset + i*22, 575));
-            this.corrects[0][i].set('zOrder', 3);
-            this.corrects[1].push(cocos.nodes.Sprite.create({file: '/resources/status-correct-green.png'}));
-            this.corrects[1][i].set('position', new geo.Point(430 - offset + i*22, 575));
-            this.corrects[1][i].set('zOrder', 3);
-            this.addChild({child: this.corrects[0][i]});
-        }
+        this.buildLabel('roundLabel',       'Round',    tc, '22', 110, 545);
+        this.buildLabel('roundCount',       '0',        tc, '34', 110, 575);
+        this.buildLabel('timeLabel',        'Time',     tc, '22', 230, 545);
+        this.buildLabel('timeCount',        '0',        tc, '34', 230, 575);
+        this.buildLabel('correctLabel',     'Correct',  tc, '22', 430, 545);
+        this.buildLabel('incorrectLabel',   'Misses',   tc, '22', 640, 545);
+        this.buildLabel('scoreLabel',       'Score',    tc, '22', 780, 545);
+        this.buildLabel('scoreCount',       '0',        tc, '34', 780, 575);
         
         // Medal status bar
         var dir = '/resources/medal-status-';
@@ -140,12 +118,25 @@ var GameView = cocos.nodes.Node.extend({
         
         this.activeBar = 3;
         
+        // Correct answers remaining indicators
+        this.corrects = [];
+        for(var i=0; i<max_c; i+=1) {
+            this.corrects.push(cocos.nodes.Sprite.create({file: '/resources/status-correct-green.png'}));
+            this.corrects[i].set('zOrder', 3);
+        }
+        
+        this.incorrects = [];
+        for(var i=0; i<max_i; i+=1) {
+            this.incorrects.push(cocos.nodes.Sprite.create({file: '/resources/status-incorrect-red.png'}));
+            this.incorrects[i].set('zOrder', 3);
+        }
+        
         this.scheduleUpdate();
     },
     
     // Helper function for initializing all of the labels
-    buildLabel: function(name, str, fc, x, y) {
-        this[name] = cocos.nodes.Label.create({fontColor: fc, string: str});
+    buildLabel: function(name, str, fc, fs, x, y) {
+        this[name] = cocos.nodes.Label.create({fontColor: fc, string: str, fontName: MAC.font, fontSize: fs});
         this[name].set('position', new geo.Point(x, y));
         this[name].set('zOrder', 3);
         this.addChild({child: this[name]});
@@ -162,15 +153,40 @@ var GameView = cocos.nodes.Node.extend({
     },
     
     // Update the score field
-    updateScore: function(val) {
+    updateScore: function(val, amt) {
         this.scoreCount.set('string', val);
         this.scoreCount._updateLabelContentSize();
         
         this.updateMedalMeter(val);
+        this.triggerFloatText(amt);
+    },
+    
+    // Creats a FloatText object with the specified amount
+    triggerFloatText: function(amt) {
+        var color = '#009900'
+        var prefix = '+';
+        if(amt < 0) {
+            color = '#CC0000'
+            prefix = '';
+        }
+        
+        var ft = FloatText.create({string: prefix + amt, fontColor: color, fontSize: '34', fontName: MAC.font})
+        ft.set('position', new geo.Point(850, 585));
+        ft.set('zOrder', 10);
+        events.addListener(ft, 'onFinish', this.removeFloatText);
+        
+        this.addChild({child: ft});
+    },
+    
+    // Removes a FloatText object
+    // STATICALLY BOUND
+    removeFloatText: function (ft) {
+        this.removeChild({child: ft});
     },
     
     // Update the status of the medal meter
     updateMedalMeter: function(val) {
+        // Determine percentage to fill and restrict value to [0, 1]
         var p = Math.max(Math.min(val / MAC.medalScores[0], 1), 0);
         
         // Position the horizontal bar
@@ -184,42 +200,59 @@ var GameView = cocos.nodes.Node.extend({
         }
         
         // Update the bar background
-        this.activeBar = i-1;
+        this.activeBar = Math.max(i-1, 0);
         this.medalContainer.addChild({child: this.medalBars[this.activeBar]});
     },
     
     // Enables the specified miss icon
-    enableMiss: function(i) {
-        this.removeChild({child: this.misses[0][i]});
-        this.addChild({child: this.misses[1][i]});
+    addWrong: function(ll) {
+        this.incorrectVal -= 1;
+        this.removeChild({child: this.incorrects[this.incorrectVal]});
+        
+        this.line.incorrectSlot(ll);
     },
     
     // Enables the specified remaining icon
-    enableRemaining: function(i) {
-        this.removeChild({child: this.corrects[0][i]});
-        this.addChild({child: this.corrects[1][i]});
+    addRight: function(ll) {
+        this.correctVal -= 1;//*
+        this.removeChild({child: this.corrects[this.correctVal]});
+        
+        this.line.correctSlot(ll);
     },
     
     // Resets the icon based counters
     resetCounters: function() {
-        for(var i=0; i<this.misses[0].length; i+=1) {
-            this.removeChild({child: this.misses[0][i]});
-            this.removeChild({child: this.misses[1][i]});
-            this.addChild({child: this.misses[0][i]});
+        for(var i=0; i<this.corrects.length; i+=1) {
+            this.removeChild({child: this.corrects[i]});
+        }
+        for(var i=0; i<this.incorrects.length; i+=1) {
+            this.removeChild({child: this.incorrects[i]});
         }
         
-        for(var i=0; i<this.corrects[0].length; i+=1) {
-            this.removeChild({child: this.corrects[0][i]});
-            this.removeChild({child: this.corrects[1][i]});
-            this.addChild({child: this.corrects[0][i]});
-        }
+        this.line.clearAllSlots();
     },
     
     // Prepares the GameView for a new question
-    nextQuestion: function() {
-        this.roundCount.set('string', parseInt(this.roundCount.get('string')) + 1);
+    nextQuestion: function(c, i) {
         this.resetCounters();
-        this.line.clearAllSlots();
+    
+        this.roundCount.set('string', parseInt(this.roundCount.get('string')) + 1);
+        
+        this.correctVal = c;
+        
+        var offset = Math.floor(c/2)*22 - ((c % 2 == 0) ? 11 : 0);
+        for(var j=0; j<c; j+=1) {
+            this.corrects[j].set('position', new geo.Point(430 - offset + j*22, 575));
+            this.addChild({child: this.corrects[j]});
+        }
+        
+        this.incorrectVal = i;
+        
+        offset = Math.floor(i/2)*22 - ((i % 2 == 0) ? 11 : 0);
+        for(var j=0; j<i; j+=1) {
+            this.incorrects[j].set('position', new geo.Point(640 - offset + j*22, 575));
+            this.addChild({child: this.incorrects[j]});
+        }
     },
     
     // Fades the fadePane in and out
@@ -238,15 +271,14 @@ var GameView = cocos.nodes.Node.extend({
             if(this.medalTrend > p.y) {
                 p.y = this.medalTrend;
             }
-            this.medalBars[this.activeBar].set('scaleY', 1 - ((p.y - 5) / 140.0));
         }
         else if(this.medalTrend > p.y) {
             p.y += 20 * dt;
             if(this.medalTrend < p.y) {
                 p.y = this.medalTrend;
             }
-            this.medalBars[this.activeBar].set('scaleY', 1 - ((p.y - 5) / 140.0));
         }
+        this.medalBars[this.activeBar].set('scaleY', Math.max(1 - ((p.y - 5) / 140.0), 0.01));
         this.medalBar.set('position', p);
     }
 });

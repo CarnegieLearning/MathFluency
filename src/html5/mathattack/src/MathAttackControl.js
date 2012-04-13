@@ -1,17 +1,17 @@
 /*
 Copyright 2011, Carnegie Learning
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 */
 
 // Static class, so nothing much here
@@ -31,4 +31,15 @@ MathAttackControl.calcProportions = function() {
 
 MathAttackControl.medalScores = [100, 90, 60, 40, 0] // List of important medal score values [max, gold, silver, bronze, 0]
 
-exports.MathAttackControl = MathAttackControl
+MathAttackControl.RightPts = 120;
+MathAttackControl.WrongPts = -100;
+MathAttackControl.BonusPts = 25;
+
+MathAttackControl.font = 'Terminal Dosis ExtraBold';
+
+MathAttackControl.sideMargin = 0;
+
+MathAttackControl.rightExpload = true;
+MathAttackControl.wrongExpload = true;
+
+exports.MathAttackControl = MathAttackControl;
