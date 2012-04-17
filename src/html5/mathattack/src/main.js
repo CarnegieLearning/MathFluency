@@ -200,6 +200,8 @@ var FluencyApp = KeyboardLayer.extend({
         this.ended = true;
         $(window).unbind('unload')
         
+        this.musicMixer.stopSound('bg');
+        
         // Stopping the game
         s = cocos.Scheduler.get('sharedScheduler');
         s.unscheduleUpdateForTarget(this);
