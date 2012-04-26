@@ -38,7 +38,7 @@ var Preloader = cocos.nodes.Node.extend({
     
     // Fake loading update
     update: function(dt) {
-        this.pct += dt * 1;
+        this.pct += dt * 0.5;
         if(this.pct > 1) {
             this.pct = 1;
             events.trigger(this, 'loaded');

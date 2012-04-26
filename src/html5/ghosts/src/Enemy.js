@@ -39,7 +39,7 @@ var Enemy = cocos.nodes.Node.extend({
         this.pathDir = opts.pathDir;
         this.pathLoop = opts.pathLoop;
         
-        this.sprite = cocos.nodes.Sprite.create({file: '/resources/monsters_mon' + opts.type +'.jpg'});
+        this.sprite = cocos.nodes.Sprite.create({file: '/resources/monsters_mon' + opts.type +'.png'});
         this.addChild({child: this.sprite});
     },
     

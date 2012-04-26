@@ -19,19 +19,38 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 
 // Project imports
+var Key = require('Key').Key;
 var Tile = require('Tile').Tile;
+var Question = require('Question').Question;
 
 // A special Tile that contains a chest
 var Chest = Tile.extend({
     locked  : true,     // True if chest is currently locked/unopened
     passable: false,    // True if chest is on the ground, allows player to pass through the Chest once unlocked
+    
+    key     : null,     // Hold the key the player receives for answering the chest's question successfully
+    
+    questions   : null, // Array of questions available for this chest
+    curQuestion : -1,   // Array index of the next question to be asked
 
-    init: function(val) {
+    chestNum: -1,       // Identifies the chest
+    
+    init: function(val, questions, n) {
         Chest.superclass.init.call(this);
         
-        this.sprite_close = cocos.nodes.Sprite.create({file: '/resources/monsters_treasure.jpg'});
-        this.sprite_open = cocos.nodes.Sprite.create({file: '/resources/monsters_treasure_open.jpg'});
+        this.questions = []
+        for(var i=0; i<questions.q.length; i+=1) {
+            this.questions.push(Question.create(questions.q[i]));
+        }
+        this.curQuestion = Math.floor(Math.random() * this.questions.length);
+        
+        this.key = Key.create({string: questions.key, fontColor: '#000000', order: questions.order});
+        
+        this.sprite_close = cocos.nodes.Sprite.create({file: '/resources/treasureChest.png'});
+        this.sprite_open = cocos.nodes.Sprite.create({file: '/resources/treasureChestOpen.png'});
         this.addChild({child: this.sprite_close});
+        
+        this.chestNum = n;
         
         if(val == 4) {
             this.passable = true;
@@ -51,11 +70,27 @@ var Chest = Tile.extend({
             if(this.enemyCount > 0 && !this.safetyZone) {
                 return -1;
             }
-        
+            
             return 1;
         }
         
         return 0;
+    },
+    
+    // Handles colliding with the chest
+    bumpChest: function() {
+        if(this.locked) {
+            return this.questions[this.curQuestion];
+        }
+        return false;
+    },
+    
+    // Queues the next question in line for the chest
+    nextQuestion: function() {
+        this.curQuestion += 1;
+        if(this.curQuestion >= this.questions.length) {
+            this.curQuestion = 0;
+        }
     },
     
     // Opens the chest
@@ -64,8 +99,6 @@ var Chest = Tile.extend({
             this.removeChild({child: this.sprite_close});
             this.addChild({child: this.sprite_open});
             this.locked = false;
-            
-            return true;
         }
         return false;
     },
@@ -76,6 +109,8 @@ var Chest = Tile.extend({
             this.removeChild({child: this.sprite_open});
             this.addChild({child: this.sprite_close});
             this.locked = true;
+
+            this.nextQuestion();
             
             return true;
         }

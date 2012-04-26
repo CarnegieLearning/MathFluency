@@ -29,6 +29,7 @@ var Preloader = require('Preloader').Preloader;
 var MOT = require('ModifyOverTime').ModifyOverTime;
 var XML = require('XML').XML;
 var Content = require('Content').Content;
+var GC = require('GhostsControl').GhostsControl;
 
 // TODO: De-magic number these
 /* Zorder
@@ -66,12 +67,9 @@ var FluencyApp = KeyboardLayer.extend({
         // You must always call the super class version of init
         FluencyApp.superclass.init.call(this);
         
-        this.bg = cocos.nodes.Sprite.create({file: '/resources/fade.png'});
-        this.bg.set('position', new geo.Point(450, 300));
-        this.bg.set('zOrder', -10);
-        this.addChild({child: this.bg});
-        
         Content.initialize();
+        
+        this.set('isMouseEnabled', true);
         
         // Explicitly enable audio
         AudioMixer.enabled = true;
@@ -79,9 +77,17 @@ var FluencyApp = KeyboardLayer.extend({
         var AM = AudioMixer.create();
         var dir = "sound/ghosts/";
         this.set('audioMixer', AM);
+        AM.loadSound('button', dir + 'Correct v2');
+        AM.loadSound('wrong', dir + 'Incorrect v1');
+        AM.loadSound('correct', dir + 'GoV_1');
+        GC.AM = AM;
         
         var MM = AudioMixer.create();
         this.set('musicMixer', MM);
+        MM.loadSound('intro', dir + 'EarlyOneMorning4-24-12v10');
+        MM.loadSound('bg', dir + 'EggsAndCheese4-24-12v10');
+        MM.loadSound('question', dir + 'HumptyDumptyPlease4-24-12v10');
+        GC.MM = MM;
         
         var preloader = Preloader.create();
         this.addChild({child: preloader});
@@ -119,47 +125,17 @@ var FluencyApp = KeyboardLayer.extend({
     // Parses the level xml file
     parseXML: function(xmlDoc) {
         var xml = XML.parser(xmlDoc.firstChild);
-    
-        var medals = this.parseMedals(xml); // Parse medal information
         
         this.preprocessingComplete();
     },
     
-    // Parse the medal values
-    parseMedals: function (xml) {
-        var ret = [];
-        var node = XML.getDeepChildByName(xml, 'MEDALS');
-        if(node != null) {
-            var id, val;
-            for(var i in node.children) {
-                id = node.children[i].attributes['Id'];
-                val = node.children[i].attributes['MEDAL_THRESHOLD'];
-                
-                if(id != null && val != null) {
-                    if(val > 1000) {
-                        val /= 1000;
-                    }
-                    
-                    ret[id] = val;
-                }
-                else {
-                    console.log('ERROR: Missing or corrupted medal data');
-                }
-            }
-        }
-        else {
-            console.log('ERROR: No medal data found for stage');
-        }
-        
-        return ret;
-    },
-    
     // The 'real init()' called after all the preloading/parsing is completed
-    preprocessingComplete: function () {
+    preprocessingComplete: function() {
         this.game = Game.create();
         this.game.set('position', new geo.Point(0, 0));
-        this.game.set('anchorPoint', new geo.Point(0, 0));
+        this.game.set('anchorPoint', new geo.Point(50, 0));
         this.addChild({child: this.game});
+        events.addListener(this.game, 'endOfGame', this.endOfGame.bind(this, true));
     
         // Create key bindings
         this.setBinding('MOVE_LEFT',    [65, 37]);  // [A, ARROW_LEFT]
@@ -172,10 +148,16 @@ var FluencyApp = KeyboardLayer.extend({
         vtag.set('anchor-point', new geo.Point(0.5, 0.5));
         vtag.set('position', new geo.Point(850, 590));
         this.addChild({child: vtag});
+        
+        // Create back pane to force redraws
+        this.bg = cocos.nodes.Sprite.create({file: '/resources/fade.png'});
+        this.bg.set('position', new geo.Point(450, 300));
+        this.bg.set('zOrder', -10);
+        this.addChild({child: this.bg});
     },
     
     // Starts the game
-    startGame: function () {
+    startGame: function() {
         this.musicMixer.setMasterVolume(0.35);              // Set audio levels
         $(window).unload(this.endOfGame.bind(this, null));  // Catch window unloads at this point as aborts
         this.game.start();                                  // 
@@ -185,6 +167,8 @@ var FluencyApp = KeyboardLayer.extend({
     // Called when game ends, should collect results, display them to the screen and output the result XML
     // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
+        console.log('endofgame');
+    
         if(finished != null) {
             $(window).unbind('unload')
             $(window).unload(this.cleanup.bind(this, null));
@@ -194,67 +178,38 @@ var FluencyApp = KeyboardLayer.extend({
         }
         
         // Checks to see if abort was related to window.unload
-        if(finished != null) {/*
-            var e = EOGD.create(this.get('dash').get('elapsedTime'), incorrect + unanswered, !finished);
-            e.set('position', new geo.Point(200, 50));
-            this.addChild({child: e});
-            var that = this;
-            events.addListener(e, 'almostComplete', function () {that.get('menuLayer').addRetryButton();});
-            events.addListener(e, 'complete', this.cleanup.bind(this));
-            this.eogd = e;
-            e.start();//*/
+        if(finished != null) {
         }
+        
+        this.get('musicMixer').stopSound('bg');
+        
+        console.log(this.writeXML('FINISH'));
     
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
             if(finished) {
-                //window[this.get('endOfGameCallback')](this.writeXML(correct, 'FINISH'));
+                window[this.get('endOfGameCallback')](this.writeXML('FINISH'));
             }
             else {
-                //window[this.get('endOfGameCallback')](this.writeXML(correct, 'ABORT'));
+                window[this.get('endOfGameCallback')](this.writeXML('ABORT'));
             }
         }
     },
 
     // Writes the output xml file as a string and returns it
     // TODO: Decide on a new format if needed and update
-    writeXML: function(correct, state) {
+    writeXML: function(state) {
         // Get needed values
         var ref = this.get('gameID');
-        var d = this.get('dash');
-        var e = d.get('elapsedTime');
-        var p = d.get('pTime');
-        var m = ' - ';
-        
-        // Determine medal string
-        if(state == 'FINISH') {
-            if(e + p < RC.times[1])
-                m = "Gold";
-            else if(e + p < RC.times[2])
-                m = "Silver";
-            else if(e + p < RC.times[3])
-                m = "Bronze";
-        }
-        
-        // Convert times to milliseconds for reporting
-        e = Math.round(e * 1000)
-        p = Math.round(p * 1000)
         
         // Build the XML string
         var x =
         '<OUTPUT>\n' + 
         '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
-        '    <SCORE_SUMMARY>\n' + 
-        '        <Score CorrectAnswers="' + correct +'" ElapsedTime="' + e + '" PenaltyTime="' + p + '" TotalScore="' + (e + p) +'" Medal="' + m + '"/>\n' + 
+        '    <SCORE_SUMMARY>\n' +
+        '        <SCORE ElapsedTime="0" Score="0" Medal="-"/>\n' +
         '    </SCORE_SUMMARY>\n' +
-        '    <SCORE_DETAILS>\n';
-                var i = 0;
-                var ql = this.get('questionList');
-                while(i < ql.length) {
-                x += '        <SCORE QuestionIndex="' + (i+1) +'" AnswerValue="' +  ql[i].get('correctAnswer') + '" TimeTaken="' + Math.round(ql[i].get('timeElapsed') * 1000) + '" LaneChosen="' + ql[i].get('answer') + '"/>\n';
-                i += 1;
-                }
-            x += '    </SCORE_DETAILS>\n' + 
+        this.game.toXML() +
         '    <END_STATE STATE="' + state + '"/>\n' +
         '</OUTPUT>';
         
@@ -294,6 +249,7 @@ var FluencyApp = KeyboardLayer.extend({
         AM.setMute(!AM.get('muted'));
     },
     
+    // Toggles the MusicMixer's mute
     muteMusicHandler: function() {
         var AM = this.get('musicMixer');
         AM.setMute(!AM.get('muted'));
@@ -323,6 +279,21 @@ var FluencyApp = KeyboardLayer.extend({
             //this.endOfGame(false);
         }
     },
+    
+    // Catches the mouse down event
+    mouseDown: function (evt) {
+        this.game.processMouseDown(evt.locationInCanvas.x, evt.locationInCanvas.y);
+    },
+    
+    // Catches the mouse up event
+    mouseUp: function (evt) {
+        this.game.processMouseUp(evt.locationInCanvas.x, evt.locationInCanvas.y);
+    },
+    
+    // Catches the mouse drag event
+    mouseDragged: function (evt) {
+        this.game.processMouseDrag(evt.locationInCanvas.x, evt.locationInCanvas.y);
+    }
 });
 
 // For button-like interactions (e.g. starting the game)

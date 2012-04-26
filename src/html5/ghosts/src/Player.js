@@ -28,7 +28,7 @@ var Player = cocos.nodes.Node.extend({
     init: function() {
         Player.superclass.init.call(this);
     
-        this.sprite = cocos.nodes.Sprite.create({file: '/resources/monsters_char1.jpg'});
+        this.sprite = cocos.nodes.Sprite.create({file: '/resources/hero.png'});
         this.addChild({child: this.sprite});
     },
     
