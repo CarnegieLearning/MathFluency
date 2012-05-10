@@ -32,6 +32,7 @@ var Game = cocos.nodes.Node.extend({
     
     playerMove  : true,     // When true, allows the player to move their character
     started     : false,    // True if the game is on level 1
+    finished    : false,    // True if the game has run out of levels
 
     elapsedTime : 0,        // Elapsed time for the overall game in seconds
     
@@ -103,6 +104,7 @@ var Game = cocos.nodes.Node.extend({
         // No more levels
         else {
             console.log('gg');
+            this.finished = true;
             cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
             events.trigger(this, 'endOfGame');
         }

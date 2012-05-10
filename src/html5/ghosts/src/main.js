@@ -144,7 +144,7 @@ var FluencyApp = KeyboardLayer.extend({
         this.setBinding('MOVE_DOWN',    [83, 40]);  // [S, ARROW_DOWN]
         
         // Add version number
-        var vtag = cocos.nodes.Label.create({string: this.get('version')})
+        var vtag = cocos.nodes.Label.create({string: this.get('version')});
         vtag.set('anchor-point', new geo.Point(0.5, 0.5));
         vtag.set('position', new geo.Point(850, 590));
         this.addChild({child: vtag});
@@ -158,33 +158,32 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Starts the game
     startGame: function() {
+        // Catch window unloads at this point as aborts
+        $(window).bind('beforeunload', this.unloadCatcher.bind(this));
+        
         this.musicMixer.setMasterVolume(0.35);              // Set audio levels
-        $(window).unload(this.endOfGame.bind(this, null));  // Catch window unloads at this point as aborts
         this.game.start();                                  // 
         this.scheduleUpdate();                              // Start keyboard input tracking
+    },
+    
+    // Handles attempts to leave the page
+    unloadCatcher: function () { 
+        if (!this.game.finished) {
+            // Push data to server in case that the player confirms leaving the page
+            if(this.get('endOfGameCallback')) {
+                window[this.get('endOfGameCallback')](this.writeXML('ABORT'));
+            }
+            return 'Are you sure you want to leave the page and quit the game?';
+        }
     },
     
     // Called when game ends, should collect results, display them to the screen and output the result XML
     // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
-        console.log('endofgame');
-    
-        if(finished != null) {
-            $(window).unbind('unload')
-            $(window).unload(this.cleanup.bind(this, null));
-        }
-        else {
-            this.cleanup();
-        }
-        
-        // Checks to see if abort was related to window.unload
-        if(finished != null) {
-        }
-        
         this.get('musicMixer').stopSound('bg');
         
         console.log(this.writeXML('FINISH'));
-    
+        
         // If the 'command line' specified a call back, feed the callback the xml
         if(this.get('endOfGameCallback')) {
             if(finished) {
@@ -194,6 +193,8 @@ var FluencyApp = KeyboardLayer.extend({
                 window[this.get('endOfGameCallback')](this.writeXML('ABORT'));
             }
         }
+        
+        this.cleanup();
     },
 
     // Writes the output xml file as a string and returns it
@@ -207,7 +208,7 @@ var FluencyApp = KeyboardLayer.extend({
         '<OUTPUT>\n' + 
         '    <GAME_REFERENCE_NUMBER ID="' + ref + '"/>\n' + 
         '    <SCORE_SUMMARY>\n' +
-        '        <SCORE ElapsedTime="0" Score="0" Medal="-"/>\n' +
+        '        <SCORE ElapsedTime="' + Math.round(this.elapsedTime*1000) + '" Score="0" Medal="-"/>\n' +
         '    </SCORE_SUMMARY>\n' +
         this.game.toXML() +
         '    <END_STATE STATE="' + state + '"/>\n' +
@@ -218,9 +219,6 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Code to be run when the game is finished
     cleanup: function() {
-        // Clear the bind
-        $(window).unbind('unload');
-        
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
         
         var d = cocos.Director.get('sharedDirector');
@@ -303,6 +301,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
     startGame   : null,     // Holds the function in the app that starts the game
     muted       : false,    // State of the volume mute button
     mutedMusic  : false,    // State of the volume mute button
+    
     init: function() {
         MenuLayer.superclass.init.call(this, {});
     },
@@ -408,6 +407,17 @@ exports.main = function() {
             return fBound;
         };
     }
+    
+    //HACK: Emergency FF12
+    window.cancelRequestAnimFrame = (function() {
+      return window.cancelCancelRequestAnimationFrame ||
+             window.webkitCancelRequestAnimationFrame ||
+             window.mozCancelRequestAnimationFrame ||
+             window.oCancelRequestAnimationFrame ||
+             window.msCancelRequestAnimationFrame ||
+             window.clearTimeout;
+
+    })(); 
     
     // Setup the director
     var director = cocos.Director.get('sharedDirector');
