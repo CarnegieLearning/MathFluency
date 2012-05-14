@@ -30,11 +30,20 @@ var Game = cocos.nodes.Node.extend({
     
     currentLevel: -1,       // The index of the current level
     
+    communicator: null,     // Holds the image of the communicator
+    hud         : null,     // Contains the image of the HUD
+    buttons     : null,     // List of unpressed button sprites for communicator
+    buttonsP    : null,     // List of pressed button sprites for communicator
+    
+    tm          : null,     // Holds the instance of the TextManager
+    
     playerMove  : true,     // When true, allows the player to move their character
     started     : false,    // True if the game is on level 1
     finished    : false,    // True if the game has run out of levels
 
     elapsedTime : 0,        // Elapsed time for the overall game in seconds
+    
+    oneOffs     : null,
     
     init: function(xml) {
         Game.superclass.init.call(this);
@@ -47,12 +56,14 @@ var Game = cocos.nodes.Node.extend({
             Level.create(Level.Level4),
             Level.create(Level.Level5)];
         
+        // Displays the communicator pane
         this.communicator = cocos.nodes.Sprite.create({file: '/resources/comm.jpg'});
         this.communicator.set('anchorPoint', new geo.Point(0, 0));
         this.communicator.set('position', new geo.Point(650, 50));
         this.communicator.set('zOrder', 1);
         this.addChild({child: this.communicator});
         
+        // Buttons for the communication device
         this.buttons = [];
         this.buttonsP = [];
         for(var i=0; i<3; i+=1) {
@@ -67,32 +78,65 @@ var Game = cocos.nodes.Node.extend({
         }
         
         this.hud = cocos.nodes.Sprite.create({file: '/resources/HUD.png'});
-        this.hud.set('anchorPoint', new geo.Point(0, 0))
+        this.hud.set('anchorPoint', new geo.Point(0, 0));
         this.addChild({child: this.hud});
         
+        // Holds the instance of the TextManager for popup dialog
         this.tm = TextManager.create();
         events.addListener(this.tm, 'dialogComplete', this.onDialogComplete.bind(this));
         this.tm.set('zOrder', 3);
         this.addChild({child: this.tm});
+        
+        // Defining single fire event text boxes
+        this.oneOffs = {};
+        var t1, t2;
+        
+        // Getting a key
+        t2 = TextBox.create({}, ["I'd suggest you get","the other 2 keys first,","but it's up to you!"], 250, 200, '/resources/green.png', null);
+        t2.set('position', new geo.Point(650, 50));
+        
+        t1 = TextBox.create({}, ['Congratulations on your first key!','Another detail:','the exit door is marked in red.'], 250, 200, '/resources/green.png', t2);
+        t1.set('position', new geo.Point(650, 50));
+        
+        this.oneOffs['keyAquired'] = t1;
+        
+        // Approaching the level door
+        t1 = TextBox.create({}, ['Um...this looks more','complicated than the others.','Do you hear something ticking'], 250, 200, '/resources/green.png', null);
+        t1.set('position', new geo.Point(650, 50));
+        
+        this.oneOffs['doorApproach'] = t1;
+        
+        // Hit by enemy
+        t2 = TextBox.create({}, ["Thankfully it didn't hurt you,","but it looks like all your keys are scrambled.","You'll have to go collect those keys","from the treasure boxes again."], 250, 200, '/resources/green.png', null);
+        t2.set('position', new geo.Point(650, 50));
+        
+        t1 = TextBox.create({}, ['Oh, no!','It looks like you ran into one of my...','I mean, a ghost!'], 250, 200, '/resources/green.png', t2);
+        t1.set('position', new geo.Point(650, 50));
+        
+        this.oneOffs['hitByEnemy'] = t1;
     },
     
     // Unloads the current level (if any) and then loads the specified level
     loadLevel: function(i) {
+        // Special first level case, nothing exsisting to remove
         if(this.currentLevel != -1) {
             this.removeChild({child: this.levels[this.currentLevel]});
         }
         
+        // Only load a level that exists
         if(-1 < i && i < this.levels.length) {
             this.currentLevel = i;
             this.addChild({child: this.levels[i]});
             
             events.addListener(this.levels[i], 'levelCompleted', this.nextLevel.bind(this));
             events.addListener(this.levels[i], 'dialogPop', this.onDialogPop.bind(this));
+            events.addListener(this.levels[i], 'oneOff', this.onOneOff.bind(this));
             this.levels[i].boot();
             
             return true;
         }
         
+        // There was no valid level to load
         return false;
     },
     
@@ -112,7 +156,7 @@ var Game = cocos.nodes.Node.extend({
     
     // Have the current level move the player by the specified delta
     movePlayer: function(deltaR, deltaC) {
-        if(this.playerMove) {
+        if(this.playerMove && this.currentLevel > -1) {
             this.levels[this.currentLevel].movePlayer(deltaR, deltaC)
         }
     },
@@ -127,12 +171,19 @@ var Game = cocos.nodes.Node.extend({
         
         this.tm.displayTextBox(list[list.length-1]);
         GC.MM.playSound('intro');
+        
+        this.introSprite = cocos.nodes.Sprite.create({file: '/resources/intro.jpg'});
+        this.introSprite.set('anchorPoint', new geo.Point(0, 0));
+        this.introSprite.set('zOrder', 2);
+        this.addChild({child: this.introSprite});
     },
     
+    // Track overall game running time
     update: function(dt) {
         this.elapsedTime += dt;
     },
     
+    // Returns a string with the collected data in XML format
     toXML: function() {
         var t = '    ';
         var string = '';
@@ -146,20 +197,38 @@ var Game = cocos.nodes.Node.extend({
         return string;
     },
     
+    // Depresses a button on the communication device
+    buttonDown: function(i) {
+        if(-1 < i && i < 3) {
+            this.removeChild({child: this.buttons[i]})
+            this.addChild({child: this.buttonsP[i]})
+        }
+    },
+    
+    // Releases a button on the communication device
+    buttonUp: function(i) {
+        if(-1 < i && i < 3) {
+            this.removeChild({child: this.buttonsP[i]})
+            this.addChild({child: this.buttons[i]})
+        }
+    },
+    
+////////  Mouse Event Handlers  /////////////////////////////////////////////////////////////////////////////
+    
     // Processes MouseDown events
     processMouseDown: function(x, y) {
         if(this.tm.processClick(x, y)) {
             return;
         }
         else if(this.levels[this.currentLevel]) {
-            this.levels[this.currentLevel].processMouseDown(x, y);
+            this.buttonDown(this.levels[this.currentLevel].processMouseDown(x, y));
         }
     },
     
     // Processes MouseUp events
     processMouseUp: function(x, y) {
         if(this.levels[this.currentLevel]) {
-            this.levels[this.currentLevel].processMouseUp(x, y);
+            this.buttonUp(this.levels[this.currentLevel].processMouseUp(x, y, this.playerMove));
         }
     },
     
@@ -170,11 +239,7 @@ var Game = cocos.nodes.Node.extend({
         }
     },
     
-    onButtonDown: function() {
-    },
-    
-    onButtonUp: function() {
-    },
+////////  Text Manager Event Handlers  /////////////////////////////////////////////////////////////////////
     
     // Handles dialog completion event
     onDialogComplete: function() {
@@ -189,6 +254,12 @@ var Game = cocos.nodes.Node.extend({
             
             GC.MM.stopSound('intro');
             GC.MM.loopSound('bg');
+            GC.MM.getSound('question').setVolume(0);
+            GC.MM.loopSound('question');
+            
+            this.removeChild({child: this.introSprite});
+            
+            events.trigger(this, 'endIntro');
         }
     },
     
@@ -198,6 +269,13 @@ var Game = cocos.nodes.Node.extend({
         this.levels[this.currentLevel].stop();
         
         this.tm.displayTextBox(tb);
+    },
+    
+    onOneOff: function(evt) {
+        if(this.oneOffs.hasOwnProperty(evt) && this.oneOffs[evt] != null) {
+            this.onDialogPop(this.oneOffs[evt]);
+            this.oneOffs[evt] = null;
+        }
     }
 });
 

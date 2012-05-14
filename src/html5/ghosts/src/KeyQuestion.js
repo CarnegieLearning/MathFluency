@@ -26,10 +26,13 @@ var GC = require('GhostsControl').GhostsControl
 var KeyQuestion = cocos.nodes.Node.extend({
     slots   : null,     // Array of available slots
     
-    active  : -1,       // 
+    active  : -1,       // The slot that is currently being dragged
     
     bg      : null,     // Background image of the asked question
     qText   : null,     // Array of strings containing the question
+    
+    mTolG   : 0,        // Mouse tolerance in pixels for grabbing keys
+    mTolR   : 10,       // Mouse tolerance in pixels for dropping keys
 
     init: function(text) {
         KeyQuestion.superclass.init.call(this);
@@ -59,38 +62,9 @@ var KeyQuestion = cocos.nodes.Node.extend({
         }
     },
     
-    // Process the Mouse Down event
-    processMouseDown: function(x, y) {
-        if(400 < y && y < 450) {
-            if(75 < x && x < 125 && this.slots[0] != null) {
-                this.active = 0;
-                return this.slots[0];
-            }
-            else if(275 < x && x < 325 && this.slots[1] != null) {
-                this.active = 1;
-                return this.slots[1];
-            }
-            else if(475 < x && x < 525 && this.slots[2] != null) {
-                this.active = 2;
-                return this.slots[2];
-            }
-        }
-        else if(475 < x && x < 600 && 470 < y && y < 500 && this.slotsFilled()) {
-            if(this.confirm()) {
-                events.trigger(this, 'correct');
-            }
-            else {
-                events.trigger(this, 'wrong');
-            }
-        }
-        
-        return null;
-    },
-    
     // Returns true if all slots are filled with keys
     slotsFilled: function() {
         for(var i=0; i<this.slots.length; i+=1) {
-            console.log(this.slots[i])
             if(this.slots[i] == null) {
                 return false;
             }
@@ -99,26 +73,9 @@ var KeyQuestion = cocos.nodes.Node.extend({
         return true;
     },
     
-    // Process Mouse Up event
-    processMouseUp: function(x, y) {
-        if(390 < y && y < 460) {
-            if(65 < x && x < 135) {
-                return 0;
-            }
-            else if(265 < x && x < 335) {
-                return 1;
-            }
-            else if(465 < x && x < 535) {
-                return 2;
-            }
-        }
-        
-        return -1;
-    },
-    
     // Handles placing/removing Keys into/out of the KeyQuestion
     place: function(key, from, to) {
-        GC.AM.playSound('button');
+        GC.AM.playSound('button', true);
         
         // Slot empty
         if(this.slots[to] == null) {
@@ -176,7 +133,6 @@ var KeyQuestion = cocos.nodes.Node.extend({
     // Returns true if the keys are placed properly
     confirm: function() {
         for(var i=0; i<3; i+=1) {
-            console.log(this.slots[i].order);
             if(this.slots[i].order != i) {
                 GC.AM.playSound('wrong');
                 return false
@@ -185,6 +141,53 @@ var KeyQuestion = cocos.nodes.Node.extend({
         
         GC.AM.playSound('correct');
         return true;
+    },
+    
+////////  Mouse Event Handlers  /////////////////////////////////////////////////////////////////////////////
+    
+    // Process the Mouse Down event
+    processMouseDown: function(x, y) {
+        if(400 - this.mTolG < y && y < 450 + this.mTolG) {
+            if(75 - this.mTolG < x && x < 125 + this.mTolG && this.slots[0] != null) {
+                this.active = 0;
+                return this.slots[0];
+            }
+            else if(275 - this.mTolG < x && x < 325 + this.mTolG && this.slots[1] != null) {
+                this.active = 1;
+                return this.slots[1];
+            }
+            else if(475 - this.mTolG < x && x < 525 + this.mTolG && this.slots[2] != null) {
+                this.active = 2;
+                return this.slots[2];
+            }
+        }
+        else if(475 < x && x < 600 && 470 < y && y < 500 && this.slotsFilled()) {
+            if(this.confirm()) {
+                events.trigger(this, 'correct');
+            }
+            else {
+                events.trigger(this, 'wrong');
+            }
+        }
+        
+        return null;
+    },
+    
+    // Process Mouse Up event
+    processMouseUp: function(x, y) {
+        if(400 - this.mTolR < y && y < 450 + this.mTolR) {
+            if(75 - this.mTolR < x && x < 125 + this.mTolR) {
+                return 0;
+            }
+            else if(275 - this.mTolR < x && x < 325 + this.mTolR) {
+                return 1;
+            }
+            else if(475 - this.mTolR < x && x < 525 + this.mTolR) {
+                return 2;
+            }
+        }
+        
+        return -1;
     }
 });
 

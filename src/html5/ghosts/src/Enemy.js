@@ -28,7 +28,7 @@ var Enemy = cocos.nodes.Node.extend({
     pathLoop    : true,     // If true, path will loop end to end; false will switch directions when hitting an end
     
     moveDelay   : 500,      // Minimum real world ms needed before the enemy to takes each step
-    delay       : 0,        //Current accumulated delay
+    delay       : 0,        // Current accumulated delay
     
     init: function(opts) {
         Enemy.superclass.init.call(this);

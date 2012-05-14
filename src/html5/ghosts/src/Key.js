@@ -34,6 +34,10 @@ var Key = cocos.nodes.Label.extend({
         this.order = opts.order;
         
         this.set('zOrder', 100);
+        
+        this.bg = cocos.nodes.Sprite.create({file: '/resources/key3.png'});
+        this.bg.set('zOrder', -1);
+        this.addChild({child: this.bg});
     },
     
     // Places the Key at the specified coordinates and locks in the current parent

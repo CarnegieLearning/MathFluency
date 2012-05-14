@@ -22,11 +22,12 @@ var events = require('events');
 // Project imports
 var Chest = require('Chest').Chest;
 var Enemy = require('Enemy').Enemy;
+var KeyQuestion = require('KeyQuestion').KeyQuestion;
 var Player = require('Player').Player;
 var TextBox = require('TextBox').TextBox;
 var Tile = require('Tile').Tile;
 
-var KeyQuestion = require('KeyQuestion').KeyQuestion;
+var GC = require('GhostsControl').GhostsControl;
 
 // Represents one full level of the game
 var Level = cocos.nodes.Node.extend({
@@ -64,12 +65,15 @@ var Level = cocos.nodes.Node.extend({
     introText   : null, // Array of arrays of strings for the level's intro text
     
     pauseEnemies: false,// When true, enemies stop moving
+    started     : false,// 
     
     elapsedTime : 0,    // Elapsed time on level in seconds (INCLUDES keyTime)
     keyTime     : 0,    // Elapsed time on KeyQuestion in seconds
     
     chestOrder  : null, // Array that holds the order the player visited chests (-1 designates key loss)
     chestCount  : null, // Array holds the total number of attempts per chest
+    
+    rText       : null, // Holds the text for 'CORRECT!'
     
     init: function(opts) {
         Level.superclass.init.call(this);
@@ -138,6 +142,9 @@ var Level = cocos.nodes.Node.extend({
         this.keyQuestion = KeyQuestion.create(opts.keyQuestion);
         events.addListener(this.keyQuestion, 'correct', this.onFinalCorrect.bind(this));
         events.addListener(this.keyQuestion, 'wrong', this.onFinalWrong.bind(this));
+        
+        this.rText = cocos.nodes.Label.create({string: 'CORRECT!', fontColor: '#00CC00', fontSize: '32'});
+        this.rText.set('position', new geo.Point(775 - this.offsetX, 100 - this.offsetY));
     },
     
     // Boots up the level for the first time
@@ -159,7 +166,10 @@ var Level = cocos.nodes.Node.extend({
     
     // Starts the level
     start: function() {
-        this.scheduleUpdate();
+        if(!this.started) {
+            this.scheduleUpdate();
+            this.started = true;
+        }
         this.pauseEnemies = false;
     },
     
@@ -208,6 +218,7 @@ var Level = cocos.nodes.Node.extend({
             this.board[this.player.row][this.player.col].movePlayerOut();
             this.player.teleport(dr, dc);
             
+            events.trigger(this, 'oneOff', 'hitByEnemy');
             this.restart();
         }
         else if(ret == 2) {
@@ -219,12 +230,13 @@ var Level = cocos.nodes.Node.extend({
                 this.popQuestion(q);
             }
         }
-        
         // Attempting to exit
         else if(this.player.row == this.endR && this.player.col == this.endC && this.keys.length == 3) {
             this.addChild({child: this.keyQuestion});
             this.keyQuestion.set('position', new geo.Point(0 - this.offsetX, 0 - this.offsetY));
             this.keyEnabled = true;
+            
+            GC.MM.crossFade('bg', 'question', 1);
             
             this.stop();
         }
@@ -234,6 +246,10 @@ var Level = cocos.nodes.Node.extend({
     
     // Makes sure the destination is valid before checking
     movePlayerAssist: function(r, c) {
+        if(r == this.endR && c == this.endC && this.keys.length == 3) {
+            events.trigger(this, 'oneOff', 'doorApproach');
+        }
+    
         if(r > -1 && r < this.rowMax && c > -1 && c < this.colMax) {
             return this.board[r][c].movePlayerIn();
         }
@@ -248,111 +264,6 @@ var Level = cocos.nodes.Node.extend({
         this.addChild({child: q});
         
         this.question = q;
-    },
-    
-    // Processes Mouse Down event
-    processMouseDown: function(x, y) {
-        var p = this.get('position');
-        var lx = x - p.x;
-        var ly = y - p.y;
-    
-        if(this.question) {
-            var ret = this.question.processClick(lx, ly);
-            
-            if(ret == -1) {
-                return;
-            }
-            
-            if(this.question.selectAnswer(ret)) {
-                this.chestQ.openChest();
-                this.chests += 1;
-                
-                this.gainKey(this.chestQ.key);
-                
-                this.removeQuestion();
-            }
-            else if(this.question.isHintable()) {
-                this.question.hinted = true;
-            }
-            else {
-                this.chestQ.nextQuestion();
-                this.removeQuestion();
-            }   
-        }
-        if(this.keyEnabled) {
-            console.log('keyEnabled... ' + x + ' , ' + y);
-            
-            this.drag = this.keyQuestion.processMouseDown(x, y);
-            if(this.drag) {
-                this.drag.reparent(this);
-            }
-            
-            if(400 < y && y < 450) {
-                if(700 < x && x < 750 && this.keys[0] != null) {
-                    this.dragFrom = 0;
-                    this.drag = this.keys[0];
-                }
-                else if(800 < x && x < 850 && this.keys[2] != null) {
-                    this.dragFrom = 2;
-                    this.drag = this.keys[2];
-                }
-            }
-            else if(450 < y && y < 500) {
-                if(750 < x && x < 800 && this.keys[1] != null) {
-                    this.dragFrom = 1;
-                    this.drag = this.keys[1];
-                }
-            }
-        }
-    },
-    
-    // Processes Mouse Up events
-    processMouseUp: function(x, y) {
-        if(this.keyEnabled) {
-            var ret = this.keyQuestion.processMouseUp(x, y);
-            
-            // Dragged Key from keyring to KeyQuestion
-            if(ret > -1 && this.keyQuestion.active != ret) { 
-                if(this.dragFrom > -1) {
-                    ret = this.keyQuestion.place(this.drag, -1, ret);
-                    if(ret != null) {
-                        this.keys[this.dragFrom] = ret;
-                        ret.reparent(this);
-                        ret.place(this.keyPlacer(this.dragFrom));
-                    }
-                    this.dragFrom = -1;
-                }
-                // Dragged Key around inside KeyQuestion
-                else if(this.keyQuestion.active > -1) {
-                    this.keyQuestion.place(this.drag, this.keyQuestion.active, ret);
-                    this.keyQuestion.active = -1;
-                }
-                
-                this.drag = null;
-            }
-            else if(this.drag != null) {
-                if(this.dragFrom > -1) {
-                    this.dragFrom = -1;
-                }
-                else if(this.keyQuestion.active > -1) {
-                    this.keyQuestion.active = -1;
-                }
-            
-                this.drag.reset();
-                this.drag = null;
-            }
-        }
-    },
-    
-    // Processes Mouse Up events
-    processMouseDrag: function(x, y) {
-        if(this.drag) {
-            var p = this.get('position');
-            var lx = x - p.x;
-            var ly = y - p.y;
-        
-            this.drag.set('position', new geo.Point(lx, ly));
-        }
     },
     
     // Puts the specified key into they player's keyring
@@ -392,12 +303,15 @@ var Level = cocos.nodes.Node.extend({
         
         // Move enemy and check for player collision
         if(this.board[dr][dc].moveEnemyIn() == -1) {
+            events.trigger(this, 'oneOff', 'hitByEnemy');
             this.restart();
         }
     },
     
     // Called when the final door question is answered correctly
     onFinalCorrect: function() {
+        GC.MM.crossFade('question', 'bg', 1);
+    
         cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
         events.trigger(this, 'levelCompleted');
     },
@@ -406,6 +320,7 @@ var Level = cocos.nodes.Node.extend({
     onFinalWrong: function() {
     },
     
+    // Returns a string with the collected data in XML format
     toXML: function() {
         var t = '    ';
         var string = "";
@@ -427,7 +342,7 @@ var Level = cocos.nodes.Node.extend({
         return string;
     },
     
-    // Check to see if any enemies need to move
+    // Check to see if any enemies need to move and track Level/KeyQuestion time
     update: function(dt) {
         this.elapsedTime += dt;
         if(this.keyEnabled) {
@@ -441,6 +356,167 @@ var Level = cocos.nodes.Node.extend({
                     this.moveEnemy(i, d.row, d.col);
                 }
             }
+        }
+    },
+    
+    // Checks if mouse input selects a answer to a question
+    answerQuestion: function(x, y) {
+        var p = this.get('position');
+        var lx = x - p.x;
+        var ly = y - p.y;
+    
+        var ret = this.question.processClick(lx, ly);
+        // Checks if this MouseUp was on the same button that the original MouseDown was on
+        if(this.butRef != ret) {
+            var temp = this.butRef;
+            this.butRef = -1;
+            return temp;
+        }
+        
+        if(ret == -1) {
+            return -1;
+        }
+        
+        if(this.question.selectAnswer(ret)) {
+            this.chestQ.openChest();
+            this.chests += 1;
+            
+            this.gainKey(this.chestQ.key);
+            
+            this.removeQuestion();
+            
+            this.addChild({child: this.rText});
+            var that = this;
+            setTimeout(function() { that.removeChild({child: that.rText})}, 3000);
+            
+            events.trigger(this, 'oneOff', 'keyAquired');
+        }
+        else if(this.question.isHintable()) {
+            this.question.hinted = true;
+        }
+        else {
+            this.chestQ.nextQuestion();
+            this.removeQuestion();
+        }
+        
+        return ret;
+    },
+    
+////////  Mouse Event Handlers  /////////////////////////////////////////////////////////////////////////////
+    
+    // Processes Mouse Down event
+    processMouseDown: function(x, y) {
+        var p = this.get('position');
+        var lx = x - p.x;
+        var ly = y - p.y;
+    
+        // Chest question input
+        if(this.question) {
+            this.butRef = this.question.processClick(lx, ly);
+            return this.butRef;
+        }
+        // KeyQuestion input
+        else if(this.keyEnabled) {
+            this.drag = this.keyQuestion.processMouseDown(x, y);
+            if(this.drag) {
+                this.drag.reparent(this);
+                return -1;
+            }
+            
+            if(400 < y && y < 450) {
+                if(700 < x && x < 750 && this.keys[0] != null) {
+                    this.dragFrom = 0;
+                    this.drag = this.keys[0];
+                }
+                else if(800 < x && x < 850 && this.keys[2] != null) {
+                    this.dragFrom = 2;
+                    this.drag = this.keys[2];
+                }
+            }
+            else if(450 < y && y < 500) {
+                if(750 < x && x < 800 && this.keys[1] != null) {
+                    this.dragFrom = 1;
+                    this.drag = this.keys[1];
+                }
+            }
+        }
+        
+        return -1;
+    },
+    
+    // Processes Mouse Up events
+    processMouseUp: function(x, y, pMove) {
+        // Chest question input
+        if(this.question) {
+            return this.answerQuestion(x, y)
+        }
+        // KeyQuestion input
+        else if(this.keyEnabled) {
+            var ret = this.keyQuestion.processMouseUp(x, y);
+            
+            // Dragged Key from keyring to KeyQuestion
+            if(ret > -1 && this.keyQuestion.active != ret) {
+                if(this.dragFrom > -1) {
+                    ret = this.keyQuestion.place(this.drag, -1, ret);
+                    if(ret != null) {
+                        this.keys[this.dragFrom] = ret;
+                        ret.reparent(this);
+                        ret.place(this.keyPlacer(this.dragFrom));
+                    }
+                    this.dragFrom = -1;
+                }
+                // Dragged Key around inside KeyQuestion
+                else if(this.keyQuestion.active > -1) {
+                    this.keyQuestion.place(this.drag, this.keyQuestion.active, ret);
+                    this.keyQuestion.active = -1;
+                }
+                
+                this.drag = null;
+            }
+            // Dropped key in a non slotted location
+            else if(this.drag != null) {
+                if(this.dragFrom > -1) {
+                    this.dragFrom = -1;
+                }
+                else if(this.keyQuestion.active > -1) {
+                    this.keyQuestion.active = -1;
+                }
+            
+                this.drag.reset();
+                this.drag = null;
+            }
+        }
+        // Click based movement resolution
+        else if(pMove) {
+            var p = this.get('position');
+            var lx = x - p.x - this.player.col * 50 - 25;
+            var ly = y - p.y - this.player.row * 50 - 25;
+            
+            if(-75 < lx && lx < -25 && -25 < ly && ly < 25) {
+                this.movePlayer(0, -1);
+            }
+            else if(25 < lx && lx < 75 && -25 < ly && ly < 25) {
+                this.movePlayer(0, 1);
+            }
+            else if(-25 < lx && lx < 25 && -75 < ly && ly < -25) {
+                this.movePlayer(-1, 0);
+            }
+            else if(-25 < lx && lx < 25 && 25 < ly && ly < 75) {
+                this.movePlayer(1, 0);
+            }
+        }
+        
+        return -1;
+    },
+    
+    // Processes Mouse Up events
+    processMouseDrag: function(x, y) {
+        if(this.drag) {
+            var p = this.get('position');
+            var lx = x - p.x;
+            var ly = y - p.y;
+        
+            this.drag.set('position', new geo.Point(lx, ly));
         }
     }
 });

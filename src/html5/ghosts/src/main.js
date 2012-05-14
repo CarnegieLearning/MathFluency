@@ -50,7 +50,7 @@ var FluencyApp = KeyboardLayer.extend({
     
     endOfGameCallback : null,   //Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 0.0.1',    // Current version number
+    version     : 'v 1.1.0',    // Current version number
     
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function() {
@@ -162,6 +162,10 @@ var FluencyApp = KeyboardLayer.extend({
         $(window).bind('beforeunload', this.unloadCatcher.bind(this));
         
         this.musicMixer.setMasterVolume(0.35);              // Set audio levels
+        $(window).unload(this.endOfGame.bind(this, null));  // Catch window unloads at this point as aborts
+        
+        events.addListener(this.game, 'endIntro', this.menuLayer.addVolumeControl.bind(this.menuLayer));
+        
         this.game.start();                                  // 
         this.scheduleUpdate();                              // Start keyboard input tracking
     },
@@ -180,6 +184,18 @@ var FluencyApp = KeyboardLayer.extend({
     // Called when game ends, should collect results, display them to the screen and output the result XML
     // finished = null on window.unload, false on abort, true on completion
     endOfGame: function(finished) {
+        if(finished != null) {
+            $(window).unbind('unload')
+            $(window).unload(this.cleanup.bind(this, null));
+        }
+        else {
+            this.cleanup();
+        }
+        
+        // Checks to see if abort was related to window.unload
+        if(finished != null) {
+        }
+        
         this.get('musicMixer').stopSound('bg');
         
         console.log(this.writeXML('FINISH'));
@@ -299,6 +315,7 @@ var FluencyApp = KeyboardLayer.extend({
 var MenuLayer = cocos.nodes.Menu.extend({
     startButton : null,     // Holds the button to start the game
     startGame   : null,     // Holds the function in the app that starts the game
+    
     muted       : false,    // State of the volume mute button
     mutedMusic  : false,    // State of the volume mute button
     
@@ -329,10 +346,45 @@ var MenuLayer = cocos.nodes.Menu.extend({
         events.trigger(this, "startGameEvent");
     },
     
+    addVolumeControl: function() {
+        var opts = {};
+        // Create the volume control
+        // TODO: Make a better basic (toggle)button (extend MenuItemImage?)
+        opts['normalImage'] = '/resources/volume-control.png';
+        opts['selectedImage'] = '/resources/volume-control.png';
+        opts['disabledImage'] = '/resources/volume-control.png';
+        opts['callback'] = this.audioCallback.bind(this);
+        
+        var vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 250));
+        this.set('volumeButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['normalImage'] = '/resources/volume-control-off.png';
+        opts['selectedImage'] = '/resources/volume-control-off.png';
+        opts['disabledImage'] = '/resources/volume-control-off.png';
+        opts['callback'] = this.audioCallback.bind(this);
+        
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(425, 250));
+        this.set('volumeButtonOff', vc);
+        
+        opts['callback'] = this.musicCallback.bind(this);
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(375, 250));
+        this.set('musicButtonOff', vc);
+    },
+    
     // Called when the volume button is pressed
     // TODO: Seperate this into two functions (mute/unmute)?
     // TODO: Implement a slider/levels to set master volume
-    volumeCallback: function() {
+    audioCallback: function() {
         events.trigger(this, "muteAudioEvent");
         
         var m = this.get('muted')
@@ -427,6 +479,9 @@ exports.main = function() {
     var app = FluencyApp.create();              // Create the layers
     var menu = MenuLayer.create();
     
+    // Allow the App layer to directly access the UI layer
+    app.set('menuLayer', menu);
+    
     // Set up inter-layer events
     events.addListener(app, 'loaded', menu.createMenu.bind(menu));
     
@@ -437,9 +492,6 @@ exports.main = function() {
     // Add our layers to the scene
     scene.addChild({child: app});
     scene.addChild({child: menu});
-    
-    // Allow the App layer to directly access the UI layer
-    app.set('menuLayer', menu);
     
     // Run the scene
     director.runWithScene(scene);
