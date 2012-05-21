@@ -62,7 +62,7 @@ var ModifyOverTime = BObject.extend({
             this.set('value', this.get('value') + rate * edt);
             
             if(this.func) {
-                this.func.apply(this.obj, [this.get('value') + rate * edt]);
+                this.func.apply(this.obj, [this.get('value')]);
             }
         }
         

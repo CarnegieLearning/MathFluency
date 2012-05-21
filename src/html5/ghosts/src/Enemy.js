@@ -17,7 +17,12 @@ Copyright 2011, Carnegie Learning
 // Import the cocos2d module
 var cocos = require('cocos2d');
 var geo = require('geometry');
+var events = require('events');
 
+// Static imports
+var MOT = require('ModifyOverTime').ModifyOverTime;
+
+// Class that implements the enemies the player must avoid
 var Enemy = cocos.nodes.Node.extend({
     row         : -1,       // Current row position
     col         : -1,       // Current col position
@@ -27,20 +32,27 @@ var Enemy = cocos.nodes.Node.extend({
     pathDir     : 1,        // Direction of path array traversal
     pathLoop    : true,     // If true, path will loop end to end; false will switch directions when hitting an end
     
-    moveDelay   : 500,      // Minimum real world ms needed before the enemy to takes each step
+    moveDelay   : 5,        // Minimum real world sec needed before the enemy to takes each step
     delay       : 0,        // Current accumulated delay
+    moveLock    : false,    // When true, cannot move even if it is time to move
     
     init: function(opts) {
         Enemy.superclass.init.call(this);
         
+        // Configure enemy
         this.path = opts.path;
         this.moveDelay = opts.delay;
         
         this.pathDir = opts.pathDir;
         this.pathLoop = opts.pathLoop;
         
+        // Display sprite of the enemy
         this.sprite = cocos.nodes.Sprite.create({file: '/resources/monsters_mon' + opts.type +'.png'});
         this.addChild({child: this.sprite});
+        
+        // Statically bind as this should only be called through the setTimeout in move()
+        this.moveThreshold = this.moveThreshold.bind(this);
+        this.moveComplete = this.moveComplete.bind(this);
     },
     
     // Moves the enemy to the specified coordinates
@@ -49,6 +61,62 @@ var Enemy = cocos.nodes.Node.extend({
         this.col = c;
         
         this.set('position', new geo.Point(c * 50 + 25, r * 50 + 25));
+    },
+    
+    // Moves the enemy smoothly over time
+    move: function() {
+        // Temporary placeholders to keep things concise
+        var p = this.get('position');
+        var d = this.getDestination();
+        
+        var once = false;
+    
+        // Only create MOTs if needed
+        if(d.col != this.col) {
+            var m = MOT.create(p.x, (d.col - this.col) * 50, this.moveDelay);
+            m.bindFunc(this, this.updateX);
+            events.addListener(m, 'Completed', this.moveComplete)
+            once = true;
+        }
+        if(d.row != this.row) {
+            var m = MOT.create(p.y, (d.row - this.row) * 50, this.moveDelay);
+            m.bindFunc(this, this.updateY);
+            if(!once) {
+                events.addListener(m, 'Completed', this.moveComplete)
+            }
+        }
+        
+        this.moveLock = true;
+        setTimeout(this.moveThreshold, this.moveDelay * 500);   // Converting sec to ms and dividing by 2
+    },
+    
+    // Called when the MOT(s) complete to allow the next move step to occur
+    // STATICALLY BOUND
+    moveComplete: function() {
+        this.moveLock = false;
+    },
+    
+    // Triggers when the enemy transitions into a new cell
+    // STATICALLY BOUND
+    moveThreshold: function() {
+        events.trigger(this, 'moved');
+        
+        this.row = this.path[this.pathPoint].row;
+        this.col = this.path[this.pathPoint].col;
+    },
+    
+    // Used to smoothly update X position indepenantly
+    updateX: function(x) {
+        var p = this.get('position');
+        p.x = x;
+        this.set('position', p);
+    },
+    
+    // Used to smoothly update Y position indepenantly
+    updateY: function(y) {
+        var p = this.get('position');
+        p.y = y;
+        this.set('position', p);
     },
     
     // Resets the monster to level starting conditions
@@ -61,7 +129,7 @@ var Enemy = cocos.nodes.Node.extend({
     // Given delay of current frame, returns true if this enemy needs to move in the current frame, false otherwise
     checkMove: function(dt) {
         this.delay += dt;
-        if(this.moveDelay < this.delay) {
+        if(this.moveDelay < this.delay && !this.moveLock) {
             this.delay -= this.moveDelay;
             return true;
         }
@@ -93,7 +161,7 @@ var Enemy = cocos.nodes.Node.extend({
         }
         
         return this.path[this.pathPoint];
-    }
+    },
 });
 
 exports.Enemy = Enemy;

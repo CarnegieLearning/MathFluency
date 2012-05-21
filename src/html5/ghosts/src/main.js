@@ -166,12 +166,12 @@ var FluencyApp = KeyboardLayer.extend({
         
         events.addListener(this.game, 'endIntro', this.menuLayer.addVolumeControl.bind(this.menuLayer));
         
-        this.game.start();                                  // 
+        this.game.start();                                  // Starts the main game
         this.scheduleUpdate();                              // Start keyboard input tracking
     },
     
     // Handles attempts to leave the page
-    unloadCatcher: function () { 
+    unloadCatcher: function () {
         if (!this.game.finished) {
             // Push data to server in case that the player confirms leaving the page
             if(this.get('endOfGameCallback')) {
@@ -272,19 +272,19 @@ var FluencyApp = KeyboardLayer.extend({
     // Called every frame, manages keyboard input
     update: function(dt) {
         // 'A' / 'LEFT' Move left, discreet
-        if(this.checkBinding('MOVE_LEFT') == KeyboardLayer.PRESS) {
+        if(this.checkBinding('MOVE_LEFT') > KeyboardLayer.UP) {
             this.game.movePlayer(0, -1);
         }
         // 'D' / 'RIGHT' Move right, discreet
-        else if(this.checkBinding('MOVE_RIGHT') == KeyboardLayer.PRESS) {
+        else if(this.checkBinding('MOVE_RIGHT') > KeyboardLayer.UP) {
             this.game.movePlayer(0, 1);
         }
         // 'S' / 'DOWN' Move down, discreet
-        else if(this.checkBinding('MOVE_DOWN') == KeyboardLayer.PRESS) {
+        else if(this.checkBinding('MOVE_DOWN') > KeyboardLayer.UP) {
             this.game.movePlayer(1, 0);
         }
         // 'W' / 'UP' Move up, discreet
-        else if(this.checkBinding('MOVE_UP') == KeyboardLayer.PRESS) {
+        else if(this.checkBinding('MOVE_UP') > KeyboardLayer.UP) {
             this.game.movePlayer(-1, 0);
         }
         
@@ -319,10 +319,12 @@ var MenuLayer = cocos.nodes.Menu.extend({
     muted       : false,    // State of the volume mute button
     mutedMusic  : false,    // State of the volume mute button
     
+    // Do not initialize anything as preloading needs to complete first
     init: function() {
         MenuLayer.superclass.init.call(this, {});
     },
     
+    // Displays and configures the start game button
     createMenu: function() {
         // Create the button
         var opts = Object();
@@ -346,6 +348,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         events.trigger(this, "startGameEvent");
     },
     
+    // Displays and configures the mute buttons for music and sfx
     addVolumeControl: function() {
         var opts = {};
         // Create the volume control
@@ -381,9 +384,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('musicButtonOff', vc);
     },
     
-    // Called when the volume button is pressed
-    // TODO: Seperate this into two functions (mute/unmute)?
-    // TODO: Implement a slider/levels to set master volume
+    // Called when the sfx mute button is pressed
     audioCallback: function() {
         events.trigger(this, "muteAudioEvent");
         
@@ -399,6 +400,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('muted', !m);
     },
     
+    // Called when the music mute button is pressed
     musicCallback: function() {
         events.trigger(this, "muteMusicEvent");
         
@@ -412,25 +414,6 @@ var MenuLayer = cocos.nodes.Menu.extend({
             this.addChild({child: this.get('musicButtonOn')});
         }
         this.set('mutedMusic', !m);
-    },
-    
-    // Adds the retry button to the MenuLayer
-    addRetryButton: function() {
-        var opts = Object();
-        opts['normalImage'] = '/resources/scoreboard/Retry_Up.png';
-        opts['selectedImage'] = '/resources/scoreboard/Retry_Down.png';
-        opts['disabledImage'] = '/resources/scoreboard/Retry_Up.png';
-        opts['callback'] = this.retryButtonCallback.bind(this);
-        
-        var b = cocos.nodes.MenuItemImage.create(opts);
-        b.set('position', new geo.Point(10-450+300, 230-300+175));
-        b.set('scaleX', 0.8);
-        b.set('scaleY', 0.8);
-        this.addChild({child: b});
-    },
-    
-    retryButtonCallback: function() {
-        window.runStage(window.currentSequence, window.currentStage);
     }
 });
 

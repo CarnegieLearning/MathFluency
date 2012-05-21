@@ -18,6 +18,9 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
+// Project imports
+var MultiLabel = require('MultiLabel').MultiLabel;
+
 var TextBox = cocos.nodes.Node.extend({
     bg      : null,     // Holds the background
     label   : null,     // Holds the text label
@@ -44,15 +47,6 @@ var TextBox = cocos.nodes.Node.extend({
             this.addChild({child: this.bg});
         }
         
-        // Create text
-        for(var i=0; i<str.length; i+=1) {
-            lopts['string'] = str[i];
-            this.label = cocos.nodes.Label.create(lopts);
-            this.label.set('position', new geo.Point(0, i*20));
-            this.label.set('anchorPoint', new geo.Point(0, 0));
-            this.addChild({child: this.label});
-        }
-        
         // Create dialog button
         if(next) {
             this.button = cocos.nodes.Sprite.create({file: '/resources/next.png'});
@@ -67,6 +61,11 @@ var TextBox = cocos.nodes.Node.extend({
         
         this.width = w;
         this.height = h;
+        
+        // Create text
+        this.text = MultiLabel.create(this.width - 20, 25, '20', 'Helvetica', str);
+        this.text.set('position', new geo.Point(10, 10));
+        this.addChild({child: this.text});
     },
     
     // Checks to see if the next button was clicked by the mouse

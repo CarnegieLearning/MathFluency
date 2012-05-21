@@ -19,6 +19,9 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
 
+// Project imports
+var MultiLabel = require('MultiLabel').MultiLabel;
+
 // Static imports
 var GC = require('GhostsControl').GhostsControl
 
@@ -51,15 +54,8 @@ var KeyQuestion = cocos.nodes.Node.extend({
         this.qText = text;
         
         // Create text
-        var label;
-        var lopts = {}
-        for(var i=0; i<this.qText.length; i+=1) {
-            lopts['string'] = this.qText[i];
-            label = cocos.nodes.Label.create(lopts);
-            label.set('position', new geo.Point(0, i*20));
-            label.set('anchorPoint', new geo.Point(0, 0));
-            this.addChild({child: label});
-        }
+        this.text = MultiLabel.create(230, 25, '20', 'Helvetica', text);
+        this.addChild({child: this.text});
     },
     
     // Returns true if all slots are filled with keys

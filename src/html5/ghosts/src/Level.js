@@ -105,6 +105,7 @@ var Level = cocos.nodes.Node.extend({
         for(var i=0; i<opts.enemies.length; i+=1) {
             this.enemies.push(Enemy.create(opts.enemies[i]));
             this.addChild({child: this.enemies[i]});
+            events.addListener(this.enemies[i], 'moved', this.enemyMoved.bind(this, i));
         }
         
         // Initialize the board
@@ -201,27 +202,26 @@ var Level = cocos.nodes.Node.extend({
     
     // Moves the player the specified direction and distance
     movePlayer: function(deltaR, deltaC) {
-        // Prevents the player from moving during an active question
-        if(this.question) {
+        // Prevents the player from moving when they are not allowed to move
+        if(!this.player.canMove()) {
             return;
         }
-    
+        
         var dr = this.player.row + deltaR;
         var dc = this.player.col + deltaC;
         
         var ret = this.movePlayerAssist(dr, dc);
-        if(ret == 1) {
-            this.board[this.player.row][this.player.col].movePlayerOut();
-            this.player.teleport(dr, dc);
+        if(ret == 1 || ret == -1) {
+            // Moving during a question aborts the question
+            if(this.question) {
+                this.question.abort();
+                this.chestQ.nextQuestion();
+                this.removeQuestion();
+            }
+        
+            this.player.move(dr, dc);
         }
-        else if(ret == -1) {
-            this.board[this.player.row][this.player.col].movePlayerOut();
-            this.player.teleport(dr, dc);
-            
-            events.trigger(this, 'oneOff', 'hitByEnemy');
-            this.restart();
-        }
-        else if(ret == 2) {
+        else if(ret == 2 && !this.question) {
             var q = this.board[dr][dc].bumpChest()
             if(q) {
                 this.chestQ = this.board[dr][dc];
@@ -231,7 +231,7 @@ var Level = cocos.nodes.Node.extend({
             }
         }
         // Attempting to exit
-        else if(this.player.row == this.endR && this.player.col == this.endC && this.keys.length == 3) {
+        else if(this.player.row == this.endR && this.player.col == this.endC && this.keys.length == 3 && !this.question) {
             this.addChild({child: this.keyQuestion});
             this.keyQuestion.set('position', new geo.Point(0 - this.offsetX, 0 - this.offsetY));
             this.keyEnabled = true;
@@ -251,10 +251,19 @@ var Level = cocos.nodes.Node.extend({
         }
     
         if(r > -1 && r < this.rowMax && c > -1 && c < this.colMax) {
-            return this.board[r][c].movePlayerIn();
+            return this.board[r][c].collideCheck();
         }
         
         return 0;
+    },
+    
+    playerMoved: function() {
+        this.board[this.player.row][this.player.col].movePlayerOut();
+        
+        if(this.board[this.player.moveR][this.player.moveC].movePlayerIn() == -1) {
+            events.trigger(this, 'oneOff', 'hitByEnemy');
+            this.restart();
+        }
     },
     
     // Displays a chest question to the player
@@ -295,14 +304,14 @@ var Level = cocos.nodes.Node.extend({
         }
     },
     
-    // Moves the specified enemy to the specified destination
-    moveEnemy: function(i, dr, dc) {
+    // 
+    enemyMoved: function(i) {
         this.board[this.enemies[i].row][this.enemies[i].col].moveEnemyOut();
         
-        this.enemies[i].teleport(dr, dc);
+        var p = this.enemies[i].path[this.enemies[i].pathPoint];
         
         // Move enemy and check for player collision
-        if(this.board[dr][dc].moveEnemyIn() == -1) {
+        if(this.board[p.row][p.col].moveEnemyIn() == -1) {
             events.trigger(this, 'oneOff', 'hitByEnemy');
             this.restart();
         }
@@ -352,8 +361,7 @@ var Level = cocos.nodes.Node.extend({
         if(!this.pauseEnemies) {
             for(var i=0; i<this.enemies.length; i+=1) {
                 if(this.enemies[i].checkMove(dt)) {
-                    var d = this.enemies[i].getDestination();
-                    this.moveEnemy(i, d.row, d.col);
+                    this.enemies[i].move();
                 }
             }
         }
@@ -533,34 +541,31 @@ Level.Level1 = {rowMax: 7, colMax: 9, startR: 3, startC: 6, endR: 3, endC: 0, of
     ,[0,0,1,1,1,4,1,1,1]],
     introText:
     [
-        ["Oh!  A few details I forgot"],
-        ["If you walk up to the treasure",
-         "chests they'll display the",
-         "question for you to answer",
-         "to get the key."]
+        "Oh!  A few details I forgot",
+        "If you walk up to the treasure chests they'll display the question for you to answer to get the key."
     ],
-    keyQuestion: ['Drag your keys to the empty spaces and place them in the correct order to make a true statement.'],
+    keyQuestion: 'Drag your keys to the empty spaces and place them in the correct order to make a true statement.',
     questions:
     [
         {   key: '>', order: 1,
             q: [
-                {qText: ['Which is greater than?'], choices: ['>', '<', '~']},
-                {qText: ['Which is less than?'], choices: ['<', '>', '~']},
-                {qText: ['What does ">" mean?'], choices: ['Greater than', 'Equal to', 'Less than']}
+                {qText: 'Which is greater than?', choices: ['>', '<', '~']},
+                {qText: 'Which is less than?', choices: ['<', '>', '~']},
+                {qText: 'What does ">" mean?', choices: ['Greater than', 'Equal to', 'Less than']}
             ]
         },
         {   key: '2', order: 2,
             q: [
-                {qText: ['If you had two cups of tea,','and Great Auntie had more.','How many could she have had?'], choices: ['3', '2', '1']},
-                {qText: ['The table is 3 wide.','The bookshelf is 5 wide.',"What's in between?"], choices: ['4', '3', '5']},
-                {qText: ['You had two crumpets today.','Your Great Aunt had 7!','Which amount could be','the total number of starting crumpets?'], choices: ['9', '7', '5']}
+                {qText: 'If you had two cups of tea, and Great Auntie had more. How many could she have had?', choices: ['3', '2', '1']},
+                {qText: "The table is 3 wide. The bookshelf is 5 wide. What's in between?", choices: ['4', '3', '5']},
+                {qText: 'You had two crumpets today. Your Great Aunt had 7! Which amount could be the total number of starting crumpets?', choices: ['9', '7', '5']}
             ]
         },
         {   key: '5', order: 0,
             q: [
-                {qText: ['x < 7','x = ?'], choices: ['6', '8', '10']},
-                {qText: ['8 < x','x = ?'], choices: ['12', '7', '3']},
-                {qText: ['3 < x < 10','x = ?'], choices: ['6', '2', '13']}
+                {qText: 'x < 7 \n x = ?', choices: ['6', '8', '10']},
+                {qText: '8 < x \n x = ?', choices: ['12', '7', '3']},
+                {qText: '3 < x < 10 \n x = ?', choices: ['6', '2', '13']}
             ]
         },
     ]
@@ -598,35 +603,31 @@ Level.Level2 = {rowMax: 7, colMax: 10, startR: 3, startC: 9, endR: 0, endC: 2, o
     ,[1,4,0,1,0,0,1,0,0,1]],
     introText: 
     [
-        ["Oh, dearie! I forgot to mention two",
-         "things! My house has some...",
-         "technical...modifications."],
-        ['Also, the house is "haunted" with a',
-         "few of my...err...don't let one of",
-         "them touch you or... just don't."]
+        "Oh, dearie! I forgot to mention two things! My house has some... technical...modifications.",
+        "Also, the house is 'haunted' with a few of my...err...don't let one of them touch you or... just don't."
     ],
-    keyQuestion: ['Drag your keys to the empty spaces and place them in the correct order to make a true statement.'],
+    keyQuestion: 'Drag your keys to the empty spaces and place them in the correct order to make a true statement.',
     questions:
     [
         {   key: '45', order: 2,
             q: [
-                {qText: ['Three monsters in this room,','zero in the previous.','Which number is in between?'], choices: ['2', '5', '-1']},
-                {qText: ['The Angler bounces off things','at an angle.  The angle','is somewhere between 0 and 90.','What angle is it?'], choices: ['45', '125', '180']},
-                {qText: ['Your Great Aunt sure has a lot','of plates!  Last you counted, she','had somewhere between 15 and 25.','Which could be the','number of plates she owns?'], choices: ['21', '14', '28']}
+                {qText: 'Three monsters in this room, zero in the previous. Which number is in between?', choices: ['2', '5', '-1']},
+                {qText: 'The Angler bounces off things at an angle.  The angle is somewhere between 0 and 90. What angle is it?', choices: ['45', '125', '180']},
+                {qText: 'Your Great Aunt sure has a lot of plates!  Last you counted, she had somewhere between 15 and 25. Which could be the number of plates she owns?', choices: ['21', '14', '28']}
             ]
         },
         {   key: '<', order: 1,
             q: [
-                {qText: ['5 > x + 2'], choices: ['1', '5', '7']},
-                {qText: ['25 < x - 7'], choices: ['33', '18', '21']},
-                {qText: ['17 < 13 + x'], choices: ['7', '4', '2']}
+                {qText: '5 > x + 2', choices: ['1', '5', '7']},
+                {qText: '25 < x - 7', choices: ['33', '18', '21']},
+                {qText: '17 < 13 + x', choices: ['7', '4', '2']}
             ]
         },
         {   key: '25', order: 0,
             q: [
-                {qText: ['3 < x - 5'], choices: ['9', '8', '3']},
-                {qText: ['x + 9 < 12'], choices: ['2', '3', '6']},
-                {qText: ['9 - x > 6'], choices: ['1', '3', '5']}
+                {qText: '3 < x - 5', choices: ['9', '8', '3']},
+                {qText: 'x + 9 < 12', choices: ['2', '3', '6']},
+                {qText: '9 - x > 6', choices: ['1', '3', '5']}
             ]
         },
     ]
@@ -665,31 +666,30 @@ Level.Level3 = {rowMax: 9, colMax: 12, startR: 6, startC: 11, endR: 2, endC: 5, 
     ,[4,0,0,0,0,0,1,1,1,1,1,1]],
     introText:
     [
-        ['Woah! Three "ghosts".',
-         "Maybe I should call someone..."]
+        "Woah! Three 'ghosts'. Maybe I should call someone..."
     ],
-    keyQuestion: ['You know what to do! Order those keys to a true statement!'],
+    keyQuestion: 'You know what to do! Order those keys to a true statement!',
     questions:
     [
         {   key: '9', order: 0,
             q: [
-                {qText: ['x - 6 > 9'], choices: ['17', '14', '11']},
-                {qText: ['x + 3 > 5'], choices: ['5', '2', '1']},
-                {qText: ['4 - x > 1'], choices: ['2', '4', '8']}
+                {qText: 'x - 6 > 9', choices: ['17', '14', '11']},
+                {qText: 'x + 3 > 5', choices: ['5', '2', '1']},
+                {qText: '4 - x > 1', choices: ['2', '4', '8']}
             ]
         },
         {   key: '>', order: 1,
             q: [
-                {qText: ['1 < x - 7'], choices: ['10', '7', '4']},
-                {qText: ['x - 7 > 1'], choices: ['9', '8', '7']},
-                {qText: ['10 - x > 2'], choices: ['7', '11', '15']}
+                {qText: '1 < x - 7', choices: ['10', '7', '4']},
+                {qText: 'x - 7 > 1', choices: ['9', '8', '7']},
+                {qText: '10 - x > 2', choices: ['7', '11', '15']}
             ]
         },
         {   key: '5', order: 2,
             q: [
-                {qText: ['9 > x > 4'], choices: ['7', '3', '1']},
-                {qText: ['4 < x < 9'], choices: ['5', '1', '13']},
-                {qText: ['12 > x > 7'], choices: ['9', '14', '3']}
+                {qText: '9 > x > 4', choices: ['7', '3', '1']},
+                {qText: '4 < x < 9', choices: ['5', '1', '13']},
+                {qText: '12 > x > 7', choices: ['9', '14', '3']}
             ]
         },
     ]
@@ -725,34 +725,30 @@ Level.Level4 = {rowMax: 6, colMax: 8, startR: 5, startC: 5, endR: 1, endC: 0, of
     ,[0,2,0,4,1,0,1,4]],
     introText:
     [   
-        ['Oh, hey, "safe" spots!',
-         "If you stand on one of those,",
-         "the ghosts don't effect you.",
-         "",
-         "That's handy!"]
+        "Oh, hey, 'safe' spots! If you stand on one of those, the ghosts don't effect you. \n That's handy!"
     ],
-    keyQuestion: ['Do it!'],
+    keyQuestion: 'Do it!',
     questions:
     [
         {   key: '-5', order: 2,
             q: [
-                {qText: ['1 < (x + 2) < 7'], choices: ['4', '7', '-2']},
-                {qText: ['6 > (x - 0) -6'], choices: ['3', '8', '-10']},
-                {qText: ['13 < (x + 8) < 33'], choices: ['13', '4', '30']}
+                {qText: '1 < (x + 2) < 7', choices: ['4', '7', '-2']},
+                {qText: '6 > (x - 0) -6', choices: ['3', '8', '-10']},
+                {qText: '13 < (x + 8) < 33', choices: ['13', '4', '30']}
             ]
         },
         {   key: '<', order: 1,
             q: [
-                {qText: ['-5 > x'], choices: ['-9', '-3', '0']},
-                {qText: ['-10 < x'], choices: ['1', '-11', '-15']},
-                {qText: ['-15 > x'], choices: ['-20', '-15', '-10']}
+                {qText: '-5 > x', choices: ['-9', '-3', '0']},
+                {qText: '-10 < x', choices: ['1', '-11', '-15']},
+                {qText: '-15 > x', choices: ['-20', '-15', '-10']}
             ]
         },
         {   key: '-15', order: 0,
             q: [
-                {qText: ['2x > 9'], choices: ['5', '3', '4']},
-                {qText: ['5x < 15'], choices: ['2', '3', '4']},
-                {qText: ['7x < 25'], choices: ['3', '5', '7']}
+                {qText: '2x > 9', choices: ['5', '3', '4']},
+                {qText: '5x < 15', choices: ['2', '3', '4']},
+                {qText: '7x < 25', choices: ['3', '5', '7']}
             ]
         },
     ]
@@ -790,32 +786,30 @@ Level.Level5 = {rowMax: 9, colMax: 12, startR: 4, startC: 10, endR: 0, endC: 10,
     ,[1,1,1,0,0,1,1,1,1,1,1,1]],
     introText:
     [
-        ["Wow! They're everywhere!",
-         "At least you're at the front door.",
-         "Now grab those keys!"]
+        "Wow! They're everywhere! At least you're at the front door. Now grab those keys!"
     ],
-    keyQuestion: ['Last one! Time to break out of those constraints!'],
+    keyQuestion: 'Last one! Time to break out of those constraints!',
     questions:
     [
         {   key: '1 / 2', order: 2,
             q: [
-                {qText: ['x / 5 < 0.5'], choices: ['2', '4', '5']},
-                {qText: ['x / 6 > 0.6'], choices: ['5', '3', '2']},
-                {qText: ['2 / x > 0.5'], choices: ['3', '4', '5']}
+                {qText: 'x / 5 < 0.5', choices: ['2', '4', '5']},
+                {qText: 'x / 6 > 0.6', choices: ['5', '3', '2']},
+                {qText: '2 / x > 0.5', choices: ['3', '4', '5']}
             ]
         },
         {   key: '<', order: 1,
             q: [
-                {qText: ['0.4 > x / 3'], choices: ['1', '2', '3']},
-                {qText: ['0.7 < x / 4'], choices: ['3', '2', '1']},
-                {qText: ['0.6 > x / 2'], choices: ['1', '2', '3']}
+                {qText: '0.4 > x / 3', choices: ['1', '2', '3']},
+                {qText: '0.7 < x / 4', choices: ['3', '2', '1']},
+                {qText: '0.6 > x / 2', choices: ['1', '2', '3']}
             ]
         },
         {   key: '1 / 3', order: 0,
             q: [
-                {qText: ['x / 6 > 1 / 3'], choices: ['3', '2', '1']},
-                {qText: ['x / 3 < 2 / 4'], choices: ['1', '2', '3']},
-                {qText: ['x / 2 < 3 / 4'], choices: ['1', '2', '3']}
+                {qText: 'x / 6 > 1 / 3', choices: ['3', '2', '1']},
+                {qText: 'x / 3 < 2 / 4', choices: ['1', '2', '3']},
+                {qText: 'x / 2 < 3 / 4', choices: ['1', '2', '3']}
             ]
         },
     ]

@@ -52,6 +52,11 @@ var Tile = cocos.nodes.Node.extend({
         return 1;
     },
     
+    // Returns 0 if Tile is solid and blocks movement, 1 otherwise
+    collideCheck: function() {
+        return (this.collision ? 0 : 1);
+    },
+    
     // Resets the Tile to start of level conditions
     reset: function() {
         if(this.hasChest) {

@@ -77,6 +77,18 @@ var Chest = Tile.extend({
         return 0;
     },
     
+    // Returns 2 if Question can be asked, 1 if the Chest is unlocked but passible, and 0 otherwise
+    collideCheck: function() {
+        if(this.locked) {
+            return 2;
+        }
+        else if(this.passable) {
+            return 1;
+        }
+        
+        return 0;
+    },
+    
     // Handles colliding with the chest
     bumpChest: function() {
         if(this.locked) {

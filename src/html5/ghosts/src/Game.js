@@ -50,7 +50,7 @@ var Game = cocos.nodes.Node.extend({
         
         // Create the list of availible levels
         this.levels = [
-            Level.create(Level.Level1),
+            //Level.create(Level.Level1),
             Level.create(Level.Level2),
             Level.create(Level.Level3),
             Level.create(Level.Level4),
@@ -92,25 +92,25 @@ var Game = cocos.nodes.Node.extend({
         var t1, t2;
         
         // Getting a key
-        t2 = TextBox.create({}, ["I'd suggest you get","the other 2 keys first,","but it's up to you!"], 250, 200, '/resources/green.png', null);
+        t2 = TextBox.create({}, "I'd suggest you get the other 2 keys first, but it's up to you!", 250, 200, '/resources/green.png', null);
         t2.set('position', new geo.Point(650, 50));
         
-        t1 = TextBox.create({}, ['Congratulations on your first key!','Another detail:','the exit door is marked in red.'], 250, 200, '/resources/green.png', t2);
+        t1 = TextBox.create({}, 'Congratulations on your first key! Another detail: the exit door is marked in red.', 250, 200, '/resources/green.png', t2);
         t1.set('position', new geo.Point(650, 50));
         
         this.oneOffs['keyAquired'] = t1;
         
         // Approaching the level door
-        t1 = TextBox.create({}, ['Um...this looks more','complicated than the others.','Do you hear something ticking'], 250, 200, '/resources/green.png', null);
+        t1 = TextBox.create({}, 'Um... this looks more complicated than the others. Do you hear something ticking?', 250, 200, '/resources/green.png', null);
         t1.set('position', new geo.Point(650, 50));
         
         this.oneOffs['doorApproach'] = t1;
         
         // Hit by enemy
-        t2 = TextBox.create({}, ["Thankfully it didn't hurt you,","but it looks like all your keys are scrambled.","You'll have to go collect those keys","from the treasure boxes again."], 250, 200, '/resources/green.png', null);
+        t2 = TextBox.create({}, "Thankfully it didn't hurt you, but it looks like all your keys are scrambled. You'll have to go collect those keys from the treasure boxes again.", 250, 200, '/resources/green.png', null);
         t2.set('position', new geo.Point(650, 50));
         
-        t1 = TextBox.create({}, ['Oh, no!','It looks like you ran into one of my...','I mean, a ghost!'], 250, 200, '/resources/green.png', t2);
+        t1 = TextBox.create({}, 'Oh, no! It looks like you ran into one of my... I mean, a ghost!', 250, 200, '/resources/green.png', t2);
         t1.set('position', new geo.Point(650, 50));
         
         this.oneOffs['hitByEnemy'] = t1;
@@ -281,37 +281,12 @@ var Game = cocos.nodes.Node.extend({
 
 // Text for the introduction sequence
 Game.introText = [
-    [
-        "You've been visiting your Great Aunt",
-        "in her huge, creaky mansion all weekend."
-    ],
-    [
-        "While you sit and have tea with her,",
-        "she tells you stories of her youth (again).",
-        "However, right before you start wondering",
-        "about what your friends are doing at the moment,",
-        "something she says catches your ear."
-    ],
-    [
-        "With a glint in her eye, she tells you",
-        "she set up a challenge for you this weekend.",
-        "Hidden throughout the mansion are boxes,",
-        "locked by logic, containing the key out.",
-        "The doors of the house only open if you",
-        "use the correct keys."
-    ],
-    [
-        "You realize what she just told you:",
-        "she's locked you in!",
-        "",
-        "She asks if you're up for the challenge."
-    ],
-    [
-        "Is that even a question?"
-    ],
-    [
-        "Good Luck!"
-    ]
+    "You've been visiting your Great Aunt in her huge, creaky mansion all weekend.",
+    "While you sit and have tea with her, she tells you stories of her youth (again). However, right before you start wondering about what your friends are doing at the moment, something she says catches your ear.",
+    "With a glint in her eye, she tells you she set up a challenge for you this weekend. Hidden throughout the mansion are boxes, locked by logic, containing the key out. The doors of the house only open if you use the correct keys.",
+    "You realize what she just told you: she's locked you in! \n She asks if you're up for the challenge.",
+    "Is that even a question?",
+    "Good Luck!"
 ]
 
 exports.Game = Game;

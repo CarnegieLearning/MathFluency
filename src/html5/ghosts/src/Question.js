@@ -19,6 +19,9 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
 
+// Project imports
+var MultiLabel = require('MultiLabel').MultiLabel;
+
 // Static imports
 var XML = require('XML').XML;
 var GC = require('GhostsControl').GhostsControl;
@@ -62,21 +65,12 @@ var Question = cocos.nodes.Node.extend({
         this.bg.set('zOrder', -1);
         this.addChild({child: this.bg});
         
-        var lopts = {};
-        
-        // Create text
-        var label;
-        for(var i=0; i<this.questionText.length; i+=1) {
-            lopts['string'] = this.questionText[i];
-            label = cocos.nodes.Label.create(lopts);
-            label.set('position', new geo.Point(0, i*20));
-            label.set('anchorPoint', new geo.Point(0, 0));
-            this.addChild({child: label});
-        }
+        this.text = MultiLabel.create(230, 25, '20', 'Helvetica', this.questionText);
+        this.addChild({child: this.text});
         
         // Create choices
         var choice;
-        lopts['fontColor'] = '#000000';
+        var lopts = {fontSize: '20', fontColor: '#000000'};
         for(var i=0; i<this.choices.length; i+=1) {
             lopts['string'] = this.choices[i];
             choice = cocos.nodes.Label.create(lopts);
@@ -105,6 +99,12 @@ var Question = cocos.nodes.Node.extend({
         this.correct = false;
         GC.AM.playSound('wrong');
         return false;
+    },
+    
+    // Called when the player aborts the question due to movement
+    abort: function() {
+        this.chosen = -1;
+        this.corrent = false;
     },
     
     // Returns true if a hint can be given and a second attempt on the question can be made
