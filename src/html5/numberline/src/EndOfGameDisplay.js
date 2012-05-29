@@ -26,6 +26,7 @@ var NLC = require('NumberLineControl').NumberLineControl;
 // Project imports
 var Q = require('Question').Question;
 
+// Extension of cocos Node with some useful functions for the scorecard
 GuiNode = cocos.nodes.Node.extend({
     init: function(opts) {
         GuiNode.superclass.init.call(this, opts);
@@ -65,6 +66,7 @@ GuiNode = cocos.nodes.Node.extend({
     }
 });
 
+// Helper class for animating a line that totals up a value
 TotalLine = GuiNode.extend({
     step        : 0,        // Current animation step
     
@@ -74,7 +76,6 @@ TotalLine = GuiNode.extend({
     amount      : null,     // Displays the time penalty for each incorrect answer
     eLabel      : null,     // Displays the equals sign
     result      : null,     // Displays the total time lost to penalties
-    medal       : null,     // 
     
     instT       : 0,        // Numeric total number of instances
     instLink    : 0,        // Binding value for counting up animation
@@ -91,7 +92,7 @@ TotalLine = GuiNode.extend({
         this.buildLabel(name, 'name', -500);
         this.buildLabel('0', 'instances', 100);
         this.buildLabel('X', 'xLabel', 120);
-        this.buildLabel(amt, 'amount', 145);
+        this.buildLabel((amt == 0) ? '0' : amt, 'amount', 145);
         this.buildLabel('=', 'eLabel', 200);
         this.buildLabel('0', 'result', 350);
         this.get('result').set('anchorPoint', new geo.Point(1, 0.5));
@@ -147,6 +148,8 @@ EndOfGameDisplay = GuiNode.extend({
     elapsedLink     : 0,        // Holds the raw value of elapsedTime
     lines           : null,     // Holds the sub-TotalLines
     
+    medal           : null,     // 
+    
     totalLabel      : null,     // Label for displaying the total score
     totalLink       : 0,        // Numeric link for the total score
     total           : 0,        // The actual total score
@@ -157,7 +160,7 @@ EndOfGameDisplay = GuiNode.extend({
     timeAmt         : 0.0,      // Elapsed time to display
     abort           : false,    // Abort state of the game
     
-    sliderX         : 410,       // X location of the slider on the medal line
+    sliderX         : 30,       // X location of the slider on the medal line
     
     init: function (ta, a, lineVals) {
         EndOfGameDisplay.superclass.init.call(this);
@@ -168,8 +171,9 @@ EndOfGameDisplay = GuiNode.extend({
         var lbl;
         var opts = {};
         
+        // Background of the score card
         this.bg = cocos.nodes.Sprite.create({file: '/resources/Score_Card/Window_Postgame.png'});
-        this.scaleTo(this.bg, 440, 550)
+        this.scaleTo(this.bg, 440, 550);
         this.bg.set('anchorPoint', new geo.Point(0, 0));
         this.addChild({child: this.bg});
         
@@ -187,11 +191,13 @@ EndOfGameDisplay = GuiNode.extend({
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('elapsedTime', lbl);
         
+        // Create the subtotaling lines
         this.lines = [];
         this.lines[0] = TotalLine.create('Perfect', lineVals[0], Q.bandPts[0]);
         this.lines[1] = TotalLine.create('Almost' , lineVals[1], Q.bandPts[1]);
         this.lines[2] = TotalLine.create('Miss'   , lineVals[2], Q.bandPts[2]);
         
+        // ...and position them, then listen for their completion events
         for(var i=0; i<3; i+=1) {
             this.lines[i].set('position', new geo.Point(30, 120 + 30*i));
             events.addListener(this.lines[i], 'animationCompleted', this.next.bind(this));
@@ -205,26 +211,29 @@ EndOfGameDisplay = GuiNode.extend({
         lbl.set('anchorPoint', new geo.Point(1, 0.5));
         this.set('totalLabel', lbl);
         
+        // Textures for slider line
         var dir = '/resources/Score_Card/Window_MedalGained/Window_MedalGained_';
         this.metalTextures = [
-            cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),
-            cocos.nodes.Sprite.create({file: dir + 'Silver.png'}),
-            cocos.nodes.Sprite.create({file: dir + 'Bronze.png'}),
             cocos.nodes.Sprite.create({file: dir + 'None.png'}),
-        ]
+            cocos.nodes.Sprite.create({file: dir + 'Bronze.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Silver.png'}),
+            cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),
+        ];
         
+        // Scale and position the different segments of the slider line
         var x = 30;
         for(i=0; i<4; i+=1) {
-            this.scaleTo(this.metalTextures[i], NLC.proportions[i] * 380, 20)
+            this.scaleTo(this.metalTextures[i], NLC.proportions[3-i] * 380, 20);
             this.metalTextures[i].set('position', new geo.Point(x, 260));
             this.metalTextures[i].set('anchorPoint', new geo.Point(0, 0));
             this.addChild({child: this.metalTextures[i]});
             
-            x += NLC.proportions[i] * 380;
+            x += NLC.proportions[3-i] * 380;
         }
         
+        // Needle for the slider line
         this.needle = cocos.nodes.Sprite.create({file: '/resources/Score_Card/Window_MedalGained/Window_MedalGained_Needle.png'});
-        this.needle.set('position', new geo.Point(this.sliderX, 280))
+        this.needle.set('position', new geo.Point(this.sliderX, 285));
         this.addChild({child:this.needle});
     },
     
@@ -247,7 +256,7 @@ EndOfGameDisplay = GuiNode.extend({
         this.fix(this.get('totalLabel'), this.get('totalLink'), 0);
     },
     
-    // Keeps the label's string value fixed to three positions
+    // Keeps label (l)'s value (v) fixed to (p) precision
     fix: function(l, v, p) {
         f = parseFloat(v);
         l.set('string', f.toFixed(p));
@@ -264,22 +273,27 @@ EndOfGameDisplay = GuiNode.extend({
     next: function() {
         var step = this.get('step');
         
+        // Slide in elapsed time
         if(step == 0)
             this.slideLabelIn(this.get('elapsedLabel'), 0.75);
+        // Total up elapsed time
         else if(step == 1)
             this.totalLabelUp(this.get('elapsedTime'), 'elapsedLink', this.get('timeAmt'), 0.5);
+        // Subtotal lines
         else if(step == 2)
             this.lines[0].start();
         else if(step == 3)
             this.lines[1].start();
         else if(step == 4)
             this.lines[2].start();
+        // Draw horizontal totaling line
         else if(step == 5) {
             var m = MOT.create(this.totalLineX, 125, 0.2);
             m.bind(this, 'totalLineX');
             
             events.addListener(m, 'Completed', this._actionComplete);
         }
+        // Total score and animate slider
         else if(step == 6) {
             this.total = this.lines[0].resultT + this.lines[1].resultT + this.lines[2].resultT;
             this.totalLabelUp(this.get('totalLabel'), 'totalLink', this.total, 1.0);
@@ -288,10 +302,11 @@ EndOfGameDisplay = GuiNode.extend({
             if(this.get('abort') || this.total < NLC.medalScores[4])
                 x = 0;
             else
-                x = -380 * Math.min(1, Math.max(0, this.total / (NLC.medalScores[0] - NLC.medalScores[4])));
+                x = 380 * Math.min(1, Math.max(0, this.total / (NLC.medalScores[0] - NLC.medalScores[4])));
             
             MOT.create(this.sliderX, x, 1.0).bind(this, 'sliderX');
         }
+        // Display medal
         else if(step == 7) {
             var dir = '/resources/Score_Card/Medals/Medal_'
             if(this.get('abort') || this.total < NLC.medalScores[3])
@@ -311,6 +326,7 @@ EndOfGameDisplay = GuiNode.extend({
             
             setTimeout(this.next.bind(this), 250);
         }
+        // Finished
         else
             events.trigger(this, 'animationCompleted');
         

@@ -36,7 +36,7 @@ var HUD = cocos.nodes.Node.extend({
     qTimeMax    : null,     // Initial time for current question (null if N/A)
     qTimePause  : false,    // Pauses the individual question timer
     
-    itemCount   : 0,        // 
+    itemCount   : 0,        // Holds the current number of collected items
     
     textG       : null,     // Holds green numbers
     textR       : null,     // Holds red numbers
@@ -47,14 +47,14 @@ var HUD = cocos.nodes.Node.extend({
         HUD.superclass.init.call(this);
         
         this.timeNumber = SpriteNumber.create(3);
-        this.timeNumber.set('position', new geo.Point(515, 45));
+        this.timeNumber.set('position', new geo.Point(565, 45));
         this.timeNumber.set('znchorPoint', new geo.Point(0, 0));
         this.timeNumber.set('zOrder', 4);
         this.addChild({child: this.timeNumber});
         
         // Set up the score label
-        this.scoreNumber = SpriteNumber.create(6);
-        this.scoreNumber.set('position', new geo.Point(690, 40));
+        this.scoreNumber = SpriteNumber.create(4);
+        this.scoreNumber.set('position', new geo.Point(750, 40));
         this.scoreNumber.set('znchorPoint', new geo.Point(0, 0));
         this.scoreNumber.set('zOrder', 4);
         this.addChild({child: this.scoreNumber});
@@ -80,13 +80,13 @@ var HUD = cocos.nodes.Node.extend({
         dir = '/resources/General_Wireframe/Window/';
         // Current target frame
         this.targetWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Target.png'});
-        this.targetWindow.set('position', new geo.Point(315, 5));
+        this.targetWindow.set('position', new geo.Point(355, 5));
         this.targetWindow.set('anchorPoint', new geo.Point(0, 0));
         this.addChild({child: this.targetWindow});
         
         // Current score frame
         this.scoreWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Score.png'});
-        this.scoreWindow.set('position', new geo.Point(650, 5));
+        this.scoreWindow.set('position', new geo.Point(720, 5));
         this.scoreWindow.set('anchorPoint', new geo.Point(0, 0));
         this.addChild({child: this.scoreWindow});
         
@@ -103,6 +103,7 @@ var HUD = cocos.nodes.Node.extend({
         this.itemsLWindow.set('anchorPoint', new geo.Point(0, 0));
         this.itemsLWindow.set('scaleY', 0.9);
         
+        // Count of items collected
         this.itemsNumber = SpriteNumber.create(3);
         this.itemsNumber.set('position', new geo.Point(40, 40));
         this.itemsNumber.set('znchorPoint', new geo.Point(0, 0));
@@ -111,7 +112,7 @@ var HUD = cocos.nodes.Node.extend({
         
         // Time remaining frame (digital format)
         this.timerWindow = cocos.nodes.Sprite.create({file: dir + 'Window_Time/Window_Time_Digital.png'});
-        this.timerWindow.set('position', new geo.Point(480, 5));
+        this.timerWindow.set('position', new geo.Point(540, 5));
         this.timerWindow.set('anchorPoint', new geo.Point(0, 0));
         this.timerWindow.set('scaleY', 0.9);
         this.addChild({child: this.timerWindow});
@@ -128,9 +129,13 @@ var HUD = cocos.nodes.Node.extend({
         this.textG.push(cocos.nodes.Sprite.create({file: dir1 + 'NumG_neg.png'}));
         this.textR.push(cocos.nodes.Sprite.create({file: dir2 + 'NumR_neg.png'}));
         
+        // Statically bind
+        this.modifyItemCount = this.modifyItemCount.bind(this);
     },
     
+    // Parts of init that need to wait until XML loading and parsing is complete
     delayedInit: function() {
+        // Load textures for the medal meter
         var dir = '/resources/General_Wireframe/Window/Window_MedalStatus/Window_MedalStatus_';
         this.metalTextures = [
             cocos.nodes.Sprite.create({file: dir + 'Gold.png'}),
@@ -139,6 +144,7 @@ var HUD = cocos.nodes.Node.extend({
             cocos.nodes.Sprite.create({file: dir + 'None.png'}),
         ]
         
+        // Size and place each segment of the medal meter
         var y = 0;
         for(i=0; i<4; i+=1) {
             this.scaleTo(this.metalTextures[i], 90, NLC.proportions[i] * 93)
@@ -225,6 +231,8 @@ var HUD = cocos.nodes.Node.extend({
         }
     },
     
+    // Increments the total item count
+    // STATICALLY BOUND
     modifyItemCount: function() {
         this.itemCount += 1;
         this.itemsNumber.setVal(this.itemCount);

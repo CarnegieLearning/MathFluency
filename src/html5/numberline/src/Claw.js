@@ -46,7 +46,7 @@ var ClawNode = cocos.nodes.Node.extend({
         
         // Load bad items
         this.badItems = [];
-        dir = '/resources/Toys/Bad/Bad_';                                           //*
+        dir = '/resources/Toys/Bad/Bad_';                                           //* Toggle for enabling and disabling 'bad' items
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Blank.png'}));   /*/
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Boot.png'}));
         this.badItems.push(cocos.nodes.Sprite.create({file: dir + 'Can.png'}));
@@ -70,6 +70,7 @@ var ClawNode = cocos.nodes.Node.extend({
         this.greatItems.push(cocos.nodes.Sprite.create({file: dir + 'Money.png'}));
         this.greatItems.push(cocos.nodes.Sprite.create({file: dir + 'Suit.png'}));
         
+        // Organize all items
         this.items = [this.greatItems, this.goodItems, this.badItems];
     },
     
@@ -81,44 +82,55 @@ var ClawNode = cocos.nodes.Node.extend({
         this.theClaw.playAnimation('right');
         MOT.create(this.get('position').x, dx, 0.5).bindFunc(this, this.setClawX);
         
-        var that = this;
+        // Make sure grade maps to a valid item grade
+        grade = Math.min(Math.max(0, grade), this.items.length - 1);
+        
         this.theItem = this.items[grade][Math.floor(Math.random()*this.items[grade].length)];
         this.theItem.set('position', new geo.Point(0, 375));
         this.theItem.set('scaleX', 0.5);
         this.theItem.set('scaleY', 0.5);
         this.theItem.set('zOrder', -1);
         this.addChild(this.theItem);
+
+        var that = this;
         
+        // Reaching clicked location
         setTimeout(function() { 
             that.theClaw.playAnimation('settleR');
             that.sfx.playSound('stopMove');
         }, 500);
         
+        // Preparing to grab
         setTimeout(function() {
             that.theClaw.playAnimation('open');
             that.sfx.playSound('openClawNT');
         }, 900);
         
+        // Start grabbing
         setTimeout(function() {
             that.theClaw.playAnimation('grab');
             that.sfx.playSound('grabToy');
         }, 1050);
         
+        // Move toy with claw
         setTimeout(function() {
             MOT.create(375, -150, 0.23).bindFunc(that, that.setItemY);
         },  1320);
         
+        // Move back to starting position
         setTimeout(function() {
             that.theClaw.playAnimation('left');
             MOT.create(that.get('position').x, -1 * dx, 0.5).bindFunc(that, that.setClawX);
             that.sfx.playSound('startMove');
         }, 2100);
         
+        // Stop at starting position
         setTimeout(function() {
             that.theClaw.playAnimation('settleL');
             that.sfx.playSound('stopMove');
         }, 2600);
         
+        // Open the claw to release
         setTimeout(function() {
             that.theClaw.playAnimation('open');
             if(grade == 2) {
@@ -126,6 +138,7 @@ var ClawNode = cocos.nodes.Node.extend({
             }
         }, 3000);
         
+        // Drop toy in
         setTimeout(function() {
             that.theClaw.playAnimation('drop');
             MOT.create(225, 150, 0.25).bindFunc(that, that.setItemY);
@@ -134,6 +147,7 @@ var ClawNode = cocos.nodes.Node.extend({
             }
         }, 3100);
         
+        // Reset the claw
         setTimeout(function() {
             that.theClaw.playAnimation('close');
             that.removeChild({child: that.theItem});
@@ -155,6 +169,7 @@ var ClawNode = cocos.nodes.Node.extend({
     }
 });
 
+// Holds the animations for the claw
 var Claw = cocos.nodes.Sprite.extend({
     actions: {},
     

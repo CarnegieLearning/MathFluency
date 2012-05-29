@@ -22,6 +22,7 @@ var geo = require('geometry');
 var Hashmarks = cocos.nodes.Node.extend({
     location: 0,        // Percentage based location on the numberline
     content : null,     // Content label for the hashmark
+    
     init: function(loc, cnt) {
         Hashmarks.superclass.init.call(this);
         
@@ -32,7 +33,8 @@ var Hashmarks = cocos.nodes.Node.extend({
         if(cnt) {
             this.content = cnt;
             this.content.set('anchorPoint', new geo.Point(0, -0.5));
-            this.content.set('position', new geo.Point(0, 20));
+            this.content.set('position', new geo.Point(0, 24));
+            this.content.bgShow = false;
             this.addChild({child: this.content});
         }
     },

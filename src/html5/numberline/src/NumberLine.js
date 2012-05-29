@@ -30,7 +30,7 @@ var NumberLine = cocos.nodes.Node.extend({
 	hashes		: null,		    // Percentage based locations of hash marks
 	contents	: null,		    // Holds Content under hash marks
     length      : 600,          // Length, in pixels, of this numberline
-    NLImage     : null,
+    NLImage     : null,         // Image of the line (sans hashmarks/labels)
     
 	init: function (node) {
         NumberLine.superclass.init.call(this);
@@ -40,7 +40,7 @@ var NumberLine = cocos.nodes.Node.extend({
         this.NLImage.set('position', new geo.Point(-40, -20));
         this.NLImage.set('anchorPoint', new geo.Point(0, 0));
         this.addChild({child: this.NLImage});
-    
+        
         this.hashes = [];
         this.contents = [];
         
@@ -49,6 +49,7 @@ var NumberLine = cocos.nodes.Node.extend({
         var ha = XML.getChildrenByName(node, 'HASH');
         for(var i=0; i<ha.length; i+=1) {
             if(ha[i].children.length > 0) {
+                ha[i].children[0].children[0].attributes['fontSize'] = '20';    //HACK-ish
                 this.hashes.push(Hashmarks.create(ha[i].attributes['location'], Content.buildFrom(ha[i].children[0])));
             }
             else {

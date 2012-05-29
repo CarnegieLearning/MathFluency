@@ -66,6 +66,7 @@ var FluencyApp = KeyboardLayer.extend({
     ended       : false,    // If true, the gamew has ended
     
     answerLock  : true,     // 
+    updateX     : 0,        //
     
     min_x       : 0,        // Minimum x value of crosshair
     max_x       : 0,        // Maximum x value of crosshair
@@ -80,7 +81,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Keep a reference to the menu layer
         this.menu = menu;
         
-        // Set up basic audio
+        // Set up basic sfx
         var dir = 'sound/claw/';
         var AM = AudioMixer.create();
         AM.loadSound('startMove',  dir + 'ContraptionStartV_1');    // Claw starting to move
@@ -99,6 +100,7 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.audioAnswer = ['correct', 'almost', 'wrong'];          // Mapping band numbers to audio feedback
         
+        // Set up background music
         var MM = AudioMixer.create();
         MM.loadSound('music', dir + 'TeatroV_2');
         this.set('musicMixer', MM)
@@ -111,6 +113,7 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(preloader, 'loaded', this.delayedInit.bind(this));
     },
     
+    // The after preloading init so that all assets are ready to display
     delayedInit: function() {
         // Remove the 'preloader'
         var preloader = this.get('preloader')
@@ -190,66 +193,7 @@ var FluencyApp = KeyboardLayer.extend({
         events.addListener(p, 'complete', this.runRemotely.bind(this));
         p.load();
     },
-    
-//============ Event handlers ==================================================
-    
-    // Callback for when a QuestionSet ends
-    onEndOfSet: function() {
-        if(this.current < this.questionList.length - 1) {
-            if(this.current > -1) {
-                this.removeChild({child: this.questionList[this.current]});
-            }
-            this.current += 1;
-            var c = this.questionList[this.current];
-            
-            this.addChild({child: c});
-            
-            if(this.current != 0) {
-                c.nextQuestion();
-            }
-            // Special case, first set
-            else {
-                c.nextQuestionForced();
-            }
-            
-            this.min_x = c.get('position').x + c.numberline.get('position').x;
-            this.max_x = this.min_x + c.numberline.length;
-        }
-        else {
-            // End game
-            this.endOfGame(true);
-        }
-    },
-    
-    // Callback for whenever the mouse is moved in canvas
-    mouseMoved: function(evt) {
-        if(this.current > -1 && !this.ended) {
-            var pt = this.cursor.get('position');
-            pt.x = Math.max(Math.min(evt.locationInCanvas.x, this.max_x), this.min_x);
-            
-            this.cursor.set('position', pt);
-        }
-    },
-    
-    // Callback for mouseDown events
-    mouseDown: function (evt) {
-        if(!this.ended && this.current > -1 && !this.hud.paused) {
-            this.answerQuestion(evt.locationInCanvas.x);
-        }
-    },
-    
-    // Toggles the AudioMixer's mute
-    muteAudioHandler: function() {
-        var AM = this.get('audioMixer');
-        AM.setMute(!AM.get('muted'));
-    },
-    
-    // Toggles the MusicMixer's mute
-    muteMusicHandler: function() {
-        var MM = this.get('musicMixer');
-        MM.setMute(!MM.get('muted'));
-    },
-    
+        
 //============ Pre Game ========================================================
     
     // Remote resources loaded successfully, proceed as normal
@@ -270,6 +214,12 @@ var FluencyApp = KeyboardLayer.extend({
         // Load time limits
         this.hud.setTimeLeft(XML.getDeepChildByName(root, 'TIME_LIMIT').value);
         
+        // Load question feedback delay if present (0 = no delay, 1300 = delay until grab)
+        var fDelay = XML.getDeepChildByName(root, 'FEEDBACK_DELAY');
+        if(fDelay != null) {
+            NLC.feedbackDelay = fDelay.value;
+        }
+        
         // Load global scoring values
         var score = XML.getDeepChildByName(root, 'SCORING');
         if(score != null) {
@@ -280,6 +230,7 @@ var FluencyApp = KeyboardLayer.extend({
             }));
         }
         
+        // Load medal cutoffs
         var medals = XML.getDeepChildByName(root, 'MEDALS');
         if(medals != null) {
             for(var i=0; i<medals.children.length; i++) {
@@ -374,6 +325,70 @@ var FluencyApp = KeyboardLayer.extend({
         
         this.hud.startGame();
     },
+    
+//============ In Game =========================================================
+    
+    // Handles answering the current question
+    answerQuestion: function(ans) {
+        if(!this.answerLock) {
+            var retVal = this.questionList[this.current].giveAnswer(ans)
+            if(retVal >= 0 && retVal <= 2) {
+                this.answerLock = true;
+                this.claw.grabAt(ans, retVal);
+                this.audioMixer.playSound(this.audioAnswer[retVal]);
+                
+                // Variable delay in displaying feedback
+                var that = this;
+                setTimeout(function () {that.floatText.display(retVal); }, NLC.feedbackDelay);
+                
+                // Increment item counter after dropping toy in chute
+                if(retVal < 2) {
+                    setTimeout(this.hud.modifyItemCount, 3200);
+                }
+                
+                return true;
+            }
+        }
+        
+        return false;
+    },
+    
+    // Removes the answer lock, allowing the player to answer the question
+    unlock: function() {
+        this.answerLock = false;
+        
+        if(!this.ended) {
+            var pt = this.cursor.get('position');
+            pt.x = this.updateX;
+            this.cursor.set('position', pt);
+        }
+    },
+    
+    // Called every frame, manages keyboard input
+    update: function(dt) {
+        var pos = this.cursor.get('position');
+    
+        // Keyboard controls
+        // Move the cursor to the left
+        if(this.checkBinding('MOVE_LEFT') > KeyboardLayer.UP) {
+            pos.x = Math.max(pos.x - 5, this.min_x);
+        }
+        
+        // Move the cursor to the right
+        if(this.checkBinding('MOVE_RIGHT') > KeyboardLayer.UP) {
+            pos.x = Math.min(pos.x + 5, this.max_x);
+        }
+        
+        // Select the current crosshair position as the answer
+        if(this.checkBinding('ANSWER') == KeyboardLayer.PRESS && !this.hud.paused) {
+            this.answerQuestion(pos.x);
+        }
+        
+        // Quit the game
+        if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
+            this.endOfGame(false);
+        }
+    },
 
 //============ Post Game =======================================================
     
@@ -399,6 +414,7 @@ var FluencyApp = KeyboardLayer.extend({
         // Removing any remaining visible content
         this.removeChild({child: this.cursor});
         this.removeChild({child: this.questionList[this.current]});
+        this.menu.hideMuteButtons();
     
         // Bonus points for finishing quickly
         if(finished) {
@@ -418,7 +434,7 @@ var FluencyApp = KeyboardLayer.extend({
                 else if(ql[i].questions[j].correctness == 1) {
                     almost += 1;
                 }
-                else if(ql[i].questions[j].correctness == 2){
+                else if(ql[i].questions[j].correctness == 2) {
                     incorrect += 1;
                 }
                 else if(ql[i].questions[j].isTimeout) {
@@ -439,10 +455,12 @@ var FluencyApp = KeyboardLayer.extend({
             MOT.create(0, 255, 2).bind(fade, 'opacity');
             this.addChild({child: fade});
         
+            // Create, configure and show the end of game scorecard
             var e = EOGD.create(this.hud.elapsed, !finished, [correct, almost, (unanswered + incorrect)]);
             e.set('position', new geo.Point(210, 25));
             e.set('zOrder', 12);
             events.addListener(e, 'animationCompleted', this.menu.endGameButtons.bind(this.menu));
+            events.addListener(e, 'animationCompleted', this.cleanup.bind(this));
             
             var that = this;
             setTimeout(function() {that.addChild({child: e}); }, 1000);
@@ -462,6 +480,29 @@ var FluencyApp = KeyboardLayer.extend({
     
     // Cleans up critical running code so subsequent games can be played
     cleanup: function() {
+        // Clear the bind
+        $(window).unbind('unload');
+        
+        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        
+        var d = cocos.Director.get('sharedDirector');
+        
+        // Stop the main loop and clear the scenes
+        d.stopAnimation();
+        delete d.sceneStack.pop();
+        delete d.sceneStack.pop();
+        
+        // Clear the setup functions
+        d.attachInView = null;
+        d.runWithScene = null;
+        
+        // Clear the animating functions
+        d.startAnimation = null;
+        d.animate = null;
+        d.drawScene = null;
+        
+        // Clear the instance
+        d._instance = null;
     },
 
     // Writes the output xml file as a string and returns it
@@ -504,59 +545,73 @@ var FluencyApp = KeyboardLayer.extend({
         
         return x;
     },
-
-//============ In Game =========================================================
     
-    // Handles answering the current question
-    answerQuestion: function(ans) {
-        if(!this.answerLock) {
-            var retVal = this.questionList[this.current].giveAnswer(ans)
-            if(retVal >= 0 && retVal <= 2) {
-                this.answerLock = true;
-                this.claw.grabAt(ans, retVal);
-                this.floatText.display(retVal);
-                this.audioMixer.playSound(this.audioAnswer[retVal]);
-                
-                // Increment item counter after dropping toy in chute
-                if(retVal < 2) {
-                    var that = this;
-                    setTimeout(function () {that.hud.modifyItemCount(); }, 3200);
-                }
+//============ Event handlers ==================================================
+    
+    // Callback for when a QuestionSet ends
+    onEndOfSet: function() {
+        if(this.current < this.questionList.length - 1) {
+            if(this.current > -1) {
+                this.removeChild({child: this.questionList[this.current]});
             }
+            this.current += 1;
+            var c = this.questionList[this.current];
+            
+            this.addChild({child: c});
+            
+            if(this.current != 0) {
+                c.nextQuestion();
+            }
+            // Special case, first set
+            else {
+                c.nextQuestionForced();
+            }
+            
+            this.min_x = c.get('position').x + c.numberline.get('position').x;
+            this.max_x = this.min_x + c.numberline.length;
+        }
+        else {
+            // End game
+            this.endOfGame(true);
+        }
+    },
+
+//============ Mouse handlers ==================================================
+    
+    // Callback for whenever the mouse is moved in canvas
+    mouseMoved: function(evt) {
+        this.updateX = Math.max(Math.min(evt.locationInCanvas.x, this.max_x), this.min_x);
+        
+        // Only update the cursor if the game is running and an answer in not being processed
+        if(this.current > -1 && !this.ended && !this.answerLock) {
+            var pt = this.cursor.get('position');
+            pt.x = this.updateX;
+            this.cursor.set('position', pt);
         }
     },
     
-    // Removes the answer lock, allowing the player to answer the question
-    unlock: function() {
-        this.answerLock = false;
-    },
-    
-    // Called every frame, manages keyboard input
-    update: function(dt) {
-        var pos = this.cursor.get('position');
-    
-        // Keyboard controls
-        // Move the cursor to the left
-        if(this.checkBinding('MOVE_LEFT') > KeyboardLayer.UP) {
-            pos.x = Math.max(pos.x - 5, this.min_x);
-        }
-        
-        // Move the cursor to the right
-        if(this.checkBinding('MOVE_RIGHT') > KeyboardLayer.UP) {
-            pos.x = Math.min(pos.x + 5, this.max_x);
-        }
-        
-        // Select the current crosshair position as the answer
-        if(this.checkBinding('ANSWER') == KeyboardLayer.PRESS && !this.hud.paused) {
-            this.answerQuestion(pos.x);
-        }
-        
-        // Quit the game
-        if(this.checkBinding('ABORT') == KeyboardLayer.PRESS) {
-            this.endOfGame(false);
+    // Callback for mouseDown events
+    mouseDown: function (evt) {
+        if(!this.ended && this.current > -1 && !this.hud.paused) {
+            this.answerQuestion(evt.locationInCanvas.x);
         }
     },
     
+//============ Audio handlers ==================================================
+    
+    // Toggles the AudioMixer's mute
+    muteAudioHandler: function() {
+        var AM = this.get('audioMixer');
+        AM.setMute(!AM.get('muted'));
+    },
+    
+    // Toggles the MusicMixer's mute
+    muteMusicHandler: function() {
+        var MM = this.get('musicMixer');
+        MM.setMute(!MM.get('muted'));
+    },
+    
+    // Handles clicks on the retry button
     retryButtonHandler: function(evt) {
         window.runStage(window.currentSequence, window.currentStage);
     }
@@ -592,38 +647,62 @@ var MenuLayer = cocos.nodes.Menu.extend({
         
         // Create the volume control
         // TODO: Make a better basic (toggle)button (extend MenuItemImage?)
-        opts['normalImage'] = '/resources/volume-control.png';
-        opts['selectedImage'] = '/resources/volume-control.png';
-        opts['disabledImage'] = '/resources/volume-control.png';
+        opts['normalImage'] = '/resources/Sound_On.png';
+        opts['selectedImage'] = '/resources/Sound_On.png';
+        opts['disabledImage'] = '/resources/Sound_On.png';
         opts['callback'] = this.audioCallback.bind(this);
         
         var vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(-315, 275));
+        vc.set('position', new geo.Point(-315, 270));
+        vc.set('scaleX', 0.175);
+        vc.set('scaleY', 0.175);
         this.set('volumeButtonOn', vc);
         this.addChild({child: vc});
         
-        opts['callback'] = this.musicCallback.bind(this);
-        vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(-315, 225));
-        this.set('musicButtonOn', vc);
-        this.addChild({child: vc});
-        
-        opts['normalImage'] = '/resources/volume-control-off.png';
-        opts['selectedImage'] = '/resources/volume-control-off.png';
-        opts['disabledImage'] = '/resources/volume-control-off.png';
+        opts['normalImage'] = '/resources/Sound_Off.png';
+        opts['selectedImage'] = '/resources/Sound_Off.png';
+        opts['disabledImage'] = '/resources/Sound_Off.png';
         opts['callback'] = this.audioCallback.bind(this);
         
         vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(-315, 275));
+        vc.set('position', new geo.Point(-315, 270));
+        vc.set('scaleX', 0.175);
+        vc.set('scaleY', 0.175);
         this.set('volumeButtonOff', vc);
         
+        opts['normalImage'] = '/resources/Music_On.png';
+        opts['selectedImage'] = '/resources/Music_On.png';
+        opts['disabledImage'] = '/resources/Music_On.png';
         opts['callback'] = this.musicCallback.bind(this);
+        
         vc = cocos.nodes.MenuItemImage.create(opts);
-        vc.set('position', new geo.Point(-315, 225));
+        vc.set('position', new geo.Point(-315, 215));
+        vc.set('scaleX', 0.175);
+        vc.set('scaleY', 0.175);
+        this.set('musicButtonOn', vc);
+        this.addChild({child: vc});
+        
+        opts['normalImage'] = '/resources/Music_Off.png';
+        opts['selectedImage'] = '/resources/Music_Off.png';
+        opts['disabledImage'] = '/resources/Music_Off.png';
+        opts['callback'] = this.musicCallback.bind(this);
+        
+        vc = cocos.nodes.MenuItemImage.create(opts);
+        vc.set('position', new geo.Point(-315, 215));
+        vc.set('scaleX', 0.175);
+        vc.set('scaleY', 0.175);
         this.set('musicButtonOff', vc);
     },
     
-    // Adds the next level and retry buttons to the score card
+    // Hide mute buttons
+    hideMuteButtons: function() {
+        this.removeChild(this.get('volumeButtonOn'));
+        this.removeChild(this.get('volumeButtonOff'));
+        this.removeChild(this.get('musicButtonOn'));
+        this.removeChild(this.get('musicButtonOff'));
+    },
+    
+    // Adds the next level (TODO) and retry buttons to the score card
     endGameButtons: function() {
         var dir = '/resources/Buttons/';
         var opts = Object();
@@ -638,7 +717,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         b.set('scaleX', 0.75);
         b.set('scaleY', 0.75);
         this.addChild({child: b});
-        /*/
+        /*
         opts['normalImage'] = dir + 'Next_Norm.png';
         opts['selectedImage'] = dir + 'Next_Down.png';
         opts['disabledImage'] = dir + 'Next_Norm.png';
@@ -653,8 +732,6 @@ var MenuLayer = cocos.nodes.Menu.extend({
     },
     
     // Called when the volume button is pressed
-    // TODO: Seperate this into two functions (mute/unmute)?
-    // TODO: Implement a slider/levels to set master volume
     audioCallback: function() {
         events.trigger(this, "muteAudioEvent");
         
@@ -670,6 +747,7 @@ var MenuLayer = cocos.nodes.Menu.extend({
         this.set('muted', !m);
     },
     
+    // Called when the mute music button is pressed
     musicCallback: function() {
         events.trigger(this, "muteMusicEvent");
         
@@ -691,10 +769,12 @@ var MenuLayer = cocos.nodes.Menu.extend({
         events.trigger(this, 'startGameEvent');
     },
     
+    // Called when the retry button is pressed
     retryButtonCallback: function() {
         events.trigger(this, 'retryGameEvent');
     },
     
+    // Placeholder for when "next game" button is implemented
     nextButtonCallback: function() {
         events.trigger(this, 'nextGameEvent');
     }
