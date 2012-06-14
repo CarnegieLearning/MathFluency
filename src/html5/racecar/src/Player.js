@@ -21,15 +21,57 @@ var events = require('events');
 var Texture2D = require('cocos2d').Texture2D;
 
 // Project requirements
-var LabelBG = require('LabelBG').LabelBG;
-var PNode = require('PerspectiveNode').PerspectiveNode;
+var LabelBG = require('/LabelBG');
+var PNode = require('/PerspectiveNode');
 
 // Static requirements
-var RC = require('RaceControl').RaceControl;
-var MOT = require('ModifyOverTime').ModifyOverTime;
+var RC = require('/RaceControl');
+var MOT = require('/ModifyOverTime');
+var L = require('/Logger');
 
 // Represents the player in the game
-var Player = PNode.extend({
+function Player() {
+    Player.superclass.constructor.call(this, {xCoordinate:0, zCoordinate: this.chaseDist});
+    
+    // Static binds
+    this.changeSelector = this.changeSelector.bind(this);
+    this.turboCompleted = this.turboCompleted.bind(this);
+    this.endIntermission = this.endIntermission.bind(this);
+    this.startIntermission = this.startIntermission.bind(this);
+    this.startAnimationCallback = this.startAnimationCallback.bind(this);
+    this.fishtailCallback = this.fishtailCallback.bind(this);
+    
+    this.selectorBG = new cocos.nodes.Sprite({file: '/resources/carNumberB.png'});
+    this.selectorBG.zOrder = -1;
+    this.selectorBG.scaleX = 0.3;
+    this.selectorBG.scaleY = 0.3;
+    
+    // Load the car sprite for the player
+    this.sprite = new cocos.nodes.Sprite({file: '/resources/Cars/carPlayer01.png'});
+    this.addChild({child: this.sprite});
+    
+    // Load fishtail animation
+    var animCache = cocos.AnimationCache.sharedAnimationCache;
+    var frameCache = cocos.SpriteFrameCache.sharedSpriteFrameCache;
+    
+    var anim = [];
+    var r = geom.rectMake(0, 0, 200, 115);
+    
+    // Load each frame
+    var dir = '/resources/Fishtail/fishTail00';
+    for(var i=1; i<=17; i++) {
+        anim.push(new cocos.SpriteFrame({texture: new Texture2D({file: module.dirname + dir + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
+    }
+    
+    this.animNode = new cocos.nodes.Sprite();
+    this.animNode.position = new geom.Point(-32, 0);
+    this.addChild(this.animNode);
+    
+    var anim = new cocos.Animation({frames: anim, delay: 0.05});
+    this.fishtail = new cocos.actions.Animate({animation: anim, restoreOriginalFrame: false});
+}    
+
+Player.inherit(PNode, {
     selector        : null,     // Label that represents the value the player has control over
     
     wipeoutDuration : 0,        // Duration remaining on a wipeout
@@ -53,48 +95,7 @@ var Player = PNode.extend({
     turboMOT        : null,     // Hold the MOT currently affecting zVelocity
     
     fishtail        : null,     // Holds the fishtail animation
-    
-    init: function() {
-        Player.superclass.init.call(this, {xCoordinate:0, zCoordinate: this.get('chaseDist')});
-        
-        // Static binds
-        this.changeSelector = this.changeSelector.bind(this);
-        this.turboCompleted = this.turboCompleted.bind(this);
-        this.endIntermission = this.endIntermission.bind(this);
-        this.startIntermission = this.startIntermission.bind(this);
-        this.startAnimationCallback = this.startAnimationCallback.bind(this);
-        this.fishtailCallback = this.fishtailCallback.bind(this);
-        
-        this.selectorBG = cocos.nodes.Sprite.create({file: '/resources/carNumberB.png'});
-        this.selectorBG.set('zOrder', -1);
-        this.selectorBG.set('scaleX', 0.4);
-        this.selectorBG.set('scaleY', 0.4);
-        
-        // Load the car sprite for the player
-        this.sprite = cocos.nodes.Sprite.create({file: '/resources/Cars/carPlayer01.png'});
-        this.addChild({child: this.sprite});
-        
-        // Load fishtail animation
-        var animCache = cocos.AnimationCache.get('sharedAnimationCache');
-        var frameCache = cocos.SpriteFrameCache.get('sharedSpriteFrameCache');
-        
-        var anim = [];
-        var r = geom.rectMake(0, 0, 200, 115);
-        
-        // Load each frame
-        var dir = '/resources/Fishtail/fishTail00';
-        for(var i=1; i<=17; i++) {
-            anim.push(cocos.SpriteFrame.create({texture: Texture2D.create({file: module.dirname + dir + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
-        }
-        
-        this.animNode = cocos.nodes.Sprite.create();
-        this.animNode.set('position', new geom.Point(-32, 0));
-        this.addChild(this.animNode);
-        
-        var anim = cocos.Animation.create({frames: anim, delay: 0.05});
-        this.fishtail = cocos.actions.Animate.create({animation: anim, restoreOriginalFrame: false});
-    },
-    
+
     // Plays the fishtail animation
     fishtailAnimation: function() {
         this.removeChild({child: this.sprite});
@@ -116,21 +117,18 @@ var Player = PNode.extend({
     // STATIC BIND
     changeSelector: function(newVal, location) {
         // Remove previous selector if there was one
-        var prev = this.get('selector');
-        if(prev != null) {
-            this.removeChild(prev);
+        if(this.selector != null) {
+            this.selector.removeChild(this.selectorBG);
+            this.removeChild(this.selector);
         }
-        
-        newVal = this.get('newSelector');
         
         // Create the new selector if one is provided
-        if(newVal != null) {
-            var selector = newVal
-            this.get('parent').removeChild(selector);
-            this.changeSelectorByForce(selector);
+        if(this.newSelector != null) {
+            this.parent.removeChild(this.newSelector);
+            this.changeSelectorByForce(this.newSelector);
         }
         else {
-            this.set('selector', null);
+            this.selector = null;
         }
         
         setTimeout(this.endIntermission, 100);
@@ -138,52 +136,52 @@ var Player = PNode.extend({
     
     // Used to set the selector at the start of the game
     changeSelectorByForce: function(selector) {
-        var x = selector.get('contentSize').width / 2 * selector.get('scaleX');
+        var x = selector.contentSize.width / 2 * selector.scaleX;
         
-        selector.set('position', new geom.Point(x, 80));
-        selector.set('scaleX', 1.4);
-        selector.set('scaleY', 1.4);
-        this.set('selectorX', x);
-        this.set('selectorY', 80);
+        selector.position = new geom.Point(x, -80);
+        this.selectorX = x;
+        this.selectorY = -80;
         this.addChild({child: selector});
-        this.set('selector', selector);
+        this.selector = selector;
         selector.addChild({child: this.selectorBG});
     },
     
     // Starts an intermission
     // STATIC BIND
     startIntermission: function(newVal, location) {
+        L.log('CHECKPOINT_START', {});
         this.endTurboBoost();
         
-        var tm = this.get('turboMOT');
+        var tm = this.turboMOT;
         if(tm != null) {
             tm.pause();
-            this.set('turboMOT', tm);
+            this.turboMOT = tm;
         }
         
         // Stop the player on the checkpoint
-        if(this.get('zCoordinate') > location) {
-            this.set('zCoordinate', location);
+        if(this.zCoordinate > location) {
+            this.zCoordinate = location;
         }
         
-        this.set('intermission', true);
-        this.set('preInter', this.get('zVelocity'));
-        this.set('zVelocity', 0);
-        this.set('newSelector', newVal);
-        newVal.set('anchorPoint', new geom.Point(0.5, 0.5));
-        var s = newVal.get('scale') * 3;
-        var cs = newVal.get('contentSize');
-        newVal.set('scale', 0.1);
-        newVal.set('position', new geom.Point(400 + cs.width * 1.5, 100 + cs.height * 1.5));
-        this.get('parent').addChild({child: newVal});
+        var s = newVal.scale * 1.5;
+        var cs = newVal.contentSize;
+        newVal.scale = 0.1;
+        newVal.position = new geom.Point(450, 500);
+        this.parent.addChild({child: newVal});
         
-        if(this.get('selector') != null) {
-            MOT.create(255, -255, 1.0).bindTo('value', this.get('selector'), 'opacity');
+        if(this.selector != null) {
+            var m = new MOT(255, -255, 1.0);
+            m.bind(this.selector, 'opacityLink');
         }
         
-        var a1 = cocos.actions.ScaleTo.create({scale: s, duration: 0.25});
+        var a1 = new cocos.actions.ScaleTo({scale: s, duration: 0.25});
         a1.startWithTarget(newVal);
         newVal.runAction(a1);
+        
+        this.intermission = true;
+        this.preInter = this.zVelocity;
+        this.zVelocity = 0;
+        this.newSelector = newVal;
         
         setTimeout(this.startAnimationCallback, 1000);
     },
@@ -191,40 +189,40 @@ var Player = PNode.extend({
     // Finishes an intermission
     // STATIC BIND
     endIntermission: function() {
-        this.set('intermission', false);
+        this.intermission = false;
         
-        var tm = this.get('turboMOT');
+        var tm = this.turboMOT;
         if(tm != null) {
             tm.resume();
-            this.set('turboMOT', tm);
+            this.turboMOT = tm;
         }
         
-        this.set('zVelocity', this.get('preInter'));
+        this.zVelocity = this.preInter;
         events.trigger(this, 'IntermissionComplete');
+        
+        L.log('CHECKPOINT_END', {});
     },
     
     // Shows the new selector, schedules to hide if blink count is not exhausted
     // STATIC BIND
     startAnimationCallback: function() {
-        var nv = this.get('newSelector');
-        var ns = nv.get('scale') / 3;
+        var nv = this.newSelector;
         
-        var a1 = cocos.actions.ScaleTo.create({scale: ns, duration: 1.0});
+        var a1 = new cocos.actions.ScaleTo({scale: nv.scale / 1.5, duration: 1.0});
         a1.startWithTarget(nv);
         nv.runAction(a1);
         
-        var pos = this.get('position');
-        var a2 = cocos.actions.MoveTo.create({position: new geom.Point(pos.x, pos.y + this.get('selectorY')), duration: 1.0});
+        var a2 = new cocos.actions.MoveTo({position: new geom.Point(this.position.x, this.position.y + this.selectorY), duration: 1.0});
         a2.startWithTarget(nv);
         nv.runAction(a2);
         
-        setTimeout(this.changeSelector.bind(this), 1000);
+        setTimeout(this.changeSelector, 1000);
     },
     
     // Sets the wipeout status of the car, causing it to spin over time and slow down
     wipeout: function(spins) {
         this.fishtailAnimation();
-        if(this.get('turbo')) {
+        if(this.turbo) {
             this.endTurboBoost();
         }
         else {
@@ -234,37 +232,37 @@ var Player = PNode.extend({
     
     // Slows the player down due to an incorrect answer
     incorrectSlowdown: function() {
-        if(!this.speedChange((this.get('zVelocity') - this.get('minSpeed')) * RC.penaltySpeed, 0.1)) {
+        if(!this.speedChange((this.zVelocity - this.minSpeed) * RC.penaltySpeed, 0.1)) {
             setTimeout(this.incorrectSlowdown.bind(this), 100);
         }
     },
     
     // Accelerates the player
     accelerate: function (dt) {
-        if(!this.get('intermission') && this.get('turboMOT') == null) {
-            var s = this.get('zVelocity') + this.get('acceleration') * dt
-            s = Math.min(this.get('maxSpeed'), s);
-            this.set('zVelocity', s);
+        if(!this.intermission && this.turboMOT == null) {
+            var s = this.zVelocity + this.acceleration * dt
+            s = Math.min(this.maxSpeed, s);
+            this.zVelocity = s;
         }
     },
     
     // Decelerates the player
     decelerate: function (dt) {
-        if(!this.get('intermission') && this.get('turboMOT') == null) {
-            var s = this.get('zVelocity') - this.get('deceleration') * dt
-            s = Math.max(this.get('minSpeed'), s);
-            this.set('zVelocity', s);
+        if(!this.intermission && this.turboMOT == null) {
+            var s = this.zVelocity - this.deceleration * dt
+            s = Math.max(this.minSpeed, s);
+            this.zVelocity = s;
         }
     },
 
     // Starts a turbo boost if not already boosting
     startTurboBoost: function() {
-        if(!this.get('turbo') && !(this.get('wipeoutDuration') > 0) && !this.get('intermission') && this.get('turboMOT') == null) {
-            this.set('turbo', true);
-            this.set('preTurbo', this.get('zVelocity'))
+        if(!this.turbo && !(this.wipeoutDuration > 0) && !this.intermission && this.turboMOT == null) {
+            this.turbo = true;
+            this.preTurbo = this.zVelocity;
             
-            var tm = this.speedChange(this.get('turboSpeed') - this.get('zVelocity'), 0.1);
-            this.set('turboMOT', tm);
+            var tm = this.speedChange(this.turboSpeed - this.zVelocity, 0.1);
+            this.turboMOT = tm;
             events.addListener(tm, 'Completed', this.turboCompleted);
             
             return true;
@@ -275,28 +273,28 @@ var Player = PNode.extend({
     
     // STATIC BIND
     turboCompleted: function() {
-        this.set('turboMOT', null);
+        this.turboMOT = null;
     },
     
     // Ends a turbo boost if it is active (usually called when answering a question, but could be used to cut the boost early)
     endTurboBoost: function() {
-        if(this.get('turbo')) {
-            var tm = this.get('turboMOT');
+        if(this.turbo) {
+            var tm = this.turboMOT;
             if(tm != null) {
                 tm.kill();
-                this.set('turboMOT', null);
+                this.turboMOT = null;
             }
             
-            this.set('turbo', false);
-            var tm =this.speedChange(this.get('preTurbo') - this.get('zVelocity'), 0.1);
-            this.set('turboMOT', tm);
+            this.turbo = false;
+            var tm = this.speedChange(this.preTurbo - this.zVelocity, 0.1);
+            this.turboMOT = tm;
             events.addListener(tm, 'Completed', this.turboCompleted);
         }
     },
     
     // Shortcut function for applying a speed change over time, returns the MOT
     speedChange: function (amt, dur) {
-        var m = MOT.create(this.get('zVelocity'), amt, dur);
+        var m = new MOT(this.zVelocity, amt, dur);
         m.bind(this, 'zVelocity');
         
         return m;
@@ -304,55 +302,84 @@ var Player = PNode.extend({
     
     update: function(dt) {
         // Always maintain at least the minimum speed
-        var v = this.get('zVelocity');
-        if(v < this.get('minSpeed') && !this.get('intermission')) {
-            this.set('zVelocity', this.get('minSpeed'));
+        var v = this.zVelocity;
+        if(v < this.minSpeed && !this.intermission) {
+            this.zVelocity = this.minSpeed;
         }
         else if(v < 0 || isNaN(v)) {
-            this.set('zVelocity', 0);
+            this.zVelocity = 0;
         }
         
         // Stop on the finish line when crossed
-        if(this.get('zCoordinate') > RC.finishLine) {
-            this.set('zCoordinate', RC.finishLine);
-            this.unbind('zVelocity');
-            this.set('zVelocity', 0);
+        if(this.zCoordinate > RC.finishLine) {
+            this.zCoordinate = RC.finishLine;
+            //HACK: This velocity change is not supposed to be propagated
+            this._v = 0;
         }
         
         // Set the chase distance based on current speed
-        this.set('chaseDist', this.get('chaseMin') + this.get('chaseDelta') * (this.get('zVelocity') / this.get('maxSpeed')));
+        this.chaseDist = this.chaseMin + this.chaseDelta * (this.zVelocity / this.maxSpeed);
         
         // Update the camera and include the current frame's velocity which has yet to be applied to the player (eliminates jitter)
-        PNode.cameraZ = this.get('zCoordinate') - this.get('chaseDist') + (this.get('zVelocity') * dt);
+        PNode.cameraZ = this.zCoordinate - this.chaseDist + (this.zVelocity * dt);
         
         // Let PNode handle perspective rendering
         Player.superclass.update.call(this, dt);
         
         // Rotate the player as they move to keep the visual angles realistic
-        var pos = this.get('position');
+        var pos = this.position;
         if(pos.x < 450.0) {
-            this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (450.0 - pos.x))) / 1.5)
+            this.rotation = (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (450.0 - pos.x))) / 1.5
         }
         else {
-            this.set('rotation', (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (pos.x - 450.0))) / -1.5)
+            this.rotation = (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (pos.x - 450.0))) / -1.5
         }
         
         // Keep the selector from rotating with the car
-        if(this.get('selector') != null) {
+        if(this.selector != null) {
             // Do not rotate the label, keep its facing constant in respect to its own origin
-            var rot = this.get('rotation');
-            this.get('selector').set('rotation', rot * -1);
+            var rot = this.rotation;
+            this.selector.rotation = rot * -1;
             
             //Cocos works in degrees, Math works in radians, so convert
-            rot = rot * Math.PI / 180.0
+            rot = rot * Math.PI / 180.0;
             
             // Keep the label in a fixed position beneath the car, regardless of car rotation
-            var x =      this.get('selectorX') * Math.cos(rot) + this.get('selectorY') * Math.sin(rot)
-            var y = -1 * this.get('selectorX') * Math.sin(rot) + this.get('selectorY') * Math.cos(rot)
+            var x = this.selectorX * Math.cos(rot) - this.selectorY * Math.sin(rot);
+            var y = this.selectorX * Math.sin(rot) + this.selectorY * Math.cos(rot);
             
-            this.get('selector').set('position', new geom.Point(x, y));
+            this.selector.position = new geom.Point(x, y);
+        }
+        
+        L.alwaysLog['Speed'] = Math.round((this.zVelocity * 100)) / 100.0;
+        L.alwaysLog['Z'] = Math.round((this.zCoordinate * 100)) / 100.0;
+    },
+    
+    //HACK: for depreciated bindTo
+    set zCoordinate (val) {
+        this._z = val;
+        
+        if(this.dash) {
+            this.dash.playerZ = val;
         }
     },
+    
+    get zCoordinate () {
+        return this._z;
+    },
+    
+    //HACK: for depreciated bindTo
+    set zVelocity (val) {
+        this._v = val;
+        
+        if(this.dash) {
+            this.dash.speed = val;
+        }
+    },
+    
+    get zVelocity () {
+        return this._v;
+    }
 });
 
-exports.Player = Player;
+module.exports = Player;

@@ -20,19 +20,19 @@ var geo = require('geometry');
 var events = require('events');
 
 // Static imports
-var RC = require('RaceControl').RaceControl;
-var MOT = require('ModifyOverTime').ModifyOverTime;
+var RC = require('/RaceControl');
+var MOT = require('/ModifyOverTime');
 
-GuiNode = cocos.nodes.Node.extend({
-    init: function(opts) {
-        GuiNode.superclass.init.call(this, opts);
-        this._actionComplete = this._actionComplete.bind(this);
-    },
+function GuiNode (opts) {
+    GuiNode.superclass.constructor.call(this, opts);
+    this._actionComplete = this._actionComplete.bind(this);
+}
     
+GuiNode.inherit(cocos.nodes.Node, {
     // Slides a label in from the right
     slideLabelIn: function (l, d) {
         this.addChild({child: l});
-        var a = cocos.actions.MoveTo.create({position: new geo.Point(15, l.get('position').y), duration: d});
+        var a = new cocos.actions.MoveTo({position: new geo.Point(15, l.position.y), duration: d});
         a.startWithTarget(l);
         l.runAction(a);
         
@@ -41,7 +41,7 @@ GuiNode = cocos.nodes.Node.extend({
     
     // Totals a label up over time
     totalLabelUp: function(link, value, duration) {
-        var m = MOT.create(0.0, value, duration);
+        var m = new MOT(0.0, value, duration);
         m.bind(this, link);
         
         events.addListener(m, 'Completed', this._actionComplete);
@@ -61,7 +61,77 @@ GuiNode = cocos.nodes.Node.extend({
 });
 
 // Responsible for displaying the player's stats at the end of the game
-EndOfGameDisplay = GuiNode.extend({
+function EndOfGameDisplay (ta, np, a) {
+    EndOfGameDisplay.superclass.constructor.call(this);
+
+    this.timeAmt = ta;
+    this.numPenalty = np;
+    this.abort = a;
+
+    var lbl;
+    var opts = {};
+    
+    // Back Pane /////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    var dir = '/resources/EndScreen/';
+    this.backPane = new cocos.nodes.Sprite({file: dir + 'signEndScreenBack.png'});
+    this.backPane.anchorPoint = new geo.Point(0, 0);
+    this.addChild(this.backPane);
+    
+    // Between Pane ///////////////////////////////////////////////////////////////////////////////////////////////
+    
+    this.medalBars = [];
+    
+    this.medalBars.push(new cocos.nodes.Sprite({file: dir + 'EndScreenIndicatorBlack.png'}));
+    this.medalBars.push(new cocos.nodes.Sprite({file: dir + 'EndScreenIndicatorBronze.png'}));
+    this.medalBars.push(new cocos.nodes.Sprite({file: dir + 'EndScreenIndicatorSilver.png'}));
+    this.medalBars.push(new cocos.nodes.Sprite({file: dir + 'EndScreenIndicatorGold.png'}));
+    
+    var offset = 325;
+    for(var i=0; i<4; i+=1) {
+        this.medalBars[i].anchorPoint = new geo.Point(0, 0.5);
+        this.medalBars[i].scaleX = this.proportions(4-i);
+        this.medalBars[i].position = new geo.Point(offset, 270);
+        this.addChild({child: this.medalBars[i]});
+        offset += this.proportions(4-i) * 235;
+    }
+    
+    this.slider = new cocos.nodes.Sprite({file: dir + 'signEndScreenIndicator.png'});
+    this.slider.position = new geo.Point(325, 288);
+    this.addChild({child: this.slider});
+    
+    // Front Pane /////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    this.frontPane = new cocos.nodes.Sprite({file: dir + 'signEndScreenFront.png'});
+    this.frontPane.anchorPoint = new geo.Point(0, 0);
+    this.addChild(this.frontPane);
+    
+    // On Top /////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    this.buildLabel('elapsedMin',   448, 174, '0',   '14');
+    this.buildLabel('elapsedSec',   535, 174, '0.0', '14');
+    this.buildLabel('penaltyCount', 120, 114, '0',   '14');
+    this.buildLabel('penaltyCost',  268, 114, '0',   '14');
+    this.buildLabel('penaltyMin',   437, 114, '0',   '14');
+    this.buildLabel('penaltySec',   524, 114, '0.0', '14');
+    this.buildLabel('totalMin',     345, 58,  '0',   '24');
+    this.buildLabel('totalSec',     490, 58,  '0.0', '24');
+    
+    this.fix(this.penaltyCost, RC.penaltyTime, 1);
+    
+    this.eml = 0;
+    this.esl = 0;
+    this.pnl = 0;
+    this.pcl = 0;
+    this.pml = 0;
+    this.psl = 0;
+    this.tml = 0;
+    this.tsl = 0;
+    
+    this.scheduleUpdate();
+}
+
+EndOfGameDisplay.inherit(GuiNode, {
     elapsedMin      : null,     // Text label for the elapsed number of minutes
     elapsedSec      : null,     // Text label for the elapsed number of seconds
     penaltyCount    : null,     // Text label for number of errors
@@ -87,84 +157,14 @@ EndOfGameDisplay = GuiNode.extend({
     abort           : false,    // Abort state of the game
     
     sliderX         : 325,      // X location of the slider on the medal line
-    
-    init: function (ta, np, a) {
-        EndOfGameDisplay.superclass.init.call(this);
-    
-        this.set('timeAmt', ta);
-        this.set('numPenalty', np);
-        this.set('abort', a);
-    
-        var lbl;
-        var opts = {};
-        
-        // Back Pane /////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        var dir = '/resources/EndScreen/';
-        this.backPane = cocos.nodes.Sprite.create({file: dir + 'signEndScreenBack.png'});
-        this.backPane.set('anchorPoint', new geo.Point(0, 0));
-        this.addChild(this.backPane);
-        
-        // Between Pane ///////////////////////////////////////////////////////////////////////////////////////////////
-        
-        this.medalBars = [];
-        
-        this.medalBars.push(cocos.nodes.Sprite.create({file: dir + 'EndScreenIndicatorBlack.png'}));
-        this.medalBars.push(cocos.nodes.Sprite.create({file: dir + 'EndScreenIndicatorBronze.png'}));
-        this.medalBars.push(cocos.nodes.Sprite.create({file: dir + 'EndScreenIndicatorSilver.png'}));
-        this.medalBars.push(cocos.nodes.Sprite.create({file: dir + 'EndScreenIndicatorGold.png'}));
-        
-        var offset = 325;
-        for(var i=0; i<4; i+=1) {
-            this.medalBars[i].set('anchorPoint', new geo.Point(0, 0.5));
-            this.medalBars[i].set('scaleX', this.proportions(4-i));
-            this.medalBars[i].set('position', new geo.Point(offset, 80));
-            this.addChild({child: this.medalBars[i]});
-            offset += this.proportions(4-i) * 235;
-        }
-        
-        this.slider = cocos.nodes.Sprite.create({file: dir + 'signEndScreenIndicator.png'});
-        this.slider.set('position', new geo.Point(325, 62));
-        this.addChild({child: this.slider});
-        
-        // Front Pane /////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        this.frontPane = cocos.nodes.Sprite.create({file: dir + 'signEndScreenFront.png'});
-        this.frontPane.set('anchorPoint', new geo.Point(0, 0));
-        this.addChild(this.frontPane);
-        
-        // On Top /////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        this.buildLabel('elapsedMin',   448, 176, '0',   '14');
-        this.buildLabel('elapsedSec',   535, 176, '0.0', '14');
-        this.buildLabel('penaltyCount', 120, 236, '0',   '14');
-        this.buildLabel('penaltyCost',  268, 236, '0',   '14');
-        this.buildLabel('penaltyMin',   437, 236, '0',   '14');
-        this.buildLabel('penaltySec',   524, 236, '0.0', '14');
-        this.buildLabel('totalMin',     345, 292, '0',   '24');
-        this.buildLabel('totalSec',     490, 292, '0.0', '24');
-        
-        this.fix(this.penaltyCost, RC.penaltyTime, 1);
-        
-        this.eml = 0;
-        this.esl = 0;
-        this.pnl = 0;
-        this.pcl = 0;
-        this.pml = 0;
-        this.psl = 0;
-        this.tml = 0;
-        this.tsl = 0;
-        
-        this.scheduleUpdate();
-    },
-    
+
     // Helper function to build labels
     buildLabel: function(n, x, y, s, fs) {
-        var temp = cocos.nodes.Label.create({string: s, fontName: 'Android Nation Italic', fontSize: fs});
-        temp.set('anchorPoint', new geo.Point(1, 1));
-        temp.set('position', new geo.Point(x, y));
+        var temp = new cocos.nodes.Label({string: s, fontName: 'Android Nation Italic', fontSize: fs});
+        temp.anchorPoint = new geo.Point(1, 0);
+        temp.position = new geo.Point(x, y);
         this.addChild({child: temp});
-        this.set(n, temp);
+        this[n] = temp;
     },
     
     // Called every frame
@@ -193,13 +193,13 @@ EndOfGameDisplay = GuiNode.extend({
         this.fix(this.penaltyMin, this.pml, 0);
         this.fix(this.totalMin, this.tml, 0);
         
-        this.slider.set('position', new geo.Point(this.sliderX, 62));
+        this.slider.position = new geo.Point(this.sliderX, 288);
     },
     
     // Keeps the label's string value fixed to the specified precision
     fix: function(l, v, p) {
         f = parseFloat(v);
-        l.set('string', f.toFixed(p));
+        l.string = f.toFixed(p);
         l._updateLabelContentSize();
     },
     
@@ -211,23 +211,25 @@ EndOfGameDisplay = GuiNode.extend({
     
     // Begins the next step in the animation process
     next: function() {
-        var step = this.get('step');
-        
-        if(step == 0) {
+        if(this.step == 0) {
             this.totalLabelUp('esl', this.timeAmt, 0.5);
         }
         
-        else if(step == 1) {
+        else if(this.step == 1) {
             this.totalLabelUp('psl', this.numPenalty * RC.penaltyTime, 0.5);
             this.totalLabelUp('pnl', this.numPenalty, 0.5);
         }
         
-        else if(step == 3) {
+        else if(this.step == 3) {
+            console.log(this.timeAmt);
+            console.log(this.numPenalty);
+            console.log(RC.penaltyTime);
+            
             this.totalTime = this.timeAmt + this.numPenalty * RC.penaltyTime;
             this.totalLabelUp('tsl', this.totalTime, 1.0);
-            
+            console.log(this.totalTime);
             var x;
-            if(this.get('abort'))
+            if(this.abort)
                 x = 0;
             else
                 x = 235 * (1 - (this.totalTime - RC.times[0]) / (RC.times[4] - RC.times[0]));
@@ -238,10 +240,11 @@ EndOfGameDisplay = GuiNode.extend({
             console.log(x)
             console.log((this.totalTime - RC.times[0]) / (RC.times[4] - RC.times[0]))
             
-            MOT.create(this.get('sliderX'), x, 1.0).bind(this, 'sliderX');
+            var m = new MOT(this.sliderX, x, 1.0);
+            m.bind(this, 'sliderX');
         }
         
-        else if(step == 4 && this.totalTime < RC.times[3]) {
+        else if(this.step == 4 && this.totalTime < RC.times[3]) {
             var medal = '/resources/Medals/bronzeMedal.png';
             if(this.totalTime < RC.times[1]) {
                 medal = '/resources/Medals/goldMedal.png'
@@ -250,8 +253,8 @@ EndOfGameDisplay = GuiNode.extend({
                 medal = '/resources/Medals/silverMedal.png'
             }
             
-            var ms = cocos.nodes.Sprite.create({file: medal});
-            ms.set('position', new geo.Point(670, 120));
+            var ms = new cocos.nodes.Sprite({file: medal});
+            ms.position = new geo.Point(670, 230);
             this.addChild({child: ms});
             
             //Signals "Retry" and "Next Level" buttons to appear
@@ -261,11 +264,11 @@ EndOfGameDisplay = GuiNode.extend({
             setTimeout(function() {events.trigger(that, 'actionComplete');}, 1000);
         }
         
-        else if(step == 5) {
+        else if(this.step == 5) {
             events.trigger(this, 'complete');
         }
         
-        this.set('step', step + 1);
+        this.step += 1;
     },
     
     // Helper function that gives area percentage for medal time ranges
@@ -274,4 +277,4 @@ EndOfGameDisplay = GuiNode.extend({
     }
 });
 
-exports.EndOfGameDisplay = EndOfGameDisplay
+module.exports = EndOfGameDisplay;

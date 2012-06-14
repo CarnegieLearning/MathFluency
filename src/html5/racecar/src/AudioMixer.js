@@ -19,64 +19,64 @@ var cocos = require('cocos2d');
 var events = require('events');
 
 // Static requires
-var MOT = require('ModifyOverTime').ModifyOverTime;
+var MOT = require('/ModifyOverTime');
 
 // Project requires
-var AudioTrack = require('AudioTrack').AudioTrack;
+var AudioTrack = require('/AudioTrack');
 
 // Only need a single Audio Mixer, so the class is static
 // Responsible for managing all the audio in the app
-var AudioMixer = BObject.extend({
-    sounds : null, // Dictionary of AudioTracks
-    availible : false, // true if browser supports <audio>
-    ogg : false, // true if browser supports ogg/oga format
-    mp3 : false, // true is browser supports mp3 format
-    muted : false, // Whether or not all audio should be muted
-    volume : 1, // Master volume
+function AudioMixer() {
+    AudioMixer.superclass.constructor.call(this);
     
-    init: function () {
-        AudioMixer.superclass.init.call(this);
-        
-        this.sounds = {};
-        
-        // If AudioMixer is disabled, do not do anything else
-        if(!AudioMixer.enabled) {
-            console.log("AudioMixer is currently disabled");
-            return;
-        }
-        
-        this.crossFadeComplete = this.crossFadeComplete.bind(this);
+    this.sounds = {};
+    
+    // If AudioMixer is disabled, do not do anything else
+    if(!AudioMixer.enabled) {
+        console.log("AudioMixer is currently disabled");
+        return;
+    }
+    
+    this.crossFadeComplete = this.crossFadeComplete.bind(this);
 
-        var a = document.createElement('audio');
-        // Detect <audio> capability
-        if(a.canPlayType) {
-            this.set('availible', true);
-            
-            // Detect ogg/oga capability
-            var check = a.canPlayType('audio/ogg; codecs="vorbis"');
-            if(check != '' && check != 'no') {
-                this.set('ogg', true);
-            }
-            
-            // Detect mp3 capability
-            check = a.canPlayType('audio/mpeg;')
-            if(check != '' && check != 'no') {
-                this.set('mp3', true);
-            }
+    var a = document.createElement('audio');
+    // Detect <audio> capability
+    if(a.canPlayType) {
+        this.availible = true;
+        
+        // Detect ogg/oga capability
+        var check = a.canPlayType('audio/ogg; codecs="vorbis"');
+        if(check != '' && check != 'no') {
+            this.ogg = true;
         }
-    },
+        
+        // Detect mp3 capability
+        check = a.canPlayType('audio/mpeg;')
+        if(check != '' && check != 'no') {
+            this.mp3 = true;
+        }
+    }
+}
+
+AudioMixer.inherit(Object, {
+    sounds      : null,  // Dictionary of AudioTracks
+    availible   : false, // true if browser supports <audio>
+    ogg         : false, // true if browser supports ogg/oga format
+    mp3         : false, // true is browser supports mp3 format
+    muted       : false, // Whether or not all audio should be muted
+    volume      : 1,     // Master volume
 
     // Load a sound, do NOT supply a file extension with the filename
     loadSound: function(ref, filename) {
-        if(!this.get('availible')) {
+        if(!this.availible) {
             return;
         }
         
         // Set file extension based on filetype(s) supported
-        if(this.get('ogg')) {
+        if(this.ogg) {
             filename += '.ogg';
         }
-        else if(this.get('mp3')) {
+        else if(this.mp3) {
             filename += '.mp3';
         }
         else {
@@ -85,16 +85,12 @@ var AudioMixer = BObject.extend({
         }
         
         if(!this.checkRef(ref)) {
-            var sndList = this.get('sounds');
-            
             try {
-                sndList[ref] = AudioTrack.create(filename);
+                this.sounds[ref] = new AudioTrack(filename);
             }
             catch(exception) {
                 console.log(exception);
             }
-            
-            this.set('sounds', sndList);
         }
         else {
             console.log('AudioTrack already exists at reference: ' + ref);
@@ -171,10 +167,21 @@ var AudioMixer = BObject.extend({
         }
     },
     
+    // Sets specific track's volume
+    setTrackVolume: function(t, v) {
+        if(!this.availible) {
+            return;
+        }
+        
+        if(this.checkRef(t)) {
+            this.getSound(t).setVolume(v);
+        }
+    },
+    
     // Gets the specificied AudioTrack if it exists
     getSound: function(ref) {
         if(this.checkRef(ref)) {
-            return this.get('sounds')[ref];
+            return this.sounds[ref];
         }
         return null;
     },
@@ -185,8 +192,8 @@ var AudioMixer = BObject.extend({
         var t = this.getSound(to);
         
         if(f && t) {
-            MOT.create(1, -1, dur).bindFunc(f, f.setVolume);
-            MOT.create(0, 1, dur).bindFunc(t, t.setVolume);
+            (new MOT(1, -1, dur)).bindFunc(f, f.setVolume);
+            (new MOT(0, 1, dur)).bindFunc(t, t.setVolume);
         }
         
         setTimeout(this.crossFadeComplete, dur * 1000);
@@ -208,4 +215,4 @@ var AudioMixer = BObject.extend({
 // Static constants
 AudioMixer.enabled = true; // Setting to false disables constructor, preventing audio from playing
 
-exports.AudioMixer = AudioMixer
+module.exports = AudioMixer

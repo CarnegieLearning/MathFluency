@@ -18,28 +18,29 @@ var cocos = require('cocos2d');
 var events = require('events');
 var geom = require('geometry');
 
-var PNode = require('PerspectiveNode').PerspectiveNode;
+var PNode = require('/PerspectiveNode');
 
 // Represents a single question to be answered by the player
 // TODO: Build with an options object to allow easier initialization when customizing away from default values
-var Intermission = PNode.extend({
+function Intermission (selector, z) {
+    Intermission.superclass.constructor.call(this, {xCoordinate:0, zCoordinate: z});
+    
+    // Initialize all variables
+    this.selector = selector;
+    
+    // Schedule the per frame update
+    this.scheduleUpdate();
+}
+    
+Intermission.inherit(PNode, {
     fired       : false,        // True if the intermission has already fired
     selector    : null,         // Selector to change to during the intermission
-    init: function(selector, z) {
-        Intermission.superclass.init.call(this, {xCoordinate:0, zCoordinate: z});
-        
-        // Initialize all variables
-        this.selector = selector;
-        
-        // Schedule the per frame update
-        this.scheduleUpdate();
-    },
     
     // Manages question timing and movement
     update: function(dt) {
-        if(PNode.cameraZ + 6 >= this.get('zCoordinate') && !this.fired) {
+        if(PNode.cameraZ + 6 >= this.zCoordinate && !this.fired) {
             this.fired = true;
-            events.trigger(this, 'changeSelector', this.selector, this.get('zCoordinate'));
+            events.trigger(this, 'changeSelector', this.selector, this.zCoordinate);
         }
         
         Intermission.superclass.update.call(this, dt);
@@ -48,4 +49,4 @@ var Intermission = PNode.extend({
 
 // TODO: Write static helper for building an options object to initialize a question
 
-exports.Intermission = Intermission
+module.exports = Intermission

@@ -16,11 +16,9 @@ Copyright 2011, Carnegie Learning
 
 var cocos = require('cocos2d');
 
-var RaceControl = BObject.extend({
-    init: function () {
-        RaceControl.superclass.init.call(this);
-    }
-});
+function RaceControl () {
+    console.log('WARNING: Attempting to instantiate static class RaceControl');
+}
 
 RaceControl.finishLine          = 3200;                     // Holds the z value of the finish line
 RaceControl.initialCountdown    = 3000;                     // Initial countdown time in milliseconds
@@ -53,4 +51,4 @@ RaceControl.penaltySpeed        = -0.1;                     // Percentage speed 
 RaceControl.maxTimeWindow       = 110 / 200.0 * 0.9;        // Maximum time between two important z values: min z spacing / max speed * 90%
 RaceControl.maxDistWindow       = 300;                      // Maximum distance coverable in 2 seconds
 
-exports.RaceControl = RaceControl
+module.exports = RaceControl

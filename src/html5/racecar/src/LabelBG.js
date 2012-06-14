@@ -17,40 +17,50 @@ Copyright 2011, Carnegie Learning
 // Import the cocos2d module
 var cocos = require('cocos2d');
 
-var LabelBG = cocos.nodes.Node.extend({
+function LabelBG (opts) {
+    // You must always call the super class version of init
+    LabelBG.superclass.constructor.call(this, opts);
+    
+    opts['string']    = this.defaulter(opts, 'string',    '');
+    opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
+    opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
+    opts['fontSize']  = this.defaulter(opts, 'fontSize',  '16');
+    
+    var label = new cocos.nodes.Label(opts)
+    this.label = label;
+    this.addChild({child: label});
+    
+    this.bgColor = this.defaulter(opts, 'bgColor', '#FFFFFF');
+
+    this.contentSize = this.label.contentSize;
+}
+    
+    
+LabelBG.inherit(cocos.nodes.Node, {
     label  : null,      //The label that the class wraps
     bgColor: '#FFFFFF', //The color of the background that will be behind the label
     
-    init: function(opts) {
-        // You must always call the super class version of init
-        LabelBG.superclass.init.call(this, opts);
-        
-        opts['string']    = this.defaulter(opts, 'string',    '');
-        opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
-        opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
-        opts['fontSize']  = this.defaulter(opts, 'fontSize',  '16');
-        
-        var label = cocos.nodes.Label.create(opts)
-        label.bindTo('opacity', this, 'opacity');
-        this.set('label', label);
-        this.addChild({child: label});
-        
-        this.set('bgColor', this.defaulter(opts, 'bgColor', '#FFFFFF'));
-
-        this.set('contentSize', this.get('label').get('contentSize'));
-    },
-    
     // Draws the background for the label
     draw: function(context) {
-        var size = this.get('contentSize');
+        var size = this.contentSize;
         
-        context.fillStyle = this.get('bgColor');
+        context.fillStyle = this.bgColor;
         context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
     },
     
     //TODO: Put into a utility script/class
     defaulter: function(obj, prop, def) {
         return obj.hasOwnProperty(prop) ? obj[prop] : def;
+    },
+    
+    // With bindTo depreciated, a setter is needed to control multiple objects' opacity
+    set opacityLink (val) {
+        this.opacity = val;
+        this.label.opacity = val;
+    },
+    
+    get opacityLink () {
+        return this.opacity;
     }
 });
 
@@ -67,4 +77,4 @@ LabelBG.helper = function(String, FontColor, BgColor, FontSize, FontName) {
 
 LabelBG.identifier = 'String';
 
-exports.LabelBG = LabelBG
+module.exports = LabelBG

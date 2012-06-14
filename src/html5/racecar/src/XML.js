@@ -15,11 +15,8 @@ Copyright 2011, Carnegie Learning
 */
 
 // Static class, so nothing much here
-var XML = BObject.extend({
-    init: function() {
-        XML.superclass.init.call(this);
-    }
-});
+function XML () {
+}
 
 // Simple, general XML parser
 XML.parser = function(root, ret) {
@@ -94,4 +91,4 @@ XML.getChildrenByName = function(root, name) {
     return ret;
 }
 
-exports.XML = XML
+module.exports = XML

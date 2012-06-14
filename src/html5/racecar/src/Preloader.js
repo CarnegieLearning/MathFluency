@@ -21,39 +21,40 @@ var events = require('events');
 var Texture2D = require('cocos2d').Texture2D;
 
 // Preloading screen
-var Preloader = cocos.nodes.Node.extend({
+function Preloader () {
+    Preloader.superclass.constructor.call(this);
+    
+    var dir = '/resources/Loader/';
+    
+    // Load animation
+    var animCache = cocos.AnimationCache.sharedAnimationCache;
+    var frameCache = cocos.SpriteFrameCache.sharedSpriteFrameCache;
+    
+    var anim = [];
+    var r = geo.rectMake(0, 0, 310, 73);
+
+    for(var i=1; i<=16; i++) {
+        anim.push(new cocos.SpriteFrame({texture: new Texture2D({file: module.dirname + dir + 'LoadingScreen' + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
+    }
+    
+    var animNode = new cocos.nodes.Sprite();
+    animNode.position = new geo.Point(440, 314);
+    animNode.zOrder = 2;
+    this.addChild(animNode);
+    
+    var Animation = new cocos.Animation({frames: anim, delay: 0.19});
+    animNode.runAction(new cocos.actions.Animate({animation: Animation, restoreOriginalFrame: false}));
+    
+    this.scheduleUpdate();
+}
+
+Preloader.inherit(cocos.nodes.Node, {
     pct: 0.0,       // Percent loaded
-    
-    init: function() {
-        Preloader.superclass.init.call(this);
-        
-        var dir = '/resources/Loader/';
-        
-        // Load animation
-        var animCache = cocos.AnimationCache.get('sharedAnimationCache');
-        var frameCache = cocos.SpriteFrameCache.get('sharedSpriteFrameCache');
-        
-        var anim = [];
-        var r = geo.rectMake(0, 0, 310, 73);
-    
-        for(var i=1; i<=16; i++) {
-            anim.push(cocos.SpriteFrame.create({texture: Texture2D.create({file: module.dirname + dir + 'LoadingScreen' + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
-        }
-        
-        var animNode = cocos.nodes.Sprite.create();
-        animNode.set('position', new geo.Point(440, 314));
-        animNode.set('zOrder', 2);
-        this.addChild(animNode);
-        
-        var Animation = cocos.Animation.create({frames: anim, delay: 0.19});
-        animNode.runAction(cocos.actions.Animate.create({animation: Animation, restoreOriginalFrame: false}));
-        
-        this.scheduleUpdate();
-    },
-    
+
     // Fake loading update
     update: function(dt) {
         this.pct += dt * 0.33;
+        console.log('preloader ' + this.pct);
         if(this.pct > 1) {
             this.pct = 1;
             events.trigger(this, 'loaded');
@@ -68,4 +69,4 @@ var Preloader = cocos.nodes.Node.extend({
     }
 });
 
-exports.Preloader = Preloader
+module.exports = Preloader

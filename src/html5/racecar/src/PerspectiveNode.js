@@ -19,15 +19,37 @@ var geom = require('geometry');
 var events = require('events');
 var util = require('util');
 
-var RC = require('RaceControl').RaceControl;
+var RC = require('/RaceControl');
 
 // Base class for rending objects in perspective view
-var PerspectiveNode = cocos.nodes.Node.extend({
+function PerspectiveNode (opts) {
+    PerspectiveNode.superclass.constructor.call(this, opts);
+    
+    this.position = new geom.Point(0, 0);
+    this.anchorPoint = new geom.Point(0, 0);
+    
+    //Set properties from the option object
+    var i = -1;
+    while(++i < PerspectiveNode.params.length) {
+        if (opts[PerspectiveNode.params[i]]) {
+            this[PerspectiveNode.params[i]] = opts[PerspectiveNode.params[i]];
+        }
+    }
+    
+    if(this.content != null) {
+        this.content.anchorPoint = new geom.Point(0, 0);
+        this.addChild({child: this.content});
+        this.contentSize = this.content.contentSize;
+    }
+    
+    this.idle = this.idle.bind(this);
+}   
+    
+PerspectiveNode.inherit(cocos.nodes.Node, {
     visibility  : 1,        // Content scale multiplier, used BEFORE clamping
     minScale    : null,     // Minimum scale for this node due to perspective distance (null disables minimum)
     maxScale    : null,     // Maximum scale for this node due to perspective distance (null disables maximum)
     xCoordinate : 0,        // The node's X position in the world
-    zCoordinate : 0,        // The node's Z position in the world
     silent      : false,    // If set to true, will not fire events
     added       : false,    // True once added to the scene
     lockX       : false,    // Set to true to lock X value
@@ -39,58 +61,36 @@ var PerspectiveNode = cocos.nodes.Node.extend({
     xVelocity   : 0,        // Meters per second speed along the X axis
     content     : null,     // Content to be displayed in the node
     delOnDrop   : true,     // If true, runs cleanup when the node is removed from the scene
-    
-    init: function(opts) {
-        PerspectiveNode.superclass.init.call(this, opts);
-        
-        this.set('position', new geom.Point(0, 0));
-        this.set('anchorPoint', new geom.Point(0, 0));
-        
-        //Set properties from the option object
-        util.each('visibility minScale maxScale xCoordinate zCoordinate silent lockX lockY alignV alignH dropoffDist zVelocity xVelocity content delOnDrop'.w(), util.callback(this, function (name) {
-            if (opts[name]) {
-                this.set(name, opts[name]);
-            }
-        }));
-        
-        if(this.get('content') != null) {
-            this.get('content').set('anchorPoint', new geom.Point(0, 0));
-            this.addChild({child: this.get('content')});
-            this.set('contentSize', this.get('content').get('contentSize'));
-        }
-        
-        this.idle = this.idle.bind(this);
-    },
-    
+
     // Explicitly unschedules and unsubscribes this node
     cleanup: function () {
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        cocos.Scheduler.sharedScheduler.unscheduleUpdateForTarget(this);
         events.clearInstanceListeners(this);
     },
     
     // Callen when place into the scene
     onEnter: function() {
-        this.set('added', true);
+        this.added = true;
         PerspectiveNode.superclass.onEnter.call(this);
     },
     
     // Called when removed from the scene, if delOnDrop, runs cleanup, otherwise explictly reschedules the node
     onExit: function () {
-        this.set('added', false);
+        this.added = false;
         PerspectiveNode.superclass.onExit.call(this);
         
-        if(this.get('delOnDrop')) {
+        if(this.delOnDrop) {
             this.cleanup();
         }
         else {
-            cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+            cocos.Scheduler.sharedScheduler.scheduleUpdate({target: this, priority: 0, paused: false});
         }
     },
     
     // Applies visibility modifier and clamps to scale, then returns the augmented value
     scale: function (s) {
         s *= this.visibility;
-    
+        
         // Apply clamps to scale as needed
         if(this.minScale != null) {
             s = Math.max(this.minScale, s);
@@ -128,7 +128,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         var distance = this.zCoordinate - PerspectiveNode.cameraZ;
         
         if(distance <= PerspectiveNode.horizonDistance + RC.maxDistWindow) {
-            cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
+            cocos.Scheduler.sharedScheduler.scheduleUpdate({target: this, priority: 0, paused: false});
         }
         else {
             setTimeout(this.idle, 1000);
@@ -142,7 +142,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
         this.xCoordinate = this.xCoordinate + this.xVelocity * dt;
         
         var distance = this.zCoordinate - PerspectiveNode.cameraZ;
-    
+        
         // Only worry about drawing once node is on our side of the horizon
         if(distance > PerspectiveNode.horizonDistance) {
             if(this.added && !this.silent) {
@@ -154,7 +154,7 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             if(!this.added && !this.silent) {
                 events.trigger(this, 'addMe', this);
             }
-        
+            
             // Perspective transform
             var scale = PerspectiveNode.horizonDistance * PerspectiveNode.horizonScale / distance;
             var screenX, screenY;
@@ -174,25 +174,37 @@ var PerspectiveNode = cocos.nodes.Node.extend({
             // Check to see if Y axis is locked
             if(!this.lockY) {
                 var yScale = (1.0 / (1.0 - PerspectiveNode.horizonScale)) * (scale - PerspectiveNode.horizonScale);
-                screenY = PerspectiveNode.horizonStart + PerspectiveNode.horizonHeight * (yScale);
-                screenY -= this.alignV * this.getContentHeight() * displayScale;
+                screenY = PerspectiveNode.horizonHeight - PerspectiveNode.horizonHeight * (yScale);
+                screenY += this.alignV * this.getContentHeight() * displayScale;
             }
             else {
                 screenY = -1 * this.alignV * this.getContentHeight() * displayScale;
             }
-
+            
             // Set position
-            this.set('position', new geom.Point(screenX, screenY));
+            this.position = new geom.Point(screenX, screenY);
         }
         // Once the node drops too far back, notify for removal
         else if (!this.silent) {
             events.trigger(this, 'removeMe', this);
         }
+    },
+    
+    //HACK: for depreciated bindTo
+    set zCoordinate (val) {
+        this.z = val;
+        
+        if(this.dash && this.dashStr) {
+            this.dash[this.dashStr] = val;
+        }
+    },
+    
+    get zCoordinate () {
+        return this.z;
     }
 });
 
 // Static constants
-PerspectiveNode.horizonStart    = 191;      // From top of screen to start of horizon in pixels
 PerspectiveNode.horizonHeight   = 409;      // From horizonStart to the bottom of the screen in pixels
 PerspectiveNode.horizonDistance = 100;      // In meters from the camera
 PerspectiveNode.horizonScale    = 0.074;    // Scale of objects on the horizon (553:41)
@@ -200,30 +212,10 @@ PerspectiveNode.roadWidth       = 9.0;      // Width of road at bottom of the sc
 PerspectiveNode.roadWidthPix    = 553;      // Width of road at bottom of the screen in pixels
 PerspectiveNode.roadOffset      = 175;      // Number of pixels from the left hand side that the road starts at
 
+// Array of legal values in constructor opts argument
+PerspectiveNode.params = ['visibility','minScale','maxScale','xCoordinate','zCoordinate','silent','lockX','lockY','alignV','alignH','dropoffDist','zVelocity','xVelocity','content','delOnDrop'];
+
 // Static variables
 PerspectiveNode.cameraZ = 0;                // Current Z coordinate of the camera
 
-var PerspectiveNodeAnim = PerspectiveNode.extend({
-    init: function (opts) {
-        PerspectiveNodeAnim.superclass.init.call(this, opts);
-    },
-    
-    prepareAnimation: function (act) {
-        this.act = act;
-        
-        events.addListener(this.act, 'actionComplete', this.runAnimation.bind(this));
-    },
-    
-    runAnimation: function() {
-        this.content.runAction(this.act);
-    },
-    
-    onEnter: function() {
-        this.runAnimation();
-        
-        PerspectiveNodeAnim.superclass.onEnter.call(this);
-    },
-});
-
-exports.PerspectiveNode = PerspectiveNode
-exports.PerspectiveNodeAnim = PerspectiveNodeAnim
+module.exports = PerspectiveNode

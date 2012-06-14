@@ -17,65 +17,60 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
-var PNode = require('PerspectiveNode').PerspectiveNode;
-var RC = require('RaceControl').RaceControl;
+var PNode = require('/PerspectiveNode');
+var RC = require('/RaceControl');
 
-var Background = cocos.nodes.Node.extend({
+function Background (lanes) {
+    Background.superclass.constructor.call(this);
+    
+    var dir = '/resources/Background/';
+    
+    // Sky background
+    this.sky = new cocos.nodes.Sprite({file: dir + 'sky.png'});
+    this.sky.anchorPoint = new geo.Point(0.5, 0);
+    this.sky.position = new geo.Point(450, 0);
+    this.addChild({child: this.sky});
+    
+    // City layer, will move up as race progresses, between sky and pavement
+    this.city = new cocos.nodes.Sprite({file: dir + 'city.png'});
+    this.city.anchorPoint = new geo.Point(0.5, 1);
+    this.city.position = new geo.Point(450, 460);
+    this.city.scaleX = 0.52;
+    this.city.scaleY = 0.52;
+    this.addChild({child: this.city});
+    
+    // Base pavement layer
+    this.pave = new cocos.nodes.Sprite({file: dir + 'pavement.png'});
+    this.pave.anchorPoint = new geo.Point(0.5, 0);
+    this.pave.position = new geo.Point(450, -41);
+    this.addChild({child: this.pave});
+    
+    // Street for cars
+    this.street = new cocos.nodes.Sprite({file: dir + 'street.png'});
+    this.street.anchorPoint = new geo.Point(0.5, 0);
+    this.street.position = new geo.Point(450, -25);
+    this.addChild({child: this.street});
+    
+    // Lane Delimiters
+    //TODO: 2(/4?) lane version
+    this.lines = new cocos.nodes.Sprite({file: dir + 'dividingLines3.png'});
+    this.lines.anchorPoint = new geo.Point(0.5, 0);
+    this.lines.position = new geo.Point(450, 000);
+    this.addChild({child: this.lines});
+}
+
+Background.inherit(cocos.nodes.Node, {
     sky     : null,     // Holds the sky background image
     city    : null,     // Holds the city image
     pave    : null,     // Holds the pavement image
     street  : null,     // Holds the street image
     lines   : null,     // Holds the lane delimiter image
 
-    init: function(lanes) {
-        Background.superclass.init.call(this);
-        
-        var dir = '/resources/Background/';
-        
-        // Sky background
-        this.sky = cocos.nodes.Sprite.create({file: dir + 'sky.png'});
-        this.sky.set('anchorPoint', new geo.Point(0.5, 0));
-        this.sky.set('position', new geo.Point(450, 0));
-        this.addChild({child: this.sky});
-        
-        // City layer, will move up as race progresses, between sky and pavement
-        this.city = cocos.nodes.Sprite.create({file: dir + 'city.png'});
-        this.city.set('anchorPoint', new geo.Point(0.5, 0));
-        this.city.set('position', new geo.Point(450, 140));
-        this.city.set('scaleX', 0.52);
-        this.city.set('scaleY', 0.52);
-        this.addChild({child: this.city});
-        
-        // Base pavement layer
-        this.pave = cocos.nodes.Sprite.create({file: dir + 'pavement.png'});
-        this.pave.set('anchorPoint', new geo.Point(0.5, 1));
-        this.pave.set('position', new geo.Point(450, 641));
-        this.addChild({child: this.pave});
-        
-        // Street for cars
-        this.street = cocos.nodes.Sprite.create({file: dir + 'street.png'});
-        this.street.set('anchorPoint', new geo.Point(0.5, 1));
-        this.street.set('position', new geo.Point(450, 625));
-        this.addChild({child: this.street});
-        
-        // Lane Delimiters
-        //TODO: 2(/4?) lane version
-        this.lines = cocos.nodes.Sprite.create({file: dir + 'dividingLines3.png'});
-        this.lines.set('anchorPoint', new geo.Point(0.5, 1));
-        this.lines.set('position', new geo.Point(450, 600));
-        this.addChild({child: this.lines});
-    },
-    
     // Raises sky and city as race progresses
     progress: function(p) {
-        var pt = this.sky.get('position');
-        pt.y = -130 * p;
-        this.sky.set('position', pt);
-        
-        var pt = this.city.get('position');
-        pt.y = 140 - 130 * p;
-        this.city.set('position', pt);
+        this.sky.position.y = 130 * p;
+        this.city.position.y = 460 + 130 * p;
     }
 });
 
-exports.Background = Background
+module.exports = Background

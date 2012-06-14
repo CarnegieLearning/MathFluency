@@ -15,19 +15,16 @@ Copyright 2011, Carnegie Learning
 */
 
 // Project Imports
-var FractionRenderer = require('FractionRenderer').FractionRenderer;
-var LabelBG = require('LabelBG').LabelBG;
-var PieChart = require('PieChart').PieChart;
+var FractionRenderer = require('/FractionRenderer');
+var LabelBG = require('/LabelBG');
+var PieChart = require('/PieChart');
 
 // Static Imports
-var XML = require('XML').XML;
+var XML = require('/XML');
 
 // Represents a single question to be answered by the player
-var Content = BObject.extend({
-    init: function(opts) {
-        Content.superclass.init.call(this, opts);
-    }
-});
+function Content () {
+}
 
 // Holds registered subclasses' creation functions
 Content.registeredContent = {};
@@ -57,12 +54,11 @@ Content.buildFrom = function(xmlNode) {
     if(Content._validateNode(xmlNode)) {
         var cs = XML.getChildByName(xmlNode, 'ContentSettings');
         if(cs) {
-            return Content.registeredContent[xmlNode.attributes.TYPE].create.call(
-                Content.registeredContent[xmlNode.attributes.TYPE], cs.attributes);
+            return new Content.registeredContent[xmlNode.attributes.TYPE](cs.attributes);
         }
     }
     
     return null;
 }
 
-exports.Content = Content;
+module.exports = Content;
