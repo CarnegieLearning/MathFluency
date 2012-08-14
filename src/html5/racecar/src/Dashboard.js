@@ -96,17 +96,19 @@ function Dashboard (ckpt) {
     }
     
     // Minimap dots
-    this.miniBronze = new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotBronze.png'});
-    this.miniBronze.position = new geo.Point(53, 90);
-    this.addChild({child: this.miniBronze});
+    this.miniDots = []
     
-    this.miniSilver = new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotSilver.png'});
-    this.miniSilver.position = new geo.Point(43, 90);
-    this.addChild({child: this.miniSilver});
+    this.miniDots.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotGold.png'}));
+    this.miniDots[0].position = new geo.Point(50, 90);
+    this.addChild({child: this.miniDots[0]});
     
-    this.miniGold = new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotGold.png'});
-    this.miniGold.position = new geo.Point(50, 90);
-    this.addChild({child: this.miniGold});
+    this.miniDots.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotSilver.png'}));
+    this.miniDots[1].position = new geo.Point(43, 90);
+    this.addChild({child: this.miniDots[1]});
+    
+    this.miniDots.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotBronze.png'}));
+    this.miniDots[2].position = new geo.Point(53, 90);
+    this.addChild({child: this.miniDots[2]});
     
     this.miniPlayer = new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotPlayer.png'});
     this.miniPlayer.position = new geo.Point(46, 90);
@@ -151,7 +153,7 @@ Dashboard.inherit(cocos.nodes.Node, {
     maxSpeed     : 200,     // Maximum possible speed to display/calculate
     timerAcc     : 1,       // Number of digits to the right of the decimal place for timer accuracy
     pause        : false,   // Stores if the elapsed timer should be paused.
-    speedMode    : 2,       // 0: m/s  1: kph  2: mph
+    speedMode    : 2,       // Defines what units to use when displaying speed
     
     // Minimap facilitation
     playerZ      : 0,       // The player's current location (updated by Player)
@@ -162,7 +164,7 @@ Dashboard.inherit(cocos.nodes.Node, {
 
     // Updates a minimap dot's position
     updateDot: function (dot, val) {
-        dot.position.y = Math.max(90 + ((val / RC.finishLine) * 115), 205);
+        dot.position.y = Math.min(90 + ((val / RC.finishLine) * 115), 205);
     },
     
     // Starts tracking time and updating the dashboard timer.
@@ -231,9 +233,9 @@ Dashboard.inherit(cocos.nodes.Node, {
         
         // Update minimap
         this.updateDot(this.miniPlayer, this.playerZ);
-        this.updateDot(this.miniGold, this.goldZ);
-        this.updateDot(this.miniSilver, this.silverZ);
-        this.updateDot(this.miniBronze, this.bronzeZ);
+        this.updateDot(this.miniDots[0], this.goldZ);
+        this.updateDot(this.miniDots[1], this.silverZ);
+        this.updateDot(this.miniDots[2], this.bronzeZ);
         
         // Place the medal meter needle
         if(this.elapsedTime > 0) {
@@ -277,7 +279,7 @@ Dashboard.inherit(cocos.nodes.Node, {
     placeMedalNeedle: function(p) {
         this.medalNeedle.rotation = 87 + p * 41;
         
-        // Placement depends primarily on which quartile the needle needs to be in
+        // Placement depends on which quartile the needle needs to be in
         if(p < 0.25) {
             p *= 4;
             

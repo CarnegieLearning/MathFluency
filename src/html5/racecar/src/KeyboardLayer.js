@@ -27,8 +27,9 @@ function KeyboardLayer() {
     
     // Build the array to hold keyboard state
     this.keys = Array(256);
-    for(key in this.keys) {
-        key = 0;
+    var i = 0;
+    while(i < 256) {
+        this.keys[i++] = 0;
     }
 }
 
@@ -49,8 +50,11 @@ KeyboardLayer.inherit(cocos.nodes.Layer, {
     },
     
     // Check to see if a valid key is pressed
-    // Returns false is the key was invalid or not pressed
-    // Returns 1 if this is the first time we are detecting the press, 2 if we have detected this press previously
+    // Returns: false is the key was invalid or not pressed
+    //          0 if the key has not been pressed
+    //          1 if it was released since last checked
+    //          2 if this is the first time we are detecting the press
+    //          3 if we have detected this press previously
     checkKey: function(keyCode) {
         if(keyCode > -1 && keyCode < 256) {
             var ret = this.keys[keyCode];
@@ -64,6 +68,15 @@ KeyboardLayer.inherit(cocos.nodes.Layer, {
             }
             
             return ret;
+        }
+        
+        return false;
+    },
+    
+    // As checkKey but does not update the state of the key
+    silentCheckKey: function(keyCode) {
+        if(keyCode > -1 && keyCode < 256) {
+            return this.keys[keyCode];
         }
         
         return false;

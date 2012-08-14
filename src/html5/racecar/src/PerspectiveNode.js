@@ -24,6 +24,8 @@ var RC = require('/RaceControl');
 // Base class for rending objects in perspective view
 function PerspectiveNode (opts) {
     PerspectiveNode.superclass.constructor.call(this, opts);
+
+    this.zCoordinate = 0;
     
     this.position = new geom.Point(0, 0);
     this.anchorPoint = new geom.Point(0, 0);
@@ -43,8 +45,8 @@ function PerspectiveNode (opts) {
     }
     
     this.idle = this.idle.bind(this);
-}   
-    
+}
+
 PerspectiveNode.inherit(cocos.nodes.Node, {
     visibility  : 1,        // Content scale multiplier, used BEFORE clamping
     minScale    : null,     // Minimum scale for this node due to perspective distance (null disables minimum)
@@ -61,6 +63,8 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
     xVelocity   : 0,        // Meters per second speed along the X axis
     content     : null,     // Content to be displayed in the node
     delOnDrop   : true,     // If true, runs cleanup when the node is removed from the scene
+    
+    disabled    : false,
 
     // Explicitly unschedules and unsubscribes this node
     cleanup: function () {
@@ -151,7 +155,7 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
         }
         else if(distance <= PerspectiveNode.horizonDistance && distance > this.dropoffDist) {
             // Make sure that the node gets added to the scene graph once it should be visible
-            if(!this.added && !this.silent) {
+            if(!this.added && !this.silent && !this.disabled) {
                 events.trigger(this, 'addMe', this);
             }
             

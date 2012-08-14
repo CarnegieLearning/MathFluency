@@ -221,13 +221,9 @@ EndOfGameDisplay.inherit(GuiNode, {
         }
         
         else if(this.step == 3) {
-            console.log(this.timeAmt);
-            console.log(this.numPenalty);
-            console.log(RC.penaltyTime);
-            
             this.totalTime = this.timeAmt + this.numPenalty * RC.penaltyTime;
             this.totalLabelUp('tsl', this.totalTime, 1.0);
-            console.log(this.totalTime);
+            
             var x;
             if(this.abort)
                 x = 0;
@@ -235,10 +231,6 @@ EndOfGameDisplay.inherit(GuiNode, {
                 x = 235 * (1 - (this.totalTime - RC.times[0]) / (RC.times[4] - RC.times[0]));
                 
             x = Math.max(0, x);
-            
-            
-            console.log(x)
-            console.log((this.totalTime - RC.times[0]) / (RC.times[4] - RC.times[0]))
             
             var m = new MOT(this.sliderX, x, 1.0);
             m.bind(this, 'sliderX');

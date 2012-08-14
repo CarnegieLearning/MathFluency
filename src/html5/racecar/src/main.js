@@ -34,6 +34,11 @@ var Question = require('/Question');
 var EOGD = require('/EndOfGameDisplay');
 var Preloader = require('/Preloader');
 
+// Scripting System import and shortcuts
+var RS = require('/ScriptingSystem-Racecar');
+var ScriptingSystem = RS.RacecarScripting;
+var ER = RS.eventRelay;
+
 // Static Imports
 var RC = require('/RaceControl');
 var MOT = require('/ModifyOverTime');
@@ -88,7 +93,7 @@ function FluencyApp () {
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4) {
             // Font is loaded
-            console.log(xmlhttp);
+            //console.log(xmlhttp);
         }
     }
     xmlhttp.send(null)
@@ -123,15 +128,18 @@ FluencyApp.inherit(KeyboardLayer, {
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
     
-    version     : 'v 2.0',    // Current version number
+    velocityLock: false,    // Prevents turbo and (ac/de)celleration when true
+    laneLock:[0, 0, 0],     // 0 prevents nothing, 1 prevents moving in, 2 prevents moving out, 3 prevents both
+    
+    revertableVelocity: 0,  //
+    
+    version     : 'v 2.2',    // Current version number
 
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function(data) {
         if(//resource('resources/testset.xml') !== undefined) {
            data !== undefined) {
-            console.log('pass');
             this.parseXML(data);
-            console.log('complete');
         }
         else {
             console.log('ERROR: No remote XML found to parse.');
@@ -170,11 +178,10 @@ FluencyApp.inherit(KeyboardLayer, {
         var that = this;
         
         xmlhttp = new XMLHttpRequest();
-        xmlhttp.open('GET', xml_path ? xml_path : 'set002.xml', true);
+        xmlhttp.open('GET', xml_path ? xml_path : 'set002_scripting.xml', true);
         xmlhttp.onreadystatechange=function() {
-        console.log('xml ready state ' + xmlhttp.readyState);
             if (xmlhttp.readyState==4) {
-                console.log(xmlhttp);
+                //console.log(xmlhttp);
                 that.runRemotely(xmlhttp.responseXML);
             }
         }
@@ -187,11 +194,13 @@ FluencyApp.inherit(KeyboardLayer, {
         
         var medals = this.parseMedals(xml); // Parse medal information
         this.parseAudio(xml);               // Parse the audio information
+        this.parseSpacing(xml);             // 
         this.parseSpeed(xml);               // Parse and set player speed values
         this.parsePenalty(xml);             // Get the penalty time for incorrect answers
         
         // Parse and process questions
         RC.finishLine = this.parseProblemSet(xml) + RC.finishSpacing;
+        RS.DistanceTrigger.relPoints['finish'] = RC.finishLine;
         
         // Process medal information
         medals[0] = RC.finishLine / this.player.maxSpeed;
@@ -202,6 +211,16 @@ FluencyApp.inherit(KeyboardLayer, {
         if(medals[0] > medals[1]) {
             console.log('WARNING: Calculated minimum time ( ' + medal[0] + ' ) is longer than the maximum allowed time for a gold medal ( ' + medal[1] + ' ).');
         }
+        
+        this.scriptedBindings();
+        // Prime the scripting system
+        this.ss = new ScriptingSystem();
+        this.addChild({child: this.ss});
+        this.ss.zOrder = 200;
+        this.ss.loadXML(XML.getChildByName(xml, 'SCRIPTING'));
+        
+        this.ss.audioHook = this.audioMixer;
+        this.ss.hookKeyboard(this.keys);
         
         this.preprocessingComplete();
     },
@@ -246,6 +265,10 @@ FluencyApp.inherit(KeyboardLayer, {
     // Parse the penalty settings
     parsePenalty: function (xml) {
         var node = XML.getDeepChildByName(xml, 'PenaltySettings');
+        if(!node) {
+            return;
+        }
+        
         if(node != null) {
             if(node.attributes['TimeLost'] != null) {
                 RC.penaltyTime = node.attributes['TimeLost'];
@@ -259,6 +282,9 @@ FluencyApp.inherit(KeyboardLayer, {
     // Parse and set player speed values
     parseSpeed: function (xml) {
         var node = XML.getDeepChildByName(xml, 'SpeedSettings');
+        if(!node) {
+            return;
+        }
         
         var max = node.attributes['Max'];
         var min = node.attributes['Min'];
@@ -268,7 +294,7 @@ FluencyApp.inherit(KeyboardLayer, {
         var turbo = node.attributes['Turbo'];
       
         // Heper function for setting values without overwritting defaults
-        var helper = function(obj, key, val){
+        var helper = function(obj, key, val) {
             if(val != null) {
                 obj[key] = val;
             }
@@ -283,11 +309,30 @@ FluencyApp.inherit(KeyboardLayer, {
         helper(this.player, 'turboSpeed', turbo==null ? max : turbo);
     },
     
+    parseSpacing: function (xml) {
+        var node = XML.getDeepChildByName(xml, 'GlobalSpacing');
+        if(!node) {
+            return;
+        }
+        
+        // Heper function for setting values without overwritting defaults
+        var helper = function(key, val) {
+            if(val != null) {
+                key = parseInt(val);
+            }
+        }
+        
+        helper(RC.intermissionSpacing, node.attributes['IntermissionSpacing']);
+        helper(RC.questionSpacing    , node.attributes['QuestionSpacing']);
+        helper(RC.finishSpacing      , node.attributes['FinishSpacing']);
+        helper(RC.initialSpacing     , node.attributes['InitialSpacing']);
+    },
+    
     // Parses the PROBLEM_SET
     parseProblemSet: function (xml) {
         var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
         var subsets = problemRoot.children;
-        var z = 0;
+        var z = RC.initialSpacing;
         var once = true;
         
         for(var i in subsets) {
@@ -316,6 +361,7 @@ FluencyApp.inherit(KeyboardLayer, {
 			
             // Append the intermission to the list of intermissions
 			this.inters.push(z);
+            RS.DistanceTrigger.relPoints['checkpoint'].push(z)
 			
 			// Add checkpoint marker to the race track
 			var opts = {
@@ -349,6 +395,7 @@ FluencyApp.inherit(KeyboardLayer, {
             events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
             events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
             list[list.length - 1].idle();
+            RS.DistanceTrigger.relPoints['question'].push(z)
         }
         
         return z;
@@ -356,7 +403,6 @@ FluencyApp.inherit(KeyboardLayer, {
     
     // The 'real init()' called after all the preloading/parsing is completed
     preprocessingComplete: function () {
-        console.log('preprocessing');
         // Create key bindings
         this.setBinding('MOVE_LEFT',    [65, 37]);  // [A, ARROW_LEFT]
         this.setBinding('MOVE_RIGHT',   [68, 39]);  // [D, ARROW_RIGHT]
@@ -486,7 +532,7 @@ FluencyApp.inherit(KeyboardLayer, {
     countdown: function () {
         this.menu.removeChild(this.startButton);
         
-        var medalCars = []
+        this.medalCars = []
         
         var opts = {
             maxScale    : 1.00,
@@ -499,48 +545,34 @@ FluencyApp.inherit(KeyboardLayer, {
             delOnDrop   : false,
         }
         
+        this.player.dash = this.dash;
+        
         // Ghost cars representing medal cutoffs
         // TODO: Make seperate class, support lines in addition to cars
         var names = ['Gold', 'Silver', 'Bronze']
+        var hacks = ['goldZ', 'silverZ', 'bronzeZ']
         for(var i=0; i<3; i+= 1) {
             opts['content'] = new cocos.nodes.Sprite({file: '/resources/Cars/car'+names[i]+'01.png'});
-            medalCars[i] = new PNode(opts)
-            medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
+            this.medalCars[i] = new PNode(opts)
+            this.medalCars[i].zVelocity = RC.finishLine / RC.times[i+1];
             
-            events.addListener(medalCars[i], 'addMe', this.addMeHandler);
-            events.addListener(medalCars[i], 'removeMe', this.removeMeHandler);
-            medalCars[i].delOnDrop = false;
+            events.addListener(this.medalCars[i], 'addMe', this.addMeHandler);
+            events.addListener(this.medalCars[i], 'removeMe', this.removeMeHandler);
+            this.medalCars[i].delOnDrop = false;
+            
+            //HACK: Should be a cleaner way of doing this instead of a straight bypass
+            this.medalCars[i].dash    = this.dash;
+            this.medalCars[i].dashStr = hacks[i];
+            //ENDHACK
         }
-        
-        this.medalCars = medalCars;
         
         // Set audio levels
         this.musicMixer.setMasterVolume(0.35);
         
-        var s = this.audioMixer.getSound('accel')
-        if(s) {
-            s.setVolume(0.8);
-        }
-        
-        s = this.audioMixer.getSound('screech')
-        if(s) {
-            s.setVolume(0.5);
-        }
+        this.audioMixer.setTrackVolume('accel', 0.8)
+        this.audioMixer.setTrackVolume('screech', 0.8)
         
         this.audioMixer.playSound('countdown');
-        
-        //HACK: Should be a cleaner way of doing this instead of a straight bypass
-        this.player.dash = this.dash;
-        
-        this.medalCars[0].dash    = this.dash;
-        this.medalCars[0].dashStr = 'goldZ';
-        
-        this.medalCars[1].dash    = this.dash;
-        this.medalCars[1].dashStr = 'silverZ';
-        
-        this.medalCars[2].dash    = this.dash;
-        this.medalCars[2].dashStr = 'bronzeZ';
-        //ENDHACK
         
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
         this.audioMixer.playSound('bg');
@@ -559,6 +591,7 @@ FluencyApp.inherit(KeyboardLayer, {
         var that = this;
         setTimeout(function () { that.cdt.string = '2'; }, 750);
         setTimeout(function () { that.cdt.string = '1'; }, 1500);
+        setTimeout(function () { that.cdt.string = 'GO!'; that.cdt.position = new geo.Point(300, 300); }, 2250);
         setTimeout(function () { that.cdt.string = 'GO!'; that.cdt.position = new geo.Point(300, 300); }, 2250);
         setTimeout(function () { that.removeChild(that.cdt); }, 2750);
         
@@ -595,11 +628,11 @@ FluencyApp.inherit(KeyboardLayer, {
         // Start background music
         this.musicMixer.loopSound('bg_slow');
         this.musicMixer.playSound('bg_open');
-        var s = this.musicMixer.getSound('bg_fast')
-        if(s) {
-            s.setVolume(0);
-        }
+        this.musicMixer.setTrackVolume('bg_fast', 0);
         this.musicMixer.loopSound('bg_fast');
+        
+        // Start the ScriptingSystem's game timer
+        this.ss.start();
     },
     
 	// Pauses the dashboard and medal cars
@@ -825,6 +858,8 @@ FluencyApp.inherit(KeyboardLayer, {
         // Handle correct / incorrect feedback
         if(result) {
             this.audioMixer.playSound('correct', true);
+            
+            events.trigger(ER, 'answerQuestionTrigger', true);
         }
         else {
             var t = this.dash.elapsedTime + this.dash.pTime + parseFloat(RC.penaltyTime);
@@ -846,6 +881,8 @@ FluencyApp.inherit(KeyboardLayer, {
                     this.medalCars[i].zVelocity = rd / 0.1;
                 }
             }
+            
+            events.trigger(ER, 'answerQuestionTrigger', false);
         }
         
         this.player.endTurboBoost();
@@ -868,7 +905,7 @@ FluencyApp.inherit(KeyboardLayer, {
         // 'A' / 'LEFT' Move left, discreet
         if(this.checkBinding('MOVE_LEFT') == KeyboardLayer.PRESS) {
             if(this.lane > 0) {
-                this.lane -= 1;
+                this.moveLane(this.lane, this.lane-1);
                 player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
                 this.audioMixer.playSound('screech', true);
             }
@@ -876,7 +913,7 @@ FluencyApp.inherit(KeyboardLayer, {
         // 'D' / 'RIGHT' Move right, discreet
         else if(this.checkBinding('MOVE_RIGHT') == KeyboardLayer.PRESS) {
             if(this.lane < RC.curNumLanes-1) {
-                this.lane += 1;
+                this.moveLane(this.lane, this.lane+1);
                 player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
                 this.audioMixer.playSound('screech', true);
             }
@@ -885,7 +922,7 @@ FluencyApp.inherit(KeyboardLayer, {
         var decel_lock = false;
         
         // 'S' / 'DOWN' Slow down, press
-        if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP) {
+        if(this.checkBinding('SPEED_DOWN') > KeyboardLayer.UP && !this.velocityLock) {
             player.decelerate(dt);
             this.audioMixer.loopSound('decel')
         
@@ -903,7 +940,7 @@ FluencyApp.inherit(KeyboardLayer, {
         else
             this.audioMixer.stopSound('decel');
             
-        if(!decel_lock && this.checkBinding('SPEED_UP') > KeyboardLayer.UP) {
+        if(!decel_lock && this.checkBinding('SPEED_UP') > KeyboardLayer.UP && !this.velocityLock) {
             player.accelerate(dt);
             this.audioMixer.loopSound('accel')
             
@@ -918,7 +955,7 @@ FluencyApp.inherit(KeyboardLayer, {
             this.audioMixer.stopSound('accel');
         
         // 'SPACE' turbo boost, discreet
-        if(this.checkBinding('TURBO') == KeyboardLayer.PRESS) {
+        if(this.checkBinding('TURBO') == KeyboardLayer.PRESS && !this.velocityLock) {
             if(player.startTurboBoost())
                 this.audioMixer.playSound('turbo', true);
         }
@@ -966,7 +1003,123 @@ FluencyApp.inherit(KeyboardLayer, {
                 this.fpsToggle = false;
             }
         }
+        
+        // Update game specific, continually checked scripting Triggers
+        RS.AbsoluteLaneTrigger.currentLane = this.lane;
+        RS.DistanceTrigger.currentDistance = this.player.zCoordinate;
+        RS.VelocityTrigger.currentVelocity = this.dash.getSpeed();      // dash.getSpeed() correctly accounts for pauses
     },
+    
+    // Resolve the requested lane movement against the laneLock array
+    moveLane: function(from, to) {
+        if(this.laneLock[from] == 2 || this.laneLock[from] == 3
+        || this.laneLock[to] == 1   || this.laneLock[to] == 3) {
+            return false;
+        }
+        
+        this.lane = to;
+        this.player.xCoordinate = this.lanePosX[RC.curNumLanes][to];
+        return true;
+    },
+
+// Scripting Hookup Functions //////////////////////////////////////////////////////////////////////
+    
+    // Catch RacecarScripting Action events
+    scriptedBindings: function() {
+        events.addListener(ER, 'HideMedalCarEvent',         this.scriptedHideMedalCar.bind(this));
+        events.addListener(ER, 'LockAbsoluteLaneEvent',     this.scriptedLockAbsoluteLane.bind(this));
+        events.addListener(ER, 'LockVelocityEvent',         this.scriptedLockVelocity.bind(this));
+        events.addListener(ER, 'RevertVelocityEvent',       this.scriptedRevertVelocity.bind(this));
+        events.addListener(ER, 'SetAbsoluteLaneEvent',      this.scriptedSetAbsoluteLane.bind(this));
+        events.addListener(ER, 'SetVelocityEvent',          this.scriptedSetVelocity.bind(this));
+        events.addListener(ER, 'ShowMedalCarEvent',         this.scriptedShowMedalCar.bind(this));
+        events.addListener(ER, 'StartTimerEvent',           this.scriptedStartTimer.bind(this));
+        events.addListener(ER, 'StopTimerEvent',            this.scriptedStopTimer.bind(this));
+        events.addListener(ER, 'UnlockAbsoluteLaneEvent',   this.scriptedUnlockAbsoluteLane.bind(this));
+        events.addListener(ER, 'UnlockVelocityEvent',       this.scriptedUnlockVelocity.bind(this));
+    },
+    
+    // Hides the specified medal car and associated minimap dot
+    scriptedHideMedalCar: function(c) {
+        this.removeChild({child: this.medalCars[c]});
+        this.medalCars[c].disabled = true;
+        this.dash.removeChild({child: this.dash.miniDots[c]});
+    },
+    
+    // Enforces locking restrictions on the specified lane
+    scriptedLockAbsoluteLane: function(l, d) {
+        if(this.laneLock[l] == 0) {
+            this.laneLock[l] = d;
+        }
+        else if(this.laneLock[l] != 3 && (this.laneLock[l] + d == 3 || d == 3)) {
+            this.laneLock[l] = 3;
+        }
+    },
+    
+    // Prevents the player from changing velocity
+    scriptedLockVelocity: function() {
+        this.velocityLock = true;
+    },
+    
+    // Sets the velocity to the value it was before the last set/revert velocity was called
+    scriptedRevertVelocity: function() {
+        var tmp = this.player.zVelocity;
+        this.player.zVelocity = this.revertableVelocity;
+        this.revertableVelocity = tmp;
+    },
+    
+    // Forces the player into the specified lane
+    scriptedSetAbsoluteLane: function(l) {
+        this.lane = l;
+        this.player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
+    },
+    
+    // Sets the player's velocity to the specified value
+    scriptedSetVelocity: function(v) {
+        this.revertableVelocity = this.player.zVelocity;
+        this.player.zVelocity = v;
+    },
+    
+    // Shows the specified medal car and associated minimap dot
+    scriptedShowMedalCar: function(c) {
+        this.addChild({child: this.medalCars[c]});
+        this.medalCars[c].disabled = true;
+        this.dash.addChild({child: this.dash.miniDots[c]});
+    },
+    
+    // Starts the game timer
+    scriptedStartTimer: function() {
+        this.dash.unpauseTimer();
+        for(var i=0; i<3; i+=1) {
+            this.medalCars[i].zVelocity = this.medalCars[i].prepause;
+        }
+    },
+    
+    // Stops the game timer
+    scriptedStopTimer: function() {
+        this.dash.pauseTimer();
+        
+        for(var i=0; i<3; i+=1) {
+            this.medalCars[i].prepause = this.medalCars[i].zVelocity;
+            this.medalCars[i].zVelocity = 0;
+        }
+    },
+    
+    // Allows the player to change velocity
+    scriptedUnlockVelocity: function() {
+        this.velocityLock = false;
+    },
+    
+    // Lifts locking restriction for a specific lane
+    scriptedUnlockAbsoluteLane: function(l, d) {
+        if(this.laneLock[l] == 3)
+            this.laneLock[l] -= d;
+        else if(this.laneLock[l] != 0 && (this.laneLock[l] == d || d == 3)) {
+            this.laneLock[l] = 0;
+        }
+    },
+
+// Menu Related Functions //////////////////////////////////////////////////////////////////////////
     
     buildMenu: function() {
         var dir = '/resources/Buttons/';
@@ -1033,12 +1186,12 @@ FluencyApp.inherit(KeyboardLayer, {
     // TODO: Implement a slider/levels to set master volume
     audioCallback: function() {
         if(!this.audioMixer.muted) {
-            this.removeChild(this.volumeButtonOn);
-            this.addChild({child: this.volumeButtonOff});
+            this.menu.removeChild(this.volumeButtonOn);
+            this.menu.addChild({child: this.volumeButtonOff});
         }
         else {
-            this.removeChild(this.volumeButtonOff);
-            this.addChild({child: this.volumeButtonOn});
+            this.menu.removeChild(this.volumeButtonOff);
+            this.menu.addChild({child: this.volumeButtonOn});
         }
         
         this.audioMixer.setMute(!this.audioMixer.muted);
@@ -1046,17 +1199,19 @@ FluencyApp.inherit(KeyboardLayer, {
     
     musicCallback: function() {
         if(!this.musicMixer.muted) {
-            this.removeChild(this.musicButtonOn);
-            this.addChild({child: this.musicButtonOff});
+            this.menu.removeChild(this.musicButtonOn);
+            this.menu.addChild({child: this.musicButtonOff});
         }
         else {
-            this.removeChild(this.musicButtonOff);
-            this.addChild({child: this.musicButtonOn});
+            this.menu.removeChild(this.musicButtonOff);
+            this.menu.addChild({child: this.musicButtonOn});
         }
         
         this.musicMixer.setMute(!this.musicMixer.muted);
     }
 })
+
+// Main ////////////////////////////////////////////////////////////////////////////////////////////
 
 // Initialise application
 function main() {
@@ -1096,7 +1251,6 @@ function main() {
 
         // Run the scene
         director.replaceScene(scene);
-        console.log('last words');
     });
     
     director.runPreloadScene();
