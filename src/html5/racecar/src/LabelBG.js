@@ -21,10 +21,18 @@ function LabelBG (opts) {
     // You must always call the super class version of init
     LabelBG.superclass.constructor.call(this, opts);
     
+    this.strRep = opts['string'];
     opts['string']    = this.defaulter(opts, 'string',    '');
     opts['fontName']  = this.defaulter(opts, 'fontName',  'Helvetica');
     opts['fontColor'] = this.defaulter(opts, 'fontColor', '#000');
     opts['fontSize']  = this.defaulter(opts, 'fontSize',  '16');
+    
+    this.bgShow = true;
+    if(opts.hasOwnProperty('bgShow')) {
+        if(!opts['bgShow'] || opts['bgShow'] == "false") {
+            this.bgShow = false;
+        }
+    }
     
     var label = new cocos.nodes.Label(opts)
     this.label = label;
@@ -40,12 +48,16 @@ LabelBG.inherit(cocos.nodes.Node, {
     label  : null,      //The label that the class wraps
     bgColor: '#FFFFFF', //The color of the background that will be behind the label
     
+    strRep : '',        // String representation of content
+    
     // Draws the background for the label
     draw: function(context) {
-        var size = this.contentSize;
-        
-        context.fillStyle = this.bgColor;
-        context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
+        if(this.bgShow) {
+            var size = this.contentSize;
+            
+            context.fillStyle = this.bgColor;
+            context.fillRect(size.width * -0.6, size.height * -0.75, size.width * 1.2, size.height * 1.5);
+        }
     },
     
     //TODO: Put into a utility script/class
