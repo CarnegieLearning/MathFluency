@@ -30,6 +30,13 @@ function FractionRenderer (opts) {
         }
     }
     
+    this.bgShow = true;
+    if(opts.hasOwnProperty('bgShow')) {
+        if(!opts['bgShow'] || opts['bgShow'] == "false") {
+            this.bgShow = false;
+        }
+    }
+    
     // Create the numerical labels for the numerator and denominator
     var opts = Object();
     opts['string'] = this.numerator;
@@ -54,6 +61,8 @@ function FractionRenderer (opts) {
         this.d.position = new geom.Point(0, -15);
         
         this.contentSize = new geom.Size(h, v);
+        
+        this.strRep = this.numerator + ' / ' + this.denominator;
     }
     // Account for the inclusion of a mixed number
     else {
@@ -75,6 +84,8 @@ function FractionRenderer (opts) {
         h += this.w.contentSize.width;
         
         this.contentSize = new geom.Size(h, v);
+        
+        this.strRep = this.whole + ' ' + this.numerator + ' / ' + this.denominator;
     }
 }
 
@@ -87,19 +98,23 @@ FractionRenderer.inherit(cocos.nodes.Node, {
     fontSize    : '16',         // Size of the numerator and denominator text
     fontName    : 'Helvetica',  // Font of the numerator and denominator
     lineColor   : '#a22',       // Color of the fraction bar between the numerator and denominator
+    
+    strRep      : '',           // String representation of content
 
     // Draw the background and the horizontal fraction bar
     draw: function(context) {
         var size = this.contentSize;
     
-        context.fillStyle = this.bgColor;
-        context.beginPath();
-        context.moveTo(size.width /  2, size.height /  2);
-        context.lineTo(size.width /  2, size.height / -2);
-        context.lineTo(size.width / -2, size.height / -2);
-        context.lineTo(size.width / -2, size.height /  2);
-        context.closePath();
-        context.fill();
+        if(this.bgShow) {
+            context.fillStyle = this.bgColor;
+            context.beginPath();
+            context.moveTo(size.width /  2, size.height /  2);
+            context.lineTo(size.width /  2, size.height / -2);
+            context.lineTo(size.width / -2, size.height / -2);
+            context.lineTo(size.width / -2, size.height /  2);
+            context.closePath();
+            context.fill();
+        }
         
         context.strokeStyle = this.lineColor;
         context.beginPath();

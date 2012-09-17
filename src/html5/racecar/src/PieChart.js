@@ -30,25 +30,38 @@ PieChart = function(opts) {
         }
     }
     
+    this.bgShow = true;
+    if(opts.hasOwnProperty('bgShow')) {
+        if(!opts['bgShow'] || opts['bgShow'] == "false") {
+            this.bgShow = false;
+        }
+    }
+    
+    this.strRep = this.numFilled + ' / ' + this.numSections;
+    
     // Explictly set contentSize so it plays nice with formating based on it
     this.contentSize = new geom.Size(this.radius * 2.4, this.radius * 2.4);
 }
 
 PieChart.inherit(cocos.nodes.Node, {
-    numSections :2,         // Total number of pie slices
-    numFilled   :1,         // Number of filled pie slices
-    bgColor     :'#FFFFFF', // Color of the background
-    lineColor   :'#000000', // Color of the lines used to outlijne and mark each section
-    fillColor   :'#00A0A0', // Color of the filled in sections
-    radius      :10,        // Size of the chart
+    numSections : 2,         // Total number of pie slices
+    numFilled   : 1,         // Number of filled pie slices
+    bgColor     : '#FFFFFF', // Color of the background
+    lineColor   : '#000000', // Color of the lines used to outlijne and mark each section
+    fillColor   : '#00A0A0', // Color of the filled in sections
+    radius      : 10,        // Size of the chart
 
+    strRep      : '',        // String representation of content
+    
     // Draws the PieChart to the canvas
     draw: function(context) {
         var r = this.radius;
         
         // Draw background
-        context.fillStyle = this.bgColor;
-        context.fillRect(r * -1.2, r * -1.2, r * 2.4, r * 2.4);
+        if(this.bgShow) {
+            context.fillStyle = this.bgColor;
+            context.fillRect(r * -1.2, r * -1.2, r * 2.4, r * 2.4);
+        }
     
         var step = Math.PI*2 / this.numSections;
         var offset = Math.PI * 3 / 2    //This is so we draw with 'up' as our 0
