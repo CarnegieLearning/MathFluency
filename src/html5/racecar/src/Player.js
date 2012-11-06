@@ -47,25 +47,23 @@ function Player() {
     this.selectorBG.scaleY = 0.3;
     
     // Load the car sprite for the player
-    this.sprite = new cocos.nodes.Sprite({file: '/resources/Cars/carPlayer01.png'});
-    this.addChild({child: this.sprite});
+    this.sprites = [
+        new cocos.nodes.Sprite({file: '/resources/Cars/Car-left.png'}),
+        new cocos.nodes.Sprite({file: '/resources/Cars/carPlayer01.png'}),
+        new cocos.nodes.Sprite({file: '/resources/Cars/Car-right.png'})
+    ];
+    this.addChild({child: this.sprites[1]});
     
     // Load fishtail animation
-    var animCache = cocos.AnimationCache.sharedAnimationCache;
-    var frameCache = cocos.SpriteFrameCache.sharedSpriteFrameCache;
-    
     var anim = [];
-    var r = geom.rectMake(0, 0, 200, 115);
     
-    // Load each frame
-    var dir = '/resources/Fishtail/fishTail00';
-    for(var i=1; i<=17; i++) {
-        anim.push(new cocos.SpriteFrame({texture: new Texture2D({file: module.dirname + dir + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
+    var texture = new Texture2D({file: module.dirname + '/resources/Fishtail/fishTailSheet.png'});
+    for(var i=2; i<=17; i++) {
+        anim.push(new cocos.SpriteFrame({texture: texture, rect: geom.rectMake((i-2)*200, 0, 200, 115)}));
     }
     
     this.animNode = new cocos.nodes.Sprite();
     this.animNode.position = new geom.Point(-32, 0);
-    this.addChild(this.animNode);
     
     var anim = new cocos.Animation({frames: anim, delay: 0.05});
     this.fishtail = new cocos.actions.Animate({animation: anim, restoreOriginalFrame: false});
@@ -95,22 +93,53 @@ Player.inherit(PNode, {
     turboMOT        : null,     // Hold the MOT currently affecting zVelocity
     
     fishtail        : null,     // Holds the fishtail animation
-
+    animating       : false,    // True when animating the fishtail animation
+    
+    sprites         : null,     // Array of car sprites
+    lcr             : 1,        // Which sprite to use
+    
     // Plays the fishtail animation
     fishtailAnimation: function() {
-        this.removeChild({child: this.sprite});
+        this.animating = true;
+        
+        this.removeChild({child: this.sprites[this.lcr]});
         this.addChild({child: this.animNode});
+        
+        if(this.lcr == 0 || this.lcr == 1 && Math.floor(Math.random() * 2)) {
+            this.animNode.scaleX = -1;
+        }
+        else {
+            this.animNode.scaleX = 1;
+        }
         
         this.animNode.runAction(this.fishtail);
         
-        setTimeout(this.fishtailCallback, 900);
+        setTimeout(this.fishtailCallback, 850);
     },
     
     // Cleans up the fishtail animation
     // STATIC BIND
     fishtailCallback: function() {
         this.removeChild({child: this.animNode});
-        this.addChild({child: this.sprite});
+        this.addChild({child: this.sprites[this.lcr]});
+        
+        this.animating = false;
+    },
+    
+    // Change the car sprite relative to the current lane
+    // Returns true if the player is allowed to change lanes, false otherwise
+    changeLane: function(lane) {
+        // Only allow lane changes when not animating fishtail
+        if(this.animating) {
+            return false;
+        }
+        
+        // Swap the player car sprites
+        this.removeChild({child: this.sprites[this.lcr]});
+        this.lcr = lane;
+        this.addChild({child: this.sprites[this.lcr]});
+        
+        return true;
     },
     
     // Changes the currently displayed selector on the car
@@ -139,6 +168,7 @@ Player.inherit(PNode, {
         var x = selector.contentSize.width / 2 * selector.scaleX;
         
         selector.position = new geom.Point(x, -80);
+        selector.bgShow = false;
         this.selectorX = x;
         this.selectorY = -80;
         this.addChild({child: selector});
@@ -323,33 +353,12 @@ Player.inherit(PNode, {
         // Update the camera and include the current frame's velocity which has yet to be applied to the player (eliminates jitter)
         PNode.cameraZ = this.zCoordinate - this.chaseDist + (this.zVelocity * dt);
         
+        //HACK: Somewhere else is breaking these values
+        this.selector.position.x = this.selectorX;
+        this.selector.position.y = this.selectorY;
+        
         // Let PNode handle perspective rendering
         Player.superclass.update.call(this, dt);
-        
-        // Rotate the player as they move to keep the visual angles realistic
-        var pos = this.position;
-        if(pos.x < 450.0) {
-            this.rotation = (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (450.0 - pos.x))) / 1.5
-        }
-        else {
-            this.rotation = (90 - 180.0/Math.PI * Math.atan((pos.y - 50) / (pos.x - 450.0))) / -1.5
-        }
-        
-        // Keep the selector from rotating with the car
-        if(this.selector != null) {
-            // Do not rotate the label, keep its facing constant in respect to its own origin
-            var rot = this.rotation;
-            this.selector.rotation = rot * -1;
-            
-            //Cocos works in degrees, Math works in radians, so convert
-            rot = rot * Math.PI / 180.0;
-            
-            // Keep the label in a fixed position beneath the car, regardless of car rotation
-            var x = this.selectorX * Math.cos(rot) - this.selectorY * Math.sin(rot);
-            var y = this.selectorX * Math.sin(rot) + this.selectorY * Math.cos(rot);
-            
-            this.selector.position = new geom.Point(x, y);
-        }
         
         L.alwaysLog['Speed'] = Math.round((this.zVelocity * 100)) / 100.0;
         L.alwaysLog['Z'] = Math.round((this.zCoordinate * 100)) / 100.0;

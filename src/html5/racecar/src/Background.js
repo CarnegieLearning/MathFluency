@@ -35,7 +35,7 @@ function Background (lanes) {
     this.city = new cocos.nodes.Sprite({file: dir + 'city.png'});
     this.city.anchorPoint = new geo.Point(0.5, 1);
     this.city.position = new geo.Point(450, 460);
-    this.city.scaleX = 0.52;
+    this.city.scaleX = 0.36;
     this.city.scaleY = 0.52;
     this.addChild({child: this.city});
     
@@ -49,13 +49,15 @@ function Background (lanes) {
     this.street = new cocos.nodes.Sprite({file: dir + 'street.png'});
     this.street.anchorPoint = new geo.Point(0.5, 0);
     this.street.position = new geo.Point(450, -25);
+    this.street.scaleX = 1.2;
     this.addChild({child: this.street});
     
     // Lane Delimiters
-    //TODO: 2(/4?) lane version
+    //TODO: 2 (and 4?) lane version
     this.lines = new cocos.nodes.Sprite({file: dir + 'dividingLines3.png'});
     this.lines.anchorPoint = new geo.Point(0.5, 0);
     this.lines.position = new geo.Point(450, 000);
+    this.lines.scaleX = 1.2;
     this.addChild({child: this.lines});
 }
 
@@ -70,6 +72,7 @@ Background.inherit(cocos.nodes.Node, {
     progress: function(p) {
         this.sky.position.y = 130 * p;
         this.city.position.y = 460 + 130 * p;
+        this.city.scaleX = 0.36 + 0.16 * p;
     }
 });
 

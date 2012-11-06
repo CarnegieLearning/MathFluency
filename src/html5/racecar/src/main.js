@@ -32,11 +32,11 @@ var PNode = require('/PerspectiveNode');
 var PNodeA = require('/PerspectiveNodeAnim');
 var Question = require('/Question');
 var EOGD = require('/EndOfGameDisplay');
-var Preloader = require('/Preloader');
+var PreloadScene = require('/PreloadScene');
+var SplashScreen = require('/SplashScreen');
 
 // Scripting System import and shortcuts
 var RS = require('/ScriptingSystem-Racecar');
-var ScriptingSystem = RS.RacecarScripting;
 var ER = RS.eventRelay;
 
 // Static Imports
@@ -86,30 +86,13 @@ function FluencyApp () {
     MM.loadSound('bg_fast', dir + 'Racecar FAST v3-2');
     MM.loadSound('bg_open', dir + 'Racecar Opening Chord');
     this.musicMixer = MM;
-    
-    // Load custom font
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('GET', 'sound/androidnation_i.ttf',true);
-    xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState==4) {
-            // Font is loaded
-            //console.log(xmlhttp);
-        }
-    }
-    xmlhttp.send(null)
 
     events.addListener(MM, 'crossFadeComplete', this.onCrossFadeComplete.bind(this));
-    /*/
-    var preloader = new Preloader();
-    this.addChild({child: preloader});
-    this.preloader = preloader;
-    
-    events.addListener(preloader, 'loaded', this.delayedInit.bind(this));/*/
+
     this.delayedInit();
-    //*/
 }
 
-FluencyApp.inherit(KeyboardLayer, {
+FluencyApp.inherit(RS.RacecarScripting, {
     player      : null,     // Holds the player
     background  : null,     // Holds the the background object
     dash        : null,     // Holds the right hand side dashboard
@@ -123,7 +106,7 @@ FluencyApp.inherit(KeyboardLayer, {
     bgFade      : false,    // True when crossfading between bg tracks
     bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
     
-    lanePosX    : {2: [-3, 3], 3:[-3.8, 0, 3.8]},
+    lanePosX    : {2: [-3, 3], 3: [-3.8, 0, 3.8]},
     lane        : 1,
     
     endOfGameCallback : null,   // Holds the name of the window function to call back to at the end of the game
@@ -131,14 +114,13 @@ FluencyApp.inherit(KeyboardLayer, {
     velocityLock: false,    // Prevents turbo and (ac/de)celleration when true
     laneLock:[0, 0, 0],     // 0 prevents nothing, 1 prevents moving in, 2 prevents moving out, 3 prevents both
     
-    revertableVelocity: 0,  //
+    revertableVelocity: 0,  // Holds the player velocity prior to a setVelocity Action which enables the revertVelocity Action
     
-    version     : 'v 2.2',    // Current version number
+    version     : 'v 2.4',    // Current version number
 
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function(data) {
-        if(//resource('resources/testset.xml') !== undefined) {
-           data !== undefined) {
+        if(data !== undefined) {
             this.parseXML(data);
         }
         else {
@@ -147,10 +129,8 @@ FluencyApp.inherit(KeyboardLayer, {
     },
 
     delayedInit: function() {
-        // Remove the 'preloader'
-        //this.removeChild({child: this.preloader});
-        //cocos.Scheduler.sharedScheduler.unscheduleUpdateForTarget(this.preloader);
-        //this.preloader = null;
+        // I declare this line the savior of jQuery, delivering the code from months of annoying interrupts
+        window.$ = window.parent.$;
     
         // Static binds
         this.addMeHandler = this.addMeHandler.bind(this)
@@ -163,9 +143,8 @@ FluencyApp.inherit(KeyboardLayer, {
         this.player = player;
         
         // Get "command line" arguments from the div tag
-        //HACK: jQuery is pissing me off right now
         try {
-            var app_div = $('#cocos_test_app')
+            var app_div = $('#cocos_test_app');
             var xml_path = app_div.attr('data');
             this.gameID = app_div.attr('gameid');
             this.endOfGameCallback = app_div.attr('callback');
@@ -181,7 +160,6 @@ FluencyApp.inherit(KeyboardLayer, {
         xmlhttp.open('GET', xml_path ? xml_path : 'set002_scripting.xml', true);
         xmlhttp.onreadystatechange=function() {
             if (xmlhttp.readyState==4) {
-                //console.log(xmlhttp);
                 that.runRemotely(xmlhttp.responseXML);
             }
         }
@@ -194,7 +172,7 @@ FluencyApp.inherit(KeyboardLayer, {
         
         var medals = this.parseMedals(xml); // Parse medal information
         this.parseAudio(xml);               // Parse the audio information
-        this.parseSpacing(xml);             // 
+        this.parseSpacing(xml);             // Parses question and checkpoint spacing
         this.parseSpeed(xml);               // Parse and set player speed values
         this.parsePenalty(xml);             // Get the penalty time for incorrect answers
         
@@ -214,13 +192,8 @@ FluencyApp.inherit(KeyboardLayer, {
         
         this.scriptedBindings();
         // Prime the scripting system
-        this.ss = new ScriptingSystem();
-        this.addChild({child: this.ss});
-        this.ss.zOrder = 200;
-        this.ss.loadXML(XML.getChildByName(xml, 'SCRIPTING'));
-        
-        this.ss.audioHook = this.audioMixer;
-        this.ss.hookKeyboard(this.keys);
+        this.xml = xml;
+        this.audioHook = this.audioMixer;
         
         this.preprocessingComplete();
     },
@@ -236,6 +209,7 @@ FluencyApp.inherit(KeyboardLayer, {
                 val = node.children[i].attributes['MEDAL_THRESHOLD'];
                 
                 if(id != null && val != null) {
+                    //TODO: Remove if statement?  No longer needed to support legacy version
                     if(val > 1000) {
                         val /= 1000;
                     }
@@ -255,6 +229,7 @@ FluencyApp.inherit(KeyboardLayer, {
     },
     
     // Parse the audio information
+    //TODO: Move to RaceControl?
     parseAudio: function (xml) {
         var node = XML.getDeepChildByName(xml, 'AudioSettings');
         if(node) {
@@ -263,6 +238,7 @@ FluencyApp.inherit(KeyboardLayer, {
     },
     
     // Parse the penalty settings
+    //TODO: Move to RaceControl?
     parsePenalty: function (xml) {
         var node = XML.getDeepChildByName(xml, 'PenaltySettings');
         if(!node) {
@@ -280,6 +256,7 @@ FluencyApp.inherit(KeyboardLayer, {
     },
     
     // Parse and set player speed values
+    //TODO: Can this be moved to RaceControl?
     parseSpeed: function (xml) {
         var node = XML.getDeepChildByName(xml, 'SpeedSettings');
         if(!node) {
@@ -309,6 +286,8 @@ FluencyApp.inherit(KeyboardLayer, {
         helper(this.player, 'turboSpeed', turbo==null ? max : turbo);
     },
     
+    // Parse spacing between major landmarks
+    //TODO: Move to RaceControl?
     parseSpacing: function (xml) {
         var node = XML.getDeepChildByName(xml, 'GlobalSpacing');
         if(!node) {
@@ -413,13 +392,14 @@ FluencyApp.inherit(KeyboardLayer, {
         this.setBinding('SHOW_FPS',     [80]);      // [P]
         
         this.player.xCoordinate = this.lanePosX[RC.curNumLanes][1];
+        this.player.updatePosition();
         
         // Create dashboard
         var dash = new Dashboard(this.inters);
         dash.position = new geo.Point(0, 0);
         this.dash = dash;
         
-        // Add the right hand side dash
+        // Add the left hand side dash
         dash.maxSpeed = this.player.maxSpeed;
         this.addChild({child: dash});
         dash.zOrder = -1;
@@ -461,7 +441,7 @@ FluencyApp.inherit(KeyboardLayer, {
         
         // Create FPS meter
         var fps = new cocos.nodes.Label({string: '0 FPS'})
-        fps.position = new geo.Point(20, 20);
+        fps.position = new geo.Point(20, 580);
         this.fps = fps;
         this.fpsTracker = [30, 30, 30, 30, 30];
         this.fpsToggle = false;
@@ -493,62 +473,40 @@ FluencyApp.inherit(KeyboardLayer, {
         
         var choice = 0;
         var p;
-        for(var t=10; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6+4)) {
-            if(Math.random() < 0.25) {
+        for(var t=5; t<RC.finishLine + 100; t += Math.ceil(Math.random()*6 + 4)) {
+            if(Math.random() < 0.5) {
                 choice = Math.floor(Math.random() * 6);
                 if(choice < 5) {
-                    p = new PNode({xCoordinate: 5 * Math.random() + 6, zCoordinate: t, content: sprites[choice], alignH: 0.5, alignV: 0.5})
+                    p = new PNode({xCoordinate: 10 * Math.random() + 6, zCoordinate: t, content: sprites[choice], alignH: 0.5, alignV: 0.5})
                 }
                 else {
-                    p = new PNodeA({xCoordinate: 5 * Math.random() + 6, zCoordinate: t, content: new cocos.nodes.Sprite(), alignH: 0.5, alignV: 0.5})
+                    p = new PNodeA({xCoordinate: 10 * Math.random() + 6, zCoordinate: t, content: new cocos.nodes.Sprite(), alignH: 0.5, alignV: 0.5})
                     p.prepareAnimation(new cocos.actions.Animate({animation: tAnim}));
+                    p.visibility = 2;   //HACK: Need to parametertize if another animated object is added
                 }
                 p.zOrder = -4;
                 events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
             }
-            if(Math.random() < 0.25) {
+            if(Math.random() < 0.5) {
                 choice = Math.floor(Math.random() * 6);
                 if(choice < 5) {
-                    p = new PNode({xCoordinate: -5 * Math.random() - 6, zCoordinate: t, content: sprites[choice], alignH: 0.5, alignV: 0.5})
+                    p = new PNode({xCoordinate: -10 * Math.random() - 6, zCoordinate: t, content: sprites[choice], alignH: 0.5, alignV: 0.5})
                 }
                 else {
-                    p = new PNodeA({xCoordinate: -5 * Math.random() - 6, zCoordinate: t, content: new cocos.nodes.Sprite(), alignH: 0.5, alignV: 0.5})
+                    p = new PNodeA({xCoordinate: -10 * Math.random() - 6, zCoordinate: t, content: new cocos.nodes.Sprite(), alignH: 0.5, alignV: 0.5})
                     p.prepareAnimation(new cocos.actions.Animate({animation: tAnim}));
+                    p.visibility = 2;   //HACK: Need to parametertize if another animated object is added
                 }
                 p.zOrder = -4;
                 events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
             }
         }
-        
-        this.buildMenu();
-        
-        events.trigger(this, 'loaded');
-    },
-    
-    // Three second countdown before the game begins (after pressing the start button on the menu layer)
-    // TODO: Make countdown more noticible
-    countdown: function () {
-        this.menu.removeChild(this.startButton);
-        
-        this.medalCars = []
-        
-        var opts = {
-            maxScale    : 1.00,
-            alignH      : 0.5,
-            alignV      : 0,
-            visibility  : 1,
-            xCoordinate : 4.5,
-            zCoordinate : 0,
-            dropoffDist : -10,
-            delOnDrop   : false,
-        }
-        
-        this.player.dash = this.dash;
         
         // Ghost cars representing medal cutoffs
         // TODO: Make seperate class, support lines in addition to cars
+        this.medalCars = [];
         var names = ['Gold', 'Silver', 'Bronze']
         var hacks = ['goldZ', 'silverZ', 'bronzeZ']
         for(var i=0; i<3; i+= 1) {
@@ -566,18 +524,51 @@ FluencyApp.inherit(KeyboardLayer, {
             //ENDHACK
         }
         
-        // Set audio levels
-        this.musicMixer.setMasterVolume(0.35);
+        this.splash = new SplashScreen(['/resources/splash.png']);
+        events.addListener(this.splash, 'splashScreensCompleted', this.splashCallback.bind(this));;
+        this.splash.zOrder = 100;
+        this.addChild({child: this.splash});
+        this.splash.start();
         
+        events.trigger(this, 'loaded');
+    },
+    
+    // Callback for when the splash screen if finished
+    splashCallback: function() {
+        this.buildMenu();
+        this.musicMixer.setMasterVolume(0.35);
+        this.ss_audioHook = this.musicMixer;
+        this.loadScriptingXML(XML.getChildByName(this.xml, 'SCRIPTING'));
+        this.dash._updateLabelContentSize();
+    },
+    
+    // Three second countdown before the game begins (after pressing the start button on the menu layer)
+    // TODO: Make countdown more noticible
+    countdown: function () {
+        this.removeStartButton();
+        
+        var opts = {
+            maxScale    : 1.00,
+            alignH      : 0.5,
+            alignV      : 0,
+            visibility  : 1,
+            xCoordinate : 4.5,
+            zCoordinate : 0,
+            dropoffDist : -10,
+            delOnDrop   : false,
+        }
+        
+        this.player.dash = this.dash;
+        
+        // Set audio levels
         this.audioMixer.setTrackVolume('accel', 0.8)
-        this.audioMixer.setTrackVolume('screech', 0.8)
+        this.audioMixer.setTrackVolume('screech', 0.5)
         
         this.audioMixer.playSound('countdown');
         
         setTimeout(this.startGame.bind(this), RC.initialCountdown);
-        this.audioMixer.playSound('bg');
         
-        var cd = new cocos.nodes.Label({string: '3', textColor: '#000000'});
+        var cd = new cocos.nodes.Label({string: '3', textColor: '#000000', fontName: RC.font});
         cd.scaleX = 10;
         cd.scaleY = 10;
         cd.position = new geo.Point(450, 300);
@@ -590,9 +581,14 @@ FluencyApp.inherit(KeyboardLayer, {
         
         var that = this;
         setTimeout(function () { that.cdt.string = '2'; }, 750);
-        setTimeout(function () { that.cdt.string = '1'; }, 1500);
-        setTimeout(function () { that.cdt.string = 'GO!'; that.cdt.position = new geo.Point(300, 300); }, 2250);
-        setTimeout(function () { that.cdt.string = 'GO!'; that.cdt.position = new geo.Point(300, 300); }, 2250);
+        setTimeout(function () {
+            that.cdt.string = '1';
+            that.cdt._updateLabelContentSize();
+        }, 1500);
+        setTimeout(function () {
+            that.cdt.string = 'GO!';
+            that.cdt._updateLabelContentSize();
+        }, 2250);
         setTimeout(function () { that.removeChild(that.cdt); }, 2750);
         
         this.audioMixer.playSound('start');
@@ -609,7 +605,6 @@ FluencyApp.inherit(KeyboardLayer, {
     
     // Starts the game
     startGame: function () {
-        this.scheduleUpdate();          // Start keyboard input and fps tracking
         var p = this.player;
         p.scheduleUpdate();             // Start the player
         this.dash.start();              // Start timer and dash updates
@@ -632,7 +627,12 @@ FluencyApp.inherit(KeyboardLayer, {
         this.musicMixer.loopSound('bg_fast');
         
         // Start the ScriptingSystem's game timer
-        this.ss.start();
+        this.ss_started = true;
+    },
+    
+    // Function that allows the Scripting System to remove the standard start button
+    removeStartButton: function() {
+        this.menu.removeChild({child: this.startButton});
     },
     
 	// Pauses the dashboard and medal cars
@@ -675,6 +675,7 @@ FluencyApp.inherit(KeyboardLayer, {
         this.removeChild(toRemove);
     },
     
+    // Callback let the main program know when a cross fade has completed
     onCrossFadeComplete: function () {
         this.bgFade = false;
     },
@@ -708,6 +709,7 @@ FluencyApp.inherit(KeyboardLayer, {
             (new MOT(s.volume, -1, 2)).bindFunc(s, s.setVolume);
         }
         
+        // Stop the ambient engine hum from looping and play the finish sound
         this.audioMixer.stopSound('hum');
         this.audioMixer.playSound('finish');
     
@@ -742,11 +744,13 @@ FluencyApp.inherit(KeyboardLayer, {
         var tt = this.dash.getTotalTime()
         var m = 1;
         
+        // Only award medals if the game was completed by finishing the race
         if(finished) {
             while(m < 4 && RC.times[m] < tt) {
                 m += 1;
             }
         }
+        // Aborts and quits recieve no medal automatically
         else {
             m = 4;
         }
@@ -853,6 +857,9 @@ FluencyApp.inherit(KeyboardLayer, {
     // Handles answering the current question when time expires
     // STATIC BIND
     answerQuestion: function(question) {
+        //HACK: Find a better place/way to do this
+        RS.CorrectLaneTrigger.lastCorrect = question.correctAnswer;
+        //ENDHACK
         var result = question.answerQuestion(this.lane);
         
         // Handle correct / incorrect feedback
@@ -867,7 +874,8 @@ FluencyApp.inherit(KeyboardLayer, {
             this.player.wipeout(1);
             this.dash.modifyPenaltyCount();
             
-            this.audioMixer.playSound('wrong', true);
+            //this.audioMixer.playSound('wrong', true);
+            this.audioMixer.playSound('screech', true);
             
             // Update medal car velocities to account for penalty time
             for(var i=0; i<3; i+=1) {
@@ -890,6 +898,19 @@ FluencyApp.inherit(KeyboardLayer, {
     
     // Called every frame, manages keyboard input
     update: function(dt) {
+        // Must call superclass.update for ScriptingSystem to function
+        FluencyApp.superclass.update.call(this, dt);
+        
+        // Do not run the rest of update until the game has started
+        if(!this.ss_started) {
+            // Allow the player to fast foward through the splash screens
+            if(this.splash && this.splash.isActive() && this.checkAnyKey()) {
+                this.splash.skip();
+            }
+            
+            return;
+        }
+        
         var player = this.player;
         var playerX = player.xCoordinate;
         
@@ -907,7 +928,7 @@ FluencyApp.inherit(KeyboardLayer, {
             if(this.lane > 0) {
                 this.moveLane(this.lane, this.lane-1);
                 player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
-                this.audioMixer.playSound('screech', true);
+                this.audioMixer.playSound('accel', true);
             }
         }
         // 'D' / 'RIGHT' Move right, discreet
@@ -915,7 +936,7 @@ FluencyApp.inherit(KeyboardLayer, {
             if(this.lane < RC.curNumLanes-1) {
                 this.moveLane(this.lane, this.lane+1);
                 player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
-                this.audioMixer.playSound('screech', true);
+                this.audioMixer.playSound('accel', true);
             }
         }
         
@@ -971,9 +992,9 @@ FluencyApp.inherit(KeyboardLayer, {
         this.fpsTracker.shift();    // Get rid of oldest frame
         this.fpsTracker.push(cur);  // Add this frame
         
-        // Log spikes to console if FPS tracker is enabled
+        // Log low FPS spikes to console if FPS tracker is enabled
         if(this.fpsToggle) {
-            if(1 / dt < 20) {
+            if(1 / dt < 10) {
                 console.log('FPS Spike down frame ( ' + cur.toFixed(1) + ' FPS / ' + (dt*1000).toFixed(0) + ' ms dt )');
             }
         }
@@ -983,7 +1004,7 @@ FluencyApp.inherit(KeyboardLayer, {
         for(t in this.fpsTracker){
             sub += this.fpsTracker[t];
             
-            // Flash red on low framerate spikes
+            // Turn red on low framerate
             if(this.fpsTracker[t] < 20) {
                 this.fps.fontColor = '#DD2222';
             }
@@ -1014,6 +1035,10 @@ FluencyApp.inherit(KeyboardLayer, {
     moveLane: function(from, to) {
         if(this.laneLock[from] == 2 || this.laneLock[from] == 3
         || this.laneLock[to] == 1   || this.laneLock[to] == 3) {
+            return false;
+        }
+        
+        if(!this.player.changeLane(to)) {
             return false;
         }
         
@@ -1182,8 +1207,8 @@ FluencyApp.inherit(KeyboardLayer, {
     },
     
     // Called when the volume button is pressed
-    // TODO: Seperate this into two functions (mute/unmute)?
-    // TODO: Implement a slider/levels to set master volume
+    //TODO: Seperate this into two functions (mute/unmute)?
+    //TODO: Implement a slider/levels to set master volume
     audioCallback: function() {
         if(!this.audioMixer.muted) {
             this.menu.removeChild(this.volumeButtonOn);
@@ -1197,6 +1222,8 @@ FluencyApp.inherit(KeyboardLayer, {
         this.audioMixer.setMute(!this.audioMixer.muted);
     },
     
+    // Called when the music button is pressed
+    //TODO: Same as audioCallback
     musicCallback: function() {
         if(!this.musicMixer.muted) {
             this.menu.removeChild(this.musicButtonOn);
@@ -1253,6 +1280,8 @@ function main() {
         director.replaceScene(scene);
     });
     
+    director.attachInView();
+    director.preloadScene = new PreloadScene({emptyImage: '/resources/Loader/LoadingScreen00.png', fullImage: '/resources/Loader/LoadingScreen16.png'});
     director.runPreloadScene();
 }
 

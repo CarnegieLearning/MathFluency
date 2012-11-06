@@ -29,6 +29,8 @@ var SS = require('/ScriptingSystem');
 
 // Locks the specified lane in the specified way
 var LockAbsoluteLaneAct = function(opts) {
+    LockAbsoluteLaneAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
@@ -63,6 +65,8 @@ LockAbsoluteLaneAct.inherit(SS.Act, {
 
 // Handles all Actions dealing with simple Medal Car interaction
 var MedalCarAct = function(opts) {
+    MedalCarAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getOpt('type', opts);
     opts = this.getOpt('car', opts);
     
@@ -93,6 +97,8 @@ MedalCarAct.inherit(SS.Act, {
 // Places the player in the specified lane
 // NOTE: This is unaffacted by any sort of lane locking
 var SetAbsoluteLaneAct = function(opts) {
+    SetAbsoluteLaneAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
@@ -111,6 +117,8 @@ SetAbsoluteLaneAct.inherit(SS.Act, {
 
 // Sets the player's velocity to the specified speed (in meters per second (mph ~= *4/9))
 var SetVelocityAct = function(opts) {
+    SetVelocityAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('velocity', opts);
     
     if(this.velocity < 0) {
@@ -129,6 +137,8 @@ SetVelocityAct.inherit(SS.Act, {
 
 // Unlocks the specified lane in the specified way
 var UnlockAbsoluteLaneAct = function(opts) {
+    UnlockAbsoluteLaneAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
@@ -163,6 +173,8 @@ UnlockAbsoluteLaneAct.inherit(SS.Act, {
 
 // Triggers when the player enters the specified lane
 var AbsoluteLaneTrigger = function(opts) {
+    AbsoluteLaneTrigger.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
@@ -183,6 +195,8 @@ AbsoluteLaneTrigger.currentLane = -2;
 
 // Triggers when the player answers a question with the specified correctness
 var AnswerTrigger = function(opts) {
+    AnswerTrigger.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getBoolean('correctness', opts, 'correct', 'incorrect');
     
     // Listen for when a question is answered
@@ -222,13 +236,58 @@ AnswerTrigger.inherit(SS.Trigger, {
 
 //***********************************************/
 
+var CorrectLaneTrigger = function(opts) {
+    CorrectLaneTrigger.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
+    opts = this.getInt('lane', opts);
+    
+    if(this.lane < 0) {
+        throw new Error('Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
+    }
+    
+    events.addListener(SS.eventRelay, 'answerQuestionTrigger', this.handle.bind(this));
+}
+CorrectLaneTrigger.inherit(SS.Trigger, {
+    lane    : -1,       // 
+    trigger : false,    // 
+    
+    check: function() {
+        if(this.trigger && CorrectLaneTrigger.lastCorrect == this.lane) {
+            this.trigger = false;
+            return true;
+        }
+        return false;
+    },
+    
+    handle: function() {
+        this.trigger = true;
+        setTimeout(this.buffer.bind(this), 1);
+    },
+    
+    // Introduces at least a one full frame delay, making sure that this Trigger can be adaquetly check()'ed
+    buffer: function() {
+        setTimeout(this.negateInput.bind(this), 1);
+    },
+    
+    // Negates a triggering input
+    negateInput: function() {
+        this.trigger = false;
+    }
+});
+
+CorrectLaneTrigger.lastCorrect = -1;
+
+//***********************************************/
+
 // Triggers once the player exceeds the specified distance based on a relative position
 // TODO: Better error and warning handling
 var DistanceTrigger = function(opts) {
+    DistanceTrigger.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('offset', opts);
     opts = this.getOpt('relPoint', opts);
     if(!DistanceTrigger.relPoints.hasOwnProperty(this.relPoint)) {
-        throw new Error('RelativeDistanceTrigger has invalid relPoint ( ' + this.relPoint + ' )');
+        throw new Error('DistanceTrigger has invalid relPoint ( ' + this.relPoint + ' )');
     }
     
     // Only required for certain relPoints
@@ -237,7 +296,7 @@ var DistanceTrigger = function(opts) {
         this.ordinal -= 1;
     }
     else if(this.relPoint == 'question' || this.relPoint == 'checkpoint') {
-        throw new Error('RelativeDistanceTrigger missing "ordinal" attribute for relPoint type ( ' + this.relPoint + ' )');
+        throw new Error('DistanceTrigger missing "ordinal" attribute for relPoint type ( ' + this.relPoint + ' )');
     }
 }
 DistanceTrigger.inherit(SS.Trigger, {
@@ -248,7 +307,6 @@ DistanceTrigger.inherit(SS.Trigger, {
     
     // Determines the actual distance based on the relative parameters
     resolve: function() {
-        console.log(this);
         if(this.relPoint == 'question' || this.relPoint == 'checkpoint') {
             this.distance = DistanceTrigger.relPoints[this.relPoint][this.ordinal] + this.offset;
         }
@@ -276,27 +334,10 @@ DistanceTrigger.relPoints = {
 
 //***********************************************/
 
-var RelativeLaneTrigger = function(opts) {
-    opts = this.getBoolean('correctness', opts, 'correct', 'incorrect');
-    
-    events.addListener(SS.eventRelay, 'answerQuestionTrigger', this.handle.bind(this));
-}
-RelativeLaneTrigger.inherit(SS.Trigger, {
-    correctness: null,
-    
-    check: function() {
-        //TODO: Determine correctness triggering
-    },
-    
-    handle: function() {
-        //TODO: Resolve answerQuestionTrigger event
-    }
-});
-
-//***********************************************/
-
 // Triggers when the player's velocity crosses the specified threshold
 var VelocityTrigger = function(opts) {
+    VelocityTrigger.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
     opts = this.getInt('velocity', opts);
     opts = this.getBoolean('direction', opts, 'accelerate', 'decelerate');
 }
@@ -336,12 +377,15 @@ var RacecarScripting = function() {
     // Register Triggers
     this.addTrigger('AbsoluteLane', AbsoluteLaneTrigger);
     this.addTrigger('Answer',       AnswerTrigger);
+    this.addTrigger('CorrectLane', CorrectLaneTrigger);
     this.addTrigger('Distance',     DistanceTrigger);
-    //this.addTrigger('RelativeLane', RelativeLaneTrigger);
     this.addTrigger('Velocity',     VelocityTrigger);
 };
 
 RacecarScripting.inherit(SS.ScriptingSystem, {
+    update: function(dt) {
+        RacecarScripting.superclass.update.call(this, dt);
+    }
 });
 
 module.exports = {
@@ -350,7 +394,7 @@ module.exports = {
     
     AbsoluteLaneTrigger : AbsoluteLaneTrigger,
     AnswerTrigger       : AnswerTrigger,
+    CorrectLaneTrigger  : CorrectLaneTrigger,
     DistanceTrigger     : DistanceTrigger,
-    RelativeLaneTrigger : RelativeLaneTrigger,
     VelocityTrigger     : VelocityTrigger,
 };

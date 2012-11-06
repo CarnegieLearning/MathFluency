@@ -25,13 +25,15 @@ function PerspectiveNodeAnim (opts) {
 
 PerspectiveNodeAnim.inherit(PNode, {
     prepareAnimation: function (act) {
-        this.act = act;
-        
-        events.addListener(this.act, 'actionComplete', this.runAnimation.bind(this));
+        this.act = new cocos.actions.RepeatForever(act);
     },
     
     runAnimation: function() {
         this.content.runAction(this.act);
+    },
+    
+    stopAnimation: function() {
+        cocos.ActionManager.sharedManager.removeAllActionsFromTarget(this);
     },
     
     onEnter: function() {
@@ -39,6 +41,12 @@ PerspectiveNodeAnim.inherit(PNode, {
         
         PerspectiveNodeAnim.superclass.onEnter.call(this);
     },
+    
+    onExit: function() {
+        this.stopAnimation();
+        
+        PerspectiveNodeAnim.superclass.onExit.call(this);
+    }
 });
 
 module.exports = PerspectiveNodeAnim

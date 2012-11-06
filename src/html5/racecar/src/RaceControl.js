@@ -25,12 +25,14 @@ RaceControl.initialCountdown    = 3000;                     // Initial countdown
 
 RaceControl.curNumLanes = 3;
 
+RaceControl.font = 'Ethnocentric Regular';
+
 // <AudioSettings>
 RaceControl.crossFadeSpeed = 30;
 
 // <MEDALS>
 RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold, silver, bronze, max] times
-RaceControl.medalNames          = ['Ludicrous Speed', 'Gold', 'Silver', 'Bronze', ' - '];
+RaceControl.medalNames          = ['Gold', 'Gold', 'Silver', 'Bronze', ' - '];
 
 RaceControl.gold    = '#CC9900';        // Color for gold medals
 RaceControl.silver  = '#C0C0C0';        // Color for silver medals

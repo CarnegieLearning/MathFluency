@@ -83,6 +83,7 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
         this.added = false;
         PerspectiveNode.superclass.onExit.call(this);
         
+        //TODO: 1) No longer track delOnDrop, 2) All cleared objects revert to idleing
         if(this.delOnDrop) {
             this.cleanup();
         }
@@ -127,11 +128,11 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
     },
     
     // Called once per second until node is 'just over the horizon' at which point, it starts running update() every frame instead
-    // NOTE: This only works with stationary nodes
+    // NOTE: This may not handle nodes in moion correctly
     idle: function () {
         var distance = this.zCoordinate - PerspectiveNode.cameraZ;
         
-        if(distance <= PerspectiveNode.horizonDistance + RC.maxDistWindow) {
+        if(distance < PerspectiveNode.horizonDistance + RC.maxDistWindow) {
             cocos.Scheduler.sharedScheduler.scheduleUpdate({target: this, priority: 0, paused: false});
         }
         else {
@@ -151,47 +152,57 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
         if(distance > PerspectiveNode.horizonDistance) {
             if(this.added && !this.silent) {
                 events.trigger(this, 'removeMe', this);
+                return -1;
             }
         }
         else if(distance <= PerspectiveNode.horizonDistance && distance > this.dropoffDist) {
             // Make sure that the node gets added to the scene graph once it should be visible
             if(!this.added && !this.silent && !this.disabled) {
                 events.trigger(this, 'addMe', this);
+                return 1;
             }
             
-            // Perspective transform
-            var scale = PerspectiveNode.horizonDistance * PerspectiveNode.horizonScale / distance;
-            var screenX, screenY;
-            
-            // Apply scaling
-            var displayScale = this.scale(scale);
-            
-            // Check to see if X axis is locked
-            if(!this.lockX) {
-                screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.xCoordinate / PerspectiveNode.roadWidth));
-                screenX -= this.alignH * this.getContentWidth() * displayScale;
-            }
-            else {
-                screenX = this.alignH * this.getContentWidth() * displayScale;
-            }
-            
-            // Check to see if Y axis is locked
-            if(!this.lockY) {
-                var yScale = (1.0 / (1.0 - PerspectiveNode.horizonScale)) * (scale - PerspectiveNode.horizonScale);
-                screenY = PerspectiveNode.horizonHeight - PerspectiveNode.horizonHeight * (yScale);
-                screenY += this.alignV * this.getContentHeight() * displayScale;
-            }
-            else {
-                screenY = -1 * this.alignV * this.getContentHeight() * displayScale;
-            }
-            
-            // Set position
-            this.position = new geom.Point(screenX, screenY);
+            this.updatePosition();
         }
         // Once the node drops too far back, notify for removal
         else if (!this.silent) {
             events.trigger(this, 'removeMe', this);
+            return -1;
         }
+        
+        return 0;
+    },
+    
+    updatePosition: function() {
+        // Perspective transform
+        var distance = this.zCoordinate - PerspectiveNode.cameraZ;
+        var scale = PerspectiveNode.horizonDistance * PerspectiveNode.horizonScale / distance;
+        var screenX, screenY;
+        
+        // Apply scaling
+        var displayScale = this.scale(scale);
+        
+        // Check to see if X axis is locked
+        if(!this.lockX) {
+            screenX = PerspectiveNode.roadOffset + PerspectiveNode.roadWidthPix / 2 * (1 + scale * 2.0 * (this.xCoordinate / PerspectiveNode.roadWidth));
+            screenX -= this.alignH * this.getContentWidth() * displayScale;
+        }
+        else {
+            screenX = this.alignH * this.getContentWidth() * displayScale;
+        }
+        
+        // Check to see if Y axis is locked
+        if(!this.lockY) {
+            var yScale = (1.0 / (1.0 - PerspectiveNode.horizonScale)) * (scale - PerspectiveNode.horizonScale);
+            screenY = PerspectiveNode.horizonHeight - PerspectiveNode.horizonHeight * (yScale);
+            screenY += this.alignV * this.getContentHeight() * displayScale;
+        }
+        else {
+            screenY = -1 * this.alignV * this.getContentHeight() * displayScale;
+        }
+        
+        // Set position
+        this.position = new geom.Point(screenX|0, screenY|0);
     },
     
     //HACK: for depreciated bindTo
@@ -213,8 +224,8 @@ PerspectiveNode.horizonHeight   = 409;      // From horizonStart to the bottom o
 PerspectiveNode.horizonDistance = 100;      // In meters from the camera
 PerspectiveNode.horizonScale    = 0.074;    // Scale of objects on the horizon (553:41)
 PerspectiveNode.roadWidth       = 9.0;      // Width of road at bottom of the screen in meters
-PerspectiveNode.roadWidthPix    = 553;      // Width of road at bottom of the screen in pixels
-PerspectiveNode.roadOffset      = 175;      // Number of pixels from the left hand side that the road starts at
+PerspectiveNode.roadWidthPix    = 553*1.2;  // Width of road at bottom of the screen in pixels
+PerspectiveNode.roadOffset      = 175-55.3; // Number of pixels from the left hand side that the road starts at
 
 // Array of legal values in constructor opts argument
 PerspectiveNode.params = ['visibility','minScale','maxScale','xCoordinate','zCoordinate','silent','lockX','lockY','alignV','alignH','dropoffDist','zVelocity','xVelocity','content','delOnDrop'];

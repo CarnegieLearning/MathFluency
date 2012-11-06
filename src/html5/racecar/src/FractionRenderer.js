@@ -57,8 +57,9 @@ function FractionRenderer (opts) {
     
     // Regular fraction defaults
     if(this.whole == null) {
-        this.n.position = new geom.Point(0, 15);
-        this.d.position = new geom.Point(0, -15);
+        //TODO: Position based on font size instead of magic number
+        this.n.position = new geom.Point(0, 12);
+        this.d.position = new geom.Point(0, -12);
         
         this.contentSize = new geom.Size(h, v);
         

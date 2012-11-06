@@ -21,13 +21,14 @@ var PNode = require('/PerspectiveNode');
 var RC = require('/RaceControl');
 var MOT = require('/ModifyOverTime');
 
+var LFW = require('/LabelFW');
+
 // Displays the dashboard on the right hand side
 // TODO: Add speedometer, race progress, medal tracker, penalty time
 function Dashboard (ckpt) {
     Dashboard.superclass.constructor.call(this);
     
     this.zOrder = 100;
-    this.cycle = 0;
     this.checkpoints = ckpt;
     
     // Directory with Dashboard resources
@@ -114,31 +115,49 @@ function Dashboard (ckpt) {
     this.miniPlayer.position = new geo.Point(46, 90);
     this.addChild({child: this.miniPlayer});
     
-    // Label for elapsed time
-    var opts = {};
-    opts['string'] = '0.0';
-    opts['fontName'] = 'Android Nation Italic';
-    opts['fontSize'] = '14'
-    this.elapsedLabel = new cocos.nodes.Label(opts);
-    this.elapsedLabel.anchorPoint = new geo.Point(1, 0);
-    this.elapsedLabel.position = new geo.Point(120, 50);
-    this.addChild({child: this.elapsedLabel});
-    
     // Label for error count
+    var opts = {};
+    opts['fontName'] = RC.font;
     opts['string'] = '0';
-    opts['fontSize'] = '20';
+    opts['fontSize'] = '22';
     this.penaltyCount = new cocos.nodes.Label(opts);
-    this.penaltyCount.anchorPoint = new geo.Point(1, 0.5);
-    this.penaltyCount.position = new geo.Point(130, 140);
+    this.penaltyCount.anchorPoint = new geo.Point(0.5, 0.5);
+    this.penaltyCount.position = new geo.Point(120, 140);
     this.addChild({child: this.penaltyCount});
     
     // Label for current speed
     opts['string'] = '0 MPH';
-    opts['fontSize'] = '14';
+    opts['fontSize'] = '16';
     this.displaySpeed = new cocos.nodes.Label(opts);
     this.displaySpeed.anchorPoint = new geo.Point(1, 0);
     this.displaySpeed.position = new geo.Point(310, 7);
     this.addChild({child: this.displaySpeed});
+    
+    
+    opts['string'] = '.';
+    var decimal = new cocos.nodes.Label(opts);
+    decimal.position = new geo.Point(42, 0)
+    
+    // Label for elapsed time
+    opts['fontSize'] = '16'
+    opts['numDigits'] = 4;
+    opts['offset'] = 16;
+    delete opts['string'];
+    this.elapsedLabel = new LFW(opts);
+    this.elapsedLabel.labels[3].position.x += 2
+    this.elapsedLabel.setStr('0000');
+    this.elapsedLabel.anchorPoint = new geo.Point(0, 0);
+    this.elapsedLabel.position = new geo.Point(67, 45);
+    this.addChild({child: this.elapsedLabel});
+    
+    this.elapsedLabel.addChild({child: decimal});
+    
+    var that = this;
+    setTimeout(function() {
+        that._updateLabelContentSize();
+    }, 500);
+    
+    this.onlyOnce = false;
 }
 
 Dashboard.inherit(cocos.nodes.Node, {
@@ -162,6 +181,13 @@ Dashboard.inherit(cocos.nodes.Node, {
     bronzeZ      : 0,		// Z position of the bronze medal car (updated by PNode)
 	checkpoints	 : [],		// Z positions of the checkpoints
 
+    // Adjust the labels to match their content sizes and alignments
+    _updateLabelContentSize: function() {
+        //this.elapsedLabel._updateLabelContentSize();
+        this.penaltyCount._updateLabelContentSize();
+        this.displaySpeed._updateLabelContentSize();
+    },
+    
     // Updates a minimap dot's position
     updateDot: function (dot, val) {
         dot.position.y = Math.min(90 + ((val / RC.finishLine) * 115), 205);
@@ -169,7 +195,8 @@ Dashboard.inherit(cocos.nodes.Node, {
     
     // Starts tracking time and updating the dashboard timer.
     start: function () {
-        this.elapsedTime = 0
+        this.elapsedTime = 0;
+        this._updateLabelContentSize();
         this.scheduleUpdate();
     },
     
@@ -186,6 +213,7 @@ Dashboard.inherit(cocos.nodes.Node, {
     modifyPenaltyCount: function() {
         this.pCount += 1;
         this.penaltyCount.string = this.pCount;
+        this.penaltyCount._updateLabelContentSize();
     },
     
     // Sets the pause state
@@ -202,19 +230,13 @@ Dashboard.inherit(cocos.nodes.Node, {
     update: function(dt) {
         if(!this.pause) {
             // Update elapsed timer
-            var t = this.elapsedTime + dt;
-            this.elapsedTime = t;
-            this.cycle += dt;
+            this.elapsedTime = (this.elapsedTime + dt);
+            var t = this.elapsedTime * 10;
             
             // Only update positive elapsed time
+            //TODO: Remove if?  elapsedTime no longer tracks negative time
             if(t > 0) {
-                this.elapsedLabel.string = t.toFixed(this.timerAcc) + ' ';
-                
-                // Only update size/position on major digit changes
-                if(this.cycle > 9.94) {
-                    this.elapsedLabel._updateLabelContentSize();
-                    this.cycle -= 10;
-                }
+                this.elapsedLabel.setStr(t.toFixed(this.timerAcc-1) + '');
             }
         }
         
@@ -238,6 +260,7 @@ Dashboard.inherit(cocos.nodes.Node, {
         this.updateDot(this.miniDots[2], this.bronzeZ);
         
         // Place the medal meter needle
+        //TODO: Remove if?  elapsedTime no longer tracks negative time
         if(this.elapsedTime > 0) {
             this.placeMedalNeedle(this.pHelper(s));
         }

@@ -67,6 +67,7 @@ Question.inherit(PNode, {
         sign.addChild({child: c});
         c.anchorPoint = new geom.Point(0.0, 0.0);       //HACK: (0, 0) works and (0.5, 0.5) does not work but should be correct
         c.position = new geom.Point(180, -270);
+        c.bgShow = false;
         
         var pSet = XML.getChildByName(node, 'PerspectiveSettings');
         pSet = (pSet == null) ? {attributes:{}} : pSet;
@@ -75,11 +76,11 @@ Question.inherit(PNode, {
         var opts = {
             lockY       : true,
             silent      : true,
-            minScale    : pSet.attributes['minScale']   == null ? 1 : pSet.attributes['minScale'],
-            maxScale    : pSet.attributes['maxScale']   == null ? 4 : pSet.attributes['maxScale'],
+            minScale    : pSet.attributes['minScale']   == null ? 1.2 : pSet.attributes['minScale'],
+            maxScale    : pSet.attributes['maxScale']   == null ? 3.2 : pSet.attributes['maxScale'],
             alignH      : 0.87,
             alignV      : 0,
-            visibility  : pSet.attributes['visibility'] == null ? 5 : pSet.attributes['visibility'],
+            visibility  : pSet.attributes['visibility'] == null ? 5.5 : pSet.attributes['visibility'],
             xCoordinate : 0,
             zCoordinate : z,
             content     : sign

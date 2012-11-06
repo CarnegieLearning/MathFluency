@@ -19,6 +19,9 @@ var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
 
+// Project imports
+var LabelStroke = require('/LabelStroke');
+
 // Static imports
 var RC = require('/RaceControl');
 var MOT = require('/ModifyOverTime');
@@ -76,6 +79,7 @@ function EndOfGameDisplay (ta, np, a) {
     var dir = '/resources/EndScreen/';
     this.backPane = new cocos.nodes.Sprite({file: dir + 'signEndScreenBack.png'});
     this.backPane.anchorPoint = new geo.Point(0, 0);
+    this.backPane.zOrder = -5;
     this.addChild(this.backPane);
     
     // Between Pane ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,30 +96,56 @@ function EndOfGameDisplay (ta, np, a) {
         this.medalBars[i].anchorPoint = new geo.Point(0, 0.5);
         this.medalBars[i].scaleX = this.proportions(4-i);
         this.medalBars[i].position = new geo.Point(offset, 270);
+        this.medalBars[i].zOrder = -3;
         this.addChild({child: this.medalBars[i]});
         offset += this.proportions(4-i) * 235;
     }
+    
+    this.totalTimeBG = [];
+    
+    this.totalTimeBG.push(new cocos.nodes.Sprite({file: dir + 'sub-bg-0.png'}));
+    this.totalTimeBG.push(new cocos.nodes.Sprite({file: dir + 'sub-bg-1.png'}));
+    this.totalTimeBG.push(new cocos.nodes.Sprite({file: dir + 'sub-bg-2.png'}));
+    this.totalTimeBG.push(new cocos.nodes.Sprite({file: dir + 'sub-bg-3.png'}));
+    
+    for(var i=0; i<4; i+=1) {
+        this.totalTimeBG[i].position = new geo.Point(282, 31);
+        this.totalTimeBG[i].anchorPoint = new geo.Point(0, 0);
+        this.totalTimeBG[i].zOrder = -3;
+    }
+    
+    this.addChild({child: this.totalTimeBG[0]});
     
     this.slider = new cocos.nodes.Sprite({file: dir + 'signEndScreenIndicator.png'});
     this.slider.position = new geo.Point(325, 288);
     this.addChild({child: this.slider});
     
+    this.medals = []
+    
+    this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/bronzeMedal.png'}));
+    this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/silverMedal.png'}));
+    this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/goldMedal.png'}));
+    this.medals[0].position = new geo.Point(670, 230);
+    this.medals[1].position = new geo.Point(670, 230);
+    this.medals[2].position = new geo.Point(670, 230);
+    
     // Front Pane /////////////////////////////////////////////////////////////////////////////////////////////////
     
     this.frontPane = new cocos.nodes.Sprite({file: dir + 'signEndScreenFront.png'});
     this.frontPane.anchorPoint = new geo.Point(0, 0);
+    this.frontPane.zOrder = -1;
     this.addChild(this.frontPane);
     
     // On Top /////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    this.buildLabel('elapsedMin',   448, 174, '0',   '14');
-    this.buildLabel('elapsedSec',   535, 174, '0.0', '14');
-    this.buildLabel('penaltyCount', 120, 114, '0',   '14');
-    this.buildLabel('penaltyCost',  268, 114, '0',   '14');
-    this.buildLabel('penaltyMin',   437, 114, '0',   '14');
-    this.buildLabel('penaltySec',   524, 114, '0.0', '14');
-    this.buildLabel('totalMin',     345, 58,  '0',   '24');
-    this.buildLabel('totalSec',     490, 58,  '0.0', '24');
+    this.buildLabel('elapsedMin',   438, 174, '0',   '18', '#000000');
+    this.buildLabel('elapsedSec',   535, 174, '0.0', '18', '#000000');
+    this.buildLabel('penaltyCount', 120, 114, '0',   '18', '#000000');
+    this.buildLabel('penaltyCost',  268, 114, '0',   '18', '#000000');
+    this.buildLabel('penaltyMin',   427, 114, '0',   '18', '#000000');
+    this.buildLabel('penaltySec',   524, 114, '0.0', '18', '#000000');
+    this.bldLStroke('totalMin',     360, 58,  '0',   '26', '#FFFFFF');
+    this.bldLStroke('totalSec',     510, 58,  '0.0', '26', '#FFFFFF');
     
     this.fix(this.penaltyCost, RC.penaltyTime, 1);
     
@@ -151,6 +181,7 @@ EndOfGameDisplay.inherit(GuiNode, {
     tsl             : 0,        // Link for total seconds
     
     step            : 0,        // Current animation step
+    state           : 0,
     
     timeAmt         : 0.0,      // Elapsed time to display
     numPenalty      : 0,        // Number of penalties incurred
@@ -159,8 +190,16 @@ EndOfGameDisplay.inherit(GuiNode, {
     sliderX         : 325,      // X location of the slider on the medal line
 
     // Helper function to build labels
-    buildLabel: function(n, x, y, s, fs) {
-        var temp = new cocos.nodes.Label({string: s, fontName: 'Android Nation Italic', fontSize: fs});
+    buildLabel: function(n, x, y, s, fs, fc) {
+        var temp = new cocos.nodes.Label({string: s, fontName: RC.font, fontSize: fs, fontColor: fc});
+        temp.anchorPoint = new geo.Point(1, 0);
+        temp.position = new geo.Point(x, y);
+        this.addChild({child: temp});
+        this[n] = temp;
+    },
+    
+    bldLStroke: function(n, x, y, s, fs, fc) {
+        var temp = new LabelStroke({string: s, fontName: RC.font, fontSize: fs, fontColor: fc});
         temp.anchorPoint = new geo.Point(1, 0);
         temp.position = new geo.Point(x, y);
         this.addChild({child: temp});
@@ -194,6 +233,41 @@ EndOfGameDisplay.inherit(GuiNode, {
         this.fix(this.totalMin, this.tml, 0);
         
         this.slider.position = new geo.Point(this.sliderX, 288);
+        
+        // Show medal based on current slider progress
+        if(this.state == 0 && this.sliderX > this.medalBars[1].position.x) {
+            // Log that the first threshold has was passed
+            this.state = 1;
+            
+            // Remove no medal, display bronze
+            this.removeChild({child: this.totalTimeBG[0]});
+            this.addChild({child: this.totalTimeBG[1]});
+            this.addChild({child: this.medals[0]});
+            
+            // Change total time to black stroke color for better visibility
+            this.totalSec.fontColor = '#000000';
+            this.totalMin.fontColor = '#000000';
+        }
+        else if(this.state == 1 && this.sliderX > this.medalBars[2].position.x) {
+            // Log that second threshold was passed
+            this.state = 2;
+            
+            // Remove bronze, display silver
+            this.removeChild({child: this.totalTimeBG[1]});
+            this.addChild({child: this.totalTimeBG[2]});
+            this.removeChild({child: this.medals[0]});
+            this.addChild({child: this.medals[1]});
+        }
+        else if(this.state == 2 && this.sliderX > this.medalBars[3].position.x) {
+            // Log that the final threshold was passed
+            this.state = 3;
+            
+            // Remove silver, display gold
+            this.removeChild({child: this.totalTimeBG[2]});
+            this.addChild({child: this.totalTimeBG[3]});
+            this.removeChild({child: this.medals[1]});
+            this.addChild({child: this.medals[2]});
+        }
     },
     
     // Keeps the label's string value fixed to the specified precision
@@ -212,17 +286,24 @@ EndOfGameDisplay.inherit(GuiNode, {
     // Begins the next step in the animation process
     next: function() {
         if(this.step == 0) {
-            this.totalLabelUp('esl', this.timeAmt, 0.5);
+            this.totalLabelUp('esl', this.timeAmt, 1.5);
         }
         
         else if(this.step == 1) {
-            this.totalLabelUp('psl', this.numPenalty * RC.penaltyTime, 0.5);
-            this.totalLabelUp('pnl', this.numPenalty, 0.5);
+            if(this.numPenalty > 0) {
+                this.totalLabelUp('psl', this.numPenalty * RC.penaltyTime, 1.5);
+                this.totalLabelUp('pnl', this.numPenalty, 1.5);
+            }
+            else {
+                this.step += 2;
+                this.next();
+                return;
+            }
         }
-        
+        // Next step = step+2 because each totalLabelUp() increments step on completion
         else if(this.step == 3) {
             this.totalTime = this.timeAmt + this.numPenalty * RC.penaltyTime;
-            this.totalLabelUp('tsl', this.totalTime, 1.0);
+            this.totalLabelUp('tsl', this.totalTime, 2.5);
             
             var x;
             if(this.abort)
@@ -232,31 +313,21 @@ EndOfGameDisplay.inherit(GuiNode, {
                 
             x = Math.max(0, x);
             
-            var m = new MOT(this.sliderX, x, 1.0);
+            var m = new MOT(this.sliderX, x, 2.5);
             m.bind(this, 'sliderX');
         }
         
-        else if(this.step == 4 && this.totalTime < RC.times[3]) {
-            var medal = '/resources/Medals/bronzeMedal.png';
-            if(this.totalTime < RC.times[1]) {
-                medal = '/resources/Medals/goldMedal.png'
-            }
-            else if(this.totalTime < RC.times[2]) {
-                medal = '/resources/Medals/silverMedal.png'
-            }
-            
-            var ms = new cocos.nodes.Sprite({file: medal});
-            ms.position = new geo.Point(670, 230);
-            this.addChild({child: ms});
-            
+        else if(this.step == 4) {
             //Signals "Retry" and "Next Level" buttons to appear
             //events.trigger(this, 'almostComplete');
             
             var that = this;
-            setTimeout(function() {events.trigger(that, 'actionComplete');}, 1000);
+            setTimeout(function() {
+                events.trigger(that, 'actionComplete');
+            }, 4000);
         }
         
-        else if(this.step == 5) {
+        else if(this.step == 4) {
             events.trigger(this, 'complete');
         }
         
@@ -268,5 +339,5 @@ EndOfGameDisplay.inherit(GuiNode, {
         return (RC.times[i] - RC.times[i - 1]) / (RC.times[4] - RC.times[0]);
     }
 });
-
+//<div class="cocos2d-app"> <script src="racecar/init.js" type="text/javascript""></script>
 module.exports = EndOfGameDisplay;
