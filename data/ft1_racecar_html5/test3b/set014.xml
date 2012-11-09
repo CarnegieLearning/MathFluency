@@ -1,175 +1,202 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <INPUT>
 <MEDALS>
-	<MEDAL Id="1" MEDAL_THRESHOLD="46000"><![CDATA[Gold]]></MEDAL>
-	<MEDAL Id="2" MEDAL_THRESHOLD="71000"><![CDATA[Silver]]></MEDAL>
-	<MEDAL Id="3" MEDAL_THRESHOLD="92000"><![CDATA[Bronze]]></MEDAL>
+	<MEDAL Id="1" MEDAL_THRESHOLD="46000" TYPE="Gold"/>
+	<MEDAL Id="2" MEDAL_THRESHOLD="71000" TYPE="Silver"/>
+	<MEDAL Id="3" MEDAL_THRESHOLD="92000" TYPE="Bronze"/>
 </MEDALS>
-<SpeedSettings>
-	<Max VALUE="150"/>
-	<Min VALUE="0"/>
-	<Default VALUE="18"/>
-</SpeedSettings>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
 <PROBLEM_SET>
 	<PROBLEM_SUBSET>
-		<TARGET TYPE="text" VALUE="0.326"/>
+		<TARGET TYPE="String">
+			<ContentSettings string="0.326"/>
+		</TARGET>
 		<QUESTION INDEX="1">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="0%"/>
-				<DELIMETER VALUE="8%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="8%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="2">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="10%"/>
-				<DELIMETER VALUE="57%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="10%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="57%"/>
+			</Content>
 			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="3">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="3%"/>
-				<DELIMETER VALUE="4%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="3%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="4%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
-		<TARGET TYPE="text" VALUE="3.59"/>
+		<TARGET TYPE="String">
+			<ContentSettings string="3.59"/>
+		</TARGET>
 		<QUESTION INDEX="4">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="180%"/>
-				<DELIMETER VALUE="560%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="180%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="560%"/>
+			</Content>
 			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="5">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="190%"/>
-				<DELIMETER VALUE="250%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="190%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="250%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="6">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="560%"/>
-				<DELIMETER VALUE="770%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="560%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="770%"/>
+			</Content>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
-		<TARGET TYPE="text" VALUE="0.637"/>
+		<TARGET TYPE="String">
+			<ContentSettings string="0.637"/>
+		</TARGET>
 		<QUESTION INDEX="7">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="600%"/>
-				<DELIMETER VALUE="800%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="600%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="800%"/>
+			</Content>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="8">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="36%"/>
-				<DELIMETER VALUE="73%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="36%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="73%"/>
+			</Content>
 			<ANSWER VALUE="1"/>
 		</QUESTION>
 		<QUESTION INDEX="9">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="49%"/>
-				<DELIMETER VALUE="56%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="49%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="56%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
-		<TARGET TYPE="text" VALUE="6.778"/>
+		<TARGET TYPE="String">
+			<ContentSettings string="6.778"/>
+		</TARGET>
 		<QUESTION INDEX="10">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="330%"/>
-				<DELIMETER VALUE="400%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="330%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="400%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="11">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="880%"/>
-				<DELIMETER VALUE="970%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="880%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="970%"/>
+			</Content>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="12">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="340%"/>
-				<DELIMETER VALUE="450%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="340%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="450%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
-		<TARGET TYPE="text" VALUE="0.916"/>
+		<TARGET TYPE="String">
+			<ContentSettings string="0.916"/>
+		</TARGET>
 		<QUESTION INDEX="13">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="900%"/>
-				<DELIMETER VALUE="1100%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="900%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="1100%"/>
+			</Content>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="14">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="71%"/>
-				<DELIMETER VALUE="79%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="71%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="79%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="15">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="118%"/>
-				<DELIMETER VALUE="135%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="118%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="135%"/>
+			</Content>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>
 	<PROBLEM_SUBSET>
-		<TARGET TYPE="text" VALUE="0.141"/>
+		<TARGET TYPE="String">
+			<ContentSettings string="0.141"/>
+		</TARGET>
 		<QUESTION INDEX="16">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="1%"/>
-				<DELIMETER VALUE="2%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="1%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="2%"/>
+			</Content>
 			<ANSWER VALUE="2"/>
 		</QUESTION>
 		<QUESTION INDEX="17">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="26%"/>
-				<DELIMETER VALUE="34%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="26%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="34%"/>
+			</Content>
 			<ANSWER VALUE="0"/>
 		</QUESTION>
 		<QUESTION INDEX="18">
-			<DELIMETERS_TEXT>
-				<DELIMETER VALUE="0%"/>
-				<DELIMETER VALUE="38%"/>
-			</DELIMETERS_TEXT>
-			<DELIMETERS_IMAGE/>
+			<Content TYPE="String">
+				<ContentSettings string="0%"/>
+			</Content>
+			<Content TYPE="String">
+				<ContentSettings string="38%"/>
+			</Content>
 			<ANSWER VALUE="1"/>
 		</QUESTION>
 	</PROBLEM_SUBSET>

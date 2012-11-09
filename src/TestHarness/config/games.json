@@ -1,18 +1,14 @@
 {
     "conditions": {
         "cond1": {
-            "c1s3a": {
-                "displayName": "Sequence A",
+            "carlow1": {
+                "displayName": "Carlow Week 1",
                 "stages": [
-                    "sqn1"
+                    "Carlow1_1",
+                    "Carlow1_2",
+                    "Carlow1_3"
                 ]
             },
-            "c1s3b": {
-                "displayName": "Sequence B",
-                "stages": [
-                    "sqn2"
-                ]
-            }
         },
         "cond2": {
             "c2s3a": {
@@ -899,6 +895,21 @@
     },
     
     "stages": {
+        "Carlow1_1": {
+            "displayName": "Carlow Week 1 Game 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test1b"
+        },
+        "Carlow1_2": {
+            "displayName": "Carlow Week 1 Game 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test2b"
+        },
+        "Carlow1_3": {
+            "displayName": "Carlow Week 1 Game 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test3b"
+        },
         "s2w01_scuba3678": {
             "displayName": "Whole Multiples (Scuba)",
             "engine": "scuba",
