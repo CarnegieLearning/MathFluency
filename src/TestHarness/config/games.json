@@ -8,6 +8,15 @@
                     "Carlow1_2",
                     "Carlow1_3"
                 ]
+            },
+            "carlow2": {
+                "displayName": "Carlow Week 2",
+                "stages": [
+                    "Carlow2_1",
+                    "Carlow2_2",
+                    "Carlow2_3",
+                    "Carlow2_4"
+                ]
             }
         },
         "cond2": {
@@ -909,6 +918,26 @@
             "displayName": "Carlow Week 1 Game 3",
             "engine": "racecar_html5",
             "cli_fluency_task": "test3b"
+        },
+        "Carlow2_1": {
+            "displayName": "Carlow Week 2 Game 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test4b"
+        },
+        "Carlow2_2": {
+            "displayName": "Carlow Week 2 Game 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test5b"
+        },
+        "Carlow2_3": {
+            "displayName": "Carlow Week 2 Game 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test6b"
+        },
+        "Carlow2_4": {
+            "displayName": "Carlow Week 2 Game 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "test7b"
         },
         "s2w01_scuba3678": {
             "displayName": "Whole Multiples (Scuba)",
