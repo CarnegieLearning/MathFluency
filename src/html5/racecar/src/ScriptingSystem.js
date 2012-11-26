@@ -18,6 +18,7 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
 var geo = require('geometry');
 var events = require('events');
+var Texture2D = require('cocos2d').Texture2D;
 
 // Project Imports
 var KeyboardLayer = require('/KeyboardLayer');
@@ -46,7 +47,7 @@ OptGetters.inherit(Object, {
             return opts;
         }
         
-        throw new Error('opts does not contain property ( ' + name + ' )');
+        throw new Error('[CRITICAL] [PARSE] opts does not contain property ( ' + name + ' )');
     },
     
     // Runs getOpt and then parses the received value as an int before returning it
@@ -55,7 +56,7 @@ OptGetters.inherit(Object, {
         opts = this.getOpt(name, opts)
         this[name] = parseInt(this[name]);
         if(isNaN(this[name])) {
-            throw new Error('opts[' + name +'] value is NaN after parseInt');
+            throw new Error('[CRITICAL] [PARSE] opts[' + name +'] value is NaN after parseInt');
         }
         return opts;
     },
@@ -64,9 +65,9 @@ OptGetters.inherit(Object, {
     // Throws an error if the value resolves to NaN
     getFloat: function(name, opts) {
         opts = this.getOpt(name, opts)
-        this[name] = parseInt(this[name]);
+        this[name] = parseFloat(this[name]);
         if(isNaN(this[name])) {
-            throw new Error('opts[' + name +'] value is NaN after parseInt');
+            throw new Error('[CRITICAL] [PARSE] opts[' + name +'] value is NaN after parseFloat');
         }
         return opts;
     },
@@ -83,7 +84,7 @@ OptGetters.inherit(Object, {
             this[name] = false;
         }
         else {
-            throw new Error('Invalid boolean value: ' + this[name] + ' ( ' + t + ' || ' + f + ' )');
+            throw new Error('[CRITICAL] [PARSE] Invalid boolean value ( ' + this[name] + ' )  Expected ( ' + t + ' || ' + f + ' )');
         }
         
         return opts;
@@ -120,6 +121,9 @@ var Act = function(opts) {
         else if(opts.attributes.errorLevel == 'ignore') {
             this.errorLevel = 2;
         }
+        else {
+            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + opts.attributes.errorLevel + ' )');
+        }
     }
 }
 Act.inherit(OptGetters, {
@@ -127,7 +131,7 @@ Act.inherit(OptGetters, {
 
     // exec() is what is called when an action is executed by a ScriptingEvent
     exec: function() {
-        throw new Error('Subclass of Act must override exec()');
+        throw new Error('[CRITICAL] [RUNTIME] [SYSTEM] Subclass of Act must override exec()');
     },
     
     hasErrorLevel: function() {
@@ -157,11 +161,11 @@ var AudioAct = function(opts) {
         this.mode = 'volume';
         opts = this.getFloat('volume', opts);
         if(this.volume < 0 || 1 < this.volume) {
-            throw new Error('AudioAct volume is out of valid range [0, 1] ( ' + this.volume + ' )')
+            throw new Error('[CRITICAL] [PARSE] AudioAct volume is out of valid range [0, 1] ( ' + this.volume + ' )')
         }
     }
     else {
-        throw new Error('Invalid AudioAct mode value ( ' + this.mode + ' )')
+        throw new Error('[CRITICAL] [PARSE] Invalid AudioAct mode value ( ' + this.mode + ' )')
     }
 }
 AudioAct.inherit(Act, {
@@ -213,7 +217,7 @@ DelayAct.inherit(Act, {
     
     // As DelayAct never 'executes', its exec() throws an error when called
     exec: function() {
-        throw new Error('exec() should never be called for DelayAct');
+        throw new Error('[CRITICAL] [RUNTIME] [SYSTEM] exec() should never be called for DelayAct');
     }
 });
 
@@ -312,11 +316,73 @@ LoadImageAct.inherit(Act, {
         
         img.onload = function () {
             __jah__.resources[this.resourceID].loaded = true;
-            events.trigger(eventRelay, 'LoadImageEvent', this.resourceID, this.source);
-        }.bind(this)    
+            events.trigger(eventRelay, 'RemoteLoadEvent', this.resourceID, this.source);
+        }.bind(this)
         
         img.onerror = function () {
-            this.generateError('Failed to load resource: ' + this.resourceID + ' from ' + this.source);
+            this.generateError('[RUNTIME] [REMOTE] Failed to load resource: ' + this.resourceID + ' from ' + this.source);
+        }.bind(this)
+        
+        img.src = this.source;
+    }
+});
+
+//***********************************************/
+
+var LoadAnimationAct = function(opts) {
+    LoadAnimationAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
+    opts = this.getOpt('resourceID', opts);
+    opts = this.getOpt('source', opts);
+    opts = this.getInt('frameWidth', opts);
+    opts = this.getInt('frameHeight', opts);
+    opts = this.getInt('frames', opts);
+    
+    if(opts.hasOwnProperty('fps')) {
+        opts = this.getInt('fps', opts);
+        this.frameDelay = 1.0 / this.fps;
+        
+        if(opts.hasOwnProperty('frameDelay')) {
+            throw new Error('[CRITICAL] [PARSE] LoadAnimationAct cannot have both "fps" and "frameDelay"');
+        }
+    }
+    else if(opts.hasOwnProperty('frameDelay')) {
+        opts = this.getFloat('frameDelay', opts);
+    }
+    else {
+        throw new Error('[CRITICAL] [PARSE] LoadAnimationAct requires one of either "fps" or "frameDelay"');
+    }
+}
+LoadAnimationAct.inherit(Act, {
+    resourceID  : null,     // The string for referencing the image once loaded
+    source      : null,     // The source location for the image
+    frameWidth  : null,     // Width of each individual frame
+    frameHeight : null,     // Height of the frame strip -- TODO: Allow for multiline || infer this for single line
+    frames      : null,     // Number of frames in the animation
+    frameDelay  : null,     // The delay in seconds between each frame
+    fps         : null,     // Number of frames to be displayed per second, used to calculate frameDelay
+    
+    exec: function() {
+        var img = new Image()
+        __jah__.resources[this.resourceID] = {url: this.source, path: this.resourceID};
+        __jah__.resources[this.resourceID].data = img;
+        
+        img.onload = function () {
+            __jah__.resources[this.resourceID].loaded = true;
+            
+            var anim = [];
+            var texture = new Texture2D({file: module.dirname + this.resourceID});
+            for(var i=0; i<this.frames; i++) {
+                anim.push(new cocos.SpriteFrame({texture: texture, rect: geo.rectMake(i*this.frameWidth, 0, this.frameWidth, this.frameHeight)}));
+            }
+            
+            __jah__.resources[this.resourceID].data = new cocos.Animation({frames: anim, delay: this.frameDelay});
+            
+            events.trigger(eventRelay, 'RemoteLoadEvent', this.resourceID, this.source);
+        }.bind(this)
+        
+        img.onerror = function () {
+            this.generateError('[RUNTIME] [REMOTE] Failed to load resource: ' + this.resourceID + ' from ' + this.source);
         }.bind(this)
         
         img.src = this.source;
@@ -360,10 +426,21 @@ var SetVarAct = function (opts) {
     else if(this.val == 'false') {
         this.val = false;
     }
+    
+    // Only worry about the internal property if it is present
+    if(opts.hasOwnProperty('internal')) {
+        opts = this.getBoolean('internal', opts, 'true', 'false');
+    }
+    
+    // If this is not specified as interal, assume the scripter is accessing ss_vars
+    if(!this.internal) {
+        this.name = 'ss_vars.' + this.name;
+    }
 }
 SetVarAct.inherit(Act, {
-    name: null, // Holds the name of the variable to set
-    val : null, // Holds the value to set the variable to
+    name    : null,     // Holds the name of the variable to set
+    val     : null,     // Holds the value to set the variable to
+    internal: false,    // When true, do not assume ss_vars placement
     
     exec: function() {
         events.trigger(eventRelay, 'SetVarEvent', this.name, this.val);
@@ -395,16 +472,32 @@ var SetRelVarAct = function (opts) {
         }
         
         opts = this.getOpt('op', opts);
+        
+        if(!(this.op in ScriptingSystem.ops)) {
+            throw new Error('[CRITICAL] [PARSE] Unrecognized operator ( ' + this.opt + ' )');
+        }
     }
     else if(opts.hasOwnProperty('op')) {
-        throw new Error('SetRelVarAct has op attribute with no mod attribute');
+        throw new Error('[CRITICAL] [PARSE] SetRelVarAct has op attribute with no mod attribute');
+    }
+    
+    // Only worry about the internal property if it is present
+    if(opts.hasOwnProperty('internal')) {
+        opts = this.getBoolean('internal', opts, 'true', 'false');
+    }
+    
+    // If this is not specified as interal, assume the scripter is accessing ss_vars
+    if(!this.internal) {
+        this.name = 'ss_vars.' + this.name;
+        this.val  = 'ss_vars.' + this.val;
     }
 }
 SetRelVarAct.inherit(Act, {
-    name: null, // Holds the name of the variable to set
-    val : null, // Holds the name of the variable to copy the value from
-    op  : null, // Operation with which to combine the values + - * / %
-    mod : 0,    // Optional amount to modify the second variable
+    name    : null,     // Holds the name of the variable to set
+    val     : null,     // Holds the name of the variable to copy the value from
+    op      : null,     // Operation with which to combine the values + - * / %
+    mod     : 0,        // Optional amount to modify the second variable
+    internal: false,    // When true, do not assume ss_vars placement
     
     exec: function() {
         if(this.mod == 0) {
@@ -413,7 +506,6 @@ SetRelVarAct.inherit(Act, {
         else {
             events.trigger(eventRelay, 'SetRelVarEvent', this.name, this.val, this.op, this.mod);
         }
-        
     }
 });
 
@@ -427,12 +519,29 @@ var CombineVarsAct = function(opts) {
     opts = this.getOpt('other1', opts);
     opts = this.getOpt('other2', opts);
     opts = this.getOpt('op');
+    
+    if(!(this.op in ScriptingSystem.ops)) {
+        throw new Error('[CRITICAL] [PARSE] Unrecognized operator ( ' + this.opt + ' )');
+    }
+    
+    // Only worry about the internal property if it is present
+    if(opts.hasOwnProperty('internal')) {
+        opts = this.getBoolean('internal', opts, 'true', 'false');
+    }
+    
+    // If this is not specified as interal, assume the scripter is accessing ss_vars
+    if(!this.internal) {
+        this.name = 'ss_vars.' + this.name;
+        this.other1  = 'ss_vars.' + this.other1;
+        this.other2  = 'ss_vars.' + this.other2;
+    }
 }
 CombineVarsAct.inherit(Act, {
-    name    : null, // Holds the name of the variable to set
-    other1  : null, // Name of the first variable to combine
-    other2  : null, // Name of the second variable to combine
-    op      : null, // Operation with which to combine the variables + - * / %
+    name    : null,     // Holds the name of the variable to set
+    other1  : null,     // Name of the first variable to combine
+    other2  : null,     // Name of the second variable to combine
+    op      : null,     // Operation with which to combine the variables + - * / %
+    internal: false,    // When true, do not assume ss_vars placement
     
     exec: function() {
         events.trigger(eventRelay, 'CombineVarsEvent', this.name, this.other1, this.other2, this.op);
@@ -597,6 +706,67 @@ ShowMessageAct.inherit(Act, {
 
 //***********************************************/
 
+// Plays or loops an animation on the screen
+var PlayAnimationAct = function(opts) {
+    PlayAnimationAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
+    
+    opts = this.getOpt('resource', opts);
+    opts = this.getOpt('contentID', opts);
+    opts = this.getInt('x', opts);
+    opts = this.getInt('y', opts);
+    
+    if(opts.hasOwnProperty('loop')) {
+        opts = this.getBoolean('loop', opts, 'true', 'false');
+    }
+    
+    if(opts.hasOwnProperty('parent')) {
+        opts = this.getOpt('parent', opts);
+    }
+}
+PlayAnimationAct.inherit(Act, {
+    resource    : null,     // Image resource to display
+    contentID   : null,     // String to reference animation with in scripting content tracking dictionary
+    x           : null,     // X screen coordinate
+    y           : null,     // Y screen coordinate
+    loop        : false,    // When true, the animation loops until told to stop
+    parent      : null,     // Parent node that the content will be a child of, null defaults to ss_dynamicNode
+    
+    exec: function() {
+        var anim = new cocos.actions.Animate({animation: __jah__.resources[this.resource].data, restoreOriginalFrame: false});
+    
+        if(this.loop) {
+            anim = new cocos.actions.RepeatForever(anim);
+        }
+        
+        events.trigger(eventRelay, 'PlayAnimationEvent', this.contentID, anim, new geo.Point(this.x, this.y), this.parent);
+    }
+});
+
+//***********************************************/
+
+// NOTE: Stopping an animation does NOT hide it, use HideContent to remove an animation from the screen
+var StopAnimationAct = function(opts) {
+    StopAnimationAct.superclass.constructor.call(this, opts);
+    opts = opts.attributes;
+    
+    opts = this.getOpt('contentID', opts);
+    
+    if(opts.hasOwnProperty('parent')) {
+        opts = this.getOpt('parent', opts);
+    }
+}
+StopAnimationAct.inherit(Act, {
+    contentID   : null,     // String to reference animation with in scripting content tracking dictionary
+    parent      : null,     // Parent node of the content, null defaults to ss_dynamicNode
+    
+    exec: function() {
+        events.trigger(eventRelay, 'StopAnimationEvent', this.contentID, this.parent);
+    }
+});
+
+//***********************************************/
+
 var MoveContentAct = function(opts) {
     MoveContentAct.superclass.constructor.call(this, opts);
     opts = opts.attributes;
@@ -609,7 +779,7 @@ var MoveContentAct = function(opts) {
 MoveContentAct.inherit(Act, {
     contentID   : null,     // String to reference button with in scripting content tracking dictionary
     x           : null,     // X screen coordinate
-    y           : null,     // Y screen coordinate   
+    y           : null,     // Y screen coordinate
     
     exec: function() {
         events.trigger(eventRelay, 'MoveContentEvent', this.contentID, new geo.Point(this.x, this.y));
@@ -721,7 +891,8 @@ IncludeAct.inherit(Act, {
 
     exec: function() {
         if(this.oneShot) {
-            throw new Error('An IncludeAct can only ever be executed once');
+            //TODO: Make non-critical
+            throw new Error('[CRITICAL] [RUNTIME] An IncludeAct can only ever be executed once');
         }
         
         if(this.file === null && !this.preload) {
@@ -762,7 +933,7 @@ Trigger.inherit(OptGetters, {
     // Called to determine if Trigger is satisified (returns true if so, false otherwise)
     // Must be overridden by subclasses
     check: function() {
-        throw new Error('Trigger subclasses must override check()');
+        throw new Error('[CRITICAL] [RUNTIME] [SYSTEM] Trigger subclasses must override check()');
     }
 });
 
@@ -778,7 +949,7 @@ var LogicTrigger = function(opts, min, max) {
     
     // Make sure we have a legal number of Triggers
     if(min > t.length || t.length > max) {
-        throw new Error(opts.attributes.type + ' <LogicTrigger> requires between ' + min + ' and ' + max + ' Triggers ( ' + t.length + ' )');
+        throw new Error('[CRITICAL] [PARSE] ' + opts.attributes.type + ' <LogicTrigger> requires between ' + min + ' and ' + max + ' Triggers ( ' + t.length + ' )');
     }
     
     // Create Triggers
@@ -862,6 +1033,18 @@ XorTrigger.inherit(LogicTrigger, {
 
 //***********************************************/
 
+// Takes no parameters and is always true
+var AutoTrigger = function(opts) {
+    AutoTrigger.superclass.constructor.call(this, opts);
+}
+AutoTrigger.inherit(Trigger, {
+    check: function() {
+        return true;
+    }
+});
+
+//***********************************************/
+
 // Triggers when a Button created through ShowButton with the specified contentID is pressed
 var ButtonInputTrigger = function(opts) {
     ButtonInputTrigger.superclass.constructor.call(this, opts);
@@ -911,6 +1094,10 @@ var CheckVarTrigger = function(opts) {
     opts = this.getOpt('name', opts);
     opts = this.getOpt('op', opts);
     
+    if(!(this.op in CheckVarTrigger.ops)) {
+        throw new Error('[CRITICAL] [PARSE] Unrecognized comparison operator ( ' + this.op + ' )');
+    }
+    
     opts = this.getOpt('val', opts);
     // Check to see if value can be parsed as a number
     var temp = parseFloat(this.val);
@@ -925,21 +1112,36 @@ var CheckVarTrigger = function(opts) {
         this.val = false;
     }
     
+    // Only worry about the internal property if it is present
+    if(opts.hasOwnProperty('internal')) {
+        opts = this.getBoolean('internal', opts, 'true', 'false');
+    }
+    
+    // If this is not specified as interal, assume the scripter is accessing ss_vars
+    if(!this.internal) {
+        this.name = 'ss_vars.' + this.name;
+    }
+    
     // Check to see if we are comparing two variables
-    if(opts.hasOwnProperty('twoVar') && opts.twoVar != 'false') {
-        this.tv = true;
+    if(opts.hasOwnProperty('twoVar')) {
+        opts = this.getBoolean('twoVar', opts, 'true', 'false');
+        
+        if(!this.internal) {
+            this.val = 'ss_vars.' + this.val;
+        }
     }
 }
 CheckVarTrigger.inherit(Trigger, {
-    name: null,     // Name of variable to check
-    op  : '',       // == === != !== > < >= <=
-    val : null,     // Value to compare against
-    tv  : false,    // When true, use val as a second variable to check against
+    name    : null,     // Name of variable to check
+    op      : '',       // == === != !== > < >= <=
+    val     : null,     // Value to compare against
+    twoVar  : false,    // When true, use val as a second variable to check against
+    internal: false,    // When true, do not assume ss_vars placement
     
     check: function() {
         var firstVar = CheckVarTrigger.get(this.name)
         var secondVar = this.val;
-        if(this.tv) {
+        if(this.twoVar) {
             secondVar = CheckVarTrigger.get(this.val);
         }
         
@@ -961,6 +1163,7 @@ CheckVarTrigger.ops = {         // Stores operator functions by their string rep
 
 //***********************************************/
 
+//TODO: Requires interrupt system to be designed/implemented
 var ErrorTrigger = function(opts) {
     ErrorTrigger.superclass.constructor.call(this, opts);
     opts = opts.attributes;
@@ -1010,7 +1213,7 @@ var KeyTrigger = function(opts) {
     else {
         this.key = parseInt(this.key);
         if(isNaN(this.key)) {
-            throw new Error('KeyTrigger\'s key resolves to NaN');
+            throw new Error('[CRITICAL] [PARSE] KeyTrigger\'s length != 1 and key resolves to NaN with parseInt');
         }
     }
     
@@ -1032,14 +1235,14 @@ KeyTrigger.keys = null;
 
 //***********************************************/
 
-var LoadImageTrigger = function(opts) {
-    LoadImageTrigger.superclass.constructor.call(this, opts);
+var RemoteLoadTrigger = function(opts) {
+    RemoteLoadTrigger.superclass.constructor.call(this, opts);
     opts = opts.attributes;
     opts = this.getOpt('resourceID', opts);
     
-    events.addListener(eventRelay, 'LoadImageEvent', this.handle.bind(this));
+    events.addListener(eventRelay, 'RemoteLoadEvent', this.handle.bind(this));
 }
-LoadImageTrigger.inherit(Trigger, {
+RemoteLoadTrigger.inherit(Trigger, {
     resourceID  : '',       // Name of this trigger
     state       : false,    // If this trigger has been activated
     
@@ -1136,8 +1339,11 @@ ConditionalEvent = function(xml) {
     var a = XML.getChildrenByName(xml, 'ACTION');
     
     // Make sure we have at least one of each so that the Event is valid
+    if(t.length == 0) {
+        throw new Error('[CRITICAL] [PARSE] Event requires at least one Trigger');
+    }
     if(a.length == 0) {
-        throw new Error('ScriptingEvent requires at least one Action ( ' + a.length + ' )');
+        throw new Error('[CRITICAL] [PARSE] Event requires at least one Action');
     }
     
     // Create Triggers
@@ -1166,6 +1372,9 @@ ConditionalEvent = function(xml) {
         }
         else if(xml.attributes.errorLevel == 'ignore') {
             this.errorLevel = 2;
+        }
+        else {
+            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + xml.attributes.errorLevel + ' )');
         }
     }
     else {
@@ -1213,13 +1422,13 @@ ConditionalEvent.inherit(Object, {
     // Handles error generation for runtime error (parsing errors are always thrown)
     generateError: function(str) {
         if(this.curErrorLevel == 0) {
-            throw new Error(str);
+            throw new Error('[RUNTIME] ' + str);
         }
         else if(this.curErrorLevel == 1) {
-            console.log('WARNING: ' + str);
+            console.log('[RUNTIME] WARNING: ' + str);
         }
         else if(this.curErrorLevel != 2) {
-            throw new Error('Error generated and handled with an invalid errorLevel ( ' + this.errorLevel + ' )');
+            throw new Error('[RUNTIME] [CRITICAL] Error generated and handled with an invalid errorLevel ( ' + this.errorLevel + ' )');
         }
     }
 });
@@ -1242,7 +1451,7 @@ var ScriptingEvent = function(xml) {
             this.state = ScriptingEvent.INACTIVE;
         }
         else {
-            throw new Error('Event ' + this.eventID + ' has invalid starting state ' + xml.attributes.state);
+            throw new Error('[CRITICAL] [PARSE] Event ' + this.eventID + ' has invalid starting state ' + xml.attributes.state);
         }
     }
     // Otherwise default to active
@@ -1425,10 +1634,13 @@ var ScriptingSystem = function() {
     this.addAction('ShowButton',        ShowButtonAct,  'ShowButtonEvent',      this.showContent.bind(this));
     this.addAction('ShowImage',         ShowImageAct,   'ShowImageEvent',       this.showContent.bind(this));
     this.addAction('ShowMessage',       ShowMessageAct, 'ShowMessageEvent',     this.showContent.bind(this));
+    this.addAction('PlayAnimation',     PlayAnimationAct,'PlayAnimationEvent',  this.playAnimation.bind(this));
+    this.addAction('StopAnimation',     StopAnimationAct,'StopAnimationEvent',  this.stopAnimation.bind(this));
     this.addAction('MoveContent',       MoveContentAct, 'MoveContentEvent',     this.moveContent.bind(this));
     this.addAction('HideContent',       HideContentAct, 'HideContentEvent',     this.hideContent.bind(this));
     this.addAction('LoadAudio',         LoadAudioAct,   'LoadAudioEvent',       this.loadAudio.bind(this));
     this.addAction('LoadImage',         LoadImageAct);
+    this.addAction('LoadAnimation',     LoadAnimationAct);
     //TODO: Seperate these audio actions into distinct events?
     this.addAction('PlayAudio',         AudioAct);      // Since all four of these
     this.addAction('LoopAudio',         AudioAct);      // events use the same callback,
@@ -1448,16 +1660,17 @@ var ScriptingSystem = function() {
     this.addTrigger('Or',               OrTrigger);
     this.addTrigger('Not',              NotTrigger);
     this.addTrigger('Xor',              XorTrigger);
+    this.addTrigger('AutoTrigger',      AutoTrigger);
     this.addTrigger('CheckVar',         CheckVarTrigger);
     this.addTrigger('ButtonInput',      ButtonInputTrigger);
     this.addTrigger('IncludeTrigger',   IncludeTrigger);
     this.addTrigger('KeyTrigger',       KeyTrigger);
-    this.addTrigger('LoadImageTrigger', LoadImageTrigger);
+    this.addTrigger('RemoteLoadTrigger',RemoteLoadTrigger);
     this.addTrigger('ManualTrigger',    ManualTrigger);
     this.addTrigger('Time',             TimeTrigger);
     
     KeyTrigger.keys = this.keys;
-    CheckVarTrigger.get = this.nr_get.bind(this);
+    CheckVarTrigger.get = this.reflectiveGet.bind(this);
     this.setErrorLevel = this.setErrorLevel.bind(this);
     
     // Start running every frame
@@ -1503,7 +1716,7 @@ ScriptingSystem.inherit(KeyboardLayer, {
             return;
         }
         
-        throw new Error('Illegal value for ss_errorLevel ( ' + lvl + ' ) ');
+        throw new Error('[CRITICAL] [RUNTIME] Illegal value for ss_errorLevel ( ' + lvl + ' ) ');
     },
     
     // Load ScriptingEvents from parsed xml
@@ -1526,11 +1739,11 @@ ScriptingSystem.inherit(KeyboardLayer, {
                     events.addListener(this.ss_eventList[evts[i].attributes.eventID], 'ErrorLevelEvent', this.setErrorLevel);
                 }
                 else {
-                    throw new Error('Event #' + (i+1) + ' has an eventID that is already in use ( ' + evts[i].attributes.eventID + ' )');
+                    throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' has an eventID that is already in use ( ' + evts[i].attributes.eventID + ' )');
                 }
             }
             else {
-                throw new Error('Event #' + (i+1) + ' does not have an eventID');
+                throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' does not have an eventID');
             }
             i += 1;
         }
@@ -1545,7 +1758,7 @@ ScriptingSystem.inherit(KeyboardLayer, {
         console.log(tokens);
         var vars = [];
         for(var i=0; i<args.length; i+=1) {
-            vars.push(this.nr_get(args[i]));
+            vars.push(this.reflectiveGet(args[i]));
         }
         
         var newStr = tokens[0];
@@ -1599,98 +1812,126 @@ ScriptingSystem.inherit(KeyboardLayer, {
         this.showContent(cid, lbl);
     },
     
+    reflectiveIndex: function(token) {
+        var num = parseInt(token);
+        if(!isNaN(num)) {
+            return num;
+        }
+        return this.reflectiveGet(index);
+    },
+    
     // Who would of thought I was going to have to reimplement this after it was removed from cocos...
     // And hoping to avoid the overhead of recursion plus repeated splitting and joining
-    nr_get: function(key) {
+    //TODO: Combine common elements with reflectiveSet
+    reflectiveGet: function(key) {
         var tokens = key.split('.');
-        var nrs = this;
+        var obj = this;
         while(tokens.length > 0) {
             key = tokens.shift();
-            //* Array checking code
+            // Array checking code
             if(key.indexOf('[') > -1) {
                 var arrToken = key.split('[');
                 key = arrToken[0];
-                var index = arrToken[1].slice(0, -1);
+                var index = this.reflectiveIndex(arrToken[1].slice(0, -1));
                 
-                var num = parseInt(index);
-                if(!isNaN(num)) {
-                    index = num;
-                }
-                //BADFORM: Recursion in the non-recursive search
-                //TODO: Rename?
-                else {
-                    index = this.nr_get(index);
+                if(!(key in obj)) {
+                    throw new Error('[CRITICAL] [RUNTIME] ' + obj + ' lacks array ' + key);
                 }
                 
-                if(!nrs.hasOwnProperty(key)) {
-                    this.generateError(nrs + ' lacks property ' + key);
-                    nrs[key] = {};
-                }
-                
-                nrs = nrs[key[index]];
+                obj = obj[key][index];
             }
-            //*/ Property checking code
+            // Property checking code
             else {
-                if(!nrs.hasOwnProperty(key)) {
-                    this.generateError(nrs + ' lacks property ' + key);
-                    nrs[key] = {};
+                // Only operate on already existing attributes
+                if(!(key in obj)) {
+                    throw new Error('[CRITICAL] [RUNTIME] ' + obj + ' lacks property ' + key);
                 }
                 
-                nrs = nrs[key];
+                obj = obj[key];
             }
         }
         
-        return nrs;
+        return obj;
     },
     
     // And the slightly different version for setting values
-    nr_set: function(key, val) {
+    //TODO: Combine common elements with reflectiveGet
+    reflectiveSet: function(key, val) {
         var tokens = key.split('.');
-        var nrs = this;
-        while(tokens.length > 1) {
+        var obj = this;
+        while(tokens.length > 0) {
             key = tokens.shift();
-            if(!nrs.hasOwnProperty(key)) {
-                nrs[key] = {};
-            }
             
-            nrs = nrs[key];
+            // Array checking code
+            if(key.indexOf('[') > -1) {
+                var arrToken = key.split('[');
+                key = arrToken[0];
+                var index = this.reflectiveIndex(arrToken[1].slice(0, -1));
+                
+                // Have to check and assign like this, otherwise values fail to assign
+                if(tokens.length > 0) {
+                    // Only operate on already existing attributes
+                    if(!(key in obj)) {
+                        throw new Error('[CRITICAL] [RUNTIME] ' + obj + ' lacks array ' + key);
+                    }
+                
+                    obj = obj[key][index];
+                }
+                else {
+                    obj[key][index] = val;
+                    return true;
+                }
+            }
+            // Property checking code
+            else {
+                // Have to check and assign like this, otherwise values fail to assign
+                if(tokens.length > 0) {
+                    // Only operate on already existing attributes
+                    if(!(key in obj)) {
+                        throw new Error('[CRITICAL] [RUNTIME] ' + obj + ' lacks property ' + key);
+                    }
+                    obj = obj[key];
+                }
+                else {
+                    obj[key] = val;
+                    return true;
+                }
+            }
         }
-        
-        nrs[tokens[0]] = val;
     },
     
     // x = C
     setVar: function(name, val) {
-        this.nr_set(name, val);
+        this.reflectiveSet(name, val);
     },
     
     // x = y ([op] C)
     setRelVar: function(name, other, op, mod) {
-        var val = this.nr_get(other);
+        var val = this.reflectiveGet(other);
         
         // Only apply the operation if present
         if(op && mod) {
             val = ScriptingSystem.ops[op].call(this, val, mod);
         }
         
-        this.nr_set(name, val);
+        this.reflectiveSet(name, val);
     },
     
     // x = y [op] z
     combineVars: function(name, other1, other2, op) {
-        this.nr_set(name, ScriptingSystem.ops[op].call(this.get(other1), this.get(other2)));
+        this.reflectiveSet(name, ScriptingSystem.ops[op].call(this.get(other1), this.get(other2)));
     },
     
     // Calls an arbitrary function on this object
     callFunction: function(func, params) {
         try {
             var tokens = func.split('.');
-            var nrs = this;
+            var obj = this;
             while(tokens.length > 1) {
-                nrs = nrs[tokens.shift()];
+                obj = obj[tokens.shift()];
             }
         
-            nrs[func].apply(this, params);
+            obj[func].apply(this, params);
         }
         catch(e) {
             this.generateError('Error calling function ' + func + ' with parameters ' + params)
@@ -1774,7 +2015,7 @@ ScriptingSystem.inherit(KeyboardLayer, {
     // Displays scripted content to the screen
     showContent: function(id, content, parent) {
         if(parent) {
-            parent = this.nr_get(parent);
+            parent = this.reflectiveGet(parent);
         }
         else {
             parent = this.ss_dynamicNode;
@@ -1789,6 +2030,40 @@ ScriptingSystem.inherit(KeyboardLayer, {
         }
     },
     
+    // Plays or loops an animation
+    playAnimation: function(id, anim, point, parent) {
+        if(parent) {
+            parent = this.reflectiveGet(parent);
+        }
+        else {
+            parent = this.ss_dynamicNode;
+        }
+    
+        if(!this.ss_tracker.hasOwnProperty(id)) {
+            var animNode = new cocos.nodes.Sprite();
+            animNode.position = point;
+            
+            this.ss_tracker[id] = animNode;
+            parent.addChild({child: animNode});
+            
+            animNode.runAction(anim);
+        }
+        else {
+            this.generateError('Already tracking content with id ( ' + id + ' ), unable to playAnimation()');
+        }
+    },
+    
+    // Stops but does NOT hide an animation
+    stopAnimation: function(id) {
+        if(this.ss_tracker.hasOwnProperty(id)) {
+            this.ss_tracker[id].stopAllActions();
+        }
+        else {
+            this.generateError('Not tracking any content with id ( ' + id + ' ), unable to stopAnimation()');
+        }
+    },
+    
+    // Moves already displayed content to a different location
     moveContent: function(id, pos) {
         if(this.ss_tracker.hasOwnProperty(id)) {
             this.ss_tracker[id].position = pos;
@@ -1801,7 +2076,7 @@ ScriptingSystem.inherit(KeyboardLayer, {
     // Hides and deletes a piece of content that was previously displayed
     hideContent: function(id, parent) {
         if(parent) {
-            parent = this.nr_get(parent);
+            parent = this.reflectiveGet(parent);
         }
         else {
             parent = this.ss_dynamicNode;
@@ -1859,13 +2134,13 @@ ScriptingSystem.inherit(KeyboardLayer, {
     // Handles error generation for runtime error (parsing errors are always thrown)
     generateError: function(str) {
         if(this.ss_errorLevel == 0) {
-            throw new Error(str);
+            throw new Error('[RUNTIME] ' + str);
         }
         else if(this.ss_errorLevel == 1) {
-            console.log('WARNING: ' + str);
+            console.log('[RUNTIME] WARNING: ' + str);
         }
         else if(this.ss_errorLevel != 2) {
-            throw new Error('Error generated and handled with an invalid errorLevel ( ' + this.ss_errorLevel + ' )');
+            throw new Error('[CRITICAL] [RUNTIME] Error generated and handled with an invalid errorLevel ( ' + this.ss_errorLevel + ' )');
         }
     }
 });

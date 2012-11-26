@@ -12,6 +12,9 @@ Copyright 2011, Carnegie Learning
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+    
+    Games developed with this code must be released with CC-Attribution and use
+    the splash screen image/animation located at www.yyy.com as the form of attrubtion.
 */
 
 // Import the cocos2d module
@@ -116,7 +119,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
     
     revertableVelocity: 0,  // Holds the player velocity prior to a setVelocity Action which enables the revertVelocity Action
     
-    version     : 'v 2.4',    // Current version number
+    version     : 'v 3.1',    // Current version number
 
     // Remote resources loaded successfully, proceed as normal
     runRemotely: function(data) {
@@ -464,12 +467,12 @@ FluencyApp.inherit(RS.RacecarScripting, {
         
         var anim = [];
         var r = geo.rectMake(0, 0, 70, 100);
-        dir = '/resources/sidewalk_stuff/trashCan00';
-        for(var i=1; i<=18; i+=1) {
-            anim.push(new cocos.SpriteFrame({texture: new Texture2D({file: module.dirname + dir + (i >= 10 ? i : '0' + i) + '.png'}), rect: r}));
+        var texture = new Texture2D({file: module.dirname + '/resources/sidewalk_stuff/trashCanSheet.png'});
+        for(var i=0; i<18; i+=1) {
+            anim.push(new cocos.SpriteFrame({texture: texture, rect: geo.rectMake(i*70, 0, 70, 100)}));
         }
         
-        var tAnim = new cocos.Animation({frames: anim, delay: 0.05});
+        var tAnim = new cocos.Animation({frames: anim, delay: 0.1});
         
         var choice = 0;
         var p;

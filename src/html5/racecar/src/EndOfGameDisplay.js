@@ -122,12 +122,16 @@ function EndOfGameDisplay (ta, np, a) {
     
     this.medals = []
     
+    this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/noMedal.png'}));
     this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/bronzeMedal.png'}));
     this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/silverMedal.png'}));
     this.medals.push(new cocos.nodes.Sprite({file: '/resources/Medals/goldMedal.png'}));
     this.medals[0].position = new geo.Point(670, 230);
     this.medals[1].position = new geo.Point(670, 230);
     this.medals[2].position = new geo.Point(670, 230);
+    this.medals[3].position = new geo.Point(670, 230);
+    
+    this.addChild({child: this.medals[0]});
     
     // Front Pane /////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -242,7 +246,8 @@ EndOfGameDisplay.inherit(GuiNode, {
             // Remove no medal, display bronze
             this.removeChild({child: this.totalTimeBG[0]});
             this.addChild({child: this.totalTimeBG[1]});
-            this.addChild({child: this.medals[0]});
+            this.removeChild({child: this.medals[0]});
+            this.addChild({child: this.medals[1]});
             
             // Change total time to black stroke color for better visibility
             this.totalSec.fontColor = '#000000';
@@ -255,8 +260,8 @@ EndOfGameDisplay.inherit(GuiNode, {
             // Remove bronze, display silver
             this.removeChild({child: this.totalTimeBG[1]});
             this.addChild({child: this.totalTimeBG[2]});
-            this.removeChild({child: this.medals[0]});
-            this.addChild({child: this.medals[1]});
+            this.removeChild({child: this.medals[1]});
+            this.addChild({child: this.medals[2]});
         }
         else if(this.state == 2 && this.sliderX > this.medalBars[3].position.x) {
             // Log that the final threshold was passed
@@ -265,8 +270,8 @@ EndOfGameDisplay.inherit(GuiNode, {
             // Remove silver, display gold
             this.removeChild({child: this.totalTimeBG[2]});
             this.addChild({child: this.totalTimeBG[3]});
-            this.removeChild({child: this.medals[1]});
-            this.addChild({child: this.medals[2]});
+            this.removeChild({child: this.medals[2]});
+            this.addChild({child: this.medals[3]});
         }
     },
     

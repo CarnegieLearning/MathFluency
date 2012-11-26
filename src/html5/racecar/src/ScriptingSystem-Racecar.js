@@ -34,7 +34,7 @@ var LockAbsoluteLaneAct = function(opts) {
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
-        throw new Error('Value for LockAbsoluteLaneAct\'s lane is negative: ' + this.lane);
+        throw new Error('[CRITICAL] [PARSE] Value for LockAbsoluteLaneAct\'s lane is negative: ' + this.lane);
     }
     
     opts = this.getOpt('direction', opts);
@@ -49,7 +49,7 @@ var LockAbsoluteLaneAct = function(opts) {
         this.direction = 3;
     }
     else {
-        throw new Error('Invalid value for LockAbsoluteLaneAct\'s direction ( ' + this.direction + ' )');
+        throw new Error('[CRITICAL] [PARSE] Invalid value for LockAbsoluteLaneAct\'s direction ( ' + this.direction + ' )');
     }
 }
 LockAbsoluteLaneAct.inherit(SS.Act, {
@@ -81,7 +81,7 @@ var MedalCarAct = function(opts) {
         this.car = 2;
     }
     else {
-        throw new Error('Invalid value for MedalCarAct\'s car ( ' + this.car + ' )');
+        throw new Error('[CRITICAL] [PARSE] Invalid value for MedalCarAct\'s car ( ' + this.car + ' )');
     }
 }
 MedalCarAct.inherit(SS.Act, {
@@ -102,7 +102,7 @@ var SetAbsoluteLaneAct = function(opts) {
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
-        throw new Error('Value for SetAbsoluteLaneAct\'s lane is negative: ' + this.lane);
+        throw new Error('[CRITICAL] [PARSE] Value for SetAbsoluteLaneAct\'s lane is negative: ' + this.lane);
     }
 }
 SetAbsoluteLaneAct.inherit(SS.Act, {
@@ -122,7 +122,7 @@ var SetVelocityAct = function(opts) {
     opts = this.getInt('velocity', opts);
     
     if(this.velocity < 0) {
-        throw new Error('Invalid value for SetVelocityAct\'s velocity is negative: ' + this.velocity);
+        throw new Error('[CRITICAL] [PARSE] Value for SetVelocityAct\'s velocity is negative: ' + this.velocity);
     }
 }
 SetVelocityAct.inherit(SS.Act, {
@@ -142,7 +142,7 @@ var UnlockAbsoluteLaneAct = function(opts) {
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
-        throw new Error('Value for LockAbsoluteLaneAct\'s lane is negative: ' + this.lane);
+        throw new Error('[CRITICAL] [PARSE] Value for LockAbsoluteLaneAct\'s lane is negative: ' + this.lane);
     }
     
     opts = this.getOpt('direction', opts);
@@ -157,7 +157,7 @@ var UnlockAbsoluteLaneAct = function(opts) {
         this.direction = 3;
     }
     else {
-        throw new Error('Invalid value for UnlockAbsoluteLaneAct\'s direction ( ' + this.direction + ' )');
+        throw new Error('[CRITICAL] [PARSE] Invalid value for UnlockAbsoluteLaneAct\'s direction ( ' + this.direction + ' )');
     }
 }
 UnlockAbsoluteLaneAct.inherit(SS.Act, {
@@ -178,7 +178,7 @@ var AbsoluteLaneTrigger = function(opts) {
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
-        throw new Error('Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
+        throw new Error('[CRITICAL] [PARSE] Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
     }
 }
 AbsoluteLaneTrigger.inherit(SS.Trigger, {
@@ -242,7 +242,7 @@ var CorrectLaneTrigger = function(opts) {
     opts = this.getInt('lane', opts);
     
     if(this.lane < 0) {
-        throw new Error('Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
+        throw new Error('[CRITICAL] [PARSE] Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
     }
     
     events.addListener(SS.eventRelay, 'answerQuestionTrigger', this.handle.bind(this));
@@ -287,7 +287,7 @@ var DistanceTrigger = function(opts) {
     opts = this.getInt('offset', opts);
     opts = this.getOpt('relPoint', opts);
     if(!DistanceTrigger.relPoints.hasOwnProperty(this.relPoint)) {
-        throw new Error('DistanceTrigger has invalid relPoint ( ' + this.relPoint + ' )');
+        throw new Error('[CRITICAL] [PARSE] DistanceTrigger has invalid relPoint ( ' + this.relPoint + ' )');
     }
     
     // Only required for certain relPoints
@@ -296,7 +296,7 @@ var DistanceTrigger = function(opts) {
         this.ordinal -= 1;
     }
     else if(this.relPoint == 'question' || this.relPoint == 'checkpoint') {
-        throw new Error('DistanceTrigger missing "ordinal" attribute for relPoint type ( ' + this.relPoint + ' )');
+        throw new Error('[CRITICAL] [PARSE] DistanceTrigger missing "ordinal" attribute for relPoint type ( ' + this.relPoint + ' )');
     }
 }
 DistanceTrigger.inherit(SS.Trigger, {
