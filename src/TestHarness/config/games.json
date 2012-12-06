@@ -2,19 +2,13 @@
     "conditions": {
         "cond1": {
             "carlow2": {
-                "displayName": "Carlow Week 2",
+                "displayName": "Carlow Week 4",
                 "stages": [
-                    "Carlow2_1",
-                    "Carlow2_2",
-                    "Carlow2_3",
-                    "Carlow2_4"
-                ]
-            },
-            "carlow3": {
-                "displayName": "Carlow Week 3",
-                "stages": [
-                    "Carlow3_1",
-                    "Carlow3_2"
+                    "Carlow4_1",
+                    "Carlow4_2",
+                    "Carlow4_3",
+                    "Carlow4_4",
+                    "Carlow4_5"
                 ]
             }
         },
@@ -947,6 +941,31 @@
             "displayName": "Carlow Week 2 Game 4",
             "engine": "racecar_html5",
             "cli_fluency_task": "test7b"
+        },
+        "Carlow4_1": {
+            "displayName": "Carlow Week 4 Game 1",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage0"
+        },
+        "Carlow4_2": {
+            "displayName": "Carlow Week 4 Game 2",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage1"
+        },
+        "Carlow4_3": {
+            "displayName": "Carlow Week 4 Game 3",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage2"
+        },
+        "Carlow4_4": {
+            "displayName": "Carlow Week 4 Game 4",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage3"
+        },
+        "Carlow4_5": {
+            "displayName": "Carlow Week 4 Game 5",
+            "engine": "racecar_html5",
+            "cli_fluency_task": "carlow_level03stage4"
         },
         "s2w01_scuba3678": {
             "displayName": "Whole Multiples (Scuba)",
