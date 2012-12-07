@@ -324,7 +324,7 @@ EndOfGameDisplay.inherit(GuiNode, {
         
         else if(this.step == 4) {
             //Signals "Retry" and "Next Level" buttons to appear
-            //events.trigger(this, 'almostComplete');
+            events.trigger(this, 'almostComplete');
             
             var that = this;
             setTimeout(function() {
@@ -332,7 +332,7 @@ EndOfGameDisplay.inherit(GuiNode, {
             }, 4000);
         }
         
-        else if(this.step == 4) {
+        else if(this.step == 5) {
             events.trigger(this, 'complete');
         }
         

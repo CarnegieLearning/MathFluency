@@ -385,6 +385,20 @@ var RacecarScripting = function() {
 RacecarScripting.inherit(SS.ScriptingSystem, {
     update: function(dt) {
         RacecarScripting.superclass.update.call(this, dt);
+    },
+    
+    ss_reinitialize: function() {
+        RacecarScripting.superclass.ss_reinitialize.call(this);
+        
+        CorrectLaneTrigger.lastCorrect = -1;
+        DistanceTrigger.currentDistance = -2;
+        DistanceTrigger.relPoints = {
+            question    : [],
+            checkpoint  : [],
+            start       : 0,
+            finish      : -1
+        };
+        VelocityTrigger.currentVelocity = -1;
     }
 });
 

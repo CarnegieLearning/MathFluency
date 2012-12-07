@@ -102,6 +102,10 @@ OptGetters.inherit(Object, {
         }
         
         return opts;
+    },
+    
+    kill: function() {
+        events.clearInstanceListeners(this);
     }
 });
 
@@ -860,6 +864,13 @@ ConditionalAct.inherit(Act, {
             i+=1
         }
         
+    },
+    
+    kill: function() {
+        events.clearInstanceListeners(this);
+        for (event in this.evt) {
+            this.evt[event].kill();
+        }
     }
 });
 
@@ -961,7 +972,14 @@ var LogicTrigger = function(opts, min, max) {
     }
 }
 LogicTrigger.inherit(Trigger, {
-    triggers: null
+    triggers: null,
+    
+    kill: function() {
+        events.clearInstanceListeners(this);
+        for (trigger in this.triggers) {
+            this.triggers[trigger].kill();
+        }
+    }
 });
 
 //***********************************************/
@@ -1390,6 +1408,16 @@ ConditionalEvent.inherit(Object, {
     errorLevel: 0,      // 0: Error, 1: Warn, 2: Ignore
     curErrorLevel: 0,   //
     
+    // Used to clean up and remove events permenantly
+    kill: function() {
+        events.clearInstanceListeners(this);
+        for (trigger in this.triggers) {
+            this.triggers[trigger].kill();
+        }
+        for (action in this.actions) {
+            this.actions[action].kill();
+        }
+    },
     
     // Returns true if all triggers are true
     check: function() {
@@ -1458,15 +1486,19 @@ var ScriptingEvent = function(xml) {
     else {
         this.state = ScriptingEvent.ACTIVE;
     }
+    
+    this.initState = this.state;
 }
 
 ScriptingEvent.inherit(ConditionalEvent, {
-    eventID : '',       // String for indentifying this event
+    eventID     : '',       // String for indentifying this event
     
-    aborting: false,    // True when aborting from execution
-    delay   : null,     // Holds the current delay timeout, null otherwise
+    aborting    : false,    // True when aborting from execution
+    delay       : null,     // Holds the current delay timeout, null otherwise
     
-    endTrans: ScriptingEvent.NO_STATE,  // State to change to from the TRANSITION state
+    state       : ScriptingEvent.NO_STATE,  // 
+    endTrans    : ScriptingEvent.NO_STATE,  // State to change to from the TRANSITION state
+    initState   : ScriptingEvent.NO_STATE,
     
     // Returns true if this event is allowed to exec()
     canExec: function() {
@@ -1599,10 +1631,26 @@ ScriptingEvent.inherit(ConditionalEvent, {
         else {
             this.generateError('Cannot transition to NO_STATE, EXECUTING or TRANSITIONING');
         }
+    },
+    
+    kill: function() {
+        ScriptingEvent.superclass.kill.call(this);
+        if(this.canAbort) {
+            clearTimeout(this.delay);
+            this.delay = null;
+        }
+        
+        this.state = ScriptingEvent.KILLED;
+        this.endTrans = ScriptingEvent.KILLED;
+    },
+    
+    reboot: function() {
+        this.state = this.initState;
     }
 });
 
 // State static constants
+ScriptingEvent.KILLED           = -2;   // The event has been forcibly killed and deactivated
 ScriptingEvent.NO_STATE         = -1;   // Something has gone wrong if we end up here
 ScriptingEvent.ACTIVE           = 0;    // Event is Active, ready to be triggered
 ScriptingEvent.EXECUTING        = 1;    // Event is currently executing or delayed
@@ -1616,8 +1664,6 @@ var ScriptingSystem = function() {
 
     // Initialize objects
     this.ss_eventList = {};
-    this.ss_listenMap = {};
-    this.ss_events = {};
     this.ss_tracker = {};
     this.ss_vars = {};
     
@@ -1695,6 +1741,44 @@ ScriptingSystem.inherit(KeyboardLayer, {
     ss_audioHook    : null,     // Tie in point for AudioMixer to handle audio Actions
     
     ss_errorLevel   : 0,
+    
+    // Reset helper for ss_reinitialize and ss_reboot
+    ss_refresh: function() {
+        this.removeChild({child: this.ss_dynamicNode});
+        this.ss_dynamicNode = new cocos.nodes.Node();
+        this.addChild({child: this.ss_dynamicNode, z: 200});
+        
+        this.ss_tracker = {};
+        this.ss_vars = {};
+        
+        this.ss_started = false;
+        this.ss_loaded = false;
+        
+        this.ss_loadTimer = 0;
+        this.ss_gameTimer = 0;
+        
+        this.ss_disabled = false;
+    },
+    
+    //WARNING: Fails to execute correctly for any events that are executing
+    ss_reinitialize: function() {
+        this.ss_refresh();
+        
+        for (event in this.ss_eventList) {
+            this.ss_eventList[event].kill();
+        }
+        
+        this.ss_eventList = {};
+    },
+    
+    //WARNING: Fails to execute correctly for any events that are executing
+    ss_reboot: function() {
+        this.ss_refresh();
+        
+        for (event in this.ss_eventList) {
+            this.ss_eventList[event].reboot();
+        }
+    },
     
     // Adds an Action's id and associated constructor
     addAction: function(id, act, evt, func) {

@@ -14,17 +14,19 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Import the cocos2d module
 var cocos = require('cocos2d');
 var geo = require('geometry');
 
+// Project Imports
+var LFW = require('/LabelFW');
 var PNode = require('/PerspectiveNode');
+
+// Static Imports
 var RC = require('/RaceControl');
 var MOT = require('/ModifyOverTime');
 
-var LFW = require('/LabelFW');
-
 // Displays the dashboard on the right hand side
-// TODO: Add speedometer, race progress, medal tracker, penalty time
 function Dashboard (ckpt) {
     Dashboard.superclass.constructor.call(this);
     
@@ -122,7 +124,7 @@ function Dashboard (ckpt) {
     opts['fontSize'] = '22';
     this.penaltyCount = new cocos.nodes.Label(opts);
     this.penaltyCount.anchorPoint = new geo.Point(0.5, 0.5);
-    this.penaltyCount.position = new geo.Point(120, 140);
+    this.penaltyCount.position = new geo.Point(120, RC.YTextOff(140, 22));
     this.addChild({child: this.penaltyCount});
     
     // Label for current speed
@@ -130,13 +132,14 @@ function Dashboard (ckpt) {
     opts['fontSize'] = '16';
     this.displaySpeed = new cocos.nodes.Label(opts);
     this.displaySpeed.anchorPoint = new geo.Point(1, 0);
-    this.displaySpeed.position = new geo.Point(310, 7);
+    this.displaySpeed.position = new geo.Point(310, RC.YTextOff(7, 16));
     this.addChild({child: this.displaySpeed});
     
     
     opts['string'] = '.';
     var decimal = new cocos.nodes.Label(opts);
-    decimal.position = new geo.Point(42, 0)
+    //HACK: This does not need the YTextOff tweak
+    decimal.position = new geo.Point(42, 0);
     
     // Label for elapsed time
     opts['fontSize'] = '16'
@@ -147,7 +150,7 @@ function Dashboard (ckpt) {
     this.elapsedLabel.labels[3].position.x += 2
     this.elapsedLabel.setStr('0000');
     this.elapsedLabel.anchorPoint = new geo.Point(0, 0);
-    this.elapsedLabel.position = new geo.Point(67, 45);
+    this.elapsedLabel.position = new geo.Point(67, RC.YTextOff(45, 16));
     this.addChild({child: this.elapsedLabel});
     
     this.elapsedLabel.addChild({child: decimal});

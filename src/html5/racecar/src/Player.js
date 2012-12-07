@@ -67,6 +67,13 @@ function Player() {
     
     var anim = new cocos.Animation({frames: anim, delay: 0.05});
     this.fishtail = new cocos.actions.Animate({animation: anim, restoreOriginalFrame: false});
+    
+    this.maxSpeed = RC.maxSpeed;
+    this.minSpeed = RC.minSpeed;
+    this.zVelocity = RC.defaultSpeed;
+    this.acceleration = RC.acceleration;
+    this.deceleration = RC.deceleration;
+    this.turboSpeed = RC.turboSpeed;
 }    
 
 Player.inherit(PNode, {
@@ -147,16 +154,18 @@ Player.inherit(PNode, {
     changeSelector: function(newVal, location) {
         // Remove previous selector if there was one
         if(this.selector != null) {
-            this.selector.removeChild(this.selectorBG);
-            this.removeChild(this.selector);
+            this.selector.removeChild({child: this.selectorBG});
+            this.removeChild({child: this.selector});
         }
         
         // Create the new selector if one is provided
         if(this.newSelector != null) {
-            this.parent.removeChild(this.newSelector);
+            this.parent.removeChild({child: this.newSelector});
             this.changeSelectorByForce(this.newSelector);
+            this.newSelector = null;
         }
         else {
+            this.removeChild({child: this.selector});
             this.selector = null;
         }
         
@@ -350,7 +359,7 @@ Player.inherit(PNode, {
         // Set the chase distance based on current speed
         this.chaseDist = this.chaseMin + this.chaseDelta * (this.zVelocity / this.maxSpeed);
         
-        // Update the camera and include the current frame's velocity which has yet to be applied to the player (eliminates jitter)
+        // Update the camera and include the current frame's velocity which may not be applied to the player yet (eliminates jitter)
         PNode.cameraZ = this.zCoordinate - this.chaseDist + (this.zVelocity * dt);
         
         //HACK: Somewhere else is breaking these values
