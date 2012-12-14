@@ -203,15 +203,6 @@ Dashboard.inherit(cocos.nodes.Node, {
         this.scheduleUpdate();
     },
     
-    // Helper function for grabbing the elapsed + penalty time
-    getTotalTime: function () {
-        var tt = this.pTime + this.elapsedTime;
-        if(tt.toFixed) {
-            tt = tt.toFixed(this.timerAcc);
-        }
-        return tt;
-    },
-    
     // Changes the current amount of penalty time accured
     modifyPenaltyCount: function() {
         this.pCount += 1;

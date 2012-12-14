@@ -199,6 +199,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
         this.fpsToggle = false;
     },
     
+    // Remove level specific objects
     removePrevGame: function() {
         this.clearObject(this.player);
         this.clearObject(this.dash);
@@ -209,6 +210,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
         this.ss_reinitialize();
     },
     
+    // Helper function for clearing out objects at end of game
     clearObject: function(obj) {
         this.removeChild({child: obj});
         events.clearInstanceListeners(obj);
@@ -217,22 +219,18 @@ FluencyApp.inherit(RS.RacecarScripting, {
     
     getLevel: function() {
         try {
-            // Look for dynamic load field
+            var dynScript = $('#dynScriptField');
             var dynLoad = $('#dynLoadField');
-            if(dynLoad.length == 1) {
-                var xml;
-                /*if (window.ActiveXObject){
-                    xml = new ActiveXObject('Microsoft.XMLDOM');
-                    xml.async='false';
-                    xml.loadXML(dynLoad.attr('value'));
+            
+            // Clunky, but allows for both single (content) load and split (content/script) load cases
+            if(dynScript.length == 1 || dynLoad.length == 1) {
+                if(dynScript.length == 1) {
+                    this.xml = XML.getChildByName(XML.parser($.parseXML(dynScript.attr('value')).firstChild), 'SCRIPTING');
                 }
-                else {
-                    xml = (new DOMParser()).parseFromString(dynLoad.attr('value'),'text/xml');
-                }*/
                 
-                xml = $.parseXML(dynLoad.attr('value'));
-                
-                this.loadLevel(xml);
+                if(dynLoad.length == 1) {
+                    this.loadLevel($.parseXML(dynLoad.attr('value')));
+                }
             }
             
             // Otherwise get "command line" arguments from the div tag
@@ -249,15 +247,6 @@ FluencyApp.inherit(RS.RacecarScripting, {
                 $.get(xml_path ? xml_path : 'set002_scripting.xml', function(data) {
                     that.loadLevel(data);
                 });
-                
-                /*xmlhttp = new XMLHttpRequest();
-                xmlhttp.open('GET', xml_path ? xml_path : 'set002_scripting.xml', true);
-                xmlhttp.onreadystatechange=function() {
-                    if (xmlhttp.readyState==4) {
-                        that.loadLevel(xmlhttp.responseXML);
-                    }
-                }
-                xmlhttp.send(null);*/
             }
         }
         catch (e) {
@@ -286,6 +275,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
     parseXML: function(xmlDoc) {
         var xml;
         //HACK:  Massive IE9 hack...  Look into using jquery for parsing XML from now on
+        //       And IE9 continues to fail after this hack... do this ^^^
         if (window.ActiveXObject){
             xml = XML.parser(xmlDoc.firstChild.nextSibling);
         }
@@ -309,8 +299,16 @@ FluencyApp.inherit(RS.RacecarScripting, {
         
         RC.postParse();         // Calculate values derived from parsed xml
         
+        if(!this.xml) {
+            this.xml = xml;
+        }
+        
         // Prime the scripting system
-        this.xml = xml;
+        var node = XML.getChildByName(this.xml, 'SCRIPTING');
+        if(node) {
+            this.xml = node;
+        }
+        
         this.audioHook = this.audioMixer;
     },
     
@@ -479,8 +477,13 @@ FluencyApp.inherit(RS.RacecarScripting, {
             this.splash.start();
         }
         else {
-            this.loadScriptingXML(XML.getChildByName(this.xml, 'SCRIPTING'));
-            this.dash._updateLabelContentSize();
+            this.addStartButton();
+            
+            var that = this;
+            setTimeout(function() {
+                that.loadScriptingXML(this.xml);
+                that.dash._updateLabelContentSize();
+            }, 40);
         }
     },
     
@@ -510,7 +513,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
         this.buildMenu();
         this.musicMixer.setMasterVolume(0.35);
         this.ss_audioHook = this.musicMixer;
-        this.loadScriptingXML(XML.getChildByName(this.xml, 'SCRIPTING'));
+        this.loadScriptingXML(this.xml);
         this.dash._updateLabelContentSize();
     },
     
@@ -716,20 +719,6 @@ FluencyApp.inherit(RS.RacecarScripting, {
             i += 1;
         }
         
-        var tt = this.dash.getTotalTime()
-        var m = 1;
-        
-        // Only award medals if the game was completed by finishing the race
-        if(finished) {
-            while(m < 4 && RC.times[m] < tt) {
-                m += 1;
-            }
-        }
-        // Aborts and quits recieve no medal automatically
-        else {
-            m = 4;
-        }
-        
         // Checks to see if abort was related to window.unload
         if(finished != null) {
             var e = new EOGD(this.dash.elapsedTime, incorrect + unanswered, !finished);
@@ -768,7 +757,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
         // Get needed values
         var d = this.dash;
         var e = d.elapsedTime;
-        var p = d.pTime;
+        var p = d.pCount * RC.penaltyTime;
         var m = ' - ';
         
         // Determine medal string
@@ -814,6 +803,8 @@ FluencyApp.inherit(RS.RacecarScripting, {
         cocos.Scheduler.sharedScheduler.unscheduleUpdateForTarget(this);
         
         var d = cocos.Director.sharedDirector;
+        
+        d.swallowKeys = false;
         
         // Stop the main loop and clear the scenes
         d.stopAnimation();
