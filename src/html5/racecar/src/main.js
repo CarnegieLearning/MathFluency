@@ -73,12 +73,16 @@ FluencyApp.inherit(RS.RacecarScripting, {
     player      : null,     // Holds the player
     background  : null,     // Holds the the background object
     dash        : null,     // Holds the right hand side dashboard
-    questionList: [],       // List of all questions in the input
     audioMixer  : null,     // AudioMixer for sound effects
     musicMixer  : null,     // AudioMixer for music
+	
+    questionList: [],       // List of all questions in the input
+	interList	: [],		// Refenences to all intermissions
+	roadList	: [],		// Refences to all items on the sid eof the road
     medalCars   : [],       // Contains the pace cars
-    gameID      : '',       // Unique ID for the game
     inters		: [],       // Holds the list of checkpoints
+	
+    gameID      : '',       // Unique ID for the game
     
     bgFade      : false,    // True when crossfading between bg tracks
     bgFast      : false,    // True when playing bg_fast, false when playing bg_slow
@@ -168,23 +172,26 @@ FluencyApp.inherit(RS.RacecarScripting, {
         this.getLevel();
         
         //HACK: Using $.browser for detection is bad (and can be spoofed)
-        if(!$.browser.mozilla) {
+        if(!$.browser.mozilla && !$.browser.msie) {
             RC.textOffset = 0.5
         }
     },
     
     // The GREAT DIVIDE
     
-    // Initializes certain level specific variables to their defaults
+    // Initializes level specific variables to their defaults
     initializeValues: function() {
         this.player = null;
         this.dash = null;
         this.eogd = null;
         
         this.questionList= [];
+		this.interList   = [];
+		this.roadList    = [];
         this.medalCars   = [];
-        this.gameID      = '';
         this.inters		 = [];
+		
+        this.gameID      = '';
         
         this.bgFade      = false;
         this.bgFast      = false;
@@ -201,14 +208,31 @@ FluencyApp.inherit(RS.RacecarScripting, {
     
     // Remove level specific objects
     removePrevGame: function() {
-        this.clearObject(this.player);
+		this.finishLine.cleanup();
+		
+		this.removeHelper(this.questionList);
+		this.removeHelper(this.medalCars);
+		this.removeHelper(this.interList);
+		this.removeHelper(this.roadList);
+		
+		this.clearObject(this.player);
         this.clearObject(this.dash);
         this.clearObject(this.eogd);
         this.clearObject(this.background);
         this.clearObject(this.finishLine);
+        this.clearObject(this.xml);
         
         this.ss_reinitialize();
     },
+	
+	// Helper function to clean up arrays of objects
+	removeHelper: function (arr) {
+		for(var i=0; i<arr.length; i+=1) {
+			this.removeChild({child: arr[i]});
+			arr[i].cleanup();
+			this.clearObject(arr[i]);
+		}
+	},
     
     // Helper function for clearing out objects at end of game
     clearObject: function(obj) {
@@ -217,22 +241,20 @@ FluencyApp.inherit(RS.RacecarScripting, {
         obj = null;
     },
     
+	// Gets the XML file of the level, either from text fields if present, otherwise from the server
     getLevel: function() {
         try {
             var dynScript = $('#dynScriptField');
             var dynLoad = $('#dynLoadField');
             
             // Clunky, but allows for both single (content) load and split (content/script) load cases
-            if(dynScript.length == 1 || dynLoad.length == 1) {
+            if(dynLoad.length == 1) {
                 if(dynScript.length == 1) {
-                    this.xml = XML.getChildByName(XML.parser($.parseXML(dynScript.attr('value')).firstChild), 'SCRIPTING');
+                    this.xml = $.parseXML(dynScript.val());
                 }
-                
-                if(dynLoad.length == 1) {
-                    this.loadLevel($.parseXML(dynLoad.attr('value')));
-                }
+				
+				this.loadLevel($.parseXML(dynLoad.val()));
             }
-            
             // Otherwise get "command line" arguments from the div tag
             else {
                 var app_div = $('#cocos_test_app');
@@ -273,38 +295,27 @@ FluencyApp.inherit(RS.RacecarScripting, {
     
     // Parses the level xml file
     parseXML: function(xmlDoc) {
-        var xml;
-        //HACK:  Massive IE9 hack...  Look into using jquery for parsing XML from now on
-        //       And IE9 continues to fail after this hack... do this ^^^
-        if (window.ActiveXObject){
-            xml = XML.parser(xmlDoc.firstChild.nextSibling);
-        }
-        //ENDHACK
-        else {
-            xml = XML.parser(xmlDoc.firstChild);
-        }
         console.log(xmlDoc);
-        console.log(xml);
         
-        RC.parseSpacing(xml);   // Parses question and checkpoint spacing
+        RC.parseSpacing(xmlDoc);    // Parses question and checkpoint spacing
         
         // Parse and process questions
-        RC.finishLine = this.parseProblemSet(xml) + RC.finishSpacing;
+        RC.finishLine = this.parseProblemSet(xmlDoc) + RC.finishSpacing;
         RS.DistanceTrigger.relPoints['finish'] = RC.finishLine;
         
-        RC.parseMedals(xml);    // Parse medal information
-        RC.parseAudio(xml);     // Parse the audio information
-        RC.parseSpeed(xml);     // Parse and set player speed values
-        RC.parsePenalty(xml);   // Get the penalty time for incorrect answers
+        RC.parseMedals(xmlDoc);     // Parse medal information
+        RC.parseAudio(xmlDoc);      // Parse the audio information
+        RC.parseSpeed(xmlDoc);      // Parse and set player speed values
+        RC.parsePenalty(xmlDoc);    // Get the penalty time for incorrect answers
         
-        RC.postParse();         // Calculate values derived from parsed xml
+        RC.postParse();             // Calculate values derived from parsed xml
         
         if(!this.xml) {
-            this.xml = xml;
+            this.xml = xmlDoc;
         }
         
         // Prime the scripting system
-        var node = XML.getChildByName(this.xml, 'SCRIPTING');
+        var node = $(this.xml).find('SCRIPTING');
         if(node) {
             this.xml = node;
         }
@@ -312,18 +323,14 @@ FluencyApp.inherit(RS.RacecarScripting, {
         this.audioHook = this.audioMixer;
     },
     
-    // Parse and set player speed values
-    //TODO: Can this be moved to RaceControl?
-    
-    
     // Parses the PROBLEM_SET
     parseProblemSet: function (xml) {
-        var problemRoot = XML.getDeepChildByName(xml, 'PROBLEM_SET');
-        var subsets = problemRoot.children;
+        var problemRoot = $(xml).find('PROBLEM_SET');
+        var subsets = $(problemRoot).children('PROBLEM_SUBSET');
         var z = RC.initialSpacing;
         var once = true;
         
-        for(var i in subsets) {
+        for(var i=0; i<subsets.length; i+=1) {
             z = this.parseProblemSubset(subsets[i], z, once);
             once = false;
         }
@@ -334,7 +341,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
     // Parses a subset within the PROBLEM_SET
     parseProblemSubset: function (subset, z, once) {
         
-        var interContent = Content.buildFrom(subset.children[0]);
+        var interContent = Content.buildFrom($(subset).children('TARGET')[0]);
         interContent.scale = 2;
         
         // Not the first subset
@@ -349,6 +356,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
             // Append the intermission to the list of intermissions
 			this.inters.push(z);
             RS.DistanceTrigger.relPoints['checkpoint'].push(z)
+			this.interList.push(inter);
 			
 			// Add checkpoint marker to the race track
 			var opts = {
@@ -374,11 +382,12 @@ FluencyApp.inherit(RS.RacecarScripting, {
         
         // Interate over questions in subset
         var list = this.questionList;
-        for(var i=1; i<subset.children.length; i+=1) {
+        var problems = $(subset).children('QUESTION');
+        for(var i=0; i<problems.length; i+=1) {
             z += RC.questionSpacing;
 
             // Create a question
-            list[list.length] = new Question(subset.children[i], z);
+            list[list.length] = new Question(problems[i], z);
             events.addListener(list[list.length - 1], 'questionTimeExpired', this.answerQuestion);
             events.addListener(list[list.length - 1], 'addMe', this.addMeHandler);
             list[list.length - 1].idle();
@@ -477,11 +486,12 @@ FluencyApp.inherit(RS.RacecarScripting, {
             this.splash.start();
         }
         else {
-            this.addStartButton();
+            this.createStartButton();
+			this.menu.addChild({child: this.startButton});
             
             var that = this;
             setTimeout(function() {
-                that.loadScriptingXML(this.xml);
+                that.loadScriptingXML(that.xml);
                 that.dash._updateLabelContentSize();
             }, 40);
         }
@@ -504,6 +514,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
                 p.zOrder = -4;
                 events.addListener(p, 'addMe', this.addMeHandler);
                 p.idle();
+				this.roadList.push(p);
             }
         }
     },
@@ -518,7 +529,6 @@ FluencyApp.inherit(RS.RacecarScripting, {
     },
     
     // Three second countdown before the game begins (after pressing the start button on the menu layer)
-    // TODO: Make countdown more noticible
     countdown: function () {
         this.removeStartButton();
         
@@ -1118,7 +1128,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
     
     //Builds and displays the initial 'menu' of the start button and music/sfx mute/unmute buttons
     buildMenu: function() {
-        this.addStartButton();
+        this.createStartButton();
     
         var dir = '/resources/Buttons/';
     
@@ -1169,7 +1179,7 @@ FluencyApp.inherit(RS.RacecarScripting, {
     },
     
     // Displays the start button on the screen
-    addStartButton: function() {
+    createStartButton: function() {
         var dir = '/resources/Buttons/buttonStart';
         var opts = Object();
         opts['normalImage']   = dir + 'Normal.png';

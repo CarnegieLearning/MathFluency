@@ -45,10 +45,12 @@ function FractionRenderer (opts) {
     opts['fontSize'] = this.fontSize;
     
     this.n = new cocos.nodes.Label(opts);
+    this.n.anchorPoint = new geom.Point(0.5, 0.5);
     this.addChild({child: this.n});
     
     opts['string'] = this.denominator;
     this.d = new cocos.nodes.Label(opts);
+    this.d.anchorPoint = new geom.Point(0.5, 0.5);
     this.addChild({child: this.d});
     
     // Figuring out combined content size
@@ -120,8 +122,8 @@ FractionRenderer.inherit(cocos.nodes.Node, {
         context.strokeStyle = this.lineColor;
         context.beginPath();
         if(this.whole == null) {
-            context.moveTo(size.width / -4, 0);
-            context.lineTo(size.width /  4, 0);
+            context.moveTo(size.width / -3, 0);
+            context.lineTo(size.width /  3, 0);
         }
         // Account for offset due to mixed number presence
         else {

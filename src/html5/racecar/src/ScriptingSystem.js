@@ -41,10 +41,10 @@ OptGetters.inherit(Object, {
     // Gets the specified value from opts, deletes it from opts and returns the fresh opts
     // Throws an error if the value does not exist within opts
     getOpt: function(name, opts) {
-        if(opts.hasOwnProperty(name)) {
-            this[name] = opts[name];
-            delete opts[name];
-            return opts;
+        if(opts.attr(name)) {
+            this[name] = opts.attr(name);
+            opts.removeAttr(name);
+            return;
         }
         
         throw new Error('[CRITICAL] [PARSE] opts does not contain property ( ' + name + ' )');
@@ -53,7 +53,7 @@ OptGetters.inherit(Object, {
     // Runs getOpt and then parses the received value as an int before returning it
     // Throws an error if the value resolves to NaN
     getInt: function(name, opts) {
-        opts = this.getOpt(name, opts)
+        this.getOpt(name, opts)
         this[name] = parseInt(this[name]);
         if(isNaN(this[name])) {
             throw new Error('[CRITICAL] [PARSE] opts[' + name +'] value is NaN after parseInt');
@@ -64,18 +64,17 @@ OptGetters.inherit(Object, {
     // Runs getOpt and then parses the received value as an float before returning it
     // Throws an error if the value resolves to NaN
     getFloat: function(name, opts) {
-        opts = this.getOpt(name, opts)
+        this.getOpt(name, opts)
         this[name] = parseFloat(this[name]);
         if(isNaN(this[name])) {
             throw new Error('[CRITICAL] [PARSE] opts[' + name +'] value is NaN after parseFloat');
         }
-        return opts;
     },
     
     // Runs getOpt and then parses the received value as a boolean based on the true and false values provided
     // Throws an error if the value does not equal either of the provided values
     getBoolean: function(name, opts, t, f) {
-        opts = this.getOpt(name, opts);
+        this.getOpt(name, opts);
         
         if(this[name] == t) {
             this[name] = true;
@@ -86,22 +85,28 @@ OptGetters.inherit(Object, {
         else {
             throw new Error('[CRITICAL] [PARSE] Invalid boolean value ( ' + this[name] + ' )  Expected ( ' + t + ' || ' + f + ' )');
         }
-        
-        return opts;
     },
     
     // Converts all values passed in the opts object to numbers if possible
     optionalConverter: function(opts) {
-        for (var prop in opts) {
-            if (opts.hasOwnProperty(prop)) {
-                var ft = parseFloat(opts[prop]);
+		var map = {};
+		var attributes = opts[0].attributes;
+		var aLength = attributes.length;
+		
+		for (a = 0; a < aLength; a++) {
+			map[attributes[a].name] = attributes[a].value;
+		}
+	
+        for (var prop in map) {
+            if (map.hasOwnProperty(prop)) {
+                var ft = parseFloat(map[prop]);
                 if(!isNaN(ft)) {
-                    opts[prop] = ft;
+                    map[prop] = ft;
                 }
             }
         }
         
-        return opts;
+        return map;
     },
     
     kill: function() {
@@ -115,18 +120,18 @@ OptGetters.inherit(Object, {
 var Act = function(opts) {
     Act.superclass.constructor.call(this, opts);
     
-    if(opts.attributes.hasOwnProperty('errorLevel')) {
-        if(opts.attributes.errorLevel == 'error') {
+    if(opts.attr('errorLevel')) {
+        if(opts.attr('errorLevel') == 'error') {
             this.errorLevel = 0;
         }
-        else if(opts.attributes.errorLevel == 'warn') {
+        else if(opts.attr('errorLevel') == 'warn') {
             this.errorLevel = 1;
         }
-        else if(opts.attributes.errorLevel == 'ignore') {
+        else if(opts.attr('errorLevel') == 'ignore') {
             this.errorLevel = 2;
         }
         else {
-            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + opts.attributes.errorLevel + ' )');
+            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + opts.attr('errorLevel') + ' )');
         }
     }
 }
@@ -148,9 +153,8 @@ Act.inherit(OptGetters, {
 // Handles all forms of audio interaction from the scripting engine
 var AudioAct = function(opts) {
     AudioAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('type', opts);
-    opts = this.getOpt('contentID', opts);
+    this.getOpt('type', opts);
+    this.getOpt('contentID', opts);
     
     if(this.type == 'PlayAudio') {
         this.mode = 'play';
@@ -163,7 +167,7 @@ var AudioAct = function(opts) {
     }
     else if(this.type == 'AudioVolume') {
         this.mode = 'volume';
-        opts = this.getFloat('volume', opts);
+        this.getFloat('volume', opts);
         if(this.volume < 0 || 1 < this.volume) {
             throw new Error('[CRITICAL] [PARSE] AudioAct volume is out of valid range [0, 1] ( ' + this.volume + ' )')
         }
@@ -187,14 +191,21 @@ AudioAct.inherit(Act, {
 // Calls any arbitrary function on the ScriptingSystem object
 var CallFunctionAct = function(opts) {
     CallFunctionAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     delete opts['type'];
-    opts = this.getOpt('func', opts);
+    this.getOpt('func', opts);
     this.params = [];
     
-    for (var prop in opts) {
-        if (opts.hasOwnProperty(prop)) {
-            this.params.push(opts[prop])
+	var map = {};
+	var attributes = opts[0].attributes;
+	var aLength = attributes.length;
+	
+	for (a = 0; a < aLength; a++) {
+		map[attributes[a].name] = attributes[a].value;
+	}
+	
+    for (var prop in map) {
+        if (map.hasOwnProperty(prop)) {
+            this.params.push(map[prop])
         }
     }
 }
@@ -212,8 +223,7 @@ CallFunctionAct.inherit(Act, {
 // Do not subclass DelayAct, it is a special case Action
 var DelayAct = function(opts) {
     DelayAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('duration', opts);
+    this.getOpt('duration', opts);
     this.duration *= 1000;
 }
 DelayAct.inherit(Act, {
@@ -230,9 +240,8 @@ DelayAct.inherit(Act, {
 // Handles 'DeactivateEvent', 'ReactivateEvent' and 'TriggerEvent'
 var EventAct = function(opts) {
     EventAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('eventID', opts);
-    opts = this.getOpt('type', opts);
+    this.getOpt('eventID', opts);
+    this.getOpt('type', opts);
     
     // Validate type parameter
     if(this.type != 'ReactivateEvent' && this.type != 'DeactivateEvent'
@@ -257,7 +266,6 @@ EventAct.inherit(Act, {
 // instead of always creating a new Act which only calls an events.trigger()
 var GeneralPurposeAct = function(opts) {
     GeneralPurposeAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     this.getOpt('type', opts);
 }
 GeneralPurposeAct.inherit(Act, {
@@ -271,8 +279,7 @@ GeneralPurposeAct.inherit(Act, {
 // Hides the object on screen with the specified contentID
 var HideContentAct = function(opts) {
     HideContentAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('contentID', opts);
+    this.getOpt('contentID', opts);
 }
 HideContentAct.inherit(Act, {
     contentID   : null,
@@ -287,9 +294,8 @@ HideContentAct.inherit(Act, {
 // Tells the ScriptingSystem to load an audio track
 var LoadAudioAct = function(opts) {
     LoadAudioAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('contentID', opts);
-    opts = this.getOpt('source', opts);
+    this.getOpt('contentID', opts);
+    this.getOpt('source', opts);
 }
 LoadAudioAct.inherit(Act, {
     contentID   : null,     // The string for referencing the audio track from the AudioMixer
@@ -305,9 +311,8 @@ LoadAudioAct.inherit(Act, {
 // Tells the ScriptingSystem to load an image
 var LoadImageAct = function(opts) {
     LoadImageAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('resourceID', opts);
-    opts = this.getOpt('source', opts);
+    this.getOpt('resourceID', opts);
+    this.getOpt('source', opts);
 }
 LoadImageAct.inherit(Act, {
     resourceID  : null,     // The string for referencing the image once loaded
@@ -335,23 +340,22 @@ LoadImageAct.inherit(Act, {
 
 var LoadAnimationAct = function(opts) {
     LoadAnimationAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('resourceID', opts);
-    opts = this.getOpt('source', opts);
-    opts = this.getInt('frameWidth', opts);
-    opts = this.getInt('frameHeight', opts);
-    opts = this.getInt('frames', opts);
+    this.getOpt('resourceID', opts);
+    this.getOpt('source', opts);
+    this.getInt('frameWidth', opts);
+    this.getInt('frameHeight', opts);
+    this.getInt('frames', opts);
     
-    if(opts.hasOwnProperty('fps')) {
-        opts = this.getInt('fps', opts);
+    if(opts.attr('fps')) {
+        this.getInt('fps', opts);
         this.frameDelay = 1.0 / this.fps;
         
-        if(opts.hasOwnProperty('frameDelay')) {
+        if(opts.attr('frameDelay')) {
             throw new Error('[CRITICAL] [PARSE] LoadAnimationAct cannot have both "fps" and "frameDelay"');
         }
     }
-    else if(opts.hasOwnProperty('frameDelay')) {
-        opts = this.getFloat('frameDelay', opts);
+    else if(opts.attr('frameDelay')) {
+        this.getFloat('frameDelay', opts);
     }
     else {
         throw new Error('[CRITICAL] [PARSE] LoadAnimationAct requires one of either "fps" or "frameDelay"');
@@ -398,8 +402,7 @@ LoadAnimationAct.inherit(Act, {
 // Trigger the specified ManualTrigger
 var ManualTriggerAct = function (opts) {
     ManualTriggerAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('triggerID', opts);
+    this.getOpt('triggerID', opts);
 }
 ManualTriggerAct.inherit(Act, {
     triggerID   : '',
@@ -414,10 +417,9 @@ ManualTriggerAct.inherit(Act, {
 // Sets the specified variable to the specified value
 var SetVarAct = function (opts) {
     SetVarAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('name', opts);
+    this.getOpt('name', opts);
     
-    opts = this.getOpt('val', opts);
+    this.getOpt('val', opts);
     // Check to see if value can be parsed as a number
     var temp = parseFloat(this.val);
     if(!isNaN(temp)) {
@@ -432,8 +434,8 @@ var SetVarAct = function (opts) {
     }
     
     // Only worry about the internal property if it is present
-    if(opts.hasOwnProperty('internal')) {
-        opts = this.getBoolean('internal', opts, 'true', 'false');
+    if(opts.attr('internal')) {
+        this.getBoolean('internal', opts, 'true', 'false');
     }
     
     // If this is not specified as interal, assume the scripter is accessing ss_vars
@@ -456,38 +458,37 @@ SetVarAct.inherit(Act, {
 // Sets the specified variable to the specified variable with an optionable modification
 var SetRelVarAct = function (opts) {
     SetRelVarAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('name', opts);
+    this.getOpt('name', opts);
     
     // Parse source variable if present, otherwise default to the result variable
-    if(opts.hasOwnProperty('val')) {
-        opts = this.getOpt('val', opts);
+    if(opts.attr('val')) {
+        this.getOpt('val', opts);
     }
     else {
         this.val = this.name;
     }
     
     // Detect and parse optional operator/modifier if present
-    if(opts.hasOwnProperty('mod')) {
-        opts = this.getOpt('mod', opts);
+    if(opts.attr('mod')) {
+        this.getOpt('mod', opts);
         var temp = parseFloat(this.mod);
         if(!isNaN(temp)) {
             this.mod = temp;
         }
         
-        opts = this.getOpt('op', opts);
+        this.getOpt('op', opts);
         
         if(!(this.op in ScriptingSystem.ops)) {
             throw new Error('[CRITICAL] [PARSE] Unrecognized operator ( ' + this.opt + ' )');
         }
     }
-    else if(opts.hasOwnProperty('op')) {
+    else if(opts.attr('op')) {
         throw new Error('[CRITICAL] [PARSE] SetRelVarAct has op attribute with no mod attribute');
     }
     
     // Only worry about the internal property if it is present
-    if(opts.hasOwnProperty('internal')) {
-        opts = this.getBoolean('internal', opts, 'true', 'false');
+    if(opts.attr('internal')) {
+        this.getBoolean('internal', opts, 'true', 'false');
     }
     
     // If this is not specified as interal, assume the scripter is accessing ss_vars
@@ -518,19 +519,18 @@ SetRelVarAct.inherit(Act, {
 // Performs an operation on two variables and stores the result
 var CombineVarsAct = function(opts) {
     CombineVarsAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('name', opts);
-    opts = this.getOpt('other1', opts);
-    opts = this.getOpt('other2', opts);
-    opts = this.getOpt('op');
+    this.getOpt('name', opts);
+    this.getOpt('other1', opts);
+    this.getOpt('other2', opts);
+    this.getOpt('op');
     
     if(!(this.op in ScriptingSystem.ops)) {
         throw new Error('[CRITICAL] [PARSE] Unrecognized operator ( ' + this.opt + ' )');
     }
     
     // Only worry about the internal property if it is present
-    if(opts.hasOwnProperty('internal')) {
-        opts = this.getBoolean('internal', opts, 'true', 'false');
+    if(opts.attr('internal')) {
+        this.getBoolean('internal', opts, 'true', 'false');
     }
     
     // If this is not specified as interal, assume the scripter is accessing ss_vars
@@ -558,19 +558,18 @@ CombineVarsAct.inherit(Act, {
 // ButtonInputTrigger listens for these buttons based on their 'contentID'
 var ShowButtonAct = function(opts) {
     ShowButtonAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     // Remove the type value from the opts object
     delete opts['type'];
     
     // Get all required values from the opts parameter
-    opts = this.getOpt('resourceUp', opts);
-    opts = this.getOpt('resourceDown', opts);
-    opts = this.getOpt('contentID', opts);
-    opts = this.getInt('x', opts);
-    opts = this.getInt('y', opts);
+    this.getOpt('resourceUp', opts);
+    this.getOpt('resourceDown', opts);
+    this.getOpt('contentID', opts);
+    this.getInt('x', opts);
+    this.getInt('y', opts);
     
-    if(opts.hasOwnProperty('parent')) {
-        opts = this.getOpt('parent', opts);
+    if(opts.attr('parent')) {
+        this.getOpt('parent', opts);
     }
     
     // Create parameter object for MenuItemImage constructor
@@ -619,18 +618,17 @@ ShowButtonAct.inherit(Act, {
 // Displays an image on the screen
 var ShowImageAct = function(opts) {
     ShowImageAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     // Remove the type value from the opts object
     delete opts['type'];
     
     // Get all required values from the opts parameter
-    opts = this.getOpt('resource', opts);
-    opts = this.getOpt('contentID', opts);
-    opts = this.getInt('x', opts);
-    opts = this.getInt('y', opts);
+    this.getOpt('resource', opts);
+    this.getOpt('contentID', opts);
+    this.getInt('x', opts);
+    this.getInt('y', opts);
     
-    if(opts.hasOwnProperty('parent')) {
-        opts = this.getOpt('parent', opts);
+    if(opts.attr('parent')) {
+        this.getOpt('parent', opts);
     }
     
     // Create parameter object for Sprite constructor
@@ -666,18 +664,17 @@ ShowImageAct.inherit(Act, {
 // Displays a string on the screen
 var ShowMessageAct = function(opts) {
     ShowMessageAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     // Remove the type value from the opts object
     delete opts['type'];
     
     // Get all required values from the opts parameter
-    opts = this.getOpt('message', opts);
-    opts = this.getOpt('contentID', opts);
-    opts = this.getInt('x', opts);
-    opts = this.getInt('y', opts);
+    this.getOpt('message', opts);
+    this.getOpt('contentID', opts);
+    this.getInt('x', opts);
+    this.getInt('y', opts);
     
-    if(opts.hasOwnProperty('parent')) {
-        opts = this.getOpt('parent', opts);
+    if(opts.attr('parent')) {
+        this.getOpt('parent', opts);
     }
     
     // Create parameter object for Label constructor
@@ -713,19 +710,18 @@ ShowMessageAct.inherit(Act, {
 // Plays or loops an animation on the screen
 var PlayAnimationAct = function(opts) {
     PlayAnimationAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     
-    opts = this.getOpt('resource', opts);
-    opts = this.getOpt('contentID', opts);
-    opts = this.getInt('x', opts);
-    opts = this.getInt('y', opts);
+    this.getOpt('resource', opts);
+    this.getOpt('contentID', opts);
+    this.getInt('x', opts);
+    this.getInt('y', opts);
     
-    if(opts.hasOwnProperty('loop')) {
-        opts = this.getBoolean('loop', opts, 'true', 'false');
+    if(opts.attr('loop')) {
+        this.getBoolean('loop', opts, 'true', 'false');
     }
     
-    if(opts.hasOwnProperty('parent')) {
-        opts = this.getOpt('parent', opts);
+    if(opts.attr('parent')) {
+        this.getOpt('parent', opts);
     }
 }
 PlayAnimationAct.inherit(Act, {
@@ -752,12 +748,11 @@ PlayAnimationAct.inherit(Act, {
 // NOTE: Stopping an animation does NOT hide it, use HideContent to remove an animation from the screen
 var StopAnimationAct = function(opts) {
     StopAnimationAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     
-    opts = this.getOpt('contentID', opts);
+    this.getOpt('contentID', opts);
     
-    if(opts.hasOwnProperty('parent')) {
-        opts = this.getOpt('parent', opts);
+    if(opts.attr('parent')) {
+        this.getOpt('parent', opts);
     }
 }
 StopAnimationAct.inherit(Act, {
@@ -773,11 +768,10 @@ StopAnimationAct.inherit(Act, {
 
 var MoveContentAct = function(opts) {
     MoveContentAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     
-    opts = this.getOpt('contentID', opts);
-    opts = this.getInt('x', opts);
-    opts = this.getInt('y', opts);
+    this.getOpt('contentID', opts);
+    this.getInt('x', opts);
+    this.getInt('y', opts);
     
 }
 MoveContentAct.inherit(Act, {
@@ -794,19 +788,18 @@ MoveContentAct.inherit(Act, {
 
 var PrintfAct = function(opts) {
     PrintfAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
     // Remove the type value from the opts object
     delete opts['type'];
     
     // Get all required values from the opts parameter
-    opts = this.getOpt('message', opts);
-    opts = this.getOpt('contentID', opts);
-    opts = this.getInt('x', opts);
-    opts = this.getInt('y', opts);
+    this.getOpt('message', opts);
+    this.getOpt('contentID', opts);
+    this.getInt('x', opts);
+    this.getInt('y', opts);
     
     var i=1;
     this.args = [];
-    while(opts.hasOwnProperty('arg' + i)) {
+    while(opts.attr('arg' + i)) {
         this.args.push(opts['arg' + i]);
         delete opts['arg' + i];
         i+=1;
@@ -836,19 +829,15 @@ PrintfAct.inherit(Act, {
 // Allows for basic IF-ELSE
 var ConditionalAct = function(opts) {
     ConditionalAct.superclass.constructor.call(this, opts);
-    opts.attributes.eventID = 'ConditionalAct';
+    opts.attr('eventID', 'ConditionalAct');
     this.evt = [new ConditionalEvent(opts)];
     
-    var elif = XML.getChildrenByName(opts, "ELSE");
-    if(elif) {
-        var i=0;
-        while(i<elif.length) {
-            elif[i].attributes.eventID = 'ConditionalAct';
-            var evt = new ConditionalEvent(elif[i]);
-            this.evt.push(evt);
-            i += 1;
-        }
-    }
+    var elif = opts.children("ELSE");
+    var that = this;
+    elif.each(function() {
+        $(this).attr('eventID', 'ConditionalAct');
+        that.evt.push(new ConditionalEvent($(this)));
+    });
 }
 ConditionalAct.inherit(Act, {
     evt : null, // List of IF-ELSE ScriptingEvents
@@ -868,9 +857,9 @@ ConditionalAct.inherit(Act, {
     
     kill: function() {
         events.clearInstanceListeners(this);
-        for (event in this.evt) {
-            this.evt[event].kill();
-        }
+		$.each(this.evt, function() {
+			this.kill();
+		});
     }
 });
 
@@ -878,9 +867,8 @@ ConditionalAct.inherit(Act, {
 
 var IncludeAct = function(opts) {
     IncludeAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('path', opts);
-    opts = this.getBoolean('preload', opts, 'true', 'false');
+    this.getOpt('path', opts);
+    this.getBoolean('preload', opts, 'true', 'false');
     
     if(this.preload) {
         var that = this;
@@ -908,15 +896,10 @@ IncludeAct.inherit(Act, {
         
         if(this.file === null && !this.preload) {
             var that = this;
-            xmlhttp = new XMLHttpRequest();
-            xmlhttp.open('GET', this.path, true);
-            xmlhttp.onreadystatechange=function() {
-                if (xmlhttp.readyState==4) {
-                    that.file = xmlhttp.responseXML
-                    that.trigger(xmlhttp.responseXML);
-                }
-            }
-            xmlhttp.send(null);
+            $.get(this.path, function(data) {
+                that.file = data;
+                that.trigger(data);
+            });
         }
         else {
             this.trigger(this.file);
@@ -927,8 +910,7 @@ IncludeAct.inherit(Act, {
     },
     
     trigger: function(xml) {
-        var xml = XML.parser(xml.firstChild)
-        var child = XML.getChildByName(xml, 'SCRIPTING');
+        var child = $(xml).find('SCRIPTING')[0];
         events.trigger(eventRelay, 'IncludeEvent', child);
         events.trigger(eventRelay, 'IncludeTriggerEvent', this.path);
     }
@@ -956,7 +938,7 @@ var LogicTrigger = function(opts, min, max) {
     this.triggers = [];
     
     // Retrieve the list of Triggers
-    var t = XML.getChildrenByName(opts, 'TRIGGER');
+    var t = $(opts).children('TRIGGER');
     
     // Make sure we have a legal number of Triggers
     if(min > t.length || t.length > max) {
@@ -964,21 +946,20 @@ var LogicTrigger = function(opts, min, max) {
     }
     
     // Create Triggers
-    var i=0;
-    while(i < t.length) {
-        var trig = new ScriptingSystem.triggerMap[t[i].attributes['type']](t[i]);
-        this.triggers.push(trig);
-        i += 1;
-    }
+    var that = this;
+    t.each(function() {
+        var type = $(this).attr('type')
+        that.triggers.push(new ScriptingSystem.triggerMap[type]($(this)));
+    });
 }
 LogicTrigger.inherit(Trigger, {
     triggers: null,
     
     kill: function() {
         events.clearInstanceListeners(this);
-        for (trigger in this.triggers) {
-            this.triggers[trigger].kill();
-        }
+		$.each(this.triggers, function() {
+			this.kill();
+		});
     }
 });
 
@@ -1066,8 +1047,7 @@ AutoTrigger.inherit(Trigger, {
 // Triggers when a Button created through ShowButton with the specified contentID is pressed
 var ButtonInputTrigger = function(opts) {
     ButtonInputTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('buttonID', opts);
+    this.getOpt('buttonID', opts);
     
     events.addListener(eventRelay, 'ButtonInputEvent', this.handle.bind(this));
 }
@@ -1108,15 +1088,14 @@ ButtonInputTrigger.inherit(Trigger, {
 // Triggers based on the value of a variable relative to a constant
 var CheckVarTrigger = function(opts) {
     CheckVarTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('name', opts);
-    opts = this.getOpt('op', opts);
+    this.getOpt('name', opts);
+    this.getOpt('op', opts);
     
     if(!(this.op in CheckVarTrigger.ops)) {
         throw new Error('[CRITICAL] [PARSE] Unrecognized comparison operator ( ' + this.op + ' )');
     }
     
-    opts = this.getOpt('val', opts);
+    this.getOpt('val', opts);
     // Check to see if value can be parsed as a number
     var temp = parseFloat(this.val);
     if(!isNaN(temp)) {
@@ -1131,8 +1110,8 @@ var CheckVarTrigger = function(opts) {
     }
     
     // Only worry about the internal property if it is present
-    if(opts.hasOwnProperty('internal')) {
-        opts = this.getBoolean('internal', opts, 'true', 'false');
+    if(opts.attr('internal')) {
+        this.getBoolean('internal', opts, 'true', 'false');
     }
     
     // If this is not specified as interal, assume the scripter is accessing ss_vars
@@ -1141,8 +1120,8 @@ var CheckVarTrigger = function(opts) {
     }
     
     // Check to see if we are comparing two variables
-    if(opts.hasOwnProperty('twoVar')) {
-        opts = this.getBoolean('twoVar', opts, 'true', 'false');
+    if(opts.attr('twoVar')) {
+        this.getBoolean('twoVar', opts, 'true', 'false');
         
         if(!this.internal) {
             this.val = 'ss_vars.' + this.val;
@@ -1184,7 +1163,6 @@ CheckVarTrigger.ops = {         // Stores operator functions by their string rep
 //TODO: Requires interrupt system to be designed/implemented
 var ErrorTrigger = function(opts) {
     ErrorTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
 }
 ErrorTrigger.inherit(Trigger, {
     check: function() {
@@ -1197,8 +1175,7 @@ ErrorTrigger.inherit(Trigger, {
 // Triggers anytime after the specified xml path has been included
 var IncludeTrigger = function(opts) {
     IncludeTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('path', opts);
+    this.getOpt('path', opts);
     events.addListener(eventRelay, 'IncludeTriggerEvent', this.handle.bind(this));
 }
 IncludeTrigger.inherit(Trigger, {
@@ -1221,8 +1198,7 @@ IncludeTrigger.inherit(Trigger, {
 // Triggers based on keyboard input
 var KeyTrigger = function(opts) {
     KeyTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('key', opts);
+    this.getOpt('key', opts);
     if(this.key.length == 1) {
         this.key = this.key.toUpperCase();
         this.key = this.key.charCodeAt(0);
@@ -1235,7 +1211,7 @@ var KeyTrigger = function(opts) {
         }
     }
     
-    opts = this.getBoolean('state', opts, 'down', 'up');
+    this.getBoolean('state', opts, 'down', 'up');
 }
 KeyTrigger.inherit(Trigger, {
     key     : -1,       // Character code for the triggering key
@@ -1255,8 +1231,7 @@ KeyTrigger.keys = null;
 
 var RemoteLoadTrigger = function(opts) {
     RemoteLoadTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('resourceID', opts);
+    this.getOpt('resourceID', opts);
     
     events.addListener(eventRelay, 'RemoteLoadEvent', this.handle.bind(this));
 }
@@ -1282,8 +1257,7 @@ RemoteLoadTrigger.inherit(Trigger, {
 // Triggers only when triggered by a matching ManualTrigger action
 var ManualTrigger = function(opts) {
     ManualTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('triggerID', opts);
+    this.getOpt('triggerID', opts);
     
     events.addListener(eventRelay, 'ManualTriggerEvent', this.handle.bind(this));
 }
@@ -1325,9 +1299,8 @@ ManualTrigger.inherit(Trigger, {
 // Triggers after a certain amount of time has elapsed since either the ScriptingSystem or the game stated
 var TimeTrigger = function(opts) {
     TimeTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getFloat('duration', opts);
-    opts = this.getBoolean('timer', opts, 'game', 'system');
+    this.getFloat('duration', opts);
+    this.getBoolean('timer', opts, 'game', 'system');
 }
 TimeTrigger.inherit(Trigger, {
     duration: null, // Duration in seconds that must elapse before this Trigger triggers
@@ -1353,8 +1326,8 @@ ConditionalEvent = function(xml) {
     this.actions = [];
     
     // Retrieve a list of Triggers and Actions
-    var t = XML.getChildrenByName(xml, 'TRIGGER');
-    var a = XML.getChildrenByName(xml, 'ACTION');
+    var t = $(xml).children('TRIGGER');
+    var a = $(xml).children('ACTION');
     
     // Make sure we have at least one of each so that the Event is valid
     if(t.length == 0) {
@@ -1364,35 +1337,28 @@ ConditionalEvent = function(xml) {
         throw new Error('[CRITICAL] [PARSE] Event requires at least one Action');
     }
     
-    // Create Triggers
-    var i=0;
-    while(i < t.length) {
-        var trig = new ScriptingSystem.triggerMap[t[i].attributes['type']](t[i]);
-        this.triggers.push(trig);
-        i += 1;
-    }
+    var that = this;
+    t.each(function() {
+        var type = $(this).attr('type')
+        that.triggers.push(new ScriptingSystem.triggerMap[type]($(this)));
+    });
     
-    // Create Actions
-    i=0;
-    while(i < a.length) {
-        var act = new ScriptingSystem.actionMap[a[i].attributes['type']](a[i]);
-        this.actions.push(act);
-        
-        i += 1;
-    }
+    a.each(function() {
+        that.actions.push(new ScriptingSystem.actionMap[$(this).attr('type')]($(this)));
+    });
     
-    if(xml.attributes.hasOwnProperty('errorLevel')) {
-        if(xml.attributes.errorLevel == 'error') {
+    if(xml.attr('errorLevel')) {
+        if(xml.attr('errorLevel') == 'error') {
             this.errorLevel = 0;
         }
-        else if(xml.attributes.errorLevel == 'warn') {
+        else if(xml.attr('errorLevel') == 'warn') {
             this.errorLevel = 1;
         }
-        else if(xml.attributes.errorLevel == 'ignore') {
+        else if(xml.attr('errorLevel') == 'ignore') {
             this.errorLevel = 2;
         }
         else {
-            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + xml.attributes.errorLevel + ' )');
+            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + xml.attr('errorLevel') + ' )');
         }
     }
     else {
@@ -1411,12 +1377,12 @@ ConditionalEvent.inherit(Object, {
     // Used to clean up and remove events permenantly
     kill: function() {
         events.clearInstanceListeners(this);
-        for (trigger in this.triggers) {
-            this.triggers[trigger].kill();
-        }
-        for (action in this.actions) {
-            this.actions[action].kill();
-        }
+		$.each(this.triggers, function() {
+			this.kill();
+		});
+		$.each(this.actions, function() {
+			this.kill();
+		});
     },
     
     // Returns true if all triggers are true
@@ -1467,19 +1433,19 @@ ConditionalEvent.inherit(Object, {
 var ScriptingEvent = function(xml) {
     ScriptingEvent.superclass.constructor.call(this, xml);
     
-    this.eventID = xml.attributes.eventID;
+    this.eventID = xml.attr('eventID');
     this.endTrans = ScriptingEvent.NO_STATE;
     
     // If optional state attribute is present, parse it
-    if(xml.attributes.hasOwnProperty('state')) {
-        if(xml.attributes.state == 'active') {
+    if(xml.attr('state')) {
+        if(xml.attr('state') == 'active') {
             this.state = ScriptingEvent.ACTIVE;
         }
-        else if(xml.attributes.state == 'inactive') {
+        else if(xml.attr('state') == 'inactive') {
             this.state = ScriptingEvent.INACTIVE;
         }
         else {
-            throw new Error('[CRITICAL] [PARSE] Event ' + this.eventID + ' has invalid starting state ' + xml.attributes.state);
+            throw new Error('[CRITICAL] [PARSE] Event ' + this.eventID + ' has invalid starting state ' + xml.attr('state'));
         }
     }
     // Otherwise default to active
@@ -1764,9 +1730,9 @@ ScriptingSystem.inherit(KeyboardLayer, {
     ss_reinitialize: function() {
         this.ss_refresh();
         
-        for (event in this.ss_eventList) {
-            this.ss_eventList[event].kill();
-        }
+		$.each(this.ss_eventList, function() {
+			this.kill();
+		});
         
         this.ss_eventList = {};
     },
@@ -1774,10 +1740,10 @@ ScriptingSystem.inherit(KeyboardLayer, {
     //WARNING: Fails to execute correctly for any events that are executing
     ss_reboot: function() {
         this.ss_refresh();
-        
-        for (event in this.ss_eventList) {
-            this.ss_eventList[event].reboot();
-        }
+		
+		$.each(this.ss_eventList, function() {
+			this.reboot();
+		});
     },
     
     // Adds an Action's id and associated constructor
@@ -1812,15 +1778,16 @@ ScriptingSystem.inherit(KeyboardLayer, {
         }
     
         // Get the list of ScriptingEvents from XML
-        var evts = XML.getChildrenByName(xml, 'EVENT');
+        var evts = $(xml).children('EVENT');
         
         // Interate over, validate and construct the ScriptingEvents
         var i=0;
         while(i<evts.length) {
-            if(evts[i].attributes.hasOwnProperty('eventID')) {
-                if(!this.ss_eventList.hasOwnProperty(evts[i].attributes.eventID)) {
-                    this.ss_eventList[evts[i].attributes.eventID] = new ScriptingEvent(evts[i]);
-                    events.addListener(this.ss_eventList[evts[i].attributes.eventID], 'ErrorLevelEvent', this.setErrorLevel);
+            var evt = $(evts[i]);
+            if(evt.attr('eventID')) {
+                if(!this.ss_eventList.hasOwnProperty(evt.attr('eventID'))) {
+                    this.ss_eventList[evt.attr('eventID')] = new ScriptingEvent(evt);
+                    events.addListener(this.ss_eventList[evt.attr('eventID')], 'ErrorLevelEvent', this.setErrorLevel);
                 }
                 else {
                     throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' has an eventID that is already in use ( ' + evts[i].attributes.eventID + ' )');

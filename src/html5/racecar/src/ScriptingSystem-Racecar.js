@@ -30,14 +30,13 @@ var SS = require('/ScriptingSystem');
 // Locks the specified lane in the specified way
 var LockAbsoluteLaneAct = function(opts) {
     LockAbsoluteLaneAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('lane', opts);
+    this.getInt('lane', opts);
     
     if(this.lane < 0) {
         throw new Error('[CRITICAL] [PARSE] Value for LockAbsoluteLaneAct\'s lane is negative: ' + this.lane);
     }
     
-    opts = this.getOpt('direction', opts);
+    this.getOpt('direction', opts);
     // Validate and convert direction from string to int
     if(this.direction == 'in') {
         this.direction = 1;
@@ -66,9 +65,8 @@ LockAbsoluteLaneAct.inherit(SS.Act, {
 // Handles all Actions dealing with simple Medal Car interaction
 var MedalCarAct = function(opts) {
     MedalCarAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getOpt('type', opts);
-    opts = this.getOpt('car', opts);
+    this.getOpt('type', opts);
+    this.getOpt('car', opts);
     
     // Validate and convert car from string to int
     if(this.car == 'gold') {
@@ -98,8 +96,7 @@ MedalCarAct.inherit(SS.Act, {
 // NOTE: This is unaffacted by any sort of lane locking
 var SetAbsoluteLaneAct = function(opts) {
     SetAbsoluteLaneAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('lane', opts);
+    this.getInt('lane', opts);
     
     if(this.lane < 0) {
         throw new Error('[CRITICAL] [PARSE] Value for SetAbsoluteLaneAct\'s lane is negative: ' + this.lane);
@@ -118,8 +115,7 @@ SetAbsoluteLaneAct.inherit(SS.Act, {
 // Sets the player's velocity to the specified speed (in meters per second (mph ~= *4/9))
 var SetVelocityAct = function(opts) {
     SetVelocityAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('velocity', opts);
+    this.getInt('velocity', opts);
     
     if(this.velocity < 0) {
         throw new Error('[CRITICAL] [PARSE] Value for SetVelocityAct\'s velocity is negative: ' + this.velocity);
@@ -138,14 +134,13 @@ SetVelocityAct.inherit(SS.Act, {
 // Unlocks the specified lane in the specified way
 var UnlockAbsoluteLaneAct = function(opts) {
     UnlockAbsoluteLaneAct.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('lane', opts);
+    this.getInt('lane', opts);
     
     if(this.lane < 0) {
         throw new Error('[CRITICAL] [PARSE] Value for LockAbsoluteLaneAct\'s lane is negative: ' + this.lane);
     }
     
-    opts = this.getOpt('direction', opts);
+    this.getOpt('direction', opts);
     // Validate and convert direction from string to int
     if(this.direction == 'in') {
         this.direction = 1;
@@ -174,8 +169,7 @@ UnlockAbsoluteLaneAct.inherit(SS.Act, {
 // Triggers when the player enters the specified lane
 var AbsoluteLaneTrigger = function(opts) {
     AbsoluteLaneTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('lane', opts);
+    this.getInt('lane', opts);
     
     if(this.lane < 0) {
         throw new Error('[CRITICAL] [PARSE] Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
@@ -196,8 +190,7 @@ AbsoluteLaneTrigger.currentLane = -2;
 // Triggers when the player answers a question with the specified correctness
 var AnswerTrigger = function(opts) {
     AnswerTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getBoolean('correctness', opts, 'correct', 'incorrect');
+    this.getBoolean('correctness', opts, 'correct', 'incorrect');
     
     // Listen for when a question is answered
     events.addListener(SS.eventRelay, 'answerQuestionTrigger', this.handle.bind(this));
@@ -238,8 +231,7 @@ AnswerTrigger.inherit(SS.Trigger, {
 
 var CorrectLaneTrigger = function(opts) {
     CorrectLaneTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('lane', opts);
+    this.getInt('lane', opts);
     
     if(this.lane < 0) {
         throw new Error('[CRITICAL] [PARSE] Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
@@ -283,16 +275,15 @@ CorrectLaneTrigger.lastCorrect = -1;
 // TODO: Better error and warning handling
 var DistanceTrigger = function(opts) {
     DistanceTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('offset', opts);
-    opts = this.getOpt('relPoint', opts);
+    this.getInt('offset', opts);
+    this.getOpt('relPoint', opts);
     if(!DistanceTrigger.relPoints.hasOwnProperty(this.relPoint)) {
         throw new Error('[CRITICAL] [PARSE] DistanceTrigger has invalid relPoint ( ' + this.relPoint + ' )');
     }
     
     // Only required for certain relPoints
-    if(opts.hasOwnProperty('ordinal')) {
-        opts = this.getInt('ordinal', opts);
+    if(opts.attr('ordinal')) {
+        this.getInt('ordinal', opts);
         this.ordinal -= 1;
     }
     else if(this.relPoint == 'question' || this.relPoint == 'checkpoint') {
@@ -337,9 +328,8 @@ DistanceTrigger.relPoints = {
 // Triggers when the player's velocity crosses the specified threshold
 var VelocityTrigger = function(opts) {
     VelocityTrigger.superclass.constructor.call(this, opts);
-    opts = opts.attributes;
-    opts = this.getInt('velocity', opts);
-    opts = this.getBoolean('direction', opts, 'accelerate', 'decelerate');
+    this.getInt('velocity', opts);
+    this.getBoolean('direction', opts, 'accelerate', 'decelerate');
 }
 VelocityTrigger.inherit(SS.Trigger, {
     velocity    : null,     // Velocity threshold for triggering

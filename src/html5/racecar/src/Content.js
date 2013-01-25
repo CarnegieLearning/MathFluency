@@ -18,6 +18,7 @@ Copyright 2011, Carnegie Learning
 var FractionRenderer = require('/FractionRenderer');
 var LabelBG = require('/LabelBG');
 var PieChart = require('/PieChart');
+var ImageContent = require('/ImageContent');
 
 // Static Imports
 var XML = require('/XML');
@@ -38,23 +39,33 @@ Content.initialize = function () {
     Content.registerContent(LabelBG.identifier, LabelBG);
     Content.registerContent('Fraction', FractionRenderer);
     Content.registerContent('PieChart', PieChart);
+    Content.registerContent('Image', ImageContent);
 }
 
-Content._validateNode = function (xmlNode) {
-    if(xmlNode.attributes.hasOwnProperty('TYPE')) {
-        if(Content.registeredContent.hasOwnProperty(xmlNode.attributes.TYPE)) {
-            return true;
-        }
+// Helper function to convert all attributes into a object using attribute names to map values
+var mapper = function(xml) {
+    var map = {};
+    var attributes = xml[0].attributes;
+	
+    for (a = 0; a < attributes.length; a++) {
+        map[attributes[a].name] = attributes[a].value;
     }
-    return false;
+	
+	return map;
 }
 
 // Build Content subclass from parsed XML
 Content.buildFrom = function(xmlNode) {
-    if(Content._validateNode(xmlNode)) {
-        var cs = XML.getChildByName(xmlNode, 'ContentSettings');
-        if(cs) {
-            return new Content.registeredContent[xmlNode.attributes.TYPE](cs.attributes);
+    //if(xmlNode.attributes.hasOwnProperty('TYPE')) {
+    if($(xmlNode).attr('TYPE')) {
+        var cs = $(xmlNode).children('ContentSettings');
+        
+		var opts = {}
+        if(cs.length > 0) {
+            return new Content.registeredContent[$(xmlNode).attr('TYPE')](mapper($(cs)));
+        }
+        else {
+            return new Content.registeredContent[$(xmlNode).attr('TYPE')](mapper($(xmlNode)));
         }
     }
     

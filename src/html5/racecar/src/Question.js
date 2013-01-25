@@ -21,7 +21,6 @@ var geom = require('geometry');
 var Content = require('/Content');
 var PNode = require('/PerspectiveNode');
 var RC = require('/RaceControl');
-var XML = require('/XML');
 
 // Represents a single question to be answered by the player
 function Question (node, z) {
@@ -35,20 +34,24 @@ function Question (node, z) {
     Question.superclass.constructor.call(this, superOpts);
     
     // Build delimiters for question
+	var that = this, i=0;
     this.delimiters = [];
-    for(var i=0; i<node.children.length-1; i+=1) {
-        this.buildDelim(node.children[i], z, i==0 ? 1 : -1);
-        this.delimiters[i].xCoordinate = RC.delimiterSpacing[node.children.length][i];
-    }
+	
+	//HACK: Remove 3 lane hardcoding
+	$(node).children('Content').each(function() {
+		that.buildDelim(this, z, i==0 ? 1 : -1);
+        that.delimiters[i].xCoordinate = RC.delimiterSpacing[3][i];
+		i += 1;
+	});
     
-    //HACK: need better way of determining/setting this
-    RC.curNumLanes = node.children.length;
+    //HACK: Remove 3 lane hardcoding
+    RC.curNumLanes = 3;
 
-    this.correctAnswer = node.children[i].attributes['VALUE'];
+    this.correctAnswer = parseInt($(node).children('ANSWER').attr('VALUE'));
     
     return this;
 }
-    
+
 Question.inherit(PNode, {
     correctAnswer    : null,    // The correct response
     answer           : null,    // The answer provided by the player
@@ -69,18 +72,17 @@ Question.inherit(PNode, {
         c.position = new geom.Point(180, -270);
         c.bgShow = false;
         
-        var pSet = XML.getChildByName(node, 'PerspectiveSettings');
-        pSet = (pSet == null) ? {attributes:{}} : pSet;
+        var pSet = $(node).find('PerspectiveSettings');
         
         // Create option settings
         var opts = {
             lockY       : true,
             silent      : true,
-            minScale    : pSet.attributes['minScale']   == null ? 1.2 : pSet.attributes['minScale'],
-            maxScale    : pSet.attributes['maxScale']   == null ? 3.2 : pSet.attributes['maxScale'],
+            minScale    : pSet.attr('minScale')   == null ? 1.2 : pSet.attr('minScale'),
+            maxScale    : pSet.attr('maxScale')   == null ? 3.2 : pSet.attr('maxScale'),
             alignH      : 0.87,
             alignV      : 0,
-            visibility  : pSet.attributes['visibility'] == null ? 5.5 : pSet.attributes['visibility'],
+            visibility  : pSet.attr('visibility') == null ? 5.5 : pSet.attr('visibility'),
             xCoordinate : 0,
             zCoordinate : z,
             content     : sign

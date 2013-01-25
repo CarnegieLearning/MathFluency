@@ -56,10 +56,8 @@ RaceControl.YTextOff = function(y, fs) {
 
 RaceControl.crossFadeSpeed = 30;
 RaceControl.parseAudio = function (xml) {
-    var node = XML.getDeepChildByName(xml, 'AudioSettings');
-    if(node) {
-        RaceControl.helper(RaceControl, 'crossFadeSpeed', node.attributes['crossFadeSpeed']);
-    }
+    var node = $(this).find('AudioSettings');
+    RaceControl.helper(RaceControl, 'crossFadeSpeed', node.attr('crossFadeSpeed'));
 };
 
 // <MEDALS> ///////////////////////////////////////////////////////////////////////////////////////
@@ -68,24 +66,11 @@ RaceControl.times               = [32, 42, 68, 100, 200];   // Holds [min, gold,
 RaceControl.medalNames          = ['Gold', 'Gold', 'Silver', 'Bronze', ' - '];
 
 RaceControl.parseMedals = function (xml) {
-    var node = XML.getDeepChildByName(xml, 'MEDALS');
-    if(!node) {
-        throw new Error('No medal data found for stage');
-    }
-    else {
-        var id, val;
-        for(var i in node.children) {
-            id = node.children[i].attributes['Id'];
-            val = node.children[i].attributes['MEDAL_THRESHOLD'];
-            
-            if(id != null && val != null) {
-                RaceControl.times[id] = val / 1000;
-            }
-            else {
-                throw new Error('Missing or corrupted medal data');
-            }
-        }
-    }
+    var node = $(xml).find('MEDALS');
+    
+    $(node).find('MEDAL').each(function() {
+        RaceControl.times[$(this).attr('Id')] = $(this).attr('MEDAL_THRESHOLD') / 1000;
+    });
 };
 
 RaceControl.gold    = '#CC9900';        // Color for gold medals
@@ -101,15 +86,12 @@ RaceControl.finishSpacing       = 110;                      // Distance in meter
 RaceControl.initialSpacing      = 0;                        // Additional distance in meters before the first question
 
 RaceControl.parseSpacing = function (xml) {
-    var node = XML.getDeepChildByName(xml, 'GlobalSpacing');
-    if(!node) {
-        return;
-    }
+    var node = $(xml).find('GlobalSpacing');
     
-    RaceControl.helper(RaceControl, 'intermissionSpacing', node.attributes['IntermissionSpacing']);
-    RaceControl.helper(RaceControl, 'questionSpacing'    , node.attributes['QuestionSpacing']);
-    RaceControl.helper(RaceControl, 'finishSpacing'      , node.attributes['FinishSpacing']);
-    RaceControl.helper(RaceControl, 'initialSpacing'     , node.attributes['InitialSpacing']);
+    RaceControl.helper(RaceControl, 'intermissionSpacing', node.attr('IntermissionSpacing'));
+    RaceControl.helper(RaceControl, 'questionSpacing'    , node.attr('QuestionSpacing'));
+    RaceControl.helper(RaceControl, 'finishSpacing'      , node.attr('FinishSpacing'));
+    RaceControl.helper(RaceControl, 'initialSpacing'     , node.attr('InitialSpacing'));
 };
 
 RaceControl.delimiterSpacing    = {2: [0], 3: [-1.5, 1.5], 4: [-3, 0, 3]};
@@ -120,13 +102,10 @@ RaceControl.penaltyTime         = 15;                       // Time in seconds l
 RaceControl.penaltySpeed        = -0.1;                     // Percentage speed change for an incorrect answer
 
 RaceControl.parsePenalty = function (xml) {
-    var node = XML.getDeepChildByName(xml, 'PenaltySettings');
-    if(!node) {
-        return;
-    }
+    var node = $(xml).find('PenaltySettings');
     
-    RaceControl.helper(RaceControl, 'penaltyTime', node.attributes['TimeLost']);
-    RaceControl.helper(RaceControl, 'penaltySpeed', node.attributes['SpeedLost']);
+    RaceControl.helper(RaceControl, 'penaltyTime', node.attr('TimeLost'));
+    RaceControl.helper(RaceControl, 'penaltySpeed', node.attr('SpeedLost'));
     RaceControl.penaltySpeed *= -1;
 };
 
@@ -143,22 +122,19 @@ RaceControl.maxTimeWindow       = 110 / 150.0 * 0.9;        // Minimum time betw
 RaceControl.maxDistWindow       = 300;                      // Maximum distance coverable in 2 seconds
 
 RaceControl.parseSpeed = function (xml) {
-    var node = XML.getDeepChildByName(xml, 'SpeedSettings');
-    if(!node) {
-        return;
-    }
+    var node = $(xml).find('SpeedSettings');
     
-    var max = node.attributes['Max'];
-    var min = node.attributes['Min'];
-    var speed = node.attributes['Default'];
-    var turbo = node.attributes['Turbo'];
+    var max = node.attr('Max');
+    var min = node.attr('Min');
+    var speed = node.attr('Default');
+    var turbo = node.attr('Turbo');
     
     // Set the values on the player
     RaceControl.helper(RaceControl, 'maxSpeed', max);
     RaceControl.helper(RaceControl, 'minSpeed', min);
     RaceControl.helper(RaceControl, 'zVelocity', speed==null ? min : speed);
-    RaceControl.helper(RaceControl, 'acceleration', node.attributes['Acceleration']);
-    RaceControl.helper(RaceControl, 'deceleration', node.attributes['Deceleration']);
+    RaceControl.helper(RaceControl, 'acceleration', node.attr('Acceleration'));
+    RaceControl.helper(RaceControl, 'deceleration', node.attr('Deceleration'));
     RaceControl.helper(RaceControl, 'turboSpeed', turbo==null ? max : turbo);
 };
 

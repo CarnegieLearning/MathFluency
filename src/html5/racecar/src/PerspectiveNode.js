@@ -68,6 +68,7 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
 
     // Explicitly unschedules and unsubscribes this node
     cleanup: function () {
+		clearTimeout(this.idleing);
         cocos.Scheduler.sharedScheduler.unscheduleUpdateForTarget(this);
         events.clearInstanceListeners(this);
     },
@@ -136,7 +137,7 @@ PerspectiveNode.inherit(cocos.nodes.Node, {
             cocos.Scheduler.sharedScheduler.scheduleUpdate({target: this, priority: 0, paused: false});
         }
         else {
-            setTimeout(this.idle, 1000);
+            this.idleing = setTimeout(this.idle, 1000);
         }
     },
     
