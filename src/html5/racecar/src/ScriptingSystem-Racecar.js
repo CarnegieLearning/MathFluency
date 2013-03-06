@@ -65,7 +65,7 @@ LockAbsoluteLaneAct.inherit(SS.Act, {
 // Handles all Actions dealing with simple Medal Car interaction
 var MedalCarAct = function(opts) {
     MedalCarAct.superclass.constructor.call(this, opts);
-    this.getOpt('type', opts);
+    this.type = $(opts).prop("tagName");
     this.getOpt('car', opts);
     
     // Validate and convert car from string to int
@@ -212,13 +212,13 @@ AnswerTrigger.inherit(SS.Trigger, {
     handle: function(isCorrect) {
         if(this.correctness == isCorrect) {
             this.trigger = true;
-            setTimeout(this.buffer.bind(this), 1);
+            setTimeout(this.buffer.bind(this), 100);
         }
     },
     
     // Introduces at least a one full frame delay, making sure that this Trigger can be adaquetly check()'ed
     buffer: function() {
-        setTimeout(this.negateInput.bind(this), 1);
+        setTimeout(this.negateInput.bind(this), 100);
     },
     
     // Negates a triggering input
@@ -234,7 +234,7 @@ var CorrectLaneTrigger = function(opts) {
     this.getInt('lane', opts);
     
     if(this.lane < 0) {
-        throw new Error('[CRITICAL] [PARSE] Value for AbsoluteLaneTrigger\'s lane is negative: ' + this.lane);
+        throw new Error('[CRITICAL] [PARSE] Value for CorrectLaneTrigger\'s lane is negative: ' + this.lane);
     }
     
     events.addListener(SS.eventRelay, 'answerQuestionTrigger', this.handle.bind(this));
@@ -253,12 +253,12 @@ CorrectLaneTrigger.inherit(SS.Trigger, {
     
     handle: function() {
         this.trigger = true;
-        setTimeout(this.buffer.bind(this), 1);
+        setTimeout(this.buffer.bind(this), 100);
     },
     
     // Introduces at least a one full frame delay, making sure that this Trigger can be adaquetly check()'ed
     buffer: function() {
-        setTimeout(this.negateInput.bind(this), 1);
+        setTimeout(this.negateInput.bind(this), 100);
     },
     
     // Negates a triggering input

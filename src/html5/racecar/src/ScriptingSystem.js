@@ -153,7 +153,7 @@ Act.inherit(OptGetters, {
 // Handles all forms of audio interaction from the scripting engine
 var AudioAct = function(opts) {
     AudioAct.superclass.constructor.call(this, opts);
-    this.getOpt('type', opts);
+    this.type = $(opts).prop("tagName");
     this.getOpt('contentID', opts);
     
     if(this.type == 'PlayAudio') {
@@ -191,7 +191,6 @@ AudioAct.inherit(Act, {
 // Calls any arbitrary function on the ScriptingSystem object
 var CallFunctionAct = function(opts) {
     CallFunctionAct.superclass.constructor.call(this, opts);
-    delete opts['type'];
     this.getOpt('func', opts);
     this.params = [];
     
@@ -237,26 +236,26 @@ DelayAct.inherit(Act, {
 
 //***********************************************/
 
-// Handles 'DeactivateEvent', 'ReactivateEvent' and 'TriggerEvent'
+// Handles 'DeactivateRule', 'ReactivateRule' and 'TriggerRule'
 var EventAct = function(opts) {
     EventAct.superclass.constructor.call(this, opts);
-    this.getOpt('eventID', opts);
-    this.getOpt('type', opts);
+    this.getOpt('ruleID', opts);
+    this.type = $(opts).prop("tagName");
     
     // Validate type parameter
-    if(this.type != 'ReactivateEvent' && this.type != 'DeactivateEvent'
-    && this.type != 'TriggerEvent' && this.type != 'AbortEvent'
+    if(this.type != 'ReactivateRule' && this.type != 'DeactivateRule'
+    && this.type != 'TriggerRule' && this.type != 'AbortRule'
     && this.type != 'BlockEvent' && this.type != 'ResumeEvent') {
         throw new Error('Invalid value for EventAct\'s type ( ' + this.type + ' )');
     }
 }
 EventAct.inherit(Act, {
-    eventID : null,     // EventID that will be modified
+    ruleID : null,     // ruleID that will be modified
     type    : null,     // The type of modification that will occur
     
     // Trigger an event to tell the ScriptingSystem to modify the specified event
     exec: function() {
-        events.trigger(eventRelay, this.type + 'Event', this.eventID);
+        events.trigger(eventRelay, this.type + 'Event', this.ruleID);
     }
 });
 
@@ -264,9 +263,10 @@ EventAct.inherit(Act, {
 
 // Use this Action for Actions who only need is to trigger an event for something else to act on
 // instead of always creating a new Act which only calls an events.trigger()
+//TODO: Figure out how to implement in revised version
 var GeneralPurposeAct = function(opts) {
     GeneralPurposeAct.superclass.constructor.call(this, opts);
-    this.getOpt('type', opts);
+    this.type = $(opts).prop("tagName");
 }
 GeneralPurposeAct.inherit(Act, {
     exec: function() {
@@ -399,16 +399,16 @@ LoadAnimationAct.inherit(Act, {
 
 //***********************************************/
 
-// Trigger the specified ManualTrigger
-var ManualTriggerAct = function (opts) {
-    ManualTriggerAct.superclass.constructor.call(this, opts);
-    this.getOpt('triggerID', opts);
+// Execute the specified Subroutine
+var CallSubroutineAct = function (opts) {
+    CallSubroutineAct.superclass.constructor.call(this, opts);
+    this.getOpt('subroutineID', opts);
 }
-ManualTriggerAct.inherit(Act, {
-    triggerID   : '',
+CallSubroutineAct.inherit(Act, {
+    subroutineID: '',
     
     exec: function() {
-        events.trigger(eventRelay, 'ManualTriggerEvent', this.triggerID);
+        events.trigger(eventRelay, 'CallSubroutine', this.subroutineID);
     }
 });
 
@@ -558,9 +558,6 @@ CombineVarsAct.inherit(Act, {
 // ButtonInputTrigger listens for these buttons based on their 'contentID'
 var ShowButtonAct = function(opts) {
     ShowButtonAct.superclass.constructor.call(this, opts);
-    // Remove the type value from the opts object
-    delete opts['type'];
-    
     // Get all required values from the opts parameter
     this.getOpt('resourceUp', opts);
     this.getOpt('resourceDown', opts);
@@ -618,8 +615,6 @@ ShowButtonAct.inherit(Act, {
 // Displays an image on the screen
 var ShowImageAct = function(opts) {
     ShowImageAct.superclass.constructor.call(this, opts);
-    // Remove the type value from the opts object
-    delete opts['type'];
     
     // Get all required values from the opts parameter
     this.getOpt('resource', opts);
@@ -664,8 +659,6 @@ ShowImageAct.inherit(Act, {
 // Displays a string on the screen
 var ShowMessageAct = function(opts) {
     ShowMessageAct.superclass.constructor.call(this, opts);
-    // Remove the type value from the opts object
-    delete opts['type'];
     
     // Get all required values from the opts parameter
     this.getOpt('message', opts);
@@ -828,19 +821,33 @@ PrintfAct.inherit(Act, {
 
 // Allows for basic IF-ELSE
 var ConditionalAct = function(opts) {
+    // Build initial if
     ConditionalAct.superclass.constructor.call(this, opts);
-    opts.attr('eventID', 'ConditionalAct');
+    opts.attr('ruleID', 'ConditionalAct');
     this.evt = [new ConditionalEvent(opts)];
     
-    var elif = opts.children("ELSE");
+    // Build else-if blocks, if present
+    var elif = opts.children("ELSEIF");
     var that = this;
     elif.each(function() {
-        $(this).attr('eventID', 'ConditionalAct');
+        $(this).attr('ruleID', 'ConditionalAct');
         that.evt.push(new ConditionalEvent($(this)));
     });
+    
+    // Build else case, if present
+    var eCase = opts.children("ELSE");
+    
+    if(eCase.length > 1) {
+        throw new Error("[CRITICAL] {PARSE] Conditional Actions may only have a single ELSE block.");
+    }
+    else if(eCase.length == 1) {
+        $(eCase).attr('ruleID', 'ConditionalAct');
+        that.elseCase = new ElseEvent($(eCase));
+    }
 }
 ConditionalAct.inherit(Act, {
-    evt : null, // List of IF-ELSE ScriptingEvents
+    evt     : null, // List of IF-ELSE ScriptingEvents
+    elseCase: null,
 
     exec: function() {
         var i=0
@@ -851,6 +858,10 @@ ConditionalAct.inherit(Act, {
                 return;
             }
             i+=1
+        }
+        
+        if(this.elseCase) {
+            this.elseCase.exec();
         }
         
     },
@@ -912,7 +923,7 @@ IncludeAct.inherit(Act, {
     trigger: function(xml) {
         var child = $(xml).find('SCRIPTING')[0];
         events.trigger(eventRelay, 'IncludeEvent', child);
-        events.trigger(eventRelay, 'IncludeTriggerEvent', this.path);
+        events.trigger(eventRelay, 'IncludeTriggerRule', this.path);
     }
 });
 
@@ -938,17 +949,22 @@ var LogicTrigger = function(opts, min, max) {
     this.triggers = [];
     
     // Retrieve the list of Triggers
-    var t = $(opts).children('TRIGGER');
+    var t = $(opts).children();
     
     // Make sure we have a legal number of Triggers
     if(min > t.length || t.length > max) {
-        throw new Error('[CRITICAL] [PARSE] ' + opts.attributes.type + ' <LogicTrigger> requires between ' + min + ' and ' + max + ' Triggers ( ' + t.length + ' )');
+        throw new Error('[CRITICAL] [PARSE] ' + $(opts).prop('tagName') + ' <LogicTrigger> requires between ' + min + ' and ' + max + ' Triggers ( ' + t.length + ' )');
     }
     
     // Create Triggers
     var that = this;
     t.each(function() {
-        var type = $(this).attr('type')
+        var type = $(this).prop('tagName');
+        
+        if(!ScriptingSystem.triggerMap.hasOwnProperty(type)) {
+            console.log('Unsupported Trigger detected ( ' + type + ' )');
+        }
+        
         that.triggers.push(new ScriptingSystem.triggerMap[type]($(this)));
     });
 }
@@ -1176,7 +1192,7 @@ ErrorTrigger.inherit(Trigger, {
 var IncludeTrigger = function(opts) {
     IncludeTrigger.superclass.constructor.call(this, opts);
     this.getOpt('path', opts);
-    events.addListener(eventRelay, 'IncludeTriggerEvent', this.handle.bind(this));
+    events.addListener(eventRelay, 'IncludeTriggerRule', this.handle.bind(this));
 }
 IncludeTrigger.inherit(Trigger, {
     path        : null,     // Path of included file that this will trigger on
@@ -1254,48 +1270,6 @@ RemoteLoadTrigger.inherit(Trigger, {
 
 //***********************************************/
 
-// Triggers only when triggered by a matching ManualTrigger action
-var ManualTrigger = function(opts) {
-    ManualTrigger.superclass.constructor.call(this, opts);
-    this.getOpt('triggerID', opts);
-    
-    events.addListener(eventRelay, 'ManualTriggerEvent', this.handle.bind(this));
-}
-ManualTrigger.inherit(Trigger, {
-    triggerID   : '',       // Name of this trigger
-    state       : false,    // If this trigger has been activated
-    
-    // Checks to see if the the trigger has fired and reset if it does not toggle
-    check: function() {
-        if(this.state) {
-            this.state = false;
-            return true;
-        }
-        
-        return false;
-    },
-    
-    // Checks the id against the triggerID and handles the toggle value
-    handle: function(id) {
-        if(this.triggerID == id) {
-            this.state = true;
-            setTimeout(this.buffer.bind(this), 1);
-        }
-    },
-    
-    // Introduces at least a one full frame delay, making sure that this Trigger can be adaquetly check()'ed
-    buffer: function() {
-        setTimeout(this.negate.bind(this), 1);
-    },
-    
-    // Ignores the button's press
-    negate: function() {
-        this.state = false;
-    }
-});
-
-//***********************************************/ç
-
 // Triggers after a certain amount of time has elapsed since either the ScriptingSystem or the game stated
 var TimeTrigger = function(opts) {
     TimeTrigger.superclass.constructor.call(this, opts);
@@ -1326,25 +1300,39 @@ ConditionalEvent = function(xml) {
     this.actions = [];
     
     // Retrieve a list of Triggers and Actions
-    var t = $(xml).children('TRIGGER');
-    var a = $(xml).children('ACTION');
+    var t = $(xml).children('TRIGGERS');
+    var a = $(xml).children('ACTIONS');
     
     // Make sure we have at least one of each so that the Event is valid
-    if(t.length == 0) {
-        throw new Error('[CRITICAL] [PARSE] Event requires at least one Trigger');
+    if(t.length != 1) {
+        throw new Error('[CRITICAL] [PARSE] Event requires exactly one Trigger block');
     }
-    if(a.length == 0) {
-        throw new Error('[CRITICAL] [PARSE] Event requires at least one Action');
+    if(a.length != 1) {
+        throw new Error('[CRITICAL] [PARSE] Event requires exactly one Action block');
     }
     
     var that = this;
-    t.each(function() {
-        var type = $(this).attr('type')
+    t.children().each(function() {
+        var type = $(this).prop('tagName');
+        
+        if(!ScriptingSystem.triggerMap.hasOwnProperty(type)) {
+            console.log('Unsupported Trigger detected ( ' + type + ' )');
+        }
+        
         that.triggers.push(new ScriptingSystem.triggerMap[type]($(this)));
     });
     
-    a.each(function() {
-        that.actions.push(new ScriptingSystem.actionMap[$(this).attr('type')]($(this)));
+    a.children().each(function() {
+        var type = $(this).prop('tagName');
+        
+        if(!ScriptingSystem.actionMap.hasOwnProperty(type)) {
+            console.log('Unsupported Action detected ( ' + type + ' )');
+        }
+        else if(type == 'Delay' && that.endTrans) {
+            throw new Error('[CRITICAL] [PARSE] Delay cannot be used inside of a Conditional or ELSEIF');
+        }
+        
+        that.actions.push(new ScriptingSystem.actionMap[type]($(this)));
     });
     
     if(xml.attr('errorLevel')) {
@@ -1401,7 +1389,6 @@ ConditionalEvent.inherit(Object, {
     exec: function() {
         this.setErrorLevel();
         while(this.execNum < this.actions.length) {
-            // Otherwise continue executing as normal
             this.actions[this.execNum++].exec();
         }
         this.execNum = 0;
@@ -1427,13 +1414,110 @@ ConditionalEvent.inherit(Object, {
     }
 });
 
+// Special case of ConditionalEvent used for ELSE blocks
+ElseEvent = function(xml) {
+    this.actions = [];
+    var t = $(xml).children('TRIGGERS');
+    var a = $(xml).children('ACTIONS');
+    
+    // Make sure we have at least one of each so that the Event is valid
+    if(t.length != 0) {
+        throw new Error('[CRITICAL] [PARSE] ELSE block cannot have any Trigger blocks');
+    }
+    if(a.length != 1) {
+        throw new Error('[CRITICAL] [PARSE] ELSE block requires exactly one Action block');
+    }
+    
+    var that = this;
+    a.children().each(function() {
+        var type = $(this).prop('tagName');
+        
+        if(!ScriptingSystem.actionMap.hasOwnProperty(type)) {
+            console.log('Unsupported Action detected ( ' + type + ' )');
+        }
+        else if(type == 'Delay') {
+            throw new Error('[CRITICAL] [PARSE] Delay cannot be used inside of an ELSE');
+        }
+        
+        that.actions.push(new ScriptingSystem.actionMap[type]($(this)));
+    });
+    
+    if(xml.attr('errorLevel')) {
+        if(xml.attr('errorLevel') == 'error') {
+            this.errorLevel = 0;
+        }
+        else if(xml.attr('errorLevel') == 'warn') {
+            this.errorLevel = 1;
+        }
+        else if(xml.attr('errorLevel') == 'ignore') {
+            this.errorLevel = 2;
+        }
+        else {
+            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + xml.attr('errorLevel') + ' )');
+        }
+    }
+    else {
+        this.errorLevel = 0;
+    }
+}
+ElseEvent.inherit(ConditionalEvent, {
+});
+
+// Subroutine //////////////////////////////////////////////////////////////////////////////////////
+
+Subroutine = function(xml) {
+    this.subroutineID = xml.attr('subroutineID');
+    
+    this.actions = [];
+    var a = $(xml).children('ACTIONS');
+    
+    var that = this;
+    a.children().each(function() {
+        var type = $(this).prop('tagName');
+        
+        if(!ScriptingSystem.actionMap.hasOwnProperty(type)) {
+            console.log('Unsupported Action detected ( ' + type + ' )');
+        }
+        else if(type == 'Delay') {
+            throw new Error('[CRITICAL] [PARSE] Delay cannot be used inside of a Subroutine');
+        }
+        
+        that.actions.push(new ScriptingSystem.actionMap[type]($(this)));
+    });
+    
+    if(xml.attr('errorLevel')) {
+        if(xml.attr('errorLevel') == 'error') {
+            this.errorLevel = 0;
+        }
+        else if(xml.attr('errorLevel') == 'warn') {
+            this.errorLevel = 1;
+        }
+        else if(xml.attr('errorLevel') == 'ignore') {
+            this.errorLevel = 2;
+        }
+        else {
+            throw new Error('[CRITICAL] [PARSE] Illegal value for errorLevel ( ' + xml.attr('errorLevel') + ' )');
+        }
+    }
+}
+Subroutine.inherit(ConditionalEvent, {
+    subroutineID: null,
+    
+    kill: function() {
+        events.clearInstanceListeners(this);
+		$.each(this.actions, function() {
+			this.kill();
+		});
+    }
+});
+
 // ScriptingEvent //////////////////////////////////////////////////////////////////////////////////
 
 // Represents a single event composed of at least one Trigger and at least one Action
 var ScriptingEvent = function(xml) {
     ScriptingEvent.superclass.constructor.call(this, xml);
     
-    this.eventID = xml.attr('eventID');
+    this.ruleID = xml.attr('ruleID');
     this.endTrans = ScriptingEvent.NO_STATE;
     
     // If optional state attribute is present, parse it
@@ -1445,7 +1529,7 @@ var ScriptingEvent = function(xml) {
             this.state = ScriptingEvent.INACTIVE;
         }
         else {
-            throw new Error('[CRITICAL] [PARSE] Event ' + this.eventID + ' has invalid starting state ' + xml.attr('state'));
+            throw new Error('[CRITICAL] [PARSE] Event ' + this.ruleID + ' has invalid starting state ' + xml.attr('state'));
         }
     }
     // Otherwise default to active
@@ -1457,14 +1541,14 @@ var ScriptingEvent = function(xml) {
 }
 
 ScriptingEvent.inherit(ConditionalEvent, {
-    eventID     : '',       // String for indentifying this event
+    ruleID     : '',       // String for indentifying this event
     
     aborting    : false,    // True when aborting from execution
     delay       : null,     // Holds the current delay timeout, null otherwise
     
-    state       : ScriptingEvent.NO_STATE,  // 
+    state       : ScriptingEvent.NO_STATE,  // Current state
     endTrans    : ScriptingEvent.NO_STATE,  // State to change to from the TRANSITION state
-    initState   : ScriptingEvent.NO_STATE,
+    initState   : ScriptingEvent.NO_STATE,  // Initial state when starting/rebooting
     
     // Returns true if this event is allowed to exec()
     canExec: function() {
@@ -1517,7 +1601,7 @@ ScriptingEvent.inherit(ConditionalEvent, {
     // Tell the event to abort execution
     abort: function() {
         if(!this.canAbort()) {
-            this.generateError('Cannot abort non-executing event ( ' + this.eventID + ' )');
+            this.generateError('Cannot abort non-executing event ( ' + this.ruleID + ' )');
             return;
         }
         
@@ -1547,13 +1631,13 @@ ScriptingEvent.inherit(ConditionalEvent, {
                 this.endTrans = ScriptingEvent.ACTIVE;
             }
             else {
-                this.generateError('Cannot activate ' + this.eventID + ' when endTrans is already ACTIVE');
+                this.generateError('Cannot activate ' + this.ruleID + ' when endTrans is already ACTIVE');
             }
         }
         
         // Otherwise warn that the state change cannot occur
         else {
-            this.generateError('Cannot activate ' + this.eventID + ' when in NO_STATE or ACTIVE');
+            this.generateError('Cannot activate ' + this.ruleID + ' when in NO_STATE or ACTIVE');
         }
     },
     
@@ -1572,13 +1656,13 @@ ScriptingEvent.inherit(ConditionalEvent, {
                 this.endTrans = ScriptingEvent.INACTIVE;
             }
             else {
-                this.generateError('Cannot deactivate ' + this.eventID + ' when endTrans is already INACTIVE');
+                this.generateError('Cannot deactivate ' + this.ruleID + ' when endTrans is already INACTIVE');
             }
         }
         
         // Otherwise warn that the state change cannot occur
         else {
-            this.generateError('Cannot deactivate ' + this.eventID + ' when in NO_STATE or INACTIVE');
+            this.generateError('Cannot deactivate ' + this.ruleID + ' when in NO_STATE or INACTIVE');
         }
     },
     
@@ -1630,6 +1714,7 @@ var ScriptingSystem = function() {
 
     // Initialize objects
     this.ss_eventList = {};
+    this.ss_subroutineList = {};
     this.ss_tracker = {};
     this.ss_vars = {};
     
@@ -1638,10 +1723,10 @@ var ScriptingSystem = function() {
     
     // Register Actions
     this.addAction('Delay',             DelayAct);
-    this.addAction('DeactivateEvent',   EventAct,       'DeactivateEventEvent', this.deactivateEvent.bind(this));
-    this.addAction('ReactivateEvent',   EventAct,       'ReactivateEventEvent', this.reactivateEvent.bind(this));
-    this.addAction('TriggerEvent',      EventAct,       'TriggerEventEvent',    this.triggerEvent.bind(this));
-    this.addAction('AbortEvent',        EventAct,       'AbortEventEvent',      this.abortEvent.bind(this));
+    this.addAction('DeactivateRule',    EventAct,       'DeactivateRuleEvent', this.DeactivateRule.bind(this));
+    this.addAction('ReactivateRule',    EventAct,       'ReactivateRuleEvent', this.ReactivateRule.bind(this));
+    this.addAction('TriggerRule',       EventAct,       'TriggerRuleEvent',    this.TriggerRule.bind(this));
+    this.addAction('AbortRule',         EventAct,       'AbortRuleEvent',      this.AbortRule.bind(this));
     this.addAction('CallFunction',      CallFunctionAct,'CallFunctionEvent',    this.callFunction.bind(this));
     this.addAction('ShowButton',        ShowButtonAct,  'ShowButtonEvent',      this.showContent.bind(this));
     this.addAction('ShowImage',         ShowImageAct,   'ShowImageEvent',       this.showContent.bind(this));
@@ -1665,7 +1750,7 @@ var ScriptingSystem = function() {
     this.addAction('Include',           IncludeAct,     'IncludeEvent',         this.loadScriptingXML.bind(this));
     this.addAction('DisableEngine',     GeneralPurposeAct,'DisableEngineEvent', this.disableEngine.bind(this));
     this.addAction('Conditional',       ConditionalAct);
-    this.addAction('ManualTrigger',     ManualTriggerAct);
+    this.addAction('CallSubroutine',    CallSubroutineAct,'CallSubroutine',     this.callSubroutine.bind(this));
     
     // Register Triggers
     this.addTrigger('And',              AndTrigger);
@@ -1678,7 +1763,6 @@ var ScriptingSystem = function() {
     this.addTrigger('IncludeTrigger',   IncludeTrigger);
     this.addTrigger('KeyTrigger',       KeyTrigger);
     this.addTrigger('RemoteLoadTrigger',RemoteLoadTrigger);
-    this.addTrigger('ManualTrigger',    ManualTrigger);
     this.addTrigger('Time',             TimeTrigger);
     
     KeyTrigger.keys = this.keys;
@@ -1733,8 +1817,12 @@ ScriptingSystem.inherit(KeyboardLayer, {
 		$.each(this.ss_eventList, function() {
 			this.kill();
 		});
-        
         this.ss_eventList = {};
+        
+        $.each(this.ss_subroutineList, function() {
+			this.kill();
+		});
+        this.ss_subroutineList = {};
     },
     
     //WARNING: Fails to execute correctly for any events that are executing
@@ -1769,6 +1857,14 @@ ScriptingSystem.inherit(KeyboardLayer, {
         throw new Error('[CRITICAL] [RUNTIME] Illegal value for ss_errorLevel ( ' + lvl + ' ) ');
     },
     
+    callSubroutine: function(subroutineID) {
+        if(!this.ss_subroutineList[subroutineID]) {
+            throw new Error('[CRITICAL] {RUNTIME] No subroutine with ID: ' + subroutineID);
+        }
+        
+        this.ss_subroutineList[subroutineID].exec();
+    },
+    
     // Load ScriptingEvents from parsed xml
     loadScriptingXML: function(xml) {
         this.ss_loaded = true;
@@ -1778,23 +1874,44 @@ ScriptingSystem.inherit(KeyboardLayer, {
         }
     
         // Get the list of ScriptingEvents from XML
-        var evts = $(xml).children('EVENT');
+        var evts = $(xml).children('RULE');
         
         // Interate over, validate and construct the ScriptingEvents
         var i=0;
         while(i<evts.length) {
             var evt = $(evts[i]);
-            if(evt.attr('eventID')) {
-                if(!this.ss_eventList.hasOwnProperty(evt.attr('eventID'))) {
-                    this.ss_eventList[evt.attr('eventID')] = new ScriptingEvent(evt);
-                    events.addListener(this.ss_eventList[evt.attr('eventID')], 'ErrorLevelEvent', this.setErrorLevel);
+            if(evt.attr('ruleID')) {
+                if(!this.ss_eventList.hasOwnProperty(evt.attr('ruleID'))) {
+                    this.ss_eventList[evt.attr('ruleID')] = new ScriptingEvent(evt);
+                    events.addListener(this.ss_eventList[evt.attr('ruleID')], 'ErrorLevelEvent', this.setErrorLevel);
                 }
                 else {
-                    throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' has an eventID that is already in use ( ' + evts[i].attributes.eventID + ' )');
+                    throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' has an ruleID that is already in use ( ' + evts[i].attributes.ruleID + ' )');
                 }
             }
             else {
-                throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' does not have an eventID');
+                throw new Error('[CRITICAL] [PARSE] Event #' + (i+1) + ' does not have an ruleID');
+            }
+            i += 1;
+        }
+        
+        // Do the same for subroutines
+        var subs = $(xml).children('SUBROUTINE');
+        
+        i=0;
+        while(i<subs.length) {
+            var sub = $(subs[i]);
+            if(sub.attr('subroutineID')) {
+                if(!this.ss_subroutineList.hasOwnProperty(sub.attr('subroutineID'))) {
+                    this.ss_subroutineList[sub.attr('subroutineID')] = new Subroutine(sub);
+                    events.addListener(this.ss_subroutineList[sub.attr('subroutineID')], 'ErrorLevelEvent', this.setErrorLevel);
+                }
+                else {
+                    throw new Error('[CRITICAL] [PARSE] Subroutine #' + (i+1) + ' has an subroutineID that is already in use ( ' + evts[i].attributes.ruleID + ' )');
+                }
+            }
+            else {
+                throw new Error('[CRITICAL] [PARSE] Subroutine #' + (i+1) + ' does not have an subroutineID');
             }
             i += 1;
         }
@@ -2032,32 +2149,32 @@ ScriptingSystem.inherit(KeyboardLayer, {
     },
     
     // Deactivate the specified event
-    deactivateEvent: function(eventID) {
-        this.ss_eventList[eventID].deactivate(this.ss_errorLevel);
+    DeactivateRule: function(ruleID) {
+        this.ss_eventList[ruleID].deactivate(this.ss_errorLevel);
     },
     
     // Activate the specified event
-    reactivateEvent: function(eventID) {
-        this.ss_eventList[eventID].activate(this.ss_errorLevel);
+    ReactivateRule: function(ruleID) {
+        this.ss_eventList[ruleID].activate(this.ss_errorLevel);
     },
     
     // Trigger the specified event
-    triggerEvent: function(eventID) {
-        if(this.ss_eventList[eventID].canExec()) {
-            this.ss_eventList[eventID].exec();
+    TriggerRule: function(ruleID) {
+        if(this.ss_eventList[ruleID].canExec()) {
+            this.ss_eventList[ruleID].exec();
         }
         else {
-            this.generateError('Cannot triggerEvent non-ACTIVE event ( ' + eventID + ' )');
+            this.generateError('Cannot TriggerRule non-ACTIVE event ( ' + ruleID + ' )');
         }
     },
     
     // Aborts a currently executing event
-    abortEvent: function(eventID) {
-        if(this.ss_eventList[eventID].canAbort()) {
-            this.ss_eventList[eventID].abort();
+    AbortRule: function(ruleID) {
+        if(this.ss_eventList[ruleID].canAbort()) {
+            this.ss_eventList[ruleID].abort();
         }
         else {
-            this.generateError('Cannot abortEvent non-EXECUTING event ( ' + eventID + ' )');
+            this.generateError('Cannot AbortRule non-EXECUTING event ( ' + ruleID + ' )');
         }
     },
 

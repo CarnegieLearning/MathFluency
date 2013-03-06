@@ -67,6 +67,7 @@ function FluencyApp () {
     Content.initialize();
     
     this.loadGame();
+    this.isMouseEnabled = true;
 }
 
 FluencyApp.inherit(RS.RacecarScripting, {
@@ -876,6 +877,29 @@ FluencyApp.inherit(RS.RacecarScripting, {
         this.player.endTurboBoost();
     },
     
+    // Crude initial version of the mouse based movement
+    //TODO: Ignore clicks near/on menu buttons
+    mouseDown: function(evt) {
+        if(this.ss_started) {
+            // 'A' / 'LEFT' Move left, discreet
+            if(evt.locationInCanvas.x < this.player.position.x) {
+                if(this.lane > 0) {
+                    this.moveLane(this.lane, this.lane-1);
+                    this.player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
+                    this.audioMixer.playSound('accel', true);
+                }
+            }
+            // 'D' / 'RIGHT' Move right, discreet
+            else if(evt.locationInCanvas.x > this.position.x) {
+                if(this.lane < RC.curNumLanes-1) {
+                    this.moveLane(this.lane, this.lane+1);
+                    this.player.xCoordinate = this.lanePosX[RC.curNumLanes][this.lane];
+                    this.audioMixer.playSound('accel', true);
+                }
+            }
+        }
+    },
+    
     // Called every frame, manages keyboard input
     update: function(dt) {
         // Must call superclass.update for ScriptingSystem to function
@@ -892,7 +916,6 @@ FluencyApp.inherit(RS.RacecarScripting, {
         }
         
         var player = this.player;
-        var playerX = player.xCoordinate;
         
         // Update the skyline
         this.background.progress(player.zCoordinate / RC.finishLine);
