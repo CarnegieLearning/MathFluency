@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html manifest="akira.manifest">
+<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-icon" href="temporary.png"/>
+
+    <link rel="apple-touch-startup-image" href="racecar/assets/resources/splash.png" /> <!-- mvy -->
+
+	<script type="text/javascript" src="racecar/jquery.min.js"></script> 
+	<script type="text/javascript" src="racecar/jquery-ui.min.js"></script> 
+	<style type="text/css" media="screen">
+		body {
+			font-family: Helvetica, Arial, sans-serif;
+			font-size: 10pt;
+			background: #ddd;
+		}
+		h1 {
+			text-align: center;
+			text-shadow: 0 2px 1px #fff;
+		}
+		.cocos2d-app {
+			border: 1px solid #000;
+			width: 900px;
+			height: 600px;
+			display: block;
+			margin: 0 auto;
+			-webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.75);
+			-moz-box-shadow:    0 3px 10px rgba(0, 0, 0, 0.75);
+			-o-box-shadow:      0 3px 10px rgba(0, 0, 0, 0.75);
+			box-shadow:         0 3px 10px rgba(0, 0, 0, 0.75);
+		}
+	</style>
+
+    <title>Racecar</title> <!-- mvy -->
+</head>
+<body>
+   <!-- Put your Markup Here -->
+	<div class="cocos2d-app" data="set002_scripting.xml">
+		Loading Racecar...
+	   <script type="text/javascript" src="racecar/init.js"></script>
+	</div>
+</body>
+</html>
