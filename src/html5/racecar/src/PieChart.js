@@ -18,59 +18,72 @@ var cocos = require('cocos2d');
 var geom = require('geometry');
 var util = require('util');
 
-var XML = require('XML').XML;
-
 // Draws a pie chart
-var PieChart = cocos.nodes.Node.extend({
-    numSections :2,         // Total number of pie slices
-    numFilled   :1,         // Number of filled pie slices
-    bgColor     :'#FFFFFF', // Color of the background
-    lineColor   :'#000000', // Color of the lines used to outlijne and mark each section
-    fillColor   :'#00A0A0', // Color of the filled in sections
-    radius      :10,        // Size of the chart
-    init: function(opts) {
-        PieChart.superclass.init.call(this);
-        
-        //Set properties from the option object
-        util.each('numSections numFilled bgColor lineColor fillColor radius'.w(), util.callback(this, function (name) {
-            if (opts[name]) {
-                this.set(name, opts[name]);
-            }
-        }));
-        
-        // Explictly set contentSize so it plays nice with formating based on it
-        this.set('contentSize', new geom.Size(this.get('radius') * 2.4, this.get('radius') * 2.4));
-    },
+PieChart = function(opts) {
+    PieChart.superclass.constructor.call(this);
+    
+    //Set properties from the option object
+    var i = -1;
+    while(++i < PieChart.params.length) {
+        if (opts[PieChart.params[i]]) {
+            this[PieChart.params[i]] = opts[PieChart.params[i]];
+        }
+    }
+    
+    this.bgShow = true;
+    if(opts.hasOwnProperty('bgShow')) {
+        if(!opts['bgShow'] || opts['bgShow'] == "false") {
+            this.bgShow = false;
+        }
+    }
+    
+    this.strRep = this.numFilled + ' / ' + this.numSections;
+    
+    // Explictly set contentSize so it plays nice with formating based on it
+    this.contentSize = new geom.Size(this.radius * 2.4, this.radius * 2.4);
+}
+
+PieChart.inherit(cocos.nodes.Node, {
+    numSections : 2,         // Total number of pie slices
+    numFilled   : 1,         // Number of filled pie slices
+    bgColor     : '#FFFFFF', // Color of the background
+    lineColor   : '#000000', // Color of the lines used to outlijne and mark each section
+    fillColor   : '#00A0A0', // Color of the filled in sections
+    radius      : 10,        // Size of the chart
+
+    strRep      : '',        // String representation of content
     
     // Draws the PieChart to the canvas
     draw: function(context) {
-        var r = this.get('radius');
+        var r = this.radius;
         
         // Draw background
-        context.fillStyle = this.get('bgColor');
-        context.fillRect(r * -1.2, r * -1.2, r * 2.4, r * 2.4);
+        if(this.bgShow) {
+            context.fillStyle = this.bgColor;
+            context.fillRect(r * -1.2, r * -1.2, r * 2.4, r * 2.4);
+        }
     
-        var step = Math.PI*2 / this.get('numSections');
+        var step = Math.PI*2 / this.numSections;
         var offset = Math.PI * 3 / 2    //This is so we draw with 'up' as our 0
     
         // Draw the filled portion
-        context.fillStyle = this.get('fillColor');
+        context.fillStyle = this.fillColor;
         context.beginPath();
-        context.arc(0, 0, r, offset, offset + step * this.get('numFilled'));
+        context.arc(0, 0, r, offset, offset + step * this.numFilled);
         context.lineTo(0, 0);
         context.lineTo(0, -1 * r);
         context.closePath();
         context.fill();
     
         // Draw the outline
-        context.strokeStyle = this.get('lineColor');
+        context.strokeStyle = this.lineColor;
         context.beginPath();
         context.arc(0, 0, r, 0, Math.PI*2);
         context.closePath();
         context.stroke();
         
         // Draw the individual dividers
-        for(var i=0; i<this.get('numSections'); i+= 1) {
+        for(var i=0; i<this.numSections; i+= 1) {
             context.beginPath();
             context.moveTo(0, 0);
             context.lineTo(Math.sin(i*step)*r, Math.cos(i*step)*r*-1)
@@ -78,6 +91,16 @@ var PieChart = cocos.nodes.Node.extend({
             context.stroke();
         }
     },
+    
+    // Implemented in PieChart as other types of Content need these to function
+    //TODO: Migrate a base version of these functions up to Content?
+    set opacityLink (val) {
+        this.opacity = val;
+    },
+    
+    get opacityLink () {
+        return this.opacity;
+    }
 });
 
 // Static helper function to build the creation options object
@@ -92,24 +115,6 @@ PieChart.helper = function(Sections, Filled, BgColor, LineColor, FillColor, Radi
     };
 }
 
-// Static XML parser to build options from a <CONTENT_SETTINGS> node
-PieChart.helperXML = function(node) {
-    var n = XML.safeComboGet(node, 'Numerator', 'VALUE');
-    var d = XML.safeComboGet(node, 'Denominator', 'VALUE');
-    var bg = XML.safeComboGet(node, 'BackgroundColor', 'VALUE');
-    var fc = XML.safeComboGet(node, 'FillColor', 'VALUE');
-    var lc = XML.safeComboGet(node, 'LineColor', 'VALUE');
-    var r = XML.safeComboGet(node, 'Radius', 'VALUE');
-    
-    var opts = {}
-    opts['numSections'] = d   == null ? 2       : d;
-    opts['numFilled']   = n   == null ? 1       : n;
-    opts['bgColor']     = bg  == null ? '#fff'  : bg;
-    opts['lineColor' ]  = lc  == null ? '#000'  : lc;
-    opts['fillColor']   = fc  == null ? '#0aa'  : fc;
-    opts['radius']      = r   == null ? '10'    : r;
-    
-    return opts;
-}
+PieChart.params = ['numSections','numFilled','bgColor','lineColor','fillColor','radius'];
 
-exports.PieChart = PieChart
+module.exports = PieChart

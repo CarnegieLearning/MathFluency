@@ -14,47 +14,81 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Import the cocos2d module
 var cocos = require('cocos2d');
 var events = require('events');
 
-// Automatically handles changing a value over time (just bindTo "value" to the value you want to change)
-var ModifyOverTime = BObject.extend({
+// Automatically handles changing a value over time
+function ModifyOverTime (x, amount, time) {
+    ModifyOverTime.superclass.constructor.call();
+    
+    // Initialize
+    this.value = x;
+    this.rate = amount / time;
+    this.duration = time;
+    
+    // Force calling updates since this will not be added to the scene
+    cocos.Scheduler.sharedScheduler.scheduleUpdate({target: this, priority: 0, paused: false});
+    
+    // Keep track of this instance so we can remove it automatically later
+    ModifyOverTime.list.push(this);
+}
+
+ModifyOverTime.inherit(Object, {
     duration: 0,    // Remaining duration of the change
     rate    : 0,    // Rate at which the value changes per second
     value   : null, // The value that is being changed
     
-    init: function (x, amount, time) {
-        ModifyOverTime.superclass.init.call();
+    obj     : null, // Object with value to be modified
+    str     : null, // If not null, the variable name on the object to be changed
+    func    : null, // If not null, the funciton name on the object to call with the changed value
+    
+    // Binds the direct set case
+    bind: function (obj, str) {
+        if(this.func == null) {
+            this.obj = obj;
+            this.str = str;
+            return true;
+        }
         
-        // Initialize
-        this.set('value', x);
-        this.set('rate', amount / time);
-        this.set('duration', time);
-        
-        // Force calling updates since this will not be added to the scene
-        cocos.Scheduler.get('sharedScheduler').scheduleUpdate({target: this, priority: 0, paused: false});
-        
-        // Keep track of this instance so we can remove it automatically later
-        ModifyOverTime.list.push(this);
+        console.log('WARNING: MOT already bound to function ( ' + this.func + ' )');
+        return false;
     },
     
-    // Shortcut for bindTo
-    bind: function (obj, str) {
-        this.bindTo('value', obj, str);
+    // Binds the set by function case
+    bindFunc: function (obj, func) {
+        if(this.str == null) {
+            this.obj = obj;
+            this.func = func;
+            return true;
+        }
+        
+        console.log('WARNING: MOT already bound to variable ( ' + this.str + ' )');
+        return false;
     },
 
     // Changes value over time
     update: function (dt) {
-        var dur = this.get('duration');
+        var dur = this.duration;
         
         // Keep changing as long as there is duration remaining
         if(dur > 0) {
             // Check the case that the tick is longer than our remaining time
             var edt = Math.min(dt, dur);
-            this.set('duration', dur - edt);
+            this.duration = dur - edt;
             
-            var rate = this.get('rate');
-            this.set('value', this.get('value') + rate * edt);
+            // Update value
+            this.value = this.value + this.rate * edt;
+            
+            // Direct set case
+            if(this.str) {
+                this.obj[this.str] += this.rate * edt;
+            }
+            
+            // Set by function case
+            if(this.func) {
+                this.func.apply(this.obj, [this.value]);
+            }
         }
         
         // Otherwise change is complete
@@ -70,25 +104,30 @@ var ModifyOverTime = BObject.extend({
     // Calling this directly will stop the MOT from modifying and remove it just like if its duration expired, but will not notify anything that it has ended
     kill: function () {
         // Clean up
-        cocos.Scheduler.get('sharedScheduler').unscheduleUpdateForTarget(this);
+        cocos.Scheduler.sharedScheduler.unscheduleUpdateForTarget(this);
         events.clearInstanceListeners(this);
-        this.unbind(this.get('value'));
+        
+        this.obj = null;
+        this.str = null;
+        this.func = null;
         
         // and remove
         var index = ModifyOverTime.list.indexOf(this);
         ModifyOverTime.list.splice(index, 1);
     },
     
+    // Pauses the MOT
     pause: function () {
-        cocos.Scheduler.get('sharedScheduler').pauseTarget(this);
+        cocos.Scheduler.sharedScheduler.pauseTarget(this);
     },
     
+    // Resumes the MOT
     resume: function () {
-        cocos.Scheduler.get('sharedScheduler').resumeTarget(this);
-    },
+        cocos.Scheduler.sharedScheduler.resumeTarget(this);
+    }
 });
 
 // Static variables
 ModifyOverTime.list = [];
 
-exports.ModifyOverTime = ModifyOverTime;
+module.exports = ModifyOverTime;
