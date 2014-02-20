@@ -14,362 +14,347 @@ Copyright 2011, Carnegie Learning
     limitations under the License.
 */
 
+// Import the cocos2d module
 var cocos = require('cocos2d');
-var geom = require('geometry');
+var geo = require('geometry');
 
-var PNode = require('PerspectiveNode').PerspectiveNode;
-var RC = require('RaceControl').RaceControl;
-var MOT = require('ModifyOverTime').ModifyOverTime;
+// Project Imports
+var LFW = require('/LabelFW');
+var PNode = require('/PerspectiveNode');
+
+// Static Imports
+var RC = require('/RaceControl');
+var MOT = require('/ModifyOverTime');
 
 // Displays the dashboard on the right hand side
-// TODO: Add speedometer, race progress, medal tracker, penalty time
-var Dashboard = cocos.nodes.Node.extend({
-    elapsedTime  : -3,      // Time in race elapsed so far
-    displayTime  : null,    // Timer displayed to player
+function Dashboard (ckpt) {
+    Dashboard.superclass.constructor.call(this);
+    
+    this.zOrder = 100;
+    this.checkpoints = ckpt;
+    
+    // Directory with Dashboard resources
+    var dir = '/resources/Dashboard/';
+    
+    // Medal meter fillings
+    this.mms = [];
+    this.mms.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalBlack.png'}));
+    this.mms.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalBronze.png'}));
+    this.mms.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalSilver.png'}));
+    this.mms.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalGold.png'}));
+    
+    var offset = 31;
+    for(var i=0; i<4; i+=1) {
+        this.mms[i].anchorPoint = new geo.Point(0.5, 0);
+        this.mms[i].scaleY = this.proportions(4-i) * 0.85;
+        this.mms[i].position = new geo.Point(176, offset);
+        this.addChild({child: this.mms[i]});
+        offset += this.proportions(4-i) * 85;
+    }
+    
+    // A little extra size for the top and bottom to mke sure they are flush with the meter's edges
+    var pt = this.mms[0].position;
+    pt.y -= 20;
+    this.mms[0].position = pt;
+    this.mms[0].scaleY = this.mms[0].scaleY + 0.2;
+    this.mms[3].scaleY = this.mms[3].scaleY + 0.1;
+    
+    // Backing of the dashboard
+    this.dashBack = new cocos.nodes.Sprite({file: dir + 'dashBoardBack.png'});
+    this.dashBack.anchorPoint = new geo.Point(0, 0);
+    this.dashBack.position = new geo.Point(-16, -24);
+    this.addChild({child: this.dashBack});
+    
+    // Non-dynamic components of the dashboard display
+    this.dashDial = new cocos.nodes.Sprite({file: dir + 'dashBoardDials.png'});
+    this.dashDial.anchorPoint = new geo.Point(0, 0);
+    this.dashDial.position = new geo.Point(42, 10);
+    this.addChild({child: this.dashDial});
+    
+    // Medal needle
+    this.medalNeedle = new cocos.nodes.Sprite({file: dir + 'dashBoardMedalIndicator.png'});
+    this.medalNeedle.position = new geo.Point(172, 27);
+    this.medalNeedle.rotation = 90;
+    this.addChild({child: this.medalNeedle});
+    
+    // Speedometer needle
+    this.speedNeedle = new cocos.nodes.Sprite({file: dir + 'dashBoardNeedle.png'});
+    this.speedNeedle.anchorPoint = new geo.Point(0.5, 0.1);
+    this.speedNeedle.position = new geo.Point(264, 40);
+    this.speedNeedle.rotation = -110;
+    this.addChild({child: this.speedNeedle});
+    
+    // Top layer of the dashboard
+    this.dashFront = new cocos.nodes.Sprite({file: dir + 'dashBoardFront.png'});
+    this.dashFront.anchorPoint = new geo.Point(0, 0);
+    this.dashFront.position = new geo.Point(-32, -47);
+    this.addChild({child: this.dashFront});
+    
+    // Hash marks
+    var hash;
+    for(var i=0; i<this.checkpoints.length; i+=1) {
+        hash = new cocos.nodes.Sprite({file: dir + 'dashBoardHash.png'});
+        hash.position = new geo.Point(48, 90 + this.checkpoints[i] / RC.finishLine * 115);
+        this.addChild({child: hash});
+    }
+    
+    // Minimap dots
+    this.miniDots = []
+    
+    this.miniDots.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotGold.png'}));
+    this.miniDots[0].position = new geo.Point(50, 90);
+    this.addChild({child: this.miniDots[0]});
+    
+    this.miniDots.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotSilver.png'}));
+    this.miniDots[1].position = new geo.Point(43, 90);
+    this.addChild({child: this.miniDots[1]});
+    
+    this.miniDots.push(new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotBronze.png'}));
+    this.miniDots[2].position = new geo.Point(53, 90);
+    this.addChild({child: this.miniDots[2]});
+    
+    this.miniPlayer = new cocos.nodes.Sprite({file: dir + 'dashBoardMedalDotPlayer.png'});
+    this.miniPlayer.position = new geo.Point(46, 90);
+    this.addChild({child: this.miniPlayer});
+    
+    // Label for error count
+    var opts = {};
+    opts['fontName'] = RC.font;
+    opts['string'] = '0';
+    opts['fontSize'] = '22';
+    this.penaltyCount = new cocos.nodes.Label(opts);
+    this.penaltyCount.anchorPoint = new geo.Point(0.5, 0.5);
+    this.penaltyCount.position = new geo.Point(120, RC.YTextOff(140, 22));
+    this.addChild({child: this.penaltyCount});
+    
+    // Label for current speed
+    opts['string'] = '0 MPH';
+    opts['fontSize'] = '16';
+    this.displaySpeed = new cocos.nodes.Label(opts);
+    this.displaySpeed.anchorPoint = new geo.Point(1, 0);
+    this.displaySpeed.position = new geo.Point(310, RC.YTextOff(7, 16));
+    this.addChild({child: this.displaySpeed});
+    
+    
+    opts['string'] = '.';
+    var decimal = new cocos.nodes.Label(opts);
+    //HACK: This does not need the YTextOff tweak
+    decimal.position = new geo.Point(42, 0);
+    
+    // Label for elapsed time
+    opts['fontSize'] = '16'
+    opts['numDigits'] = 4;
+    opts['offset'] = 16;
+    delete opts['string'];
+    this.elapsedLabel = new LFW(opts);
+    this.elapsedLabel.labels[3].position.x += 2
+    this.elapsedLabel.setStr('0000');
+    this.elapsedLabel.anchorPoint = new geo.Point(0, 0);
+    this.elapsedLabel.position = new geo.Point(67, RC.YTextOff(45, 16));
+    this.addChild({child: this.elapsedLabel});
+    
+    this.elapsedLabel.addChild({child: decimal});
+    
+    var that = this;
+    setTimeout(function() {
+        that._updateLabelContentSize();
+    }, 500);
+    
+    this.onlyOnce = false;
+}
+
+Dashboard.inherit(cocos.nodes.Node, {
+    elapsedTime  : 0,       // Time in race elapsed so far
+    elapsedLabel : null,    // Timer displayed to player
     gaugeRadius  : 40,      // Radius of the gauges
-    penaltyTime  : null,    // Displayed penalty time
-    pTime        : 0.0,     // Stores numerical penalty time
+    penaltyCount : null,    // Displayed penalty time
+    pCount       : 0,       // Stores number of penalties incurred
     speed        : 0,       // Speed for speedometer
     currentSpeed : null,    // Numerically displayed speed
-    lastS        : 0,       // Previous frame's speed
+    lastS        : 0,       // Previous frame's speed (for when current frame's speed is 0 due to pausing)
     maxSpeed     : 200,     // Maximum possible speed to display/calculate
-    timerAcc     : 3,       // Number of digits to the right of the decimal place for timer accuracy
+    timerAcc     : 1,       // Number of digits to the right of the decimal place for timer accuracy
     pause        : false,   // Stores if the elapsed timer should be paused.
-    speedMode    : 2,       // 0: m/s 1: kph 2: mph
-    displayMedal : null,    // Holds the text representation for the current medal the player in on track to get
+    speedMode    : 2,       // Defines what units to use when displaying speed
     
-    init: function() {
-        Dashboard.superclass.init.call(this);
-        
-        this.set('zOrder', 100);
-        
-        var opts = Object();
-        
-        // Create the visible timer
-        opts['string'] = 'Elapsed Time';
-        var disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 35));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        
-        opts['string'] = '-3.0';
-        disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 50));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.set('displayTime', disp)
-        this.addChild({child: disp});
-        
-        
-        // Create visible penalty timer
-        opts['string'] = 'Penalty Time';
-         disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 85));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        
-        opts['string'] = '0.0';
-        disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 100));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        this.set('penaltyTime', disp);
-        
-        // Create numerical speedometer
-        opts['string'] = 'Speed';
-        disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 215));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        
-        opts['string'] = '0';
-        disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 230));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        this.set('displaySpeed', disp);
-        
-        // Create textual medal meter
-        opts['string'] = 'Medal';
-        disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 315));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        
-        opts['string'] = ' - ';
-        disp = cocos.nodes.Label.create(opts);
-        disp.set('position', new geom.Point(5, 330));
-        disp.set('anchorPoint', new geom.Point(0, 0.5));
-        this.addChild({child: disp});
-        this.set('displayMedal', disp);
+    // Minimap facilitation
+    playerZ      : 0,       // The player's current location (updated by Player)
+    goldZ        : 0,		// Z position of the gold medal car (updated by PNode)
+    silverZ      : 0,		// Z position of the silver medal car (updated by PNode)
+    bronzeZ      : 0,		// Z position of the bronze medal car (updated by PNode)
+	checkpoints	 : [],		// Z positions of the checkpoints
+
+    // Adjust the labels to match their content sizes and alignments
+    _updateLabelContentSize: function() {
+        //this.elapsedLabel._updateLabelContentSize();
+        this.penaltyCount._updateLabelContentSize();
+        this.displaySpeed._updateLabelContentSize();
     },
     
-    // Starts tracking time and updating the dashboard timer.  Optionally set the initial countdown
-    start: function (initialCountdown) {
-        if(initialCountdown) {
-            this.set('elapsedTime', -1 * initialCountdown)
-        }
+    // Updates a minimap dot's position
+    updateDot: function (dot, val) {
+        dot.position.y = Math.min(90 + ((val / RC.finishLine) * 115), 205);
+    },
+    
+    // Starts tracking time and updating the dashboard timer.
+    start: function () {
+        this.elapsedTime = 0;
+        this._updateLabelContentSize();
         this.scheduleUpdate();
     },
     
-    // Helper function for grabbing the elapsed + penalty time
-    getTotalTime: function () {
-        var tt = this.get('pTime') + this.get('elapsedTime');
-        if(tt.toFixed) {
-            tt = tt.toFixed(this.get('timerAcc'));
-        }
-        return tt;
-    },
-    
     // Changes the current amount of penalty time accured
-    modifyPenaltyTime: function(dt) {
-        MOT.create(this.get('pTime'), dt, RC.maxTimeWindow).bindTo('value', this, 'pTime');
+    modifyPenaltyCount: function() {
+        this.pCount += 1;
+        this.penaltyCount.string = this.pCount;
+        this.penaltyCount._updateLabelContentSize();
     },
     
     // Sets the pause state
     pauseTimer: function () {
-        this.set('pause', true);
+        this.pause = true;
     },
     
     // Unsets the pause state
     unpauseTimer: function () {
-        this.set('pause', false);
+        this.pause = false;
     },
     
     // Updates the time
     update: function(dt) {
-        if(!this.get('pause')) {
-            var acc = this.get('timerAcc');
+        if(!this.pause) {
             // Update elapsed timer
-            var t = this.get('elapsedTime') + dt;
-            this.set('elapsedTime', t);
+            this.elapsedTime = (this.elapsedTime + dt);
+            var t = this.elapsedTime * 10;
             
-            var d = this.get('displayTime');
-            d.set('string', t.toFixed(acc));
+            // Only update positive elapsed time
+            //TODO: Remove if?  elapsedTime no longer tracks negative time
+            if(t > 0) {
+                this.elapsedLabel.setStr(t.toFixed(this.timerAcc-1) + '');
+            }
         }
         
-        // Update penalty timer
-        this.get('penaltyTime').set('string', parseFloat(this.get('pTime')).toFixed(acc));
+        // Determine current speed as a percentage of max speed
+        var s = this.getSpeed();
+        var p = s / this.maxSpeed;
+        
+        this.speedNeedle.rotation = p * 220 - 110;
+        
+        // Save this frame's speed for 1 frame
+        this.lastS = s;
         
         // Update numerical speedometer
-        this.get('displaySpeed').set('string', this.getConvertedSpeed());
-    },
-    
-    // Updates the text under the medal meter to the indicated medal
-    updateMedalText: function(p) {
-        var txt;
+        this.displaySpeed.string = this.getConvertedSpeed();
+        this.displaySpeed._updateLabelContentSize();
         
-        if(p > 0.75) {
-            txt = 'Gold';
-        }
-        else if(p > 0.5) {
-            txt = 'Silver';
-        }
-        else if(p > 0.25) {
-            txt = 'Bronze';
-        }
-        else {
-            txt = ' - ';
-        }
+        // Update minimap
+        this.updateDot(this.miniPlayer, this.playerZ);
+        this.updateDot(this.miniDots[0], this.goldZ);
+        this.updateDot(this.miniDots[1], this.silverZ);
+        this.updateDot(this.miniDots[2], this.bronzeZ);
         
-        this.get('displayMedal').set('string', txt);
+        // Place the medal meter needle
+        //TODO: Remove if?  elapsedTime no longer tracks negative time
+        if(this.elapsedTime > 0) {
+            this.placeMedalNeedle(this.pHelper(s));
+        }
     },
     
     // Get speed converted to specified units
     getConvertedSpeed: function() {
-        var mode = this.get('speedMode')
         var s = this.getSpeed();
         
-        if(mode == Dashboard.SPEED_M_PS) {
+        if(this.speedMode == Dashboard.SPEED_M_PS) {
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
             s += ' m/s';
         }
-        else if(mode == Dashboard.SPEED_KM_PH) {
+        else if(this.speedMode == Dashboard.SPEED_KM_PH) {
             s = s * 36 / 10;
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
-            s += ' kph';
+            s += ' KPH';
         }
-        else if(mode == Dashboard.SPEED_MI_PH) {
+        else if(this.speedMode == Dashboard.SPEED_MI_PH) {
             s = s * 36 / 16;
             if(s.toFixed) {
                 s = s.toFixed(0);
             }
-            s += ' mph';
+            s += ' MPH';
         }
         else {
-            console.log('Invalid speedMode = ' + mode);
+            console.log('ERROR: Invalid speedMode (  ' + mode + ' )');
             return null;
         }
         
         return s;
     },
     
+    // Places the medal meter needle
+    placeMedalNeedle: function(p) {
+        this.medalNeedle.rotation = 87 + p * 41;
+        
+        // Placement depends on which quartile the needle needs to be in
+        if(p < 0.25) {
+            p *= 4;
+            
+            this.medalNeedle.position = new geo.Point(172, 27 + p * 24);
+        }
+        else if(p < 0.50) {
+            p -= 0.25;
+            p *= 4;
+            
+            this.medalNeedle.position = new geo.Point(171 + p * 6, 51 + p * 22);
+        }
+        else if(p < 0.75) {
+            p -= 0.50;
+            p *= 4;
+            
+            this.medalNeedle.position = new geo.Point(177 + p * 12, 73 + p * 19);
+        }
+        else {
+            p -= 0.75;
+            p *= 4; 
+            
+            this.medalNeedle.position = new geo.Point(189 + p * 13, 92 + p * 17);
+        }
+    },
+    
     // Getter for speed, accounts for the fact that 'speed' is 0 when paused
     getSpeed: function() {
-        if(!this.get('pause')) {
-            return this.get('speed');
+        if(!this.pause) {
+            return this.speed;
         }
-        return this.get('lastS');
-    },
-    
-    // Helper function for creating an arc of a circle filled with color
-    fillArc: function (c, x, y, r, s, e, b) {
-        c.beginPath();
-        s += Math.PI;
-        c.arc(x, y, r, s, s + e, b);
-        c.lineTo(x, y);
-        c.closePath();
-        c.fill();
-    },
-    
-    // Draws the dash
-    draw: function(context) {
-        context.fillStyle = "#8B7765";
-        context.beginPath();
-        context.moveTo(0,-10);
-        context.lineTo(0,610);
-        context.lineTo(110,610);
-        context.lineTo(110,-10);
-        context.closePath();
-        context.fill();
-        
-        // Speedometer
-        var r = this.get('gaugeRadius');
-        
-        // Interior fills
-        context.fillStyle = '#202020';
-        this.fillArc(context, 50, 200, r, 0               , Math.PI * 5 / 6, false);
-        context.fillStyle = '#FF8C00';
-        this.fillArc(context, 50, 200, r, Math.PI / 12 * 9, Math.PI / 12   , false);
-        context.fillStyle = '#DD1111';
-        this.fillArc(context, 50, 200, r, Math.PI / 6 * 5 , Math.PI / 6    , false);
-        
-        // Hash marks
-        context.strokeStyle = '#FFFFFF';
-        context.lineWidth = "2";
-        var maxStep = 6
-        for(var step = 1; step < maxStep; step += 1) {
-            context.beginPath();
-            context.moveTo(Math.sin(step*Math.PI/maxStep - Math.PI/2)*r + 50, Math.cos(step*Math.PI/maxStep - Math.PI/2)*-r + 200);
-            context.lineTo(Math.sin(step*Math.PI/maxStep - Math.PI/2)*(r-10) + 50, Math.cos(step*Math.PI/maxStep - Math.PI/2)*-(r-10) + 200)
-            context.closePath();
-            context.stroke();
-        }
-        
-        // Gauge frame
-        context.strokeStyle = "#000000";
-        context.lineWidth = "4";
-        context.beginPath();
-        context.arc(50, 200, r, 0, Math.PI, true);
-        context.lineTo(10, 200);
-        context.closePath();
-        context.stroke();
-        
-        var s = this.getSpeed();
-        var maxs = this.get('maxSpeed');
-        
-        // Needle outline
-        context.beginPath();
-        context.moveTo(50, 200);
-        context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200);
-        context.closePath();
-        context.stroke();
-        
-        // Needle
-        context.strokeStyle = "#11CC22";
-        context.lineWidth = "2";
-        context.beginPath();
-        context.moveTo(50, 200);
-        context.lineTo(Math.sin(s*Math.PI/maxs - Math.PI/2)*r + 50, Math.cos(s*Math.PI/maxs - Math.PI/2)*-r + 200);
-        context.closePath();
-        context.stroke();
-        
-        this.set('lastS', s);
-        
-        // Medalmeter
-        
-        // Interior fills
-        context.fillStyle = '#202020';
-        this.fillArc(context, 50, 300, r, 0,               Math.PI / 4, false);
-        context.fillStyle = '#A67D3D';
-        this.fillArc(context, 50, 300, r, Math.PI / 4,     Math.PI / 4, false);
-        context.fillStyle = '#C0C0C0';
-        this.fillArc(context, 50, 300, r, Math.PI / 2,     Math.PI / 4, false);
-        context.fillStyle = '#CC9900';
-        this.fillArc(context, 50, 300, r, Math.PI / 4 * 3, Math.PI / 4, false);
-        
-        // Gauge frame
-        context.strokeStyle = "#000000";
-        context.lineWidth = "4";
-        context.beginPath();
-        context.arc(50, 300, r, 0, Math.PI, true);
-        context.lineTo(10, 300);
-        context.closePath();
-        context.stroke();
-        
-        
-        // Negative time is bad for calculating the medal meter
-        if(this.get('elapsedTime') > 0) {
-            var p = this.pHelper(s);
-            
-            this.updateMedalText(p);
-            
-            // Needle outline
-            context.strokeStyle = "000000";
-            context.lineWidth = "4";
-            context.beginPath();
-            context.moveTo(50, 300);
-            context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*r + 50, Math.cos(Math.PI*p - Math.PI/2)*-r + 300)
-            context.closePath();
-            context.stroke();
-            
-            // Needle
-            context.strokeStyle = "#11CC22";
-            context.lineWidth = "2";
-            context.beginPath();
-            context.moveTo(50, 300);
-            context.lineTo(Math.sin(Math.PI*p - Math.PI/2)*r + 50, Math.cos(Math.PI*p - Math.PI/2)*-r + 300)
-            context.closePath();
-            context.stroke();
-            
-            var m = this.pHelper(maxs);
-            
-            // Impossible grayed out area
-            context.fillStyle = 'rgba(0,0,0,0.4)';
-            this.fillArc(context, 50, 300, r, Math.PI, -1 * Math.PI * (1 - m), true);
-        }
+        return this.lastS;
     },
     
     // Helper function for calculating needle position
     // TODO: Possibly rewrite to account for proportial areas instead of statically sized areas
     pHelper: function (s) {
         // TODO: Add chaseDist back into this, otherwise calculation will be off by part of a meter
-        var dc = PNode.cameraZ + 6;
-        var tc = this.get('elapsedTime') + this.get('pTime');
+        var dc = PNode.cameraZ + 12;
+        var tc = this.elapsedTime + this.pCount * RC.penaltyTime;
         
-        var dr = Math.max(RC.finishLine - dc, 0);
-        var tr = dr / s;
-        var te = tr + tc;
+        var te = (Math.max(RC.finishLine - dc, 0) / s) + tc;
         
         var p;
+        p = 1 - (te - RC.times[0]) / (RC.times[4] - RC.times[0]);
+        p = Math.min(Math.max(p, 0), 1);
         
-        for(var i=1; i<5; i+=1) {
-        
-            if(te < RC.times[i] || i==4) {
-                p = 1 - (te - RC.times[i-1]) / (RC.times[i] - RC.times[i-1]);
-                p = Math.min(Math.max(p, 0), 1);
-                
-                return p / 4 + (1 - 0.25 * i);
-            }
-        }
+        return p;
     },
+    
+    // Helper function that gives area percentage for medal time ranges
+    proportions: function (i) {
+        return (RC.times[i] - RC.times[i - 1]) / (RC.times[4] - RC.times[0]);
+    }
 });
 
-Dashboard.SPEED_M_PS = 0;
-Dashboard.SPEED_KM_PH = 1;
-Dashboard.SPEED_MI_PH = 2;
+// Speed setting constants
+Dashboard.SPEED_M_PS = 0;       // Meters per second
+Dashboard.SPEED_KM_PH = 1;      // Kilometers per hour
+Dashboard.SPEED_MI_PH = 2;      // Miles per hour
 
-exports.Dashboard = Dashboard
+module.exports = Dashboard

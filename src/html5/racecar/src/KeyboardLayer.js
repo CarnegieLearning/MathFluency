@@ -18,48 +18,53 @@ Copyright 2011, Carnegie Learning
 var cocos = require('cocos2d');
     
 // Handles reading keyboard input, allows us to ignore "Key Repeat" settings as the key is either down, or up
-var KeyboardLayer = cocos.nodes.Layer.extend({
+function KeyboardLayer() {
+    // You must always call the super class version of init
+    KeyboardLayer.superclass.constructor.call(this);
+    
+    // Enables detecting keypresses
+    this.isKeyboardEnabled = true;
+    
+    // Build the array to hold keyboard state
+    this.keys = Array(256);
+    var i = 0;
+    while(i < 256) {
+        this.keys[i++] = 0;
+    }
+}
+
+KeyboardLayer.inherit(cocos.nodes.Layer, {
+    anyKey      : false,// true if any key has been pressed since the last time it was checked
     keys        : null, // Holds the array of key statuses
     bindings    : {},   // Holds the application specific bindings
-    init: function() {
-        // You must always call the super class version of init
-        KeyboardLayer.superclass.init.call(this);
-        
-        // Enables detecting keypresses
-        this.set('isKeyboardEnabled', true);
-        
-        // Build the array to hold keyboard state
-        var keys = new Array(256);
-        for(key in keys) {
-            key = 0;
-        }
-        
-        this.set('keys', keys);
-    },
-    
+
     // Sets key to true when pressed
     keyDown: function(evt) {
-        keys = this.get('keys');
-        keys[evt.keyCode] = KeyboardLayer.PRESS;
+        this.anyKey = true;
+        this.keys[evt.keyCode] = KeyboardLayer.PRESS;
     },
     
     // Sets key to false when no longer pressed
     keyUp: function(evt) {
-        keys = this.get('keys');
-        keys[evt.keyCode] = KeyboardLayer.UP;
+        this.keys[evt.keyCode] = KeyboardLayer.RELEASE;
     },
     
     // Check to see if a valid key is pressed
-    // Returns false is the key was invalid or not pressed
-    // Returns 1 if this is the first time we are detecting the press, 2 if we have detected this press previously
+    // Returns: false is the key was invalid or not pressed
+    //          0 if the key has not been pressed
+    //          1 if it was released since last checked
+    //          2 if this is the first time we are detecting the press
+    //          3 if we have detected this press previously
     checkKey: function(keyCode) {
-        keys = this.get('keys');
         if(keyCode > -1 && keyCode < 256) {
-            var ret = keys[keyCode];
+            var ret = this.keys[keyCode];
             
             // Lets us know if we have polled this key before and the user has not let it back up
             if(ret == KeyboardLayer.PRESS) {
-                keys[keyCode] = KeyboardLayer.HOLD;
+                this.keys[keyCode] = KeyboardLayer.HOLD;
+            }
+            else if(ret == KeyboardLayer.RELEASE) {
+                this.keys[keyCode] = KeyboardLayer.UP;
             }
             
             return ret;
@@ -68,34 +73,46 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
         return false;
     },
     
+    // As checkKey but does not update the state of the key
+    silentCheckKey: function(keyCode) {
+        if(keyCode > -1 && keyCode < 256) {
+            return this.keys[keyCode];
+        }
+        
+        return false;
+    },
+    
+    // Checks to see if any key has been pressed since it was last checked
+    checkAnyKey: function() {
+        if(this.anyKey) {
+            this.anyKey = false;
+            return true;
+        }
+        return false;
+    },
+    
     // Adds a key to a binding, or create the binding if none exists
     addToBinding: function(bind, to) {
-        var b = this.get('bindings');
-        
-        if(!bind in b) {
-            b[bind] = [to];
+        if(!bind in this.bindings) {
+            this.bindings[bind] = [to];
         }
         else {
-            b[bind].push(to);
+            this.bindings[bind].push(to);
         }
         
-        this.set('bindings', b);
         return true;
     },
     
     // Removes a key from a binding, returns false if bind or rm was not found
     removeFromBinding: function(bind, rm) {
-        var b = this.get('bindings');
-        
-        if(bind in b) {
+        if(bind in this.bindings) {
             var i=0
-            while(i<b[bind].length && b[bind][i] != rm) {
+            while(i<b[bind].length && this.bindings[bind][i] != rm) {
                 i+=1;
             }
             
-            if(i<b[bind].length && b[bind][i] == rm) {
-                b[bind].splice(i, 1);
-                this.set('bindings', b);
+            if(i<b[bind].length && this.bindings[bind][i] == rm) {
+                this.bindings[bind].splice(i, 1);
                 return true;
             }
         }
@@ -104,19 +121,14 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
     
     // Explicitly set a binding to a list of keys
     setBinding: function(bind, list) {
-        var b = this.get('bindings');
-        b[bind] = list;
-        this.set('bindings', b);
+        this.bindings[bind] = list;
         return true;
     },
     
     // Clears all keys from a binding, returns false in bind was not in bindings
     clearBinding: function(bind, to) {
-        var b = this.get('bindings');
-        
-        if(bind in b) {
-            delete b[bind];
-            this.set('bindings', b);
+        if(bind in this.bindings) {
+            delete this.bindings[bind];
             return true;
         }
         return false;
@@ -125,11 +137,10 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
     // Checks to see if any key in the binding is pressed and returns the highest state of any such button pressed
     checkBinding: function(bind) {
         var ret = KeyboardLayer.UP;
-        var b = this.get('bindings')
         
-        if(bind in b) {
-            for(var i = 0; i < b[bind].length; i += 1) {
-                var temp = this.checkKey(b[bind][i]);
+        if(bind in this.bindings) {
+            for(var i = 0; i < this.bindings[bind].length; i += 1) {
+                var temp = this.checkKey(this.bindings[bind][i]);
                 if(temp > ret) {
                     ret = temp;
                 }
@@ -137,12 +148,13 @@ var KeyboardLayer = cocos.nodes.Layer.extend({
             
             return ret;
         }
-    }
+    },
 });
 
 // Static constants
+KeyboardLayer.RELEASE   = 1;   // Key was released this frame
 KeyboardLayer.UP        = 0;    // Key is up and was not recently released
-KeyboardLayer.PRESS     = 1;    // Key has just been pressed (KeyDown)
-KeyboardLayer.HOLD      = 2;    // Key is down and not been released
+KeyboardLayer.PRESS     = 2;    // Key has just been pressed (KeyDown)
+KeyboardLayer.HOLD      = 3;    // Key is down and not been released
 
-exports.KeyboardLayer = KeyboardLayer
+module.exports = KeyboardLayer

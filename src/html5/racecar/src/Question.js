@@ -18,82 +18,92 @@ var cocos = require('cocos2d');
 var events = require('events');
 var geom = require('geometry');
 
-var LabelBG = require('LabelBG').LabelBG;
-var PNode = require('PerspectiveNode').PerspectiveNode;
+var Content = require('/Content');
+var PNode = require('/PerspectiveNode');
+var RC = require('/RaceControl');
 
 // Represents a single question to be answered by the player
-var Question = PNode.extend({
+function Question (node, z) {
+    var superOpts = {
+        xCoordinate : 0,
+        zCoordinate : z,
+        lockX       : true,
+        minScale    : 1,
+        maxScale    : 1
+    }
+    Question.superclass.constructor.call(this, superOpts);
+    
+    // Build delimiters for question
+	var that = this, i=0;
+    this.delimiters = [];
+	
+	//HACK: Remove 3 lane hardcoding
+	$(node).children('Content').each(function() {
+		that.buildDelim(this, z, i==0 ? 1 : -1);
+        that.delimiters[i].xCoordinate = RC.delimiterSpacing[3][i];
+		i += 1;
+	});
+    
+    //HACK: Remove 3 lane hardcoding
+    RC.curNumLanes = 3;
+
+    this.correctAnswer = parseInt($(node).children('ANSWER').attr('VALUE'));
+    
+    return this;
+}
+
+Question.inherit(PNode, {
     correctAnswer    : null,    // The correct response
     answer           : null,    // The answer provided by the player
     answeredCorrectly: null,    // Stores if question has been correctly/incorrectly (null=not answered)
-    coneL            : null,    // Holds the left delimiter
-    coneR            : null,    // Holds the left delimiter
+    delimiters       : null,    // Holds the delimiters
     timeElapsed      : 0.0,     // Real time elapsed since start of question (including delimeterStaticTime)
-    init: function(ans, d1, d2, z, o1, o2) {
-        var superOpts = {
-            xCoordinate : 0,
-            zCoordinate : z,
-            lockX       : true,
-            minScale    : 1,
-            maxScale    : 1
-        }
-        Question.superclass.init.call(this, superOpts);
+
+    buildDelim: function(node, z, flip) {
+        var sign = new cocos.nodes.Sprite({file: '/resources/roadSignA.png'});
+        sign.scaleX = 0.20 * flip;
+        sign.scaleY = 0.20;
         
-        // Initialize all variables
-        this.set('correctAnswer', ans);
+        var c = Content.buildFrom(node);
+        c.scaleX = 5 * flip;
+        c.scaleY = -5;
+        sign.addChild({child: c});
+        c.anchorPoint = new geom.Point(0.0, 0.0);       //HACK: (0, 0) works and (0.5, 0.5) does not work but should be correct
+        c.position = new geom.Point(180, -270);
+        c.bgShow = false;
         
-        d1.set('position', new geom.Point(d1.get('contentSize').width / 2, 0))
-        d2.set('position', new geom.Point(d2.get('contentSize').width / 2, 0))
+        var pSet = $(node).find('PerspectiveSettings');
         
-        //Use defaults if opts are null
-        o1 = o1 == null ? {} : o1;
-        o2 = o2 == null ? {} : o2;
-        
-        var v   = o1['visibility'] == null ? 5 : o1['visibility'];
-        var max = o1['maxScale']   == null ? 4 : o1['maxScale'];
-        var min = o1['minScale']   == null ? 1 : o1['minScale'];
-        
-        // Create and display the question content
+        // Create option settings
         var opts = {
             lockY       : true,
             silent      : true,
-            minScale    : min,
-            maxScale    : max,
-            alignH      : 1,
-            alignV      : 1,
-            visibility  : v,
-            xCoordinate : -1.5,
+            minScale    : pSet.attr('minScale')   == null ? 1.2 : pSet.attr('minScale'),
+            maxScale    : pSet.attr('maxScale')   == null ? 3.2 : pSet.attr('maxScale'),
+            alignH      : 0.87,
+            alignV      : 0,
+            visibility  : pSet.attr('visibility') == null ? 5.5 : pSet.attr('visibility'),
+            xCoordinate : 0,
             zCoordinate : z,
-            content     : d1
+            content     : sign
         }
         
-        var delim = PNode.create(opts);
+        // Create the first delimiter
+        var delim = new PNode(opts);
         delim.scheduleUpdate();
         this.addChild({child: delim});
-        this.set('coneL', delim);
-        
-        opts['xCoordinate'] = 1.5;
-        opts['alignH']      = 0;
-        opts['content']     = d2;
-        opts['visibility']  = o2['visibility'] == null ? 5 : o2['visibility'];
-        opts['maxScale']    = o2['maxScale']   == null ? 4 : o2['maxScale'];
-        opts['minScale']    = o2['minScale']   == null ? 1 : o2['minScale'];
-        
-        delim = PNode.create(opts);
-        delim.scheduleUpdate();
-        this.addChild({child: delim});
-        this.set('coneR', delim);
+        this.delimiters.push(delim);
     },
     
     // Called when the question is answered, sets and returns the result
     answerQuestion: function(ans) {
-        if(this.get('answeredCorrectly') == null) {
-            this.set('answer', ans);
-            if(this.get('correctAnswer') == ans) {
-                this.set('answeredCorrectly', true);
+        if(this.answeredCorrectly == null) {
+            this.answer = ans;
+            if(this.correctAnswer == ans) {
+                this.answeredCorrectly = true;
                 return true;
             }
-            this.set('answeredCorrectly', false);
+            this.answeredCorrectly = false;
             return false;
         }
         
@@ -104,26 +114,25 @@ var Question = PNode.extend({
     update: function(dt) {
         Question.superclass.update.call(this, dt);
         
-        if(this.get('added')) {
-            if(this.get('answeredCorrectly') == null) {
-                var te = this.get('timeElapsed') + dt;
-                this.set('timeElapsed', te);
+        if(this.added) {
+            if(this.answeredCorrectly == null) {
+                this.timeElapsed = this.timeElapsed + dt;
                 
                 // TODO: Get the chaseDist from the player, otherwise answers will be up to a meter late
-                if(PNode.cameraZ + 6 >= this.get('zCoordinate')) {
-                    events.trigger(this, "questionTimeExpired", this);
+                if(PNode.cameraZ + 13 >= this.zCoordinate) {
+                    events.trigger(this, 'questionTimeExpired', this);
                 }
             }
-            
-            // Pulls the delimiters more onto the lane lines as they progress down the screen
-            var shift = (this.get('position').y - PNode.horizonStart) / PNode.horizonHeight / 1.5;
-            
-            this.get('coneL').set('alignH', 1 - shift);
-            this.get('coneR').set('alignH', 0 + shift);
         }
+    },
+	
+	// Should prevent race condition of being removed before being answered
+	onExit: function () {
+		if(this.answeredCorrectly == null) {
+			events.trigger(this, 'questionTimeExpired', this);
+		}
+        Question.superclass.onExit.call(this);
     },
 });
 
-// TODO: Write static helper for building an options object to initialize a question
-
-exports.Question = Question
+module.exports = Question

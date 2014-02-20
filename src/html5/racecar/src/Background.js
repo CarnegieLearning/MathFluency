@@ -15,66 +15,65 @@ Copyright 2011, Carnegie Learning
 */
 
 var cocos = require('cocos2d');
+var geo = require('geometry');
 
-var PNode = require('PerspectiveNode').PerspectiveNode;
+var PNode = require('/PerspectiveNode');
+var RC = require('/RaceControl');
 
-var Background = cocos.nodes.Node.extend({
-    init: function(lanes) {
-        Background.superclass.init.call(this);
-    },
+function Background (lanes) {
+    Background.superclass.constructor.call(this);
     
-    draw: function(context) {
-        // Ground
-        context.fillStyle = "#44AA22";
-        context.beginPath();
-        context.moveTo(-10, PNode.horizonStart);
-        context.lineTo(-10, 610);
-        context.lineTo(810, 610);
-        context.lineTo(810, PNode.horizonStart);
-        context.closePath();
-        context.fill();
-        
-        // Sky
-        context.fillStyle = "#1122BB";
-        context.beginPath();
-        context.moveTo(-10,-10);
-        context.lineTo(-10, PNode.horizonStart);
-        context.lineTo(810, PNode.horizonStart);
-        context.lineTo(810,-10);
-        context.closePath();
-        context.fill();
-        
-        // Road
-        context.fillStyle = "#808080";
-        context.beginPath();
-        context.moveTo(385,                PNode.horizonStart);
-        context.lineTo(PNode.roadOffset,   610);
-        context.lineTo(PNode.roadWidthPix, 610);
-        context.lineTo(415,                PNode.horizonStart);
-        context.closePath();
-        context.fill();
-        
-        // Lanes
-        var x = 400 - PNode.roadWidthPix / 9 * 1.5;
-        context.fillStyle = "#FFFF00";
-        context.lineWidth = 4
-        context.beginPath();
-        context.moveTo(395,   PNode.horizonStart);
-        context.lineTo(x - 4, 610);
-        context.lineTo(x + 4, 610);
-        context.lineTo(395,   PNode.horizonStart);
-        context.fill();
-        context.closePath();
-        
-        x = 400 + PNode.roadWidthPix / 9 * 1.5;
-        context.beginPath();
-        context.moveTo(405,   PNode.horizonStart);
-        context.lineTo(x - 4, 610);
-        context.lineTo(x + 4, 610);
-        context.lineTo(405,   PNode.horizonStart);
-        context.fill();
-        context.closePath();
-    },
+    var dir = '/resources/Background/';
+    
+    // Sky background
+    this.sky = new cocos.nodes.Sprite({file: dir + 'sky.png'});
+    this.sky.anchorPoint = new geo.Point(0.5, 0);
+    this.sky.position = new geo.Point(450, 0);
+    this.addChild({child: this.sky});
+    
+    // City layer, will move up as race progresses, between sky and pavement
+    this.city = new cocos.nodes.Sprite({file: dir + 'city.png'});
+    this.city.anchorPoint = new geo.Point(0.5, 1);
+    this.city.position = new geo.Point(450, 460);
+    this.city.scaleX = 0.36;
+    this.city.scaleY = 0.52;
+    this.addChild({child: this.city});
+    
+    // Base pavement layer
+    this.pave = new cocos.nodes.Sprite({file: dir + 'pavement.png'});
+    this.pave.anchorPoint = new geo.Point(0.5, 0);
+    this.pave.position = new geo.Point(450, -41);
+    this.addChild({child: this.pave});
+    
+    // Street for cars
+    this.street = new cocos.nodes.Sprite({file: dir + 'street.png'});
+    this.street.anchorPoint = new geo.Point(0.5, 0);
+    this.street.position = new geo.Point(450, -25);
+    this.street.scaleX = 1.2;
+    this.addChild({child: this.street});
+    
+    // Lane Delimiters
+    //TODO: 2 (and 4?) lane version
+    this.lines = new cocos.nodes.Sprite({file: dir + 'dividingLines3.png'});
+    this.lines.anchorPoint = new geo.Point(0.5, 0);
+    this.lines.position = new geo.Point(450, 000);
+    this.lines.scaleX = 1.2;
+    this.addChild({child: this.lines});
+}
+
+Background.inherit(cocos.nodes.Node, {
+    sky     : null,     // Holds the sky background image
+    city    : null,     // Holds the city image
+    pave    : null,     // Holds the pavement image
+    street  : null,     // Holds the street image
+    lines   : null,     // Holds the lane delimiter image
+
+    // Raises sky and city as race progresses
+    progress: function(p) {
+        this.sky.position.y = 130 * p;
+        this.city.position.y = 460 + 130 * p;
+        this.city.scaleX = 0.36 + 0.16 * p;
+    }
 });
 
-exports.Background = Background
+module.exports = Background
