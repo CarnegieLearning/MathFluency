@@ -1,0 +1,116 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<SCRIPTING>
+    <RULE ruleID="loadDependencies">
+        <TRIGGERS>
+            <AutoTrigger/>
+        </TRIGGERS>
+        <ACTIONS>
+            <LoadImage resourceID="/resources/nlf/racenumberline01.png" source="images/nlf/racenumberline01.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline02.png" source="images/nlf/racenumberline02.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline03.png" source="images/nlf/racenumberline03.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline04.png" source="images/nlf/racenumberline04.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline05.png" source="images/nlf/racenumberline05.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline06.png" source="images/nlf/racenumberline06.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline07.png" source="images/nlf/racenumberline07.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline08.png" source="images/nlf/racenumberline08.png"/>
+            <LoadImage resourceID="/resources/nlf/racenumberline09.png" source="images/nlf/racenumberline09.png"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="feedback">
+        <TRIGGERS>
+            <Answer correctness="incorrect"/>
+        </TRIGGERS>
+        
+        <ACTIONS>
+            <SetVelocity velocity="0"/>
+            <LockVelocity/>
+            <StopTimer/>
+            <LockAbsoluteLane lane="1" direction="both"/>
+            
+            <Conditional>
+                <TRIGGERS>
+                    <Distance relPoint="question" offset="-10" ordinal="9"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <ShowImage resource="/resources/nlf/racenumberline09.png" contentID="nl" x="450" y="475"/>
+                </ACTIONS>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="8"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline08.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="7"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline07.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="6"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline06.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="5"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline05.png" contentID="nl" x="450" y="475"/>\
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="4"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline04.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="3"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline03.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="2"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline02.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <Distance relPoint="question" offset="-10" ordinal="1"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/nlf/racenumberline01.png" contentID="nl" x="450" y="475"/>
+                    </ACTIONS>
+                </ELSEIF>
+            </Conditional>
+            
+            <Delay duration="5"/>
+            <HideContent contentID="nl"/>
+            
+            <RevertVelocity/>
+            <UnlockVelocity/>
+            <StartTimer/>
+            <UnlockAbsoluteLane lane="1" direction="both"/>
+            
+            <ReactivateRule ruleID="feedback"/>
+        </ACTIONS>
+    </RULE>
+</SCRIPTING>
+</INPUT>

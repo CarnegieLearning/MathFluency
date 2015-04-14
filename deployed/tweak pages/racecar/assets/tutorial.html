@@ -1,0 +1,457 @@
+<!doctype html>
+<html>
+<head>
+<title>MFDC: Tutorial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script> 
+<script type="text/javascript">
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+</script>
+<style type="text/css">
+@font-face {
+    font-family: 'Ethnocentric Regular';
+    src: url('sound/ethnocentric rg.ttf');
+}
+.cocos2d-app {
+    font: Ethnocentric Regular;
+    width: 900px;
+    height: 600px;
+}
+p.bodytext {text-align:justify; font-family: "Century Gothic", "Verdana"; font-size:9pt;}
+
+.PhoneText {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:8pt;}
+
+.partnerlink {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:9pt;}
+
+.partnertext {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:8pt;}
+
+.titletext {text-align:left; font-family: "Century Gothic", "Verdana"; font-size:35pt;}
+
+.buttontext {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:14pt;}
+
+.mainbuttontext {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:10pt;}
+
+.SubButton {
+    background-color:transparent;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+    display:inline-block;
+    color:#000000;
+    font-family:"Century Gothic";"Verdana";
+    font-size:15px;
+    font-weight:normal;
+    padding:6px 15px;
+    text-decoration:none;
+}.SubButton:active {
+    position:relative;
+    top:1px;
+}
+
+.Title {
+    background-color:transparent;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+    display:inline-block;
+    color:#000000;
+    font-family:"Century Gothic";"Verdana";
+    font-size:18px;
+    font-weight:bold;
+    padding:6px 15px;
+    text-decoration:none;
+}.SubButton:active {
+    position:relative;
+    top:1px;
+}
+
+.AboutText {
+    background-color:transparent;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+    display:inline-block;
+    color:#000000;
+    width:400px;
+    text-align:justify;
+    font-family:"Century Gothic";"Verdana";
+    font-size:12px;
+    font-weight:normal;
+    padding:6px 15px;
+    text-decoration:none;
+}.SubButton:active {
+    position:relative;
+    top:1px;
+}
+
+
+#TutorialRollover a span {
+display: none;
+}
+#TutorialRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: 7px; width: 175px; height: 6px;
+}
+
+#CorrectIncorrectRollover a span {
+display: none;
+}
+#CorrectIncorrectRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: 7px; width: 175px; height: 6px;
+}
+
+#GlowingLanesRollover a span {
+display: none;
+}
+#GlowingLanesRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: 7px; width: 175px; height: 6px;
+}
+
+#NumberLineFeedbackRollover a span {
+display: none;
+}
+#NumberLineFeedbackRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: 7px; width: 175px; height: 6px;
+}
+
+
+a:link    {color: #777777; text-decoration:none;}
+a:visited {color: #999999; text-decoration:none;}
+a:hover   {color: #000000; text-decoration:none;}
+a:active  {color: #000000; text-decoration:none;}
+}
+</style>
+
+<script language="JavaScript" type="text/JavaScript">
+function toggle(a) {
+    $('.content:not(#' + a + ')').css('display', 'none')
+    $('#' + a).css('display', 'block')
+}
+</script>
+
+<script type="text/javascript">
+function callback() {
+    var script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = 'racecar/init.js';
+    
+    var div = document.getElementsByTagName('div')[0];
+    div.appendChild(script);
+    
+    var checkInit = function () {
+        if (typeof initializeApplication == 'function') {
+            setTimeout(initializeApplication, 1000);
+            $('#startButton').remove()
+        } else {
+            setTimeout(checkInit, 13)
+        }
+    }
+    checkInit();
+}
+</script>
+
+</head>
+
+<div style="position:absolute; left:0px; top:0px; width:1374px; height:1052px;">
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="MM_preloadImages('images/Tutorial/tutorial_over.png','imges/Tutorial/mfdc_logo_over.png','images/Tutorial/carnegielearning_over.png','images/Tutorial/email_over.png','images/Tutorial/carnegie_logo_over.png')">
+<div style="background-image:url(intro_page_3dButtons_11.png); position:absolute; left:0px; top:0px; width:58px; height:200px;" title=""><img src="images/Main Screen/main_screen_11.png" width="58" height="200">
+    </div>
+<div style="background-image: url(intro_page_3dButtons_01.png); position: absolute; left: 58px; top: 0px; width: 1199px; height: 190px;" title=""><br>&nbsp;</br><br>&nbsp;</br><p class="titletext">&nbsp;&nbsp;<b>Tutorial:&nbsp;</b><i>racecar</i></p>
+    </div>
+<div style="background-image: url(tutorial_12.png); position: absolute; left: 0px; top: 200px; width: 411px; height: 38px;" title=""><img src="images/Tutorial/tutorial_12.png" width="411" height="38">
+  </div>
+<div style="background-image: url(tutorial_12.png); position: absolute; left: 411px; top: 190px; width: 700px; height: 4px;" title=""><img src="images/Tutorial/tutorial_12.png" width="700" height="4">
+  </div>
+  
+  
+<!------These are the 4 line rollovers---------->
+
+    <div style="background-image: url(tutorial_12.png); position: absolute; left: 411px; top: 194px; width: 175px; height: 6px;" title="">
+  </div>
+<div style="display:block; position: absolute; left: 586px; top: 194px; width: 175px; height: 6px;" title="">
+  </div>
+  <div style="background-image: url(tutorial_12.png); position: absolute; left: 761px; top: 194px; width: 175px; height: 6px;" title="">
+  </div>
+<div style="background-image: url(tutorial_12.png); position: absolute; left: 936px; top: 194px; width: 175px; height: 6px;" title="">
+  </div>
+
+<!------These are the 4 main button rollovers---------->
+
+    <div style="background-image: url(tutorial_13.png); position: absolute; left: 411px; top: 200px; width: 175px; height: 27px;" title=""><p class="mainbuttontext">Tutorial</p>
+    </div>
+    
+<div id="CorrectIncorrectRollover" style="position: absolute; left: 586px; top: 200px; width: 175px; height: 27px;" title=""><a href="correct_incorrect.html"><p class="mainbuttontext">Correct/Incorrect<span><img src="images/Tutorial/tutorial_update1_08.png" width="175" height="6"></span></p></a>
+    </div>
+    
+<div id="GlowingLanesRollover" style="position: absolute; left: 761px; top: 200px; width: 175px; height: 27px;" title=""><a href="glowing_lanes.html"><p class="mainbuttontext">Glowing Lanes<span><img src="images/Tutorial/tutorial_update1_09.png" width="175" height="6"></span></p></a>
+</div>
+
+    <div id="NumberLineFeedbackRollover" style="position: absolute; left:936px; top:200px; width:175px; height:27px;" title=""><a href="numberline_feedback.html"><p class="mainbuttontext">Number Line Feedback<span><img src="images/Tutorial/tutorial_update1_10.png" width="175" height="6"></span></p></a>
+    </div>
+
+<!------These are the 4 triangles---------->
+
+<div style="background-image: url(tutorial_13.png); position: absolute; left: 411px; top: 227px; width: 175px; height: 9px;" title=""><img src="images/Tutorial/tutorial_update1_17.png" width="175" height="9">
+</div>
+
+    <div style="background-image:url(tutorial_14.png); position:absolute; left:586px; top:227px; width:175px; height:9px;" title="">
+</div>
+<div style="background-image: url(tutorial_15.png); position: absolute; left: 761px; top: 227px; width: 175px; height: 9px;" title="">
+</div>
+<div style="background-image:url(tutorial_16.png); position:absolute; left:936px; top:227px; width:175px; height:9px;" title="">
+</div>
+    
+    
+
+<div style="background-image: url(tutorial_17.png); position: absolute; left: 1111px; top: 200px; width: 146px; height: 36px;" title=""><img src="images/Tutorial/tutorial_17.png" width="146" height="36">
+</div>
+    <div style="background-image:url(tutorial_19.png); position:absolute; left:0px; top:236px; width:58px; height:616px;" title=""><img src="images/Tutorial/tutorial_19.png" width="58" height="616">
+    </div>
+    <div style="background-image:url(tutorial_20.png); position:absolute; left:58px; top:236px; width:121px; height:65px;" title=""><img src="images/Tutorial/tutorial_20.png" width="121" height="65">
+    </div>
+    <div style="background-image: url(tutorial_21.png); position: absolute; left: 191px; top: 236px; width: 26px; height: 616px;" title=""><img src="images/Tutorial/tutorial_21.png" width="26" height="616">
+    </div>
+  <div style="background-image:url(tutorial_22.png); position:absolute; left:217px; top:236px; width:918px; height:7px;" title=""><img src="images/Tutorial/tutorial_22.png" width="918" height="7">
+</div>
+<div style="background-image: url(tutorial_23.png); position: absolute; left: 1135px; top: 236px; width: 122px; height: 616px;" title=""><img src="images/Tutorial/tutorial_23.png" width="122" height="616">
+</div>
+    <div style="background-image:url(tutorial_24.png); position:absolute; left:217px; top:243px; width:9px; height:609px;" title=""><img src="images/Tutorial/tutorial_24.png" width="9" height="609">
+    </div>
+
+<!------This is the content window 900x600---------->
+
+<!------Script content starts here------------------>
+
+<div id="script" class="content"  style="display:none; position:absolute; left:241px; top:243px; width:900px; height:600px; " title="">
+<p class="Title">Script</p>
+<pre id="scriptta" style="position:absolute; width:900px; top:75px; height:525px; overflow:scroll"></pre>
+</div>
+
+<!------Level Data content starts here------------------>
+
+<div id="leveldata" class="content" style="display:none; position:absolute; left:241px; top:243px; width:900px; height:600px;" title="">
+<p class="Title">Level Data</p>
+<pre id="datata" style="position:absolute; width:900px; top:75px; height:525px; overflow:scroll"></pre>
+</div>
+
+<!------Source Code content starts here------------------>
+
+    <div id="sourcecode" class="content" style="display:none; position:absolute; left:241px; top:243px; width:900px; height:600px;" title=""><p class="Title">Source Code</p>
+</div>
+
+<!------Play Again content starts here------------------>
+
+<div id="gametab" class="content" style="position:absolute; left:226px; top:243px; width:900px; height:600px;" title="">
+  <div id="cocos_test_app" class="cocos2d-app" data="set002_scripting.xml" >
+  </div>
+  <br>&nbsp;</br>
+  <br>&nbsp;</br>
+  <button id="startButton" type="button" onClick="callback();">Run Level</button><br>
+  <textarea rows="15" cols="80" id="dynLoadField"></textarea>
+  <br>&nbsp;</br>
+  <textarea rows="15" cols="80" id="dynScriptField"></textarea>
+  <br>&nbsp;</br>
+  <textarea rows="5" cols="80" id="dynDispField"></textarea>
+</div>
+
+<!------About content starts here------------------>
+
+    <div id="about" class="content" style="display:none; position:absolute; left:241px; top:243px; width:900px; height:600px; overflow:scroll;" title="">
+
+<p class="Title">About</p>
+<br>
+<p class="AboutText">The Mathematics Fluency Data Collaborative is a collaborative project led by Carnegie Learning partnering with the Games for Learning Institute at New York University, Game2Learn at the University of North Carolina, Charlotte, the Pittsburgh Science of Learning Center at Carnegie Mellon University, Pellisippi State Community College and PlayPower. We have also partnered with the Washington State Board for Community and Technical Colleges and Boise State University as implementation partners.</p>
+<br>
+<p class="AboutText">Our goal is to dramatically improve performance in developmental mathematics courses by building games that help students develop the number sense required to succeed in mathematical problem solving. We are addressing the open core courseware challenge, but also address blended learning, learner analytics and student engagement.</p>
+<br>
+<p class="AboutText">MFDC will establish a community of practice that values iterative testing and refinement based on careful examination of student data. We will provide data to the Pittsburgh Science of Learning Center so that researchers can mine the data to better understand the parameters that lead to success. The game code will be released under an open source license, so that the games can serve as a model for additional development as well as a platform for researchers interested in developing and testing improvements to the games. Games produced under this effort will be included with Carnegie Learning&#39;s Cognitive Tutor software, which is currently used by over 500,000 students in school environments each year. The widespread distribution of high-quality, effective educational software will serve as a message to the market that educational games are both effective and accepted.</p>
+    </div>
+
+<!-------------------------------------------------->
+
+
+    <div style="background-image: url(tutorial_26.png); position: absolute; left: 1126px; top: 243px; width: 9px; height: 609px;" title=""><img src="images/Tutorial/tutorial_26.png" width="9" height="609">
+    </div>
+    <div style="background-image:url(tutorial_27.png); position:absolute; left:58px; top:301px; width:72px; height:25px;" title=""><img src="images/Tutorial/tutorial_27.png" width="72" height="25">
+    </div>
+
+<!-------------Sub Buttons Left Side---------------->
+
+    <div style="background-image:url(tutorial_28.png); position:absolute; left:130px; top:301px; width: 49px; height: 25px; font-size: 12pt;" title=""><a href="#" class="SubButton" onClick="return toggle('script')" value="Section 1">script</a>
+    </div>
+    <div style="background-image:url(tutorial_29.png); position:absolute; left:58px; top:326px; width:26px; height:25px;" title=""><img src="images/Tutorial/tutorial_29.png" width="26" height="25">
+    </div>
+    <div style="background-image:url(tutorial_30.png); position:absolute; left:84px; top:326px; width:95px; height:25px;" title=""><a href="#" class="SubButton" onClick="return toggle('leveldata')" value="Section 2">level&nbsp;data</a>
+    </div>
+    <div style="background-image:url(tutorial_31.png); position:absolute; left:58px; top:351px; width:121px; height:25px;" title=""><a href="#" class="SubButton" onClick="return toggle('sourcecode')" value="Section 3">source&nbsp;code</a>
+    </div>
+    <div style="background-image:url(tutorial_32.png); position:absolute; left:58px; top:376px; width:25px; height:25px;" title=""><img src="images/Tutorial/tutorial_32.png" width="25" height="25">
+    </div>
+    <div style="background-image: url(tutorial_33.png); position: absolute; left: 126px; top: 376px; width: 45px; height: 25px;" title=""><a href="#" class="SubButton" onClick="return toggle('gametab')" value="Section 4">play</a>
+    </div>
+    <div style="background-image:url(tutorial_34.png); position:absolute; left:58px; top:401px; width:66px; height:25px;" title=""><img src="images/Tutorial/tutorial_34.png" width="66" height="25">
+    </div>
+    <div style="background-image: url(tutorial_35.png); position: absolute; left: 124px; top: 402px; width: 55px; height: 25px;" title=""><a href="#" class="SubButton" onClick="return toggle('about')" value="Section 5">about</a>
+    </div>
+
+<!-------------------------------------------------->
+
+
+    <div style="background-image: url(tutorial_36.png); position: absolute; left: 58px; top: 427px; width: 121px; height: 426px;" title=""><img src="images/Tutorial/tutorial_36.png" width="121" height="426">
+    </div>
+<div style="background-image:url(tutorial_37.png); position:absolute; left:226px; top:843px; width:900px; height:9px;" title=""><img src="images/Tutorial/tutorial_37.png" width="900" height="9">
+</div>
+    <div style="background-image:url(tutorial_38.png); position:absolute; left:0px; top:852px; width:170px; height:36px;" title=""><img src="images/Tutorial/tutorial_38.png" width="170" height="36">
+    </div>
+    <div style="background-image:url(tutorial_39.png); position:absolute; left:170px; top:852px; width:1008px; height:36px;" title=""><img src="images/Tutorial/tutorial_39.png" width="1008" height="36">
+    </div>
+    <div style="background-image:url(tutorial_40.png); position:absolute; left:1178px; top:852px; width:79px; height:36px;" title=""><img src="images/Tutorial/tutorial_40.png" width="79" height="36">
+    </div>
+<div style="background-image:url(tutorial_38.png); position:absolute; left:0px; top:1499px; width:170px; height:36px;" title=""><img src="images/Tutorial/tutorial_38.png" width="170" height="36">
+    </div>
+<div style="background-image:url(tutorial_39.png); position:absolute; left:170px; top:1499px; width:1008px; height:36px;" title=""><img src="images/Tutorial/tutorial_39.png" width="1008" height="36">
+    </div>
+<div style="background-image:url(tutorial_40.png); position:absolute; left:1178px; top:1499px; width:79px; height:36px;" title=""><img src="images/Tutorial/tutorial_40.png" width="79" height="36">
+    </div>
+<div style="background-image:url(tutorial_42.png); position:absolute; left:0px; top:1535px; width:268px; height:76px;" title=""><img src="images/Tutorial/tutorial_42.png" width="268" height="76">
+    </div>
+
+
+<!----------------MFDC Logo-------------------------->
+    <div style="background-image:url(glowing_lanes_43.png); position:absolute; left:268px; top:1535px; width:207px; height:76px;" title=""><a href="mfdc.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('MFDC Rollover','','images/Glowing Lanes/mfdc_logo_over.png',1)"><img src="images/Glowing Lanes/mfdc_logo_up.png" alt="MFDC Logo" width="207" height="76" id="MFDC Rollover"></a>
+    </div>
+    
+<!-------------------------------------------------->
+
+    <div style="background-image:url(glowing_lanes_44.png); position:absolute; left:475px; top:1535px; width:16px; height:76px;" title=""><img src="images/Glowing Lanes/glowing_lanes_44.png" width="16" height="76">
+    </div>
+    <div style="background-image:url(glowing_lanes_45.png); position:absolute; left:491px; top:1535px; width:202px; height:28px;" title=""><img src="images/Glowing Lanes/glowing_lanes_45.png" width="202" height="28">
+    </div>
+    <div style="background-image:url(glowing_lanes_46.png); position:absolute; left:693px; top:1535px; width:193px; height:28px;" title=""><img src="images/Glowing Lanes/glowing_lanes_46.png" width="193" height="28">
+    </div>
+    <div style="background-image:url(glowing_lanes_47.png); position:absolute; left:886px; top:1535px; width:213px; height:28px;" title=""><img src="images/Glowing Lanes/glowing_lanes_47.png" width="213" height="28">
+    </div>
+    <div style="background-image:url(glowing_lanes_48.png); position:absolute; left:1099px; top:1535px; width:158px; height:76px;" title=""><img src="images/Glowing Lanes/glowing_lanes_48.png" width="158" height="76">
+    </div>
+
+    
+    
+<!-------------www.carnegielearning.com------------->
+  
+    <div style="background-image:url(glowing_lanes_50.png); position:absolute; left:491px; top:1563px; width:202px; height:21px;" title=""><a href="http://www.carnegielearning.com" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('carnegie website','','images/Glowing Lanes/carnegielearning_over.png',1)" target=_blank><img src="images/Glowing Lanes/carnegielearning_up.png" alt="www.carnegielearning.com" width="202" height="21" id="carnegie website"></a>
+    </div>
+    
+    
+<!-------------------Fax Number-------------------->
+
+    <div class="PhoneText" style="background-image: url(glowing_lanes_51.png); position: absolute; left: 692px; top: 1563px; width: 193px; height: 21px;" title=""><span class="PhoneText" style="color:#5191CD">(412) 690-2444</span>&nbsp;<span class="PhoneText" style="color:#F37021;">fax</span>
+    </div>
+    
+    
+<!--------------Carnegie Learning Logo-------------->
+
+    <div style="background-image:url(glowing_lanes_52.png); position:absolute; left:886px; top:1563px; width:213px; height:38px;" title=""><a href="http://www.carnegielearning.com" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Carnegie Learning Logo Rollover','','images/Glowing Lanes/carnegie_logo_over.png',1)" target=_blank><img src="images/Glowing Lanes/carnegie_logo_up.png" alt="Carnegie Learning Logo" width="213" height="38" id="Carnegie Learning Logo Rollover"></a>
+    </div>
+    
+    
+<!------------------Email Button-------------------->
+
+    <div style="background-image:url(glowing_lanes_53.png); position:absolute; left:491px; top:1584px; width:202px; height:27px;" title=""><a href="mailto:sberman@carnegielearning.com?&Subject=MFDC%20Website" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Email Rollover','','images/Glowing Lanes/email_over.png',1)"><img src="images/Glowing Lanes/email_up.png" alt="Email" width="202" height="27" id="Email Rollover"></a>
+    </div>
+    
+    
+<!-------------------Fax Number-------------------->
+
+    <div class="PhoneText" style="background-image:url(glowing_lanes_54.png); position:absolute; left:693px; top:1584px; width:193px; height:27px;" title=""><span class="PhoneText" style="color:#5191CD">(888) 851-7094</span>&nbsp;<span class="PhoneText" style="color:#F37021;">toll free</span>
+    </div>
+    
+  <div style="background-image:url(glowing_lanes_55.png); position:absolute; left:886px; top:1601px; width:213px; height:10px;" title="">
+</div>
+    <img src="images/Glowing Lanes/glowing_lanes_55.png" width="213" height="10">
+<div style="background-image: url(main_design2_45.png); position: absolute; left: 0px; top: 1611px; width: 268px; height: 80px;" title=""><img src="images/Main Screen/main_screen_45.png" width="268" height="80">
+</div>
+<div style="background-image: url(main_design2_update1_92.png); position: absolute; left: 268px; top: 1610px; width: 831px; height: 28px;" title=""><p class="partnertext">To learn more about the educational interests and research efforts of our fellow partners, please follow the links below:</p>
+</div>
+<div style="background-image:url(main_design2_update1_92.png); position:absolute; left:268px; top:1638px; width:831px; height:8px;" title=""><img src="images/Main Screen/main_screen_92.png" width="831" height="8">
+</div>
+<div style="background-image: url(main_design2_update1_93.png); position: absolute; left: 1100px; top: 1611px; width: 157px; height: 80px;" title="">
+</div>
+<div style="background-image:url(main_design2_update1_95.png); position:absolute; left:268px; top:1646px; width:73px; height:23px;" title=""><img src="images/Main Screen/main_screen_95.png" width="73" height="23">
+</div>
+<div style="background-image:url(main_design2_update1_96.png); position:absolute; left:341px; top:1638px; width:85px; height:17px;" title=""><a href="http://playground.uncc.edu/Game2Learn/" target=_blank><p class="partnerlink">Game2Learn</p></a>
+</div>
+<div style="background-image:url(main_design2_update1_97.png); position:absolute; left:426px; top:1638px; width:61px; height:17px;" title="">
+</div>
+<div style="background-image:url(main_design2_update1_98.png); position:absolute; left:487px; top:1638px; width:62px; height:17px;" title=""><a href="http://www.learnlab.org/" target=_blank><p class="partnerlink">LearnLab</p></a>
+</div>
+<div style="background-image:url(main_design2_update1_99.png); position:absolute; left:549px; top:1638px; width:48px; height:17px;" title="">
+</div>
+<div style="background-image: url(main_design2_update1_100.png); position: absolute; left: 597px; top: 1638px; width: 188px; height: 17px;" title=""><a href="http://g4li.nyu.edu/about.html" target=_blank><p class="partnerlink">Games for Learning Institute</p></a>
+</div>
+<div style="background-image:url(main_design2_update1_101.png); position:absolute; left:785px; top:1638px; width:31px; height:17px;" title="">
+</div>
+<div style="background-image: url(main_design2_update1_102.png); position: absolute; left: 816px; top: 1638px; width: 101px; height: 17px;" title=""><a href="http://www.pstcc.edu/" target=_blank><p class="partnerlink">Pellissippi State</p></a>
+</div>
+<div style="background-image:url(main_design2_update1_103.png); position:absolute; left:917px; top:1638px; width:48px; height:17px;" title="">
+</div>
+<div style="background-image:url(main_design2_update1_104.png); position:absolute; left:965px; top:1638px; width:68px; height:17px;" title=""><a href="http://playpower.org/" target=_blank><p class="partnerlink">PlayPower</p></a>
+</div>
+<div style="background-image:url(main_design2_update1_105.png); position:absolute; left:1033px; top:1646px; width:66px; height:23px;" title=""><img src="images/Main Screen/main_screen_105.png" width="66" height="23">
+</div>
+  <div style="background-image: url(main_design2_update1_106.png); position: absolute; left: 268px; top: 1669px; width: 831px; height: 21px;" title=""><img src="images/Main Screen/main_screen_106.png" width="831" height="21">
+  </div>  
+    
+</div>
+
+<script language="JavaScript" type="text/JavaScript">
+<!---------------Load Script Data------------------->
+$.ajax({
+    type: "GET",
+    url: "script/tutorialscript.xml",
+    dataType: "text",
+    success: function(xml) {
+        var node = document.createTextNode(xml);
+        $('#scriptta').append(node);
+        $('#dynScriptField').append(node);
+    }
+});
+<!----------------Load Level Data------------------->
+$.ajax({
+    type: "GET",
+    url: "data/tutoriallevel.xml",
+    dataType: "text",
+    success: function(xml) {
+        var node = document.createTextNode(xml);
+        $('#datata').append(node);
+        $('#dynLoadField').append(node);
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<SCRIPTING>
+    <EVENT eventID="loadDependencies">
+        <TRIGGER type="AutoTrigger"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/correct-center.png" source="images/tpbp/correct-center.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/correct-left.png" source="images/tpbp/correct-left.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/correct-right.png" source="images/tpbp/correct-right.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/incorrect-center.png" source="images/tpbp/incorrect-center.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/incorrect-left.png" source="images/tpbp/incorrect-left.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/incorrect-right.png" source="images/tpbp/incorrect-right.png"/>
+    </EVENT>
+    <EVENT eventID="correctGlow0">
+        <TRIGGER type="Answer" correctness="correct"/>
+        <TRIGGER type="AbsoluteLane" lane="0"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/correct-left.png" contentID="corGlow0" x="304" y="250"/>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="HideContent" contentID="corGlow0"/>
+        <ACTION type="ReactivateEvent" eventID="correctGlow0"/>
+    </EVENT>
+    <EVENT eventID="correctGlow1">
+        <TRIGGER type="Answer" correctness="correct"/>
+        <TRIGGER type="AbsoluteLane" lane="1"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/correct-center.png" contentID="corGlow1" x="447" y="207"/>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="HideContent" contentID="corGlow1"/>
+        <ACTION type="ReactivateEvent" eventID="correctGlow1"/>
+    </EVENT>
+    <EVENT eventID="correctGlow2">
+        <TRIGGER type="Answer" correctness="correct"/>
+        <TRIGGER type="AbsoluteLane" lane="2"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/correct-right.png" contentID="corGlow2" x="651" y="204"/>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="HideContent" contentID="corGlow2"/>
+        <ACTION type="ReactivateEvent" eventID="correctGlow2"/>
+    </EVENT>
+    
+    <EVENT eventID="incorrectGlow0">
+        <TRIGGER type="Answer" correctness="incorrect"/>
+        <TRIGGER type="AbsoluteLane" lane="0"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-left.png" contentID="incGlow0" x="304" y="250"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CorrectLane" lane="1"/>
+            <ACTION type="ShowImage" resource="/resources/tpbp/correct-center.png" contentID="corGlow1" x="447" y="207"/>
+            <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-right.png" contentID="incGlow2" x="651" y="204"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-center.png" contentID="incGlow1" x="447" y="207"/>
+                <ACTION type="ShowImage" resource="/resources/tpbp/correct-right.png" contentID="corGlow2" x="651" y="204"/>
+            </ELSE>
+        </ACTION>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="ManualTrigger" triggerID="hideAllGlowTrig"/>
+        <ACTION type="ReactivateEvent" eventID="incorrectGlow0"/>
+    </EVENT>
+    <EVENT eventID="incorrectGlow1">
+        <TRIGGER type="Answer" correctness="incorrect"/>
+        <TRIGGER type="AbsoluteLane" lane="1"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-center.png" contentID="incGlow1" x="447" y="207"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CorrectLane" lane="0"/>
+            <ACTION type="ShowImage" resource="/resources/tpbp/correct-left.png" contentID="corGlow0" x="304" y="250"/>
+            <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-right.png" contentID="incGlow2" x="651" y="204"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-left.png" contentID="incGlow0" x="304" y="250"/>
+                <ACTION type="ShowImage" resource="/resources/tpbp/correct-right.png" contentID="corGlow2" x="651" y="204"/>
+            </ELSE>
+        </ACTION>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="ManualTrigger" triggerID="hideAllGlowTrig"/>
+        <ACTION type="ReactivateEvent" eventID="incorrectGlow1"/>
+    </EVENT>
+    <EVENT eventID="incorrectGlow2">
+        <TRIGGER type="Answer" correctness="incorrect"/>
+        <TRIGGER type="AbsoluteLane" lane="2"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-right.png" contentID="incGlow2" x="651" y="204"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CorrectLane" lane="0"/>
+            <ACTION type="ShowImage" resource="/resources/tpbp/correct-left.png" contentID="corGlow0" x="304" y="250"/>
+            <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-center.png" contentID="incGlow1" x="447" y="207"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-left.png" contentID="incGlow0" x="304" y="250"/>
+                <ACTION type="ShowImage" resource="/resources/tpbp/correct-center.png" contentID="corGlow1" x="447" y="207"/>
+            </ELSE>
+        </ACTION>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="ManualTrigger" triggerID="hideAllGlowTrig"/>
+        <ACTION type="ReactivateEvent" eventID="incorrectGlow2"/>
+    </EVENT>
+    
+    <EVENT eventID="HideAllGlow" errorLevel="ignore">
+        <TRIGGER type="ManualTrigger" triggerID="hideAllGlowTrig"/>
+        <ACTION type="HideContent" contentID="corGlow0"/>
+        <ACTION type="HideContent" contentID="corGlow1"/>
+        <ACTION type="HideContent" contentID="corGlow2"/>
+        <ACTION type="HideContent" contentID="incGlow0"/>
+        <ACTION type="HideContent" contentID="incGlow1"/>
+        <ACTION type="HideContent" contentID="incGlow2"/>
+        <ACTION type="ReactivateEvent" eventID="HideAllGlow"/>
+    </EVENT>
+</SCRIPTING>
+</INPUT>

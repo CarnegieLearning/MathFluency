@@ -1,0 +1,72 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<SCRIPTING>
+    <EVENT eventID="loadDependencies">
+        <TRIGGER type="AutoTrigger"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline01.png" source="images/nlf/racenumberline01.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline02.png" source="images/nlf/racenumberline02.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline03.png" source="images/nlf/racenumberline03.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline04.png" source="images/nlf/racenumberline04.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline05.png" source="images/nlf/racenumberline05.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline06.png" source="images/nlf/racenumberline06.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline07.png" source="images/nlf/racenumberline07.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline08.png" source="images/nlf/racenumberline08.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/nlf/racenumberline09.png" source="images/nlf/racenumberline09.png"/>
+    </EVENT>
+    <EVENT eventID="feedback">
+        <TRIGGER type="Answer" correctness="incorrect"/>
+        
+        <ACTION type="SetVelocity" velocity="0"/>
+        <ACTION type="LockVelocity"/>
+        <ACTION type="StopTimer"/>
+        <ACTION type="LockAbsoluteLane" lane="1" direction="both"/>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="9"/>
+            <ACTION type="ShowImage" resource="/resources/nlf/racenumberline09.png" contentID="nl" x="450" y="475"/>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="8"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline08.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="7"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline07.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="6"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline06.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="5"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline05.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="4"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline04.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="3"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline03.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="2"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline02.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="Distance" relPoint="question" offset="-10" ordinal="1"/>
+                <ACTION type="ShowImage" resource="/resources/nlf/racenumberline01.png" contentID="nl" x="450" y="475"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="Delay" duration="5"/>
+        <ACTION type="HideContent" contentID="nl"/>
+        
+        <ACTION type="RevertVelocity"/>
+        <ACTION type="UnlockVelocity"/>
+        <ACTION type="StartTimer"/>
+        <ACTION type="UnlockAbsoluteLane" lane="1" direction="both"/>
+        
+        <ACTION type="ReactivateEvent" eventID="feedback"/>
+    </EVENT>
+</SCRIPTING>
+</INPUT>

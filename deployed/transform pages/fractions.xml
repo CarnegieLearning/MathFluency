@@ -1,0 +1,108 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="45000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="70000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="95000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+            <ContentSettings denominator="2" numerator="1"/>
+        </TARGET>
+        <QUESTION INDEX="1">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="7"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="11"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+        <QUESTION INDEX="2">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="5"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="7"/>
+            </Content>
+            <Answer VALUE="1"/>
+        </QUESTION>
+        <QUESTION INDEX="3">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="2"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="5"/>
+            </Content>
+            <Answer VALUE="2"/>
+        </QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+            <ContentSettings denominator="3" numerator="2"/>
+        </TARGET>
+        <QUESTION INDEX="4">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="6"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="9"/>
+            </Content>
+            <Answer VALUE="1"/>
+        </QUESTION>
+        <QUESTION INDEX="5">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="9"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="11"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+        <QUESTION INDEX="6">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="2"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="7"/>
+            </Content>
+            <Answer VALUE="2"/>
+        </QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="Fraction">
+            <ContentSettings denominator="4" numerator="1"/>
+        </TARGET>
+        <QUESTION INDEX="7">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="6"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="8"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+        <QUESTION INDEX="8">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="1"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="2"/>
+            </Content>
+            <Answer VALUE="2"/>
+        </QUESTION>
+        <QUESTION INDEX="9">
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="9"/>
+            </Content>
+            <Content TYPE="Fraction">
+                <ContentSettings denominator="12" numerator="11"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>

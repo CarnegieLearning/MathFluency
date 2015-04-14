@@ -1,0 +1,666 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="52000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="78000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="105000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<GlobalSpacing IntermissionSpacing="150" QuestionSpacing="200" InitialSpacing="100" FinishSpacing="150"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.64"/>
+		<QUESTION INDEX="1">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1.0"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="String" string="0.5"/>
+			<Content TYPE="String" string="0.75"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="3">
+			<Content TYPE="String" string="0.1"/>
+			<Content TYPE="String" string="0.9"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="4">
+			<Content TYPE="String" string="0.1"/>
+			<Content TYPE="String" string="0.5"/>
+			<Answer VALUE="2"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.43"/>
+		<QUESTION INDEX="5">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="0.7"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="String" string="0.5"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="7">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="0.5"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="8">
+			<Content TYPE="String" string="0.6"/>
+			<Content TYPE="String" string="0.8"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.66"/>
+		<QUESTION INDEX="9">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="10">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="11">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="0.7"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="String" string="0.25"/>
+			<Content TYPE="String" string="0.75"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.41"/>
+		<QUESTION INDEX="13">
+			<Content TYPE="String" string="0"/>
+			<Content TYPE="String" string="0.75"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="14">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="15">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="16">
+			<Content TYPE="String" string="0.5"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+<SCRIPTING>
+    <EVENT eventID="hijackStart">
+        <TRIGGER type="AutoTrigger"/>
+        <ACTION type="CallFunction" func="removeStartButton"/>
+        <ACTION type="Include" preload="false" path="glowlane.xml"/>
+        <ACTION type="LoadAnimation" resourceID="animation" source="images/fishTailSheet.png" frames="16" frameHeight="115" frameWidth="200" frameDelay="0.05"/>
+        <ACTION type="Delay" duration="0.01"/>
+        <ACTION type="ReactivateEvent" eventID="flickerReduce"/>
+    </EVENT>
+    <EVENT eventID="flickerReduce" state="inactive">
+        <TRIGGER type="AutoTrigger"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/correct-center.png" source="images/tpbp/correct-center.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/correct-left.png" source="images/tpbp/correct-left.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/correct-right.png" source="images/tpbp/correct-right.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/incorrect-center.png" source="images/tpbp/incorrect-center.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/incorrect-left.png" source="images/tpbp/incorrect-left.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/incorrect-right.png" source="images/tpbp/incorrect-right.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/NEXT.png" source="images/tpbp/NEXT.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP2.png" source="images/tpbp/PP2.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP5.png" source="images/tpbp/PP5.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP6.png" source="images/tpbp/PP6.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP9.png" source="images/tpbp/PP9.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP10.png" source="images/tpbp/PP10.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP10a.png" source="images/tpbp/PP10a.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP10d.png" source="images/tpbp/PP10d.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP10s.png" source="images/tpbp/PP10s.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP10w.png" source="images/tpbp/PP10w.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP15.png" source="images/tpbp/PP15.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP21.png" source="images/tpbp/PP21.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP22a.png" source="images/tpbp/PP22a.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP22b.png" source="images/tpbp/PP22b.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP22c.png" source="images/tpbp/PP22c.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP29.png" source="images/tpbp/PP29.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP35.png" source="images/tpbp/PP35.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP40.png" source="images/tpbp/PP40.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP44.png" source="images/tpbp/PP44.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP48.png" source="images/tpbp/PP48.png"/>
+        <ACTION type="LoadImage" resourceID="/resources/tpbp/PP49.png" source="images/tpbp/PP49.png"/>
+    </EVENT>
+    <EVENT eventID="readyForStart">
+        <TRIGGER type="And">
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/correct-center.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/correct-left.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/correct-right.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/incorrect-center.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/incorrect-left.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/incorrect-right.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/NEXT.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP2.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP5.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP6.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP9.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP10.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP10a.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP10d.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP10s.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP10w.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP15.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP21.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP22a.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP22b.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP22c.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP29.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP35.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP40.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP44.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP48.png"/>
+            <TRIGGER type="RemoteLoadTrigger" resourceID="/resources/tpbp/PP49.png"/>
+        </TRIGGER>
+        <ACTION type="ShowButton" resourceUp="/resources/Buttons/buttonStartNormal.png" resourceDown="/resources/Buttons/buttonStartClick.png" contentID="tutorialStart" x="450" y="300" scaleX="0.5" scaleY="0.5"/>
+    </EVENT>
+    <EVENT eventID="startTutorial">
+        <TRIGGER type="ButtonInput" buttonID="tutorialStart"/>
+        <ACTION type="SetVar" name="questionList[0].delimiters[1].children[0].children[0].label.string" val="2" internal="true"/>
+        <ACTION type="HideContent" contentID="tutorialStart"/>
+        <ACTION type="PlayAnimation" resource="animation" contentID="animContent" x="100" y="100" loop="true"/>
+        
+        <ACTION type="AudioVolume" contentID="bg_slow" volume="1"/>
+        <ACTION type="LoopAudio" contentID="bg_slow"/>
+        
+        <ACTION type="SetVar" name="buttonHide" val="0"/>
+        <ACTION type="HideMedalCar" car="gold"/>
+        <ACTION type="HideMedalCar" car="silver"/>
+        <ACTION type="HideMedalCar" car="bronze"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP2.png" contentID="pp2" x="450" y="450"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep1"/>
+        <ACTION type="Delay" duration="4.0"/>
+        <ACTION type="SetVar" name="buttonHide" val="1"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp2n" x="825" y="75"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep1" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="pp2n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="StopAnimation" contentID="animContent"/>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="1"/>
+            <ACTION type="HideContent" contentID="pp2n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="startTutorial"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp2"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP5.png" contentID="pp5" x="450" y="450"/>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP6.png" contentID="pp6" x="300" y="150"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep2"/>
+        <ACTION type="Delay" duration="3"/>
+        <ACTION type="SetVar" name="buttonHide" val="2"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp6n" x="825" y="75"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep2" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="pp6n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="HideContent" contentID="animContent"/>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="2"/>
+            <ACTION type="HideContent" contentID="pp6n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="tutorialStep1"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp5"/>
+        <ACTION type="HideContent" contentID="pp6"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP9.png" contentID="pp9" x="200" y="435"/>
+        <ACTION type="Delay" duration="2"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10.png" contentID="pp10" x="700" y="435"/>
+        
+        <ACTION type="ReactivateEvent" eventID="sPress"/>
+        <ACTION type="ReactivateEvent" eventID="dPress"/>
+        <ACTION type="ReactivateEvent" eventID="wPress"/>
+        <ACTION type="ReactivateEvent" eventID="aPress"/>
+        
+        <ACTION type="ReactivateEvent" eventID="downArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="rightArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="upArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="leftArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep3"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="3"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp10n" x="825" y="75"/>
+    </EVENT>
+    
+    <EVENT eventID="sPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="s" state="down"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10s.png" contentID="sPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="sRelease"/>
+    </EVENT>
+    <EVENT eventID="sRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="s" state="up"/>
+        <ACTION type="HideContent" contentID="sPress"/>
+        <ACTION type="ReactivateEvent" eventID="sPress"/>
+    </EVENT>
+    <EVENT eventID="dPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="d" state="down"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10d.png" contentID="dPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="dRelease"/>
+    </EVENT>
+    <EVENT eventID="dRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="d" state="up"/>
+        <ACTION type="HideContent" contentID="dPress"/>
+        <ACTION type="ReactivateEvent" eventID="dPress"/>
+    </EVENT>
+    <EVENT eventID="wPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="w" state="down"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10w.png" contentID="wPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="wRelease"/>
+    </EVENT>
+    <EVENT eventID="wRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="w" state="up"/>
+        <ACTION type="HideContent" contentID="wPress"/>
+        <ACTION type="ReactivateEvent" eventID="wPress"/>
+    </EVENT>
+    <EVENT eventID="aPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="a" state="down"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10a.png" contentID="aPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="aRelease"/>
+    </EVENT>
+    <EVENT eventID="aRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="a" state="up"/>
+        <ACTION type="HideContent" contentID="aPress"/>
+        <ACTION type="ReactivateEvent" eventID="aPress"/>
+    </EVENT>
+    
+    <EVENT eventID="downArrowPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="40" state="down" keyVal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10s.png" contentID="downArrowPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="downArrowRelease"/>
+    </EVENT>
+    <EVENT eventID="downArrowRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="40" state="up" keyVal="true"/>
+        <ACTION type="HideContent" contentID="downArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="downArrowPress"/>
+    </EVENT>
+    <EVENT eventID="rightArrowPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="39" state="down" keyVal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10d.png" contentID="rightArrowPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="rightArrowRelease"/>
+    </EVENT>
+    <EVENT eventID="rightArrowRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="39" state="up" keyVal="true"/>
+        <ACTION type="HideContent" contentID="rightArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="rightArrowPress"/>
+    </EVENT>
+    <EVENT eventID="upArrowPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="38" state="down" keyVal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10w.png" contentID="upArrowPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="upArrowRelease"/>
+    </EVENT>
+    <EVENT eventID="upArrowRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="38" state="up" keyVal="true"/>
+        <ACTION type="HideContent" contentID="upArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="upArrowPress"/>
+    </EVENT>
+    <EVENT eventID="leftArrowPress" state="inactive">
+        <TRIGGER type="KeyTrigger" key="37" state="down" keyVal="true"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP10a.png" contentID="leftArrowPress" x="700" y="435"/>
+        <ACTION type="ReactivateEvent" eventID="leftArrowRelease"/>
+    </EVENT>
+    <EVENT eventID="leftArrowRelease" state="inactive">
+        <TRIGGER type="KeyTrigger" key="37" state="up" keyVal="true"/>
+        <ACTION type="HideContent" contentID="leftArrowPress"/>
+        <ACTION type="ReactivateEvent" eventID="leftArrowPress"/>
+    </EVENT>
+    
+    <EVENT eventID="tutorialStep3" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="pp10n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="3"/>
+            <ACTION type="HideContent" contentID="pp10n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="tutorialStep2"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp9"/>
+        <ACTION type="HideContent" contentID="pp10"/>
+        
+        <ACTION type="TriggerEvent" eventID="sRelease" errorLevel="warn"/>
+        <ACTION type="TriggerEvent" eventID="dRelease" errorLevel="warn"/>
+        <ACTION type="TriggerEvent" eventID="wRelease" errorLevel="warn"/>
+        <ACTION type="TriggerEvent" eventID="aRelease" errorLevel="warn"/>
+        
+        <ACTION type="TriggerEvent" eventID="downArrowRelease" errorLevel="warn"/>
+        <ACTION type="TriggerEvent" eventID="rightArrowRelease" errorLevel="warn"/>
+        <ACTION type="TriggerEvent" eventID="upArrowRelease" errorLevel="warn"/>
+        <ACTION type="TriggerEvent" eventID="leftArrowRelease" errorLevel="warn"/>
+        
+        <ACTION type="DeactivateEvent" eventID="sPress" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="dPress" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="wPress" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="aPress" errorLevel="warn"/>
+        
+        <ACTION type="DeactivateEvent" eventID="downArrowPress" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="rightArrowPress" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="upArrowPress" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="leftArrowPress" errorLevel="warn"/>
+        
+        <ACTION type="StopAudio" contentID="bg_slow"/>
+        <ACTION type="CallFunction" func="countdown"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep4">
+        <TRIGGER type="Distance" relPoint="start" offset="25"/>
+        <ACTION type="ManualTrigger" triggerID="pauseTrigger"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP15.png" contentID="pp15" x="275" y="300"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4a"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4b"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4c"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep5"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="5"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp15n" x="825" y="75"/>
+    </EVENT>
+    
+    <EVENT eventID="tutorialStep4a" state="inactive" errorLevel="warn">
+        <TRIGGER type="AbsoluteLane" lane="0"/>
+        <ACTION type="MoveContent" contentID="pp15" x="150" y="300"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4b"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4c"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep4b" state="inactive" errorLevel="warn">
+        <TRIGGER type="AbsoluteLane" lane="1"/>
+        <ACTION type="MoveContent" contentID="pp15" x="275" y="300"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4a"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4c"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep4c" state="inactive" errorLevel="warn">
+        <TRIGGER type="AbsoluteLane" lane="2"/>
+        <ACTION type="MoveContent" contentID="pp15" x="425" y="300"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4a"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep4b"/>
+    </EVENT>
+    
+    <EVENT eventID="tutorialStep5" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="pp15n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="DeactivateEvent" eventID="tutorialStep4a" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="tutorialStep4b" errorLevel="warn"/>
+        <ACTION type="DeactivateEvent" eventID="tutorialStep4c" errorLevel="warn"/>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="5"/>
+            <ACTION type="HideContent" contentID="pp15n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="tutorialStep4"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp15"/>
+        <ACTION type="ManualTrigger" triggerID="resumeTrigger"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep6">
+        <TRIGGER type="Distance" relPoint="question" ordinal="1" offset="-75"/>
+        <ACTION type="ManualTrigger" triggerID="pauseTrigger"/>
+        <ACTION type="SetVar" name="laneHide" val="-1"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP21.png" contentID="pp21" x="450" y="550"/>
+        <ACTION type="Delay" duration="2"/>
+        <ACTION type="SetRelVar" name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep6a"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep6b"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep6c"/>
+        <ACTION type="ReactivateEvent" eventID="tutorialStep7"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="7"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp22n" x="825" y="75"/>
+    </EVENT>
+    
+    <EVENT eventID="tutorialStep6a" state="inactive">
+        <TRIGGER type="AbsoluteLane" lane="0"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="laneHide" op="==" val="1"/>
+            <ACTION type="HideContent" contentID="pp22b"/>
+            <ACTION type="HideContent" contentID="pp22bl"/>
+            <ACTION type="ReactivateEvent" eventID="tutorialStep6b"/>
+        </ACTION>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP22a.png" contentID="pp22a" x="145" y="255"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/correct-left.png" contentID="pp22al" x="304" y="250"/>
+        <ACTION type="SetVar" name="laneHide" val="0"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep6b" state="inactive">
+        <TRIGGER type="AbsoluteLane" lane="1"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="laneHide" op="==" val="0"/>
+            <ACTION type="HideContent" contentID="pp22a"/>
+            <ACTION type="HideContent" contentID="pp22al"/>
+            <ACTION type="ReactivateEvent" eventID="tutorialStep6a"/>
+            <ELSE>
+                <TRIGGER type="CheckVar" name="laneHide" op="==" val="2"/>
+                <ACTION type="HideContent" contentID="pp22c"/>
+                <ACTION type="HideContent" contentID="pp22cl"/>
+                <ACTION type="ReactivateEvent" eventID="tutorialStep6c"/>
+            </ELSE>
+        </ACTION>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP22b.png" contentID="pp22b" x="676" y="251"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-center.png" contentID="pp22bl" x="448" y="207"/>
+        <ACTION type="SetVar" name="laneHide" val="1"/>
+    </EVENT>
+    <EVENT eventID="tutorialStep6c" state="inactive">
+        <TRIGGER type="AbsoluteLane" lane="2"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="laneHide" op="==" val="1"/>
+            <ACTION type="HideContent" contentID="pp22b"/>
+            <ACTION type="HideContent" contentID="pp22bl"/>
+            <ACTION type="ReactivateEvent" eventID="tutorialStep6b"/>
+        </ACTION>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP22c.png" contentID="pp22c" x="757" y="225"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/incorrect-right.png" contentID="pp22cl" x="650" y="204"/>
+        <ACTION type="SetVar" name="laneHide" val="2"/>
+    </EVENT>
+    
+    <EVENT eventID="tutorialStep7" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="pp22n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="7"/>
+            <ACTION type="HideContent" contentID="pp22n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="tutorialStep6"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="SetVar" name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+        <ACTION type="HideContent" contentID="pp21"/>
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="laneHide" op="==" val="0"/>
+            <ACTION type="HideContent" contentID="pp22a"/>
+            <ACTION type="HideContent" contentID="pp22al"/>
+            <ACTION type="DeactivateEvent" eventID="tutorialStep6b"/>
+            <ACTION type="DeactivateEvent" eventID="tutorialStep6c"/>
+            <ELSE>
+                <TRIGGER type="CheckVar" name="laneHide" op="==" val="1"/>
+                <ACTION type="HideContent" contentID="pp22b"/>
+                <ACTION type="HideContent" contentID="pp22bl"/>
+                <ACTION type="DeactivateEvent" eventID="tutorialStep6a"/>
+                <ACTION type="DeactivateEvent" eventID="tutorialStep6c"/>
+            </ELSE>
+            <ELSE>
+                <TRIGGER type="CheckVar" name="laneHide" op="==" val="2"/>
+                <ACTION type="HideContent" contentID="pp22c"/>
+                <ACTION type="HideContent" contentID="pp22cl"/>
+                <ACTION type="DeactivateEvent" eventID="tutorialStep6a"/>
+                <ACTION type="DeactivateEvent" eventID="tutorialStep6b"/>
+            </ELSE>
+        </ACTION>
+        <ACTION type="ManualTrigger" triggerID="resumeTrigger"/>
+    </EVENT>
+    <EVENT eventID="checkPointTutorial1">
+        <TRIGGER type="Distance" relPoint="checkpoint" ordinal="1" offset="-15"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP44.png" contentID="pp44" x="450" y="450"/>
+        <ACTION type="ManualTrigger" triggerID="pauseTrigger"/>
+        <ACTION type="ReactivateEvent" eventID="checkPointTutorial2"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="44"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="chk_n" x="825" y="75"/>
+    </EVENT>
+    <EVENT eventID="checkPointTutorial2" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="chk_n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="44"/>
+            <ACTION type="HideContent" contentID="chk_n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="checkPointTutorial1"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp44"/>
+        <ACTION type="ManualTrigger" triggerID="resumeTrigger"/>
+    </EVENT>
+    <EVENT eventID="incorrectAnswer1">
+        <TRIGGER type="Answer" correctness="incorrect"/>
+        <ACTION type="Delay" duration="0.01"/>
+        <ACTION type="ManualTrigger" triggerID="pauseTrigger"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP29.png" contentID="pp29" x="450" y="450"/>
+        <ACTION type="ReactivateEvent" eventID="incorrectAnswer2"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="29"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="inc_n" x="825" y="75"/>
+    </EVENT>
+    <EVENT eventID="incorrectAnswer2" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="inc_n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="29"/>
+            <ACTION type="HideContent" contentID="inc_n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="incorrectAnswer1"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp29"/>
+        <ACTION type="ManualTrigger" triggerID="resumeTrigger"/>
+    </EVENT>
+    <EVENT eventID="correctAnswer1">
+        <TRIGGER type="Answer" correctness="correct"/>
+        <ACTION type="Delay" duration="0.01"/>
+        <ACTION type="ManualTrigger" triggerID="pauseTrigger"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP35.png" contentID="pp35" x="450" y="450"/>
+        <ACTION type="ReactivateEvent" eventID="correctAnswer2"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="35"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="cor_n" x="825" y="75"/>
+    </EVENT>
+    <EVENT eventID="correctAnswer2" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="cor_n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="35"/>
+            <ACTION type="HideContent" contentID="cor_n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="correctAnswer1"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp35"/>
+        <ACTION type="ManualTrigger" triggerID="resumeTrigger"/>
+        <ACTION type="Delay" duration="1"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP40.png" contentID="pp40" x="450" y="300"/>
+        <ACTION type="ManualTrigger" triggerID="pauseTrigger"/>
+        <ACTION type="ReactivateEvent" eventID="correctAnswer3"/>
+        <ACTION type="Delay" duration="4"/>
+        <ACTION type="SetVar" name="buttonHide" val="40"/>
+        <ACTION type="ShowButton" resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="turbo_n" x="825" y="75"/>
+    </EVENT>
+    <EVENT eventID="correctAnswer3" state="inactive">
+        <TRIGGER type="Or">
+            <TRIGGER type="ButtonInput" buttonID="turbo_n"/>
+            <TRIGGER type="KeyTrigger" key="13" state="down" keyVal="true"/>
+            <TRIGGER type="KeyTrigger" key="32" state="down" keyVal="true"/>
+        </TRIGGER>
+        
+        <ACTION type="Conditional">
+            <TRIGGER type="CheckVar" name="buttonHide" op="==" val="40"/>
+            <ACTION type="HideContent" contentID="turbo_n"/>
+            <ELSE>
+                <TRIGGER type="AutoTrigger"/>
+                <ACTION type="AbortEvent" eventID="correctAnswer2"/>
+            </ELSE>
+        </ACTION>
+        
+        <ACTION type="HideContent" contentID="pp40"/>
+        <ACTION type="ManualTrigger" triggerID="resumeTrigger"/>
+    </EVENT>
+    <EVENT eventID="scorecardTutorial1">
+        <TRIGGER type="Distance" relPoint="finish" offset="-15"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP48.png" contentID="pp45" x="450" y="300"/>
+        <ACTION type="Delay" duration="2"/>
+        <ACTION type="HideContent" contentID="pp45"/>
+        <ACTION type="ShowImage" resource="/resources/tpbp/PP49.png" contentID="pp46" x="575" y="350"/>
+    </EVENT>
+    <EVENT eventID="PauseEvent">
+        <TRIGGER type="ManualTrigger" triggerID="pauseTrigger" toggle="false"/>
+        <ACTION type="SetVelocity" velocity="0"/>
+        <ACTION type="LockVelocity"/>
+        <ACTION type="StopTimer"/>
+        <ACTION type="ReactivateEvent" eventID="PauseEvent"/>
+    </EVENT>
+    <EVENT eventID="ResumeEvent">
+        <TRIGGER type="ManualTrigger" triggerID="resumeTrigger" toggle="false"/>
+        <ACTION type="RevertVelocity"/>
+        <ACTION type="UnlockVelocity"/>
+        <ACTION type="StartTimer"/>
+        <ACTION type="ReactivateEvent" eventID="ResumeEvent"/>
+    </EVENT>
+</SCRIPTING>
+</INPUT>

@@ -1,0 +1,108 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="45000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="70000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="95000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="PieChart">
+            <ContentSettings numSections="2" numFilled="1"/>
+        </TARGET>
+        <QUESTION INDEX="1">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="7"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="11"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+        <QUESTION INDEX="2">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="5"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="7"/>
+            </Content>
+            <Answer VALUE="1"/>
+        </QUESTION>
+        <QUESTION INDEX="3">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="2"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="5"/>
+            </Content>
+            <Answer VALUE="2"/>
+        </QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="PieChart">
+            <ContentSettings numSections="3" numFilled="2"/>
+        </TARGET>
+        <QUESTION INDEX="4">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="6"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="9"/>
+            </Content>
+            <Answer VALUE="1"/>
+        </QUESTION>
+        <QUESTION INDEX="5">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="9"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="11"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+        <QUESTION INDEX="6">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="2"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="7"/>
+            </Content>
+            <Answer VALUE="2"/>
+        </QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="PieChart">
+            <ContentSettings numSections="4" numFilled="1"/>
+        </TARGET>
+        <QUESTION INDEX="7">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="6"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="8"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+        <QUESTION INDEX="8">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="1"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="2"/>
+            </Content>
+            <Answer VALUE="2"/>
+        </QUESTION>
+        <QUESTION INDEX="9">
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="9"/>
+            </Content>
+            <Content TYPE="PieChart">
+                <ContentSettings numSections="12" numFilled="11"/>
+            </Content>
+            <Answer VALUE="0"/>
+        </QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>

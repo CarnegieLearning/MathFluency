@@ -1,0 +1,795 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">
+<SCRIPTING>
+    <RULE ruleID="hijackStart">
+        <TRIGGERS>
+            <AutoTrigger/>
+        </TRIGGERS>
+        <ACTIONS>
+            <CallFunction func="removeStartButton"/>
+            <Include preload="false" path="glowlane.xml"/>
+            <LoadAnimation resourceID="animation" source="images/fishTailSheet.png" frames="16" frameHeight="115" frameWidth="200" frameDelay="0.05"/>
+            <Delay duration="0.01"/>
+            <ReactivateRule ruleID="flickerReduce"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="flickerReduce" state="inactive">
+        <TRIGGERS>
+            <AutoTrigger/>
+        </TRIGGERS>
+        <ACTIONS>
+            <LoadImage resourceID="/resources/tpbp/correct-center.png" source="images/tpbp/correct-center.png"/>
+            <LoadImage resourceID="/resources/tpbp/correct-left.png" source="images/tpbp/correct-left.png"/>
+            <LoadImage resourceID="/resources/tpbp/correct-right.png" source="images/tpbp/correct-right.png"/>
+            <LoadImage resourceID="/resources/tpbp/incorrect-center.png" source="images/tpbp/incorrect-center.png"/>
+            <LoadImage resourceID="/resources/tpbp/incorrect-left.png" source="images/tpbp/incorrect-left.png"/>
+            <LoadImage resourceID="/resources/tpbp/incorrect-right.png" source="images/tpbp/incorrect-right.png"/>
+            <LoadImage resourceID="/resources/tpbp/NEXT.png" source="images/tpbp/NEXT.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP2.png" source="images/tpbp/PP2.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP5.png" source="images/tpbp/PP5.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP6.png" source="images/tpbp/PP6.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP9.png" source="images/tpbp/PP9.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP10.png" source="images/tpbp/PP10.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP10a.png" source="images/tpbp/PP10a.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP10d.png" source="images/tpbp/PP10d.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP10s.png" source="images/tpbp/PP10s.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP10w.png" source="images/tpbp/PP10w.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP15.png" source="images/tpbp/PP15.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP21.png" source="images/tpbp/PP21.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP22a.png" source="images/tpbp/PP22a.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP22b.png" source="images/tpbp/PP22b.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP22c.png" source="images/tpbp/PP22c.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP29.png" source="images/tpbp/PP29.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP35.png" source="images/tpbp/PP35.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP40.png" source="images/tpbp/PP40.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP44.png" source="images/tpbp/PP44.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP48.png" source="images/tpbp/PP48.png"/>
+            <LoadImage resourceID="/resources/tpbp/PP49.png" source="images/tpbp/PP49.png"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="readyForStart">
+        <TRIGGERS>
+            <And>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/correct-center.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/correct-left.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/correct-right.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/incorrect-center.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/incorrect-left.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/incorrect-right.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/NEXT.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP2.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP5.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP6.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP9.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP10.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP10a.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP10d.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP10s.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP10w.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP15.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP21.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP22a.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP22b.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP22c.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP29.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP35.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP40.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP44.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP48.png"/>
+                <RemoteLoadTrigger resourceID="/resources/tpbp/PP49.png"/>
+            </And>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowButton resourceUp="/resources/Buttons/buttonStartNormal.png" resourceDown="/resources/Buttons/buttonStartClick.png" contentID="tutorialStart" x="450" y="300" scaleX="0.5" scaleY="0.5"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="startTutorial">
+        <TRIGGERS>
+            <ButtonInput buttonID="tutorialStart"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetVar name="questionList[0].delimiters[1].children[0].children[0].label.string" val="2" internal="true"/>
+            <HideContent contentID="tutorialStart"/>
+            <PlayAnimation resource="animation" contentID="animContent" x="100" y="100" loop="true"/>
+            
+            <AudioVolume contentID="bg_slow" volume="1"/>
+            <LoopAudio contentID="bg_slow"/>
+            
+            <SetVar name="buttonHide" val="0"/>
+            <HideMedalCar car="gold"/>
+            <HideMedalCar car="silver"/>
+            <HideMedalCar car="bronze"/>
+            <ShowImage resource="/resources/tpbp/PP2.png" contentID="pp2" x="450" y="450"/>
+            <ReactivateRule ruleID="tutorialStep1"/>
+            <Delay duration="4.0"/>
+            <SetVar name="buttonHide" val="1"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp2n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep1" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="pp2n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        
+        <ACTIONS>
+            <StopAnimation contentID="animContent"/>
+            
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="1"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp2n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="startTutorial"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp2"/>
+            <ShowImage resource="/resources/tpbp/PP5.png" contentID="pp5" x="450" y="450"/>
+            <Delay duration="1"/>
+            <ShowImage resource="/resources/tpbp/PP6.png" contentID="pp6" x="300" y="150"/>
+            <ReactivateRule ruleID="tutorialStep2"/>
+            <Delay duration="3"/>
+            <SetVar name="buttonHide" val="2"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp6n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep2" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="pp6n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        
+        <ACTIONS>
+            <HideContent contentID="animContent"/>
+            
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="2"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp6n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="tutorialStep1"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp5"/>
+            <HideContent contentID="pp6"/>
+            <ShowImage resource="/resources/tpbp/PP9.png" contentID="pp9" x="200" y="435"/>
+            <Delay duration="2"/>
+            <ShowImage resource="/resources/tpbp/PP10.png" contentID="pp10" x="700" y="435"/>
+            
+            <ReactivateRule ruleID="sPress"/>
+            <ReactivateRule ruleID="dPress"/>
+            <ReactivateRule ruleID="wPress"/>
+            <ReactivateRule ruleID="aPress"/>
+            
+            <ReactivateRule ruleID="downArrowPress"/>
+            <ReactivateRule ruleID="rightArrowPress"/>
+            <ReactivateRule ruleID="upArrowPress"/>
+            <ReactivateRule ruleID="leftArrowPress"/>
+            <ReactivateRule ruleID="tutorialStep3"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="3"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp10n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="sPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="s" state="down"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10s.png" contentID="sPress" x="700" y="435"/>
+            <ReactivateRule ruleID="sRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="sRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="s" state="up"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="sPress"/>
+            <ReactivateRule ruleID="sPress"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="dPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="d" state="down"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10d.png" contentID="dPress" x="700" y="435"/>
+            <ReactivateRule ruleID="dRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="dRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="d" state="up"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="dPress"/>
+            <ReactivateRule ruleID="dPress"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="wPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="w" state="down"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10w.png" contentID="wPress" x="700" y="435"/>
+            <ReactivateRule ruleID="wRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="wRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="w" state="up"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="wPress"/>
+            <ReactivateRule ruleID="wPress"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="aPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="a" state="down"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10a.png" contentID="aPress" x="700" y="435"/>
+            <ReactivateRule ruleID="aRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="aRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="a" state="up"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="aPress"/>
+            <ReactivateRule ruleID="aPress"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="downArrowPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="40" state="down" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10s.png" contentID="downArrowPress" x="700" y="435"/>
+            <ReactivateRule ruleID="downArrowRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="downArrowRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="40" state="up" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="downArrowPress"/>
+            <ReactivateRule ruleID="downArrowPress"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="rightArrowPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="39" state="down" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10d.png" contentID="rightArrowPress" x="700" y="435"/>
+            <ReactivateRule ruleID="rightArrowRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="rightArrowRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="39" state="up" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="rightArrowPress"/>
+            <ReactivateRule ruleID="rightArrowPress"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="upArrowPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="38" state="down" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10w.png" contentID="upArrowPress" x="700" y="435"/>
+            <ReactivateRule ruleID="upArrowRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="upArrowRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="38" state="up" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="upArrowPress"/>
+            <ReactivateRule ruleID="upArrowPress"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="leftArrowPress" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="37" state="down" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP10a.png" contentID="leftArrowPress" x="700" y="435"/>
+            <ReactivateRule ruleID="leftArrowRelease"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="leftArrowRelease" state="inactive">
+        <TRIGGERS>
+            <KeyTrigger key="37" state="up" keyVal="true"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <HideContent contentID="leftArrowPress"/>
+            <ReactivateRule ruleID="leftArrowPress"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="tutorialStep3" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="pp10n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="3"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp10n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="tutorialStep2"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp9"/>
+            <HideContent contentID="pp10"/>
+            
+            <TriggerRule ruleID="sRelease" errorLevel="warn"/>
+            <TriggerRule ruleID="dRelease" errorLevel="warn"/>
+            <TriggerRule ruleID="wRelease" errorLevel="warn"/>
+            <TriggerRule ruleID="aRelease" errorLevel="warn"/>
+            
+            <TriggerRule ruleID="downArrowRelease" errorLevel="warn"/>
+            <TriggerRule ruleID="rightArrowRelease" errorLevel="warn"/>
+            <TriggerRule ruleID="upArrowRelease" errorLevel="warn"/>
+            <TriggerRule ruleID="leftArrowRelease" errorLevel="warn"/>
+            
+            <DeactivateRule ruleID="sPress" errorLevel="warn"/>
+            <DeactivateRule ruleID="dPress" errorLevel="warn"/>
+            <DeactivateRule ruleID="wPress" errorLevel="warn"/>
+            <DeactivateRule ruleID="aPress" errorLevel="warn"/>
+            
+            <DeactivateRule ruleID="downArrowPress" errorLevel="warn"/>
+            <DeactivateRule ruleID="rightArrowPress" errorLevel="warn"/>
+            <DeactivateRule ruleID="upArrowPress" errorLevel="warn"/>
+            <DeactivateRule ruleID="leftArrowPress" errorLevel="warn"/>
+            
+            <StopAudio contentID="bg_slow"/>
+            <CallFunction func="countdown"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep4">
+        <TRIGGERS>
+            <Distance relPoint="start" offset="25"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <CallSubroutine subroutineID="PauseEvent"/>
+            <ShowImage resource="/resources/tpbp/PP15.png" contentID="pp15" x="275" y="300"/>
+            <ReactivateRule ruleID="tutorialStep4a"/>
+            <ReactivateRule ruleID="tutorialStep4b"/>
+            <ReactivateRule ruleID="tutorialStep4c"/>
+            <ReactivateRule ruleID="tutorialStep5"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="5"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp15n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="tutorialStep4a" state="inactive" errorLevel="warn">
+        <TRIGGERS>
+            <AbsoluteLane lane="0"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <MoveContent contentID="pp15" x="150" y="300"/>
+            <ReactivateRule ruleID="tutorialStep4b"/>
+            <ReactivateRule ruleID="tutorialStep4c"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep4b" state="inactive" errorLevel="warn">
+        <TRIGGERS>
+            <AbsoluteLane lane="1"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <MoveContent contentID="pp15" x="275" y="300"/>
+            <ReactivateRule ruleID="tutorialStep4a"/>
+            <ReactivateRule ruleID="tutorialStep4c"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep4c" state="inactive" errorLevel="warn">
+        <TRIGGERS>
+            <AbsoluteLane lane="2"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <MoveContent contentID="pp15" x="425" y="300"/>
+            <ReactivateRule ruleID="tutorialStep4a"/>
+            <ReactivateRule ruleID="tutorialStep4b"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="tutorialStep5" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="pp15n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        <ACTIONS>
+            <DeactivateRule ruleID="tutorialStep4a" errorLevel="warn"/>
+            <DeactivateRule ruleID="tutorialStep4b" errorLevel="warn"/>
+            <DeactivateRule ruleID="tutorialStep4c" errorLevel="warn"/>
+            
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="5"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp15n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="tutorialStep4"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp15"/>
+            <CallSubroutine subroutineID="ResumeEvent"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep6">
+        <TRIGGERS>
+            <Distance relPoint="question" ordinal="1" offset="-75"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <CallSubroutine subroutineID="PauseEvent"/>
+            <SetVar name="laneHide" val="-1"/>
+            <ShowImage resource="/resources/tpbp/PP21.png" contentID="pp21" x="450" y="550"/>
+            <Delay duration="2"/>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ReactivateRule ruleID="tutorialStep6a"/>
+            <ReactivateRule ruleID="tutorialStep6b"/>
+            <ReactivateRule ruleID="tutorialStep6c"/>
+            <ReactivateRule ruleID="tutorialStep7"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="7"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="pp22n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="tutorialStep6a" state="inactive">
+        <TRIGGERS>
+            <AbsoluteLane lane="0"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="laneHide" op="==" val="1"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp22b"/>
+                    <HideContent contentID="pp22bl"/>
+                    <ReactivateRule ruleID="tutorialStep6b"/>
+                </ACTIONS>
+            </Conditional>
+            <ShowImage resource="/resources/tpbp/PP22a.png" contentID="pp22a" x="145" y="255"/>
+            <ShowImage resource="/resources/tpbp/correct-left.png" contentID="pp22al" x="304" y="250"/>
+            <SetVar name="laneHide" val="0"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep6b" state="inactive">
+        <TRIGGERS>
+            <AbsoluteLane lane="1"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="laneHide" op="==" val="0"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp22a"/>
+                    <HideContent contentID="pp22al"/>
+                    <ReactivateRule ruleID="tutorialStep6a"/>
+                </ACTIONS>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <CheckVar name="laneHide" op="==" val="2"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <HideContent contentID="pp22c"/>
+                        <HideContent contentID="pp22cl"/>
+                        <ReactivateRule ruleID="tutorialStep6c"/>
+                    </ACTIONS>
+                </ELSEIF>
+            </Conditional>
+            <ShowImage resource="/resources/tpbp/PP22b.png" contentID="pp22b" x="676" y="251"/>
+            <ShowImage resource="/resources/tpbp/incorrect-center.png" contentID="pp22bl" x="448" y="207"/>
+            <SetVar name="laneHide" val="1"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="tutorialStep6c" state="inactive">
+        <TRIGGERS>
+            <AbsoluteLane lane="2"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="laneHide" op="==" val="1"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp22b"/>
+                    <HideContent contentID="pp22bl"/>
+                    <ReactivateRule ruleID="tutorialStep6b"/>
+                </ACTIONS>
+            </Conditional>
+            <ShowImage resource="/resources/tpbp/PP22c.png" contentID="pp22c" x="757" y="225"/>
+            <ShowImage resource="/resources/tpbp/incorrect-right.png" contentID="pp22cl" x="650" y="204"/>
+            <SetVar name="laneHide" val="2"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="tutorialStep7" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="pp22n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="7"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp22n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="tutorialStep6"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <HideContent contentID="pp21"/>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="laneHide" op="==" val="0"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="pp22a"/>
+                    <HideContent contentID="pp22al"/>
+                    <DeactivateRule ruleID="tutorialStep6b"/>
+                    <DeactivateRule ruleID="tutorialStep6c"/>
+                </ACTIONS>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <CheckVar name="laneHide" op="==" val="1"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <HideContent contentID="pp22b"/>
+                        <HideContent contentID="pp22bl"/>
+                        <DeactivateRule ruleID="tutorialStep6a"/>
+                        <DeactivateRule ruleID="tutorialStep6c"/>
+                    </ACTIONS>
+                </ELSEIF>
+                <ELSEIF>
+                    <TRIGGERS>
+                        <CheckVar name="laneHide" op="==" val="2"/>
+                    </TRIGGERS>
+                    <ACTIONS>
+                        <HideContent contentID="pp22c"/>
+                        <HideContent contentID="pp22cl"/>
+                        <DeactivateRule ruleID="tutorialStep6a"/>
+                        <DeactivateRule ruleID="tutorialStep6b"/>
+                    </ACTIONS>
+                </ELSEIF>
+            </Conditional>
+            <CallSubroutine subroutineID="ResumeEvent"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="checkPointTutorial1">
+        <TRIGGERS>
+            <Distance relPoint="checkpoint" ordinal="1" offset="-15"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP44.png" contentID="pp44" x="450" y="450"/>
+            <CallSubroutine subroutineID="PauseEvent"/>
+            <ReactivateRule ruleID="checkPointTutorial2"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="44"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="chk_n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="checkPointTutorial2" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="chk_n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="44"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="chk_n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="checkPointTutorial1"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp44"/>
+            <CallSubroutine subroutineID="ResumeEvent"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="incorrectAnswer1">
+        <TRIGGERS>
+            <Answer correctness="incorrect"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <Delay duration="0.01"/>
+            <CallSubroutine subroutineID="PauseEvent"/>
+            <ShowImage resource="/resources/tpbp/PP29.png" contentID="pp29" x="450" y="450"/>
+            <ReactivateRule ruleID="incorrectAnswer2"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="29"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="inc_n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="incorrectAnswer2" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="inc_n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="29"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="inc_n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="incorrectAnswer1"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp29"/>
+            <CallSubroutine subroutineID="ResumeEvent"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="correctAnswer1">
+        <TRIGGERS>
+            <Answer correctness="correct"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <Delay duration="0.01"/>
+            <CallSubroutine subroutineID="PauseEvent"/>
+            <ShowImage resource="/resources/tpbp/PP35.png" contentID="pp35" x="450" y="450"/>
+            <ReactivateRule ruleID="correctAnswer2"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="35"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="cor_n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="correctAnswer2" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="cor_n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="35"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="cor_n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="correctAnswer1"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp35"/>
+            <CallSubroutine subroutineID="ResumeEvent"/>
+            <Delay duration="1"/>
+            <ShowImage resource="/resources/tpbp/PP40.png" contentID="pp40" x="450" y="300"/>
+            <CallSubroutine subroutineID="PauseEvent"/>
+            <ReactivateRule ruleID="correctAnswer3"/>
+            <Delay duration="4"/>
+            <SetVar name="buttonHide" val="40"/>
+            <ShowButton resourceUp="/resources/tpbp/NEXT.png" resourceDown="/resources/tpbp/NEXT.png" contentID="turbo_n" x="825" y="75"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="correctAnswer3" state="inactive">
+        <TRIGGERS>
+            <Or>
+                <ButtonInput buttonID="turbo_n"/>
+                <KeyTrigger key="13" state="down" keyVal="true"/>
+                <KeyTrigger key="32" state="down" keyVal="true"/>
+            </Or>
+        </TRIGGERS>
+        <ACTIONS>
+            <Conditional>
+                <TRIGGERS>
+                    <CheckVar name="buttonHide" op="==" val="40"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <HideContent contentID="turbo_n"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <AbortRule ruleID="correctAnswer2"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            
+            <HideContent contentID="pp40"/>
+            <CallSubroutine subroutineID="ResumeEvent"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="scorecardTutorial1">
+        <TRIGGERS>
+            <Distance relPoint="finish" offset="-15"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <ShowImage resource="/resources/tpbp/PP48.png" contentID="pp45" x="450" y="300"/>
+            <Delay duration="2"/>
+            <HideContent contentID="pp45"/>
+            <ShowImage resource="/resources/tpbp/PP49.png" contentID="pp46" x="575" y="350"/>
+        </ACTIONS>
+    </RULE>
+    <SUBROUTINE subroutineID="PauseEvent">
+        <ACTIONS>
+            <SetVelocity velocity="0"/>
+            <LockVelocity/>
+            <StopTimer/>
+        </ACTIONS>
+    </SUBROUTINE>
+    <SUBROUTINE subroutineID="ResumeEvent">
+        <ACTIONS>
+            <RevertVelocity/>
+            <UnlockVelocity/>
+            <StartTimer/>
+        </ACTIONS>
+    </SUBROUTINE>
+</SCRIPTING>
+</INPUT>

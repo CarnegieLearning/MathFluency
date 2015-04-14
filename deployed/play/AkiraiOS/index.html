@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+    <head>
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<link rel="apple-touch-icon" href="temporary.png"/>
+
+		<link rel="apple-touch-startup-image" href="racecar/assets/resources/splash.png" /> <!-- mvy -->
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Racecar</title>
+        <script type="text/javascript" src="racecar/jquery.min.js"></script> 
+        <script type="text/javascript" src="racecar/jquery-ui.min.js"></script> 
+        <style type="text/css" media="screen">
+			#containingDiv { 
+				overflow: hidden;
+				text-align:center;
+			}
+			#myCanvas {
+				position: absolute; 
+				top: 0px;
+				left: 0px;
+				display: inline;
+			}		
+            body {
+                background: #ddd;
+            }
+            .cocos2d-app {
+                border: 1px solid #000;
+                width: 900px;
+                height: 600px;
+                display: block;
+                margin: 0 auto;
+                -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.75);
+                -moz-box-shadow:    0 3px 10px rgba(0, 0, 0, 0.75);
+                -o-box-shadow:      0 3px 10px rgba(0, 0, 0, 0.75);
+                box-shadow:         0 3px 10px rgba(0, 0, 0, 0.75);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="containingDiv" class="cocos2d-app" style="position:fixed">
+            Loading Racecar...
+            <script id="myCanvas" src="racecar/init.js" type="text/javascript"></script>
+        </div>
+    </body>
+</html>

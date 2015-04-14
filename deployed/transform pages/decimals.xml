@@ -1,0 +1,105 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="52000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="78000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="105000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<GlobalSpacing IntermissionSpacing="150" QuestionSpacing="200" InitialSpacing="100" FinishSpacing="150"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.64"/>
+		<QUESTION INDEX="1">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1.0"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="String" string="0.5"/>
+			<Content TYPE="String" string="0.75"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="3">
+			<Content TYPE="String" string="0.1"/>
+			<Content TYPE="String" string="0.9"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="4">
+			<Content TYPE="String" string="0.1"/>
+			<Content TYPE="String" string="0.5"/>
+			<Answer VALUE="2"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.43"/>
+		<QUESTION INDEX="5">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="0.7"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="String" string="0.5"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="7">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="0.5"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="8">
+			<Content TYPE="String" string="0.6"/>
+			<Content TYPE="String" string="0.8"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.66"/>
+		<QUESTION INDEX="9">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="10">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="11">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="0.7"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="12">
+			<Content TYPE="String" string="0.25"/>
+			<Content TYPE="String" string="0.75"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="0.41"/>
+		<QUESTION INDEX="13">
+			<Content TYPE="String" string="0"/>
+			<Content TYPE="String" string="0.75"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="14">
+			<Content TYPE="String" string="0.75"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="15">
+			<Content TYPE="String" string="0.4"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="16">
+			<Content TYPE="String" string="0.5"/>
+			<Content TYPE="String" string="1"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>

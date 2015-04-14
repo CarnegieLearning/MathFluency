@@ -1,0 +1,538 @@
+<!doctype html>
+<html>
+<head>
+<title>Transform: Pie Charts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script> 
+<script type="text/javascript">
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+</script>
+<style type="text/css">
+@font-face {
+font-family: 'EthnocentricRgRegular';
+src: url('sound/ethnocentric_rg-webfont.eot');
+src: url('sound/ethnocentric_rg-webfont.eot?#iefix') format('embedded-opentype'),
+     url('sound/ethnocentric_rg-webfont.woff') format('woff'),
+     url('sound/ethnocentric_rg-webfont.ttf') format('truetype'),
+     url('sound/ethnocentric_rg-webfont.svg#EthnocentricRgRegular') format('svg');
+font-weight: normal;
+font-style: normal;
+}
+.cocos2d-app {
+    font: Ethnocentric Regular;
+    width: 900px;
+    height: 600px;
+}
+
+.MFDCtext {text-align:left; font-family: "Adobe Garamond Pro", "Garamond"; font-size:60pt; color:#CCC}
+
+.Bodytitle {text-align:left; font-family: "Century Gothic", "Verdana"; font-size:16pt;}
+
+.Bodytext {text-align:justify; font-family: "Century Gothic", "Verdana"; font-size:10pt;}
+
+.LicensingWikiAboutlinks {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:9pt;}
+
+.PhoneFaxtext {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:8pt;}
+
+.EmailWebsitelinks {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:8pt;}
+
+.PartnerInfotext {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:8pt;}
+
+.Partnerlinks {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:8pt;}
+
+.SubTopicstitle {text-align:left; font-family: "Century Gothic", "Verdana"; font-size:30pt;}
+
+.SubTopicsbutton {text-align:center; font-family: "Century Gothic", "Verdana"; font-size:10pt;}
+
+.SubButton {
+	background-color:transparent;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	display:inline-block;
+	text-align:right;
+	color:#000000;
+	font-family:"Century Gothic";"Verdana";
+	font-size:14px;
+	font-weight:normal;
+	text-decoration:none;
+}.SubButton:active {
+	position:relative;
+	top:1px;
+}
+
+.Title {
+	background-color:transparent;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	display:inline-block;
+	color:#000000;
+	font-family:"Century Gothic";"Verdana";
+	font-size:18px;
+	font-weight:bold;
+	padding:3px 15px;
+	text-decoration:none;
+}.SubButton:active {
+	position:relative;
+	top:1px;
+}
+
+.AboutText {
+	background-color:transparent;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	display:inline-block;
+	color:#000000;
+	width:400px;
+	text-align:justify;
+	font-family:"Century Gothic";"Verdana";
+	font-size:12px;
+	font-weight:normal;
+	padding:3px 15px;
+	text-decoration:none;
+}.SubButton:active {
+	position:relative;
+	top:1px;
+}
+
+#FractionsRollover a span {
+display: none;
+}
+#FractionsRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: -10px; width: 175px; height: 11px;
+}
+
+#DecimalsRollover a span {
+display: none;
+}
+#DecimalsRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: -10px; width: 175px; height: 11px;
+}
+
+#PieChartsRollover a span {
+display: none;
+}
+#PieChartsRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: -10px; width: 175px; height: 11px;
+}
+
+#ImagesRollover a span {
+display: none;
+}
+#ImagesRollover a:hover span {
+display: block;
+position: absolute; left: 0px; top: -10px; width: 175px; height: 11px;
+}
+
+
+a:link    {color: #000000; text-decoration:none;}
+a:visited {color: #777777; text-decoration:none;}
+a:hover   {color: #0099FF; text-decoration:none;}
+a:active  {color: #000000; text-decoration:none;}
+
+</style>
+
+<script language="JavaScript" type="text/JavaScript">
+function toggle(a) {
+    $('.content:not(#' + a + ')').css('display', 'none')
+    $('.cocos2d-app').css('display', 'none')
+    $('#' + a).css('display', 'block')
+}
+</script>
+
+<script type="text/javascript">
+function callback() {
+    var script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = 'racecar/init.js';
+    
+    var div = document.getElementsByTagName('div')[0];
+    div.appendChild(script);
+    
+    var checkInit = function () {
+        if (typeof initializeApplication == 'function') {
+            setTimeout(initializeApplication, 1000);
+            $('#startButton').remove()
+        } else {
+            setTimeout(checkInit, 13)
+        }
+    }
+    checkInit();
+}
+</script>
+
+</head>
+
+<body onLoad="MM_preloadImages('../images/general/MFDC_small_play_over.png','../images/general/MFDC_small_remix_over.png','../images/general/MFDC_small_code_over.png')">
+
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<div style="position:absolute; left:0px; top:0px; width:1283px; height:1323px;">
+	<div style="position:absolute; left:0px; top:0px; width:194px; height:457px;" title="">
+	</div>
+	<div style="position:absolute; left:194px; top:0px; width:1089px; height:58px;" title="">
+	</div>
+	<div style="position:absolute; left:194px; top:58px; width:200px; height:145px;" title=""><img src="../images/transform/MFDC_transform_03.png" width="200" height="145">
+	</div>
+	<div style="position:absolute; left:394px; top:58px; width:11px; height:145px;" title="">
+	</div>
+	<div style="position:absolute; left:405px; top:58px; width:88px; height:29px;" title="">
+	</div>
+	<div style="position:absolute; left:493px; top:58px; width:14px; height:43px;" title="">
+	</div>
+	<div style="position:absolute; left:507px; top:58px; width:776px; height:11px;" title="">
+	</div>
+	<div style="position:absolute; left:507px; top:69px; width:66px; height:32px;" title="">
+	</div>
+	<div style="position:absolute; left:573px; top:69px; width:98px; height:32px;" title="">
+	</div>
+	<div style="position:absolute; left:671px; top:69px; width:13px; height:32px;" title="">
+	</div>
+	<div style="position:absolute; left:684px; top:69px; width:98px; height:32px;" title="">
+	</div>
+	<div style="position:absolute; left:782px; top:69px; width:13px; height:32px;" title="">
+	</div>
+    
+    
+<!------------------Licensing / Wiki / About Links-------------------->    
+  <div style="position:absolute; left:795px; top:69px; width:98px; height:32px;" title=""><p class="LicensingWikiAboutlinks"><a href="../licensing.html">Licensing</a></p>
+	</div>
+	<div style="position:absolute; left:893px; top:69px; width:13px; height:32px;" title=""><img src="../images/general/vertical_line_left.png" width="13" height="32">
+	</div>
+	<div style="position:absolute; left:906px; top:69px; width:98px; height:32px;" title=""><p class="LicensingWikiAboutlinks"><a href="http://wiki.fluencychallenge.com/" target="_blank">MFDC Wiki</a></p>
+	</div>
+    
+	<div style="position:absolute; left:1004px; top:69px; width:13px; height:32px;" title=""><img src="../images/general/vertical_line_right.png" width="13" height="32">
+	</div>
+  <div style="position:absolute; left:1017px; top:69px; width:95px; height:32px;" title=""><p class="LicensingWikiAboutlinks"><a href="../about.html">About Us</a></p>
+	</div>
+    
+    
+<!------------------Play / Tweak / Transform / Remix / Code Rollovers-------------------->    
+  <div style="position:absolute; left:1112px; top:69px; width:171px; height:1006px;" title="">
+	</div>
+    
+    
+    
+	<div style="position:absolute; left:405px; top:87px; width:88px; height:29px;" title=""><a href="../play.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Play Rollover','','../images/general/MFDC_small_play_over.png',1)"><img src="../images/general/MFDC_small_play_up.png" alt="Play" width="89" height="29" id="Play Rollover"></a>
+	</div>
+	<div style="position:absolute; left:493px; top:101px; width:619px; height:172px;" title="">
+	</div>
+	<div style="position:absolute; left:405px; top:116px; width:89px; height:29px;" title=""><a href="../tweak.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Tweak Rollover','','../images/general/MFDC_small_tweak_over.png',1)"><img src="../images/general/MFDC_small_tweak_up.png" alt="Tweak" width="89" height="29" id="Tweak Rollover"></a>
+    </div>
+	<div style="position:absolute; left:405px; top:145px; width:88px; height:29px;" title=""><a href="../remix.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Remix Rollover','','../images/general/MFDC_small_remix_over.png',1)"><img src="../images/general/MFDC_small_remix_up.png" alt="Remix" width="89" height="29" id="Remix Rollover"></a>
+	</div>
+	<div style="position:absolute; left:405px; top:174px; width:88px; height:29px;" title=""><a href="https://github.com/CarnegieLearning/MathFluency" target="_blank" onMouseOver="MM_swapImage('Code Rollover','','../images/general/MFDC_small_code_over.png',1)" onMouseOut="MM_swapImgRestore()"><img src="../images/general/MFDC_small_code_up.png" alt="Code" width="89" height="29" id="Code Rollover"></a>
+	</div>
+	<div style="position:absolute; left:194px; top:203px; width:299px; height:70px;" title="">
+	</div>
+    
+    
+ <!------------------Sub Topics Title-------------------->   
+  <div class="SubTopicstitle" style="position:absolute; left:194px; top:273px; width:918px; height:52px;" title=""><b>Pie Charts:&nbsp;</b><i>racecar</i>
+	</div>
+	<div style="position:absolute; left:194px; top:325px; width:20px; height:87px;" title="">
+	</div>
+    
+
+<!------------------Body Text-------------------->    
+  <div class="Bodytext" style="position:absolute; left:214px; top:325px; width:877px; height:87px;" title="">The Mathematics Fluency Data Collaborative is a collaborative project led by Carnegie Learning partnering with the Games for Learning Institute at New York University, Game2Learn at the University of North Carolina, Charlotte, the Pittsburgh Science of Learning Center at Carnegie Mellon University, Pellisippi State Community College and PlayPower.
+  </div>
+    
+    
+    
+	<div style="position:absolute; left:1091px; top:325px; width:21px; height:87px;" title="">
+	</div>
+	<div style="position:absolute; left:194px; top:412px; width:918px; height:8px;" title="">
+	</div>
+	<div style="position:absolute; left:194px; top:420px; width:184px; height:37px;" title="">
+	</div>
+	<div style="position:absolute; left:378px; top:420px; width:175px; height:11px;" title="">
+	</div>
+	<div style="position:absolute; left:553px; top:420px; width:175px; height:11px;" title="">
+	</div>
+	<div style="position:absolute; left:728px; top:420px; width:175px; height:11px;" title="">
+	</div>
+	<div style="position:absolute; left:903px; top:420px; width:175px; height:11px;" title="">
+	</div>
+	<div style="position:absolute; left:1078px; top:420px; width:34px; height:37px;" title="">
+	</div>
+    
+    
+    
+<!------Tutorial / Correct-Incorrect / Glowing Lanes / Number Line Feedback Rollovers---------->
+  <div id="FractionsRollover" class="SubTopicsbutton" style="position:absolute; left:378px; top:431px; width:175px; height:17px;" title=""><a href="transform_fractions.html">Fractions<span><img src="../images/transform/MFDC_transform_line_fractions.png" width="175" height="11"></span></a>
+  </div>
+  <div id="DecimalsRollover" class="SubTopicsbutton" style="position:absolute; left:553px; top:431px; width:175px; height:17px;" title=""><a href="transform_decimals.html">Decimals<span><img src="../images/transform/MFDC_transform_line_decimals.png" width="175" height="11"></span></a>
+	</div>
+  <div class="SubTopicsbutton" style="position:absolute; left:728px; top:431px; width:175px; height:17px;" title="">Pie Charts
+	</div>
+  <div id="ImagesRollover" class="SubTopicsbutton" style="position:absolute; left:903px; top:431px; width:175px; height:17px;" title=""><a href="transform_images.html">Images<span><img src="../images/transform/MFDC_transform_line_images.png" width="175" height="11"></span></a>
+	</div>
+    
+    
+    
+	<div style="position:absolute; left:378px; top:448px; width:175px; height:9px;" title="">
+	</div>
+	<div style="position:absolute; left:553px; top:448px; width:175px; height:9px;" title="">
+	</div>
+    
+    
+<!------small triangle---------->
+	<div style="position:absolute; left:728px; top:448px; width:175px; height:9px;" title=""><img src="../images/transform/pie charts/MFDC_transform_triangle_pie_charts.png" width="175" height="9">
+	</div>
+    
+    
+    
+	<div style="position:absolute; left:903px; top:448px; width:175px; height:9px;" title="">
+	</div>
+	<div style="position:absolute; left:0px; top:457px; width:41px; height:618px;" title="">
+	</div>
+	<div style="position:absolute; left:41px; top:457px; width:153px; height:68px;" title="">
+	</div>
+	<div style="position:absolute; left:194px; top:457px; width:9px; height:618px;" title=""><img src="../images/transform/pie charts/MFDC_transform_pie_charts_46.png" width="9" height="618">
+	</div>
+	<div style="position:absolute; left:203px; top:457px; width:900px; height:9px;" title=""><img src="../images/transform/pie charts/MFDC_transform_pie_charts_47.png" width="900" height="9">
+	</div>
+	<div style="position:absolute; left:1103px; top:457px; width:9px; height:618px;" title=""><img src="../images/transform/pie charts/MFDC_transform_pie_charts_48.png" width="9" height="618">
+	</div>
+    
+    
+    
+	<!------Script Content------------------>
+
+<div id="script" class="content"  style="display:none; position:absolute; left:203px; top:465px; width:900px; height:600px; " title="">
+<p class="Title">Script</p>
+<pre id="scriptta" style="position:absolute; width:900px; top:75px; height:525px; overflow:scroll"></pre>
+</div>
+
+<!------Level Data Content------------------>
+
+<div id="leveldata" class="content" style="display:none; position:absolute; left:203px; top:465px; width:900px; height:600px;" title="">
+<p class="Title">Level Data</p>
+<pre id="datata" style="position:absolute; width:900px; top:75px; height:525px; overflow:scroll"></pre>
+</div>
+
+<!------Source Code Content------------------>
+
+	<div id="sourcecode" class="content" style="display:none; position:absolute; left:203px; top:465px; width:900px; height:600px;" title=""><p class="Title">Source Code</p>
+</div>
+
+<!------Play Content------------------>
+
+<div id="gametab" class="content" style="position:absolute; left:203px; top:465px; width:900px; height:600px;" title="">
+  <div id="cocos_test_app" class="cocos2d-app" data="piecharts.xml" >
+  </div>
+  <br>&nbsp;</br>
+  <br>&nbsp;</br>
+  <button id="startButton" type="button" onClick="callback();">Run Level</button><br>
+  <textarea rows="15" cols="80" id="dynLoadField"></textarea>
+  <br>&nbsp;</br>
+  <textarea rows="5" cols="80" id="dynDispField"></textarea>
+</div>
+</div>
+
+<!------About The Code Content------------------>
+
+	<div id="about" class="content" style="display:none; position:absolute; left:203px; top:465px; width:900px; height:600px; overflow:scroll;" title="">
+
+<p class="Title">About The Script</p>
+<br>
+<p class="AboutText">The Mathematics Fluency Data Collaborative is a collaborative project led by Carnegie Learning partnering with the Games for Learning Institute at New York University, Game2Learn at the University of North Carolina, Charlotte, the Pittsburgh Science of Learning Center at Carnegie Mellon University, Pellisippi State Community College and PlayPower. We have also partnered with the Washington State Board for Community and Technical Colleges and Boise State University as implementation partners.</p>
+<br>
+<p class="AboutText">Our goal is to dramatically improve performance in developmental mathematics courses by building games that help students develop the number sense required to succeed in mathematical problem solving. We are addressing the open core courseware challenge, but also address blended learning, learner analytics and student engagement.</p>
+<br>
+<p class="AboutText">MFDC will establish a community of practice that values iterative testing and refinement based on careful examination of student data. We will provide data to the Pittsburgh Science of Learning Center so that researchers can mine the data to better understand the parameters that lead to success. The game code will be released under an open source license, so that the games can serve as a model for additional development as well as a platform for researchers interested in developing and testing improvements to the games. Games produced under this effort will be included with Carnegie Learning&#39;s Cognitive Tutor software, which is currently used by over 500,000 students in school environments each year. The widespread distribution of high-quality, effective educational software will serve as a message to the market that educational games are both effective and accepted.</p>
+	</div>
+
+<!-------------------------------------------------->
+
+    
+       
+	<div style="position:absolute; left:41px; top:525px; width:126px; height:22px;" title="">
+	</div>
+	<div style="position:absolute; left:167px; top:525px; width:27px; height:550px;" title=""><img src="../images/transform/pie charts/MFDC_transform_pie_charts_51.png" width="27" height="550">
+	</div>
+    
+    
+<!------Sub Buttons Left Side---------->    
+	<div style="position:absolute; left:41px; top:547px; width:126px; height:22px; text-align:right;" title=""><a href="#" class="SubButton" onClick="window.location.reload()" value="Section 4">play</a>
+	</div>
+	<div style="position:absolute; left:41px; top:569px; width:126px; height:22px; text-align:right;" title=""><a href="#" class="SubButton" onClick="return toggle('script')" value="Section 1">script&nbsp;</a>
+	</div>
+	<div style="position:absolute; left:41px; top:591px; width:126px; height:22px; text-align:right;" title=""><a href="#" class="SubButton" onClick="return toggle('leveldata')" value="Section 2">level&nbsp;data&nbsp;&nbsp;</a>
+	</div>
+	<div style="position:absolute; left:41px; top:613px; width:126px; height:22px; text-align:right;" title=""><a href="#" class="SubButton" onClick="return toggle('sourcecode')" value="Section 3">source&nbsp;code&nbsp;</a>
+	</div>
+	<div style="position:absolute; left:41px; top:635px; width:126px; height:22px; text-align:right;" title=""><a href="#" class="SubButton" onClick="return toggle('about')" value="Section 5">about the script</a>
+	</div>
+	
+    
+    
+	<div style="position:absolute; left:41px; top:657px; width:126px; height:22px;" title="">
+	</div>
+	<div style="position:absolute; left:41px; top:679px; width:126px; height:396px;" title="">
+	</div>
+	<div style="position:absolute; left:203px; top:1066px; width:900px; height:9px;" title=""><img src="../images/transform/pie charts/MFDC_transform_pie_charts_59.png" width="900" height="9">
+	</div>
+    
+    
+<!------Horizontal Divider Line------------------>    
+	<div style="position:absolute; left:0px; top:1075px; width:1283px; height:39px;" title=""><img src="../images/general/horizontal_line.png" width="1283" height="39">
+	</div>
+<div style="position:absolute; left:0px; top:1675px; width:1283px; height:39px;" title=""><img src="../images/general/horizontal_line.png" width="1283" height="39">
+  </div>
+    
+
+
+    
+  <div style="position:absolute; left:0px; top:1714px; width:228px; height:143px;" title="">
+	</div>
+    
+    
+<!----------------MFDC Logo-------------------------->    
+	<div style="position:absolute; left:228px; top:1714px; width:212px; height:68px;" title=""><a href="../MFDC.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('MFDC Logo','','../images/general/MFDC_logo_over.png',1)"><img src="../images/general/MFDC_logo_up.png" alt="MFDC" width="212" height="68" id="MFDC Logo"></a>
+	</div>
+    
+    
+    
+  <div style="position:absolute; left:440px; top:1714px; width:17px; height:68px;" title="">
+	</div>
+  <div style="position:absolute; left:457px; top:1714px; width:220px; height:25px;" title="">
+	</div>
+  <div style="position:absolute; left:677px; top:1714px; width:18px; height:68px;" title="">
+	</div>
+  <div style="position:absolute; left:695px; top:1714px; width:140px; height:24px;" title="">
+	</div>
+  <div style="position:absolute; left:835px; top:1714px; width:17px; height:68px;" title="">
+	</div>
+  <div style="position:absolute; left:852px; top:1714px; width:431px; height:25px;" title="">
+	</div>
+    
+    
+<!-------------------Fax Number-------------------->    
+  <div class="PhoneFaxtext" style="position: absolute; left: 695px; top: 1739px; width: 140px; height: 18px;" title=""><span class="PhoneFaxtext" style="color:#5091CD">(412) 690-2444</span>&nbsp;<span class="PhoneFaxtext" style="color:#F37021">fax</span>
+	</div>
+    
+    
+    
+    
+<!-------------www.carnegielearning.com------------->    
+  <div class="EmailWebsitelinks" style="position:absolute; left:457px; top:1739px; width:220px; height:18px;" title=""><a href="http://www.carnegielearning.com" target="_blank"><span class="EmailWebsitelinks" style="color:#5091CD">www.carnegielearning.com</span></a>
+	</div>
+    
+    
+<!--------------Carnegie Learning Logo-------------->     
+  <div style="position:absolute; left:852px; top:1739px; width:203px; height:35px;" title=""><a href="http://www.carnegielearning.com" target="_blank" onMouseOver="MM_swapImage('Carnegie Learning Logo','','../images/general/carnegie_logo_over.png',1)" onMouseOut="MM_swapImgRestore()"><img src="../images/general/carnegie_logo_up.png" alt="Carnegie Learning Logo" width="203" height="35" id="Carnegie Learning Logo"></a>
+    
+    
+    
+  </div>
+  <div style="position:absolute; left:1055px; top:1739px; width:228px; height:118px;" title="">
+	</div>
+    
+    
+<!-------------------Phone Number-------------------->    
+  <div class="PhoneFaxtext" style="position:absolute; left:695px; top:1756px; width:140px; height:26px;" title=""><span class="PhoneFaxtext" style="color:#5091CD">(888) 851-7094</span>&nbsp;<span class="PhoneFaxtext" style="color:#F37021">toll free</span>
+	</div>
+    
+    
+<!------------------Email-------------------->    
+  <div class="EmailWebsitelinks" style="position:absolute; left:457px; top:1757px; width:220px; height:25px;" title=""><a href="mailto:sberman@carnegielearning.com?&Subject=MFDC%20Website "><span class="EmailWebsitelinks" style="color:#F37021">fluencychallenge</span><span class="EmailWebsitelinks" style="color:#5091CD">@carnegielearning.com</span></a>
+	</div>
+    
+    
+    
+  <div style="position:absolute; left:852px; top:1774px; width:203px; height:8px;" title="">
+	</div>
+  <div style="position:absolute; left:228px; top:1782px; width:93px; height:19px;" title="">
+	</div>
+    
+    
+<!------------------Partner Text-------------------->     
+  <div class="PartnerInfotext" style="position:absolute; left:321px; top:1782px; width:641px; height:19px; padding-top:.5%" title="">To learn more about the educational interests and research efforts of our fellow partners, please follow the links below:
+	</div>
+    
+    
+    
+  <div style="position:absolute; left:962px; top:1782px; width:93px; height:19px;" title="">
+	</div>
+	<div style="position:absolute; left:228px; top:1801px; width:827px; height:9px;" title=""><img src="../images/general/box_top.png" width="827" height="9">
+	</div>
+  <div style="position:absolute; left:228px; top:1810px; width:70px; height:17px;" title=""><img src="../images/general/box_left.png" width="70" height="16">
+	</div>
+    
+    
+ <!------------------Partner Links-------------------->   
+  <div class="Partnerlinks" style="position:absolute; left:298px; top:1810px; width:83px; height:17px;" title=""><a href="http://playground.uncc.edu/Game2Learn/" target=_blank>Game2Learn</a>
+	</div>
+  <div style="position:absolute; left:381px; top:1810px; width:65px; height:17px;" title="">
+	</div>
+  <div class="Partnerlinks" style="position:absolute; left:446px; top:1810px; width:59px; height:17px;" title=""><a href="http://www.learnlab.org/" target=_blank>LearnLab</a>
+	</div>
+  <div style="position:absolute; left:505px; top:1810px; width:59px; height:17px;" title="">
+	</div>
+  <div class="Partnerlinks" style="position:absolute; left:564px; top:1810px; width:167px; height:17px;" title=""><a href="http://g4li.nyu.edu/about.html" target=_blank>Games for Learning Institute</a>
+	</div>
+  <div style="position:absolute; left:731px; top:1810px; width:44px; height:17px;" title="">
+	</div>
+  <div class="Partnerlinks" style="position:absolute; left:775px; top:1810px; width:90px; height:17px;" title=""><a href="http://www.pstcc.edu/" target=_blank>Pellissippi State</a>
+	</div>
+  <div style="position:absolute; left:865px; top:1810px; width:58px; height:17px;" title="">
+	</div>
+  <div class="Partnerlinks" style="position:absolute; left:923px; top:1810px; width:64px; height:17px;" title=""><a href="http://playpower.org/" target=_blank>PlayPower</a>
+	</div>
+  <div style="position:absolute; left:987px; top:1810px; width:68px; height:17px;" title=""><img src="../images/general/box_right.png" width="68" height="16">
+	</div>
+	<div style="position:absolute; left:228px; top:1827px; width:827px; height:30px;" title=""><img src="../images/general/box_bottom.png" width="827" height="31">
+	</div>
+	<div style="position:absolute; left:0px; top:1857px; width:1283px; height:66px;" title="">
+	</div>
+</div>
+
+
+
+<script language="JavaScript" type="text/JavaScript">
+<!---------------Load Script Data------------------->
+
+<!----------------Load Level Data------------------->
+$.ajax({
+    type: "GET",
+    url: "data/piechartslevel.xml",
+    dataType: "text",
+    success: function(xml) {
+        var node = document.createTextNode(xml);
+        $('#datata').append(node);
+        $('#dynLoadField').append(node);
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<SCRIPTING>
+    <RULE ruleID="loadDependencies">
+        <TRIGGERS>
+            <AutoTrigger/>
+        </TRIGGERS>
+        <ACTIONS>
+            <LoadImage resourceID="/resources/tpbp/correct-center.png" source="images/tpbp/correct-center.png"/>
+            <LoadImage resourceID="/resources/tpbp/correct-left.png" source="images/tpbp/correct-left.png"/>
+            <LoadImage resourceID="/resources/tpbp/correct-right.png" source="images/tpbp/correct-right.png"/>
+            <LoadImage resourceID="/resources/tpbp/incorrect-center.png" source="images/tpbp/incorrect-center.png"/>
+            <LoadImage resourceID="/resources/tpbp/incorrect-left.png" source="images/tpbp/incorrect-left.png"/>
+            <LoadImage resourceID="/resources/tpbp/incorrect-right.png" source="images/tpbp/incorrect-right.png"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="correctGlow0">
+        <TRIGGERS>
+            <Answer correctness="correct"/>
+            <AbsoluteLane lane="0"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ShowImage resource="/resources/tpbp/correct-left.png" contentID="corGlow0" x="304" y="250"/>
+            <Delay duration="1"/>
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <HideContent contentID="corGlow0"/>
+            <ReactivateRule ruleID="correctGlow0"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="correctGlow1">
+        <TRIGGERS>
+            <Answer correctness="correct"/>
+            <AbsoluteLane lane="1"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ShowImage resource="/resources/tpbp/correct-center.png" contentID="corGlow1" x="447" y="207"/>
+            <Delay duration="1"/>
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <HideContent contentID="corGlow1"/>
+            <ReactivateRule ruleID="correctGlow1"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="correctGlow2">
+        <TRIGGERS>
+            <Answer correctness="correct"/>
+            <AbsoluteLane lane="2"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ShowImage resource="/resources/tpbp/correct-right.png" contentID="corGlow2" x="651" y="204"/>
+            <Delay duration="1"/>
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <HideContent contentID="corGlow2"/>
+            <ReactivateRule ruleID="correctGlow2"/>
+        </ACTIONS>
+    </RULE>
+    
+    <RULE ruleID="incorrectGlow0">
+        <TRIGGERS>
+            <Answer correctness="incorrect"/>
+            <AbsoluteLane lane="0"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ShowImage resource="/resources/tpbp/incorrect-left.png" contentID="incGlow0" x="304" y="250"/>
+            <Conditional>
+                <TRIGGERS>
+                    <CorrectLane lane="1"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <ShowImage resource="/resources/tpbp/correct-center.png" contentID="corGlow1" x="447" y="207"/>
+                    <ShowImage resource="/resources/tpbp/incorrect-right.png" contentID="incGlow2" x="651" y="204"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/tpbp/incorrect-center.png" contentID="incGlow1" x="447" y="207"/>
+                        <ShowImage resource="/resources/tpbp/correct-right.png" contentID="corGlow2" x="651" y="204"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            <Delay duration="1"/>
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <CallSubroutine subroutineID="hideAllGlow"/>
+            <ReactivateRule ruleID="incorrectGlow0"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="incorrectGlow1">
+        <TRIGGERS>
+            <Answer correctness="incorrect"/>
+            <AbsoluteLane lane="1"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ShowImage resource="/resources/tpbp/incorrect-center.png" contentID="incGlow1" x="447" y="207"/>
+            <Conditional>
+                <TRIGGERS>
+                    <CorrectLane lane="0"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <ShowImage resource="/resources/tpbp/correct-left.png" contentID="corGlow0" x="304" y="250"/>
+                    <ShowImage resource="/resources/tpbp/incorrect-right.png" contentID="incGlow2" x="651" y="204"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/tpbp/incorrect-left.png" contentID="incGlow0" x="304" y="250"/>
+                        <ShowImage resource="/resources/tpbp/correct-right.png" contentID="corGlow2" x="651" y="204"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            <Delay duration="1"/>
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <CallSubroutine subroutineID="hideAllGlow"/>
+            <ReactivateRule ruleID="incorrectGlow1"/>
+        </ACTIONS>
+    </RULE>
+    <RULE ruleID="incorrectGlow2">
+        <TRIGGERS>
+            <Answer correctness="incorrect"/>
+            <AbsoluteLane lane="2"/>
+        </TRIGGERS>
+        <ACTIONS>
+            <SetRelVar name="ss_dynamicNode.zOrder" val="player.zOrder" op="-" mod="1" internal="true"/>
+            <ShowImage resource="/resources/tpbp/incorrect-right.png" contentID="incGlow2" x="651" y="204"/>
+            <Conditional>
+                <TRIGGERS>
+                    <CorrectLane lane="0"/>
+                </TRIGGERS>
+                <ACTIONS>
+                    <ShowImage resource="/resources/tpbp/correct-left.png" contentID="corGlow0" x="304" y="250"/>
+                    <ShowImage resource="/resources/tpbp/incorrect-center.png" contentID="incGlow1" x="447" y="207"/>
+                </ACTIONS>
+                <ELSE>
+                    <ACTIONS>
+                        <ShowImage resource="/resources/tpbp/incorrect-left.png" contentID="incGlow0" x="304" y="250"/>
+                        <ShowImage resource="/resources/tpbp/correct-center.png" contentID="corGlow1" x="447" y="207"/>
+                    </ACTIONS>
+                </ELSE>
+            </Conditional>
+            <Delay duration="1"/>
+            <SetVar name="ss_dynamicNode.zOrder" val="200" internal="true"/>
+            <CallSubroutine subroutineID="hideAllGlow"/>
+            <ReactivateRule ruleID="incorrectGlow2"/>
+        </ACTIONS>
+    </RULE>
+    
+    <SUBROUTINE subroutineID="hideAllGlow" errorLevel="ignore">
+        <ACTIONS>
+            <HideContent contentID="corGlow0"/>
+            <HideContent contentID="corGlow1"/>
+            <HideContent contentID="corGlow2"/>
+            <HideContent contentID="incGlow0"/>
+            <HideContent contentID="incGlow1"/>
+            <HideContent contentID="incGlow2"/>
+        </ACTIONS>
+    </SUBROUTINE>
+</SCRIPTING>
+</INPUT>

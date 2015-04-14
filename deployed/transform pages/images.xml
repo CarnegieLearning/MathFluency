@@ -1,0 +1,52 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<INPUT>
+<MEDALS>
+    <MEDAL Id="1" MEDAL_THRESHOLD="30000" TYPE="Gold"/>
+    <MEDAL Id="2" MEDAL_THRESHOLD="50000" TYPE="Silver"/>
+    <MEDAL Id="3" MEDAL_THRESHOLD="70000" TYPE="Bronze"/>
+</MEDALS>
+<SpeedSettings Min="0" Max="150" Default="18"/>
+<PenaltySettings TimeLost="15" SpeedLost="0.1"/>
+<GlobalSpacing IntermissionSpacing="150" QuestionSpacing="200" InitialSpacing="100" FinishSpacing="150"/>
+<PROBLEM_SET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="2"/>
+		<QUESTION INDEX="1">
+			<Content TYPE="Image" src="images/sqrt/sqrt1.png"/>
+			<Content TYPE="Image" src="images/sqrt/sqrt9.png"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+		<QUESTION INDEX="2">
+			<Content TYPE="Image" src="images/sqrt/sqrt5.png"/>
+			<Content TYPE="Image" src="images/sqrt/sqrt8.png"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="1"/>
+		<QUESTION INDEX="3">
+			<Content TYPE="Image" src="images/sqrt/sqrt7.png"/>
+			<Content TYPE="Image" src="images/sqrt/sqrt5.png"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+		<QUESTION INDEX="4">
+			<Content TYPE="Image" src="images/sqrt/sqrt2.png"/>
+			<Content TYPE="Image" src="images/sqrt/sqrt4.png"/>
+			<Answer VALUE="0"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+	<PROBLEM_SUBSET>
+		<TARGET TYPE="String" string="3"/>
+		<QUESTION INDEX="5">
+			<Content TYPE="Image" src="images/sqrt/sqrt3.png"/>
+			<Content TYPE="Image" src="images/sqrt/sqrt7.png"/>
+			<Answer VALUE="2"/>
+		</QUESTION>
+		<QUESTION INDEX="6">
+			<Content TYPE="Image" src="images/sqrt/sqrt5.png"/>
+			<Content TYPE="Image" src="images/sqrt/sqrt10.png"/>
+			<Answer VALUE="1"/>
+		</QUESTION>
+	</PROBLEM_SUBSET>
+</PROBLEM_SET>
+</INPUT>
